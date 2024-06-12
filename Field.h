@@ -1,9 +1,11 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "Engine/CsvReader.h"
 
 class Field :public GameObject
 {
 	int hImage_;
+	CsvReader* csv;
 
 public:
 
