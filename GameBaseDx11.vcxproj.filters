@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="01Engine">
+      <UniqueIdentifier>{e5fccdcb-f299-4448-bdb6-01fa28039576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01Engine\GameObject">
+      <UniqueIdentifier>{b450e438-c939-4b05-b319-0e3c0b4a335c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01Engine\ResourceManager">
+      <UniqueIdentifier>{bedee914-5063-4c08-95bb-79c861b4969c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{a132f358-a607-4695-90e2-f44d400397ff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine\GameObject.cpp">
+      <Filter>01Engine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\RootObject.cpp">
+      <Filter>01Engine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\CsvReader.cpp">
+      <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Main.cpp">
+      <Filter>01Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\SceneManager.cpp">
+      <Filter>01Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Transform.cpp">
+      <Filter>01Engine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="ImGui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_dx9.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_ja_gryph_ranges.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="PlayScene.cpp" />
+    <ClCompile Include="TestObject.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Engine\time.cpp">
+      <Filter>01Engine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\GameObject.h">
+      <Filter>01Engine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RootObject.h">
+      <Filter>01Engine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\CsvReader.h">
+      <Filter>01Engine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Global.h">
+      <Filter>01Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\SceneManager.h">
+      <Filter>01Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Transform.h">
+      <Filter>01Engine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h" />
+    <ClInclude Include="ImGui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_dx9.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_dx11.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_dxlib.hpp">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_win32.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="PlayScene.h" />
+    <ClInclude Include="TestObject.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Engine\time.h">
+      <Filter>01Engine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h" />
+  </ItemGroup>
+</Project>
