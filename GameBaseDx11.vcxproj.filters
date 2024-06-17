@@ -129,5 +129,6 @@
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Field.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
 </Project>
