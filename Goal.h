@@ -1,22 +1,20 @@
 #pragma once
 #include "Engine/GameObject.h"
 
-
-class Player :public GameObject
+//ゴールを扱うクラス
+class Goal :public GameObject
 {
 
 	int hImage_;
-
-	void TestFunc();
 
 public:
 
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
-	Player(GameObject* parent);
+	Goal(GameObject* parent);
 
 	//デストラクタ
-	~Player();
+	~Goal();
 
 	//初期化
 	void Initialize() override;
@@ -30,5 +28,9 @@ public:
 	//開放
 	void Release() override;
 
+	void SetPosition(int _x, int _y) {
+		transform_.position_.x = _x;
+		transform_.position_.y = _y;
+	};
 };
 

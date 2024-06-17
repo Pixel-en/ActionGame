@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+//ƒJƒƒ‰‚ÌƒNƒ‰ƒX
 class Camera :public GameObject
 {
 	int value;

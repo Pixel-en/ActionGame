@@ -17,6 +17,9 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{a132f358-a607-4695-90e2-f44d400397ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayScene">
+      <UniqueIdentifier>{d8d5ad11-e720-45b0-b059-0d34a8ad85fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObject.cpp">
@@ -65,11 +68,27 @@
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="TestObject.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Engine\time.cpp">
       <Filter>01Engine\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Field.cpp" />
+    <ClCompile Include="Clear.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Goal.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -124,11 +143,29 @@
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="TestObject.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Engine\time.h">
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Field.h" />
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Camera.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Clear.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Goal.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

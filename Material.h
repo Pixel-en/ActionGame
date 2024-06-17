@@ -1,22 +1,19 @@
 #pragma once
 #include "Engine/GameObject.h"
 
-
-class Player :public GameObject
+//材料のクラス
+class Material :public GameObject
 {
-
 	int hImage_;
-
-	void TestFunc();
 
 public:
 
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
-	Player(GameObject* parent);
+	Material(GameObject* parent);
 
 	//デストラクタ
-	~Player();
+	~Material();
 
 	//初期化
 	void Initialize() override;
@@ -29,6 +26,5 @@ public:
 
 	//開放
 	void Release() override;
-
 };
 

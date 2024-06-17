@@ -5,10 +5,14 @@
 
 namespace {
 	const float MOVESPEED{ 100 };
-	const float GRAVITY{ 9.8 / 60.0f };
+	const float GRAVITY{ 9.8f / 120.0f };
 	const int IMAGESIZE{ 64 };
 	const VECTOR LHITBOX{ 4.0f,60.0f };
 	const VECTOR RHITBOX{ 60.0f,60.0f };
+}
+
+void Player::TestFunc()
+{
 }
 
 Player::Player(GameObject* parent)
@@ -28,6 +32,8 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	TestFunc();
+
 	Field* field = GetParent()->FindGameObject<Field>();
 
 	//‰EˆÚ“®
@@ -57,6 +63,9 @@ void Player::Update()
 		int push = field->CollisionRightCheck(Lhitx, Lhity);
 		transform_.position_.x += push;
 	}
+
+	if (transform_.position_.y < 0)
+		transform_.position_.y = 0;
 
 	//d—Í‰Á‘¬
 	static float Gaccel = 0;

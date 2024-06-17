@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Field.h"
 #include "Camera.h"
+#include "Goal.h"
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
@@ -15,8 +16,10 @@ TestScene::TestScene(GameObject * parent)
 void TestScene::Initialize()
 {
 	Instantiate<Camera>(this);
-	Instantiate<Field>(this);
+	Field* f= Instantiate<Field>(this);
+	Instantiate<Goal>(this);
 	Instantiate<Player>(this);
+	f->Reset();
 }
 
 //更新

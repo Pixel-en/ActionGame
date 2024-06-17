@@ -1,6 +1,7 @@
 #include "Field.h"
 #include "Engine/CsvReader.h"
 #include "Camera.h"
+#include "Goal.h"
 
 namespace {
 	const int IMAGESIZE{ 32 };
@@ -18,6 +19,11 @@ Field::~Field()
 
 void Field::Initialize()
 {
+	Reset();
+}
+
+void Field::Reset()
+{
 	hImage_ = LoadGraph("Assets\\Image\\Ground_test.png");
 	assert(hImage_ > 0);
 
@@ -27,13 +33,21 @@ void Field::Initialize()
 	height = csv->GetLines();
 	width = csv->GetColumns(0);
 	Map = new int[height * width];
-	
+
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			Map[i * width + j] = csv->GetInt(i, j);
 		}
 	}
-	
+
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			if (Map[i * width + j] == 2) {
+				Goal* g = GetParent()->FindGameObject<Goal>();
+				g->SetPosition(j * 32, i * 32);
+			}
+		}
+	}
 }
 
 void Field::Update()
