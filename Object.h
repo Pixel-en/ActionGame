@@ -17,6 +17,8 @@ public:
 	//‰Šú‰»
  	virtual void Initialize() override;
 
+	virtual void Reset();
+
 	//XV
 	virtual void Update() override;
 

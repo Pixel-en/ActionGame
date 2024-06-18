@@ -1,11 +1,7 @@
 #include "TestScene.h"
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
-#include "Player.h"
-#include "Field.h"
-#include "Camera.h"
-#include "Goal.h"
-#include "Clear.h"
+
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
@@ -16,22 +12,12 @@ TestScene::TestScene(GameObject * parent)
 //初期化
 void TestScene::Initialize()
 {
-	Instantiate<Camera>(this);
-	Field* f= Instantiate<Field>(this);
-	Instantiate<Goal>(this);
-	Instantiate<Player>(this);
-	f->SetFileName("tutorial1.csv");
-	f->Reset();
-
-	Clear* c = Instantiate<Clear>(this);
-
-
 }
 
 //更新
 void TestScene::Update()
 {
-	//SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
+	SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
 }
 
 //描画

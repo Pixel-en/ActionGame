@@ -49,16 +49,19 @@ void Field::Reset()
 			case 2:{
 				Goal* g = GetParent()->FindGameObject<Goal>();
 				g->SetPosition(j * 32, i * 32, 0);
+				g->Reset();
 			}
 				break;
 			case 3: {
 				Material* m = Instantiate<Material>(GetParent());
 				m->SetPosition(j * 32, i * 32, 0);
+				m->Reset();
 			}
 				break;
 			case 4: {
 				Enemy* e = Instantiate<Enemy>(GetParent());
 				e->SetPosition(j * 32, i * 32, 0);
+				e->Reset();
 			}
 				break;
 			case 5: {

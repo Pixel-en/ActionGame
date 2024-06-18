@@ -8,10 +8,14 @@ class Clear :public GameObject
 	bool isGetM_;	//材料を全部取ったか？
 	int Mval_;		//とった材料の数
 	int Eval_;		//残りの敵の数
-	bool isFlag_;
 
+	float cleartimer_;	//クリアした後のタイマー
 
 public:
+
+	bool isFlag_;	//次のステージに移動していいか
+	bool GetFlag() { return isFlag_; };
+
 
 	//コンストラクタ
 	Clear(GameObject* parent);

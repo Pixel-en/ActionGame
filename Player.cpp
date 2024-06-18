@@ -11,7 +11,7 @@ namespace {
 	const VECTOR LHITBOX{ 4.0f,60.0f };		//左下の座標
 	const VECTOR RHITBOX{ 60.0f,60.0f };	//右下の座標
 	const VECTOR LRHITBOX{ 4.0f,4.0f };		//当たり判定の左上座標
-	const SIZE HITBOXSIZE{ 54,54 };			//当たり安定のボックスのサイズd
+	const SIZE HITBOXSIZE{ 54,54 };			//当たり安定のボックスのサイズ
 }
 
 void Player::TestFunc()
@@ -84,7 +84,6 @@ void Player::Update()
 		Gaccel = 0.0f;
 	}
 
-
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	int x = (int)transform_.position_.x - cam->GetValue();
 	if (x > 400) {
@@ -98,7 +97,7 @@ void Player::Update()
 		if (cam->GetValue() > 0)
 			cam->SetValue(transform_.position_.x);
 	}
-	
+
 }
 
 void Player::Draw()
