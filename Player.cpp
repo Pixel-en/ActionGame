@@ -2,13 +2,16 @@
 #include "Camera.h"
 #include "Field.h"
 #include "ImGui/imgui.h"
+#include "Goal.h"
 
 namespace {
-	const float MOVESPEED{ 100 };
-	const float GRAVITY{ 9.8f / 120.0f };
-	const int IMAGESIZE{ 64 };
-	const VECTOR LHITBOX{ 4.0f,60.0f };
-	const VECTOR RHITBOX{ 60.0f,60.0f };
+	const float MOVESPEED{ 100 };			//動くスピード
+	const float GRAVITY{ 9.8f / 120.0f };	//重力
+	const int IMAGESIZE{ 64 };				//画像サイズ
+	const VECTOR LHITBOX{ 4.0f,60.0f };		//左下の座標
+	const VECTOR RHITBOX{ 60.0f,60.0f };	//右下の座標
+	const VECTOR LRHITBOX{ 4.0f,4.0f };		//当たり判定の左上座標
+	const SIZE HITBOXSIZE{ 54,54 };			//当たり安定のボックスのサイズd
 }
 
 void Player::TestFunc()
@@ -108,18 +111,39 @@ void Player::Draw()
 		xpos -= cam->GetValue();
 
 
+
 	DrawRectGraph(xpos, ypos, 0, 0, IMAGESIZE, IMAGESIZE, hImage_, true);
 
 	//当たり判定確認用
 	DrawBox(xpos + LHITBOX.x, ypos + 4, xpos+RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);
 
+	DrawCircle(xpos, ypos, 3, GetColor(255, 0, 255), true);
 	DrawCircle(xpos + RHITBOX.x, ypos + RHITBOX.y, 3, GetColor(255, 0, 0), true);	//右
 	DrawCircle(xpos + LHITBOX.x, ypos + LHITBOX.y, 3, GetColor(0, 255, 0), true);	//左
 	DrawCircle(xpos + RHITBOX.x, ypos + RHITBOX.x + 1, 3, GetColor(0, 0, 255), true);	//右下
 	DrawCircle(xpos + LHITBOX.x, ypos + LHITBOX.y + 1, 3, GetColor(0, 0, 255), true); //左下
-
+	HitCheck(xpos + LHITBOX.x, ypos + 4, HITBOXSIZE);
 }
 
 void Player::Release()
 {
+}
+
+bool Player::HitCheck(int _x, int _y, SIZE _size)
+{
+	int x = _x + _size.cx / 2;
+	int y = _y + _size.cy / 2;
+
+	int px = transform_.position_.x + HITBOXSIZE.cx / 2;
+	int py = transform_.position_.y + HITBOXSIZE.cy / 2;
+
+	DrawCircle(x, y, 3, GetColor(0, 255, 255), true);
+
+	if (abs(x - px) < _size.cx / 2 + HITBOXSIZE.cx / 2 &&
+		abs(y - py) < _size.cy / 2 + HITBOXSIZE.cy / 2)
+		return true;
+
+
+
+	return false;
 }

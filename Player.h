@@ -30,5 +30,7 @@ public:
 	//ŠJ•ú
 	void Release() override;
 
+	bool HitCheck(int _x, int _y, SIZE _size);
+
 };
 

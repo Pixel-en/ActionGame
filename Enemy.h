@@ -1,11 +1,9 @@
 #pragma once
-#include "Engine/GameObject.h"
+#include "Object.h"
 
 //敵のクラス
-class Enemy:public GameObject
+class Enemy:public Object
 {
-	int hiamge_;
-
 public:
 
 	//コンストラクタ
@@ -20,9 +18,6 @@ public:
 
 	//更新
 	void Update() override;
-
-	//描画
-	void Draw() override;
 
 	//開放
 	void Release() override;

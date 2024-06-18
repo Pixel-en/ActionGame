@@ -1,10 +1,9 @@
 #pragma once
-#include "Engine/GameObject.h"
+#include "Object.h"
 
 //材料のクラス
-class Material :public GameObject
+class Material :public Object
 {
-	int hImage_;
 
 public:
 
@@ -20,9 +19,6 @@ public:
 
 	//更新
 	void Update() override;
-
-	//描画
-	void Draw() override;
 
 	//開放
 	void Release() override;

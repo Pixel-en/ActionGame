@@ -1,11 +1,9 @@
 #pragma once
-#include "Engine/GameObject.h"
+#include "Object.h"
 
 //ゴールを扱うクラス
-class Goal :public GameObject
+class Goal :public Object
 {
-
-	int hImage_;
 
 public:
 
@@ -22,15 +20,9 @@ public:
 	//更新
 	void Update() override;
 
-	//描画
-	void Draw() override;
-
 	//開放
 	void Release() override;
 
-	void SetPosition(int _x, int _y) {
-		transform_.position_.x = _x;
-		transform_.position_.y = _y;
-	};
+
 };
 

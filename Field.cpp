@@ -2,6 +2,9 @@
 #include "Engine/CsvReader.h"
 #include "Camera.h"
 #include "Goal.h"
+#include "Material.h"
+#include "Enemy.h"
+#include "Player.h"
 
 namespace {
 	const int IMAGESIZE{ 32 };
@@ -19,7 +22,6 @@ Field::~Field()
 
 void Field::Initialize()
 {
-	Reset();
 }
 
 void Field::Reset()
@@ -42,10 +44,31 @@ void Field::Reset()
 
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
-			if (Map[i * width + j] == 2) {
+			switch (csv->GetInt(i, j))
+			{
+			case 2:{
 				Goal* g = GetParent()->FindGameObject<Goal>();
-				g->SetPosition(j * 32, i * 32);
+				g->SetPosition(j * 32, i * 32, 0);
 			}
+				break;
+			case 3: {
+				Material* m = Instantiate<Material>(GetParent());
+				m->SetPosition(j * 32, i * 32, 0);
+			}
+				break;
+			case 4: {
+				Enemy* e = Instantiate<Enemy>(GetParent());
+				e->SetPosition(j * 32, i * 32, 0);
+			}
+				break;
+			case 5: {
+				Player* p = GetParent()->FindGameObject<Player>();
+				p->SetPosition(j * 32, i * 32, 0);
+			}
+			default:
+				break;
+			}
+
 		}
 	}
 }
