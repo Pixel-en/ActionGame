@@ -26,6 +26,8 @@ public:
 	//‰Šú‰»
 	void Initialize() override;
 
+	void Reset();
+
 	//XV
 	void Update() override;
 

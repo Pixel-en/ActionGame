@@ -15,27 +15,28 @@ PlayScene::PlayScene(GameObject* parent)
 
 void PlayScene::Initialize()
 {
+	Instantiate<Camera>(this);
+	Instantiate<Field>(this);
+	Instantiate<Player>(this);
 
 	Filename_ = "tutorial1.csv";
 	Reset();
+
+	Clear* c = Instantiate<Clear>(this);
 }
 
 void PlayScene::Reset()
 {
-	Instantiate<Camera>(this);
-	Field* f = Instantiate<Field>(this);
-	Instantiate<Goal>(this);
-	Instantiate<Player>(this);
+	Field* f = FindGameObject<Field>();
 	f->SetFileName(Filename_);
 	f->Reset();
-
-	Clear* c = Instantiate<Clear>(this);
 }
 
 void PlayScene::Update()
 {
 	Clear* c = FindGameObject<Clear>();
 	if (c->GetFlag()) {
+		c->Reset();
 		Filename_ = "alphamap.csv";
 		Reset();
 	}

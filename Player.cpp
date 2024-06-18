@@ -16,6 +16,8 @@ namespace {
 
 void Player::TestFunc()
 {
+	if (CheckHitKey(KEY_INPUT_SPACE))
+		transform_.position_.y -= 10.0;
 }
 
 Player::Player(GameObject* parent)

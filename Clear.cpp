@@ -8,12 +8,7 @@
 Clear::Clear(GameObject* parent)
 	:GameObject(parent,"Clear")
 {
-	isgoal_ = false;
-	isGetM_ = false;
-	Mval_ = 0;
-	Eval_ = 0;
-	isFlag_ = false;
-	cleartimer_ = 5.0f;
+	Reset();
 }
 
 Clear::~Clear()
@@ -22,6 +17,17 @@ Clear::~Clear()
 
 void Clear::Initialize()
 {
+	Reset();
+}
+
+void Clear::Reset()
+{
+	isgoal_ = false;
+	isGetM_ = false;
+	Mval_ = 0;
+	Eval_ = 0;
+	isFlag_ = false;
+	cleartimer_ = 5.0f;
 }
 
 void Clear::Update()

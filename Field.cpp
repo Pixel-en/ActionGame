@@ -47,7 +47,7 @@ void Field::Reset()
 			switch (csv->GetInt(i, j))
 			{
 			case 2:{
-				Goal* g = GetParent()->FindGameObject<Goal>();
+				Goal* g = Instantiate<Goal>(GetParent());
 				g->SetPosition(j * 32, i * 32, 0);
 				g->Reset();
 			}
