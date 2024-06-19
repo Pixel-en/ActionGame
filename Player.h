@@ -8,7 +8,6 @@ class Player :public GameObject
 	int hImage_;
 
 	void TestFunc();
-
 public:
 
 	//コンストラクタ

@@ -5,15 +5,14 @@
 class Clear :public GameObject
 {
 	bool isgoal_;	//ゴールしたかどうか
-	bool isGetM_;	//材料を全部取ったか？
-	int Mval_;		//とった材料の数
-	int Eval_;		//残りの敵の数
-
-	float cleartimer_;	//クリアした後のタイマー
-
-public:
+	bool isGetM_;	//材料を全部取った
+	bool isKillE_;
+	int Mcount_;		//材料の数
+	int Ecount_;		//敵の数
 
 	bool isFlag_;	//次のステージに移動していいか
+public:
+
 	bool GetFlag() { return isFlag_; };
 
 
@@ -37,6 +36,7 @@ public:
 	//開放
 	void Release() override;
 
-	void SetMaterialValue(int _val) { Mval_ = _val; };
+	void AddMcount() { Mcount_ += 1; };
+	void AddEcount() { Ecount_ += 1; };
 };
 

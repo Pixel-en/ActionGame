@@ -24,10 +24,10 @@ void Clear::Reset()
 {
 	isgoal_ = false;
 	isGetM_ = false;
-	Mval_ = 0;
-	Eval_ = 0;
+	isKillE_ = false;
+	Mcount_ = 0;
+	Ecount_ = 0;
 	isFlag_ = false;
-	cleartimer_ = 5.0f;
 }
 
 void Clear::Update()
@@ -35,8 +35,9 @@ void Clear::Update()
 	Player* p = GetParent()->FindGameObject<Player>();
 	Goal* g = GetParent()->FindGameObject<Goal>();
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
+	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 
-	if (!isgoal_||!isGetM_) {
+	if (!isgoal_&&!isGetM_ && !isKillE_) {
 
 		if (g != nullptr) {
 			if (g->IsHitting())
@@ -48,17 +49,21 @@ void Clear::Update()
 		for (Material* M : m) {
 			if (M->IsHitting()) {
 				M->KillMe();
-				Mval_++;
 			}
 		}
-		if (m.empty())
+		if (m.empty() && Mcount_!=0)
 			isGetM_ = true;
+		if (e.empty() && Ecount_ != 0)
+			isKillE_ = true;
 	}
-	else {
-		cleartimer_ -= Time::DeltaTime();
-		if (cleartimer_ < 0)
-			isFlag_ = true;
-	}
+
+	isFlag_ = isgoal_ || isGetM_ || isKillE_;
+
+	ImGui::Begin("flag");
+	int a = isFlag_;
+	ImGui::InputInt("flag", &a);
+	ImGui::End();
+
 }
 
 void Clear::Draw()

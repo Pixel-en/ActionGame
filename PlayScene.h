@@ -4,7 +4,24 @@
 //テストシーンを管理するクラス
 class PlayScene : public GameObject
 {
+private:
 	std::string Filename_;
+
+	float starttimer_;	//スタートするまでの待機時間のタイマー
+	float counttimer_;	//クリアしてからの次に行くまでのタイマー
+
+	enum PlayState {
+		STAY,
+		PLAY,
+		CLEAR,
+		DEATH,
+	};
+	PlayState state;
+
+	void UpdateStay();
+	void UpdatePlay();
+	void UpdateClear();
+	void UpdateDeath();
 
 public:
 	//コンストラクタ
@@ -24,4 +41,6 @@ public:
 
 	//開放
 	void Release() override;
+
+	bool CanMove() { return (state == PlayState::PLAY); };
 };

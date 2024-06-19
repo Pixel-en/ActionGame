@@ -5,6 +5,7 @@
 #include "Material.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "Clear.h"
 
 namespace {
 	const int IMAGESIZE{ 32 };
@@ -36,6 +37,8 @@ void Field::Reset()
 	width = csv->GetColumns(0);
 	Map = new int[height * width];
 
+	Clear* c = GetParent()->FindGameObject<Clear>();
+
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			Map[i * width + j] = csv->GetInt(i, j);
@@ -53,12 +56,14 @@ void Field::Reset()
 			}
 				break;
 			case 3: {
+				c->AddMcount();
 				Material* m = Instantiate<Material>(GetParent());
 				m->SetPosition(j * 32, i * 32, 0);
 				m->Reset();
 			}
 				break;
 			case 4: {
+				c->AddEcount();
 				Enemy* e = Instantiate<Enemy>(GetParent());
 				e->SetPosition(j * 32, i * 32, 0);
 				e->Reset();
