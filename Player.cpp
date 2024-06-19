@@ -58,6 +58,13 @@ void Player::Update()
 	}
 
 	PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
+	
+	if (transform_.position_.y > 1000.0f) {
+		transform_.position_.y = 1000.0f;
+		pc->DeadState();
+	}
+
+
 	if (!pc->CanMove())
 		return;
 

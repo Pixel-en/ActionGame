@@ -11,10 +11,12 @@
 namespace {
 	const float STIME{ 1.0f };
 	const float CDTIME{ 5.0f };
+	const float DTIME{ 1.0f };
 }
 
 PlayScene::PlayScene(GameObject* parent)
-	:GameObject(parent,"PlayScene"),Filename_("alphamap.csv"),starttimer_(STIME),state(PlayState::STAY),counttimer_(CDTIME)
+	:GameObject(parent,"PlayScene"),Filename_("alphamap.csv"),starttimer_(STIME),state(PlayState::STAY),counttimer_(CDTIME),
+	deathtimer_(DTIME)
 {
 }
 
@@ -39,6 +41,7 @@ void PlayScene::Reset()
 	cam->SetValue(0);
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
+	deathtimer_ = DTIME;
 	state = PlayScene::STAY;
 }
 
@@ -72,6 +75,11 @@ void PlayScene::Release()
 {
 }
 
+void PlayScene::DeadState()
+{
+	state = PlayState::DEATH;
+}
+
 void PlayScene::UpdateStay()
 {
 	starttimer_ -= Time::DeltaTime();
@@ -100,4 +108,7 @@ void PlayScene::UpdateClear()
 
 void PlayScene::UpdateDeath()
 {
+	deathtimer_ -= Time::DeltaTime();
+	if (deathtimer_ < 0)
+		Reset();
 }

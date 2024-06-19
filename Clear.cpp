@@ -59,11 +59,6 @@ void Clear::Update()
 
 	isFlag_ = isgoal_ || isGetM_ || isKillE_;
 
-	ImGui::Begin("flag");
-	int a = isFlag_;
-	ImGui::InputInt("flag", &a);
-	ImGui::End();
-
 }
 
 void Clear::Draw()

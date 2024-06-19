@@ -9,6 +9,7 @@ private:
 
 	float starttimer_;	//スタートするまでの待機時間のタイマー
 	float counttimer_;	//クリアしてからの次に行くまでのタイマー
+	float deathtimer_;	//死んでからのタイマー
 
 	enum PlayState {
 		STAY,
@@ -43,4 +44,6 @@ public:
 	void Release() override;
 
 	bool CanMove() { return (state == PlayState::PLAY); };
+
+	void DeadState();
 };
