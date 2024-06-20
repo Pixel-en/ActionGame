@@ -8,7 +8,7 @@
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 120.0f };	//重力
-	const int IMAGESIZE{ 64 };				//画像サイズ
+	const int IMAGESIZE{ 64 };				//画像サイズ	幅44*高さ44
 	const VECTOR LHITBOX{ 4.0f,60.0f };		//左下の座標
 	const VECTOR RHITBOX{ 60.0f,60.0f };	//右下の座標
 	const VECTOR LRHITBOX{ 4.0f,4.0f };		//当たり判定の左上座標
@@ -32,7 +32,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\Player_test.png");
+	hImage_ = LoadGraph("Assets\\Image\\Character.png");
 	assert(hImage_ > 0);
 }
 
