@@ -7,6 +7,8 @@ class PlayScene : public GameObject
 private:
 	std::string Filename_;
 
+	float playtimer_;	//プレイ中の制限時間
+
 	float starttimer_;	//スタートするまでの待機時間のタイマー
 	float counttimer_;	//クリアしてからの次に行くまでのタイマー
 	float deathtimer_;	//死んでからのタイマー

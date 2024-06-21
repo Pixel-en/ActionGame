@@ -1,6 +1,4 @@
 #include "Goal.h"
-#include "Camera.h"
-#include "Player.h"
 
 namespace {
 	const int IMAGESIZE{ 64 };

@@ -6,6 +6,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "Clear.h"
+#include "CheckPoint.h"
 
 namespace {
 	const int IMAGESIZE{ 32 };
@@ -73,6 +74,13 @@ void Field::Reset()
 				Player* p = GetParent()->FindGameObject<Player>();
 				p->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 			}
+				  break;
+			case 6: {
+				CheckPoint* ch = Instantiate<CheckPoint>(GetParent());
+				ch->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				ch->Reset();
+			}
+				  break;
 			default:
 				break;
 			}

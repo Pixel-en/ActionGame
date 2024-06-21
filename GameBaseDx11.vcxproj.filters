@@ -89,6 +89,7 @@
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="CheckPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -168,5 +169,6 @@
       <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Object.h" />
+    <ClInclude Include="CheckPoint.h" />
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 120.0f };	//重力
-	const int IMAGESIZE{ 64 };				//画像サイズ	幅44*高さ44
+	const int IMAGESIZE{ 96 };				//画像サイズ	幅44*高さ44
 	const VECTOR LHITBOX{ 4.0f,60.0f };		//左下の座標
 	const VECTOR RHITBOX{ 60.0f,60.0f };	//右下の座標
 	const VECTOR LRHITBOX{ 4.0f,4.0f };		//当たり判定の左上座標
@@ -131,6 +131,7 @@ void Player::Draw()
 
 
 	DrawRectGraph(xpos, ypos, 0, 0, IMAGESIZE, IMAGESIZE, hImage_, true);
+	DrawBox(xpos, ypos, xpos + IMAGESIZE, ypos + IMAGESIZE, GetColor(255, 0, 255), false);
 
 	//当たり判定確認用
 	DrawBox(xpos + LHITBOX.x, ypos + 4, xpos + RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);

@@ -1,21 +1,20 @@
 #pragma once
 #include "Object.h"
 
-//プレイヤーが当たったらプレイヤーの負け
-//攻撃してくる
-//
 
-//敵のクラス
-class Enemy:public Object
+//オブジェクトを作るときのコピー用テンプレート
+//注意：このオブジェクトを継承しないこと
+class CheckPoint :public Object
 {
+
 public:
 
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
-	Enemy(GameObject* parent);
+	CheckPoint(GameObject* parent);
 
 	//デストラクタ
-	~Enemy();
+	~CheckPoint();
 
 	//初期化
 	void Initialize() override;
@@ -25,7 +24,5 @@ public:
 
 	//開放
 	void Release() override;
-
-	bool IsHitting() override;
 };
 

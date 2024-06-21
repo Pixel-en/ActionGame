@@ -7,6 +7,7 @@ class Clear :public GameObject
 	bool isgoal_;	//ゴールしたかどうか
 	bool isGetM_;	//材料を全部取った
 	bool isKillE_;
+	bool ischeck_;	//チェックポイントを通ったかどうか
 	int Mcount_;		//材料の数
 	int Ecount_;		//敵の数
 
