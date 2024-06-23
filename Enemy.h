@@ -8,6 +8,12 @@
 //敵のクラス
 class Enemy:public Object
 {
+	bool inmoving_;
+	XMVECTOR despos_;
+
+	float movetimer_;
+	bool startmove_;
+
 public:
 
 	//コンストラクタ
@@ -23,9 +29,18 @@ public:
 	//更新
 	void Update() override;
 
+	//描画
+	void Draw() override;
+
 	//開放
 	void Release() override;
 
 	bool IsHitting() override;
+
+private:
+
+	//プレイヤーが検知エリアに入ったかどうか
+	bool IsExistPlayer();
+
 };
 

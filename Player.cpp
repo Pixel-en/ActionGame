@@ -7,7 +7,7 @@
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
-	const float GRAVITY{ 9.8f / 120.0f };	//重力
+	const float GRAVITY{ 9.8f / 60.0f };	//重力
 	const int IMAGESIZE{ 96 };				//画像サイズ	幅44*高さ44
 	const VECTOR LHITBOX{ 4.0f,60.0f };		//左下の座標
 	const VECTOR RHITBOX{ 60.0f,60.0f };	//右下の座標
@@ -38,6 +38,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
+
 	Field* field = GetParent()->FindGameObject<Field>();
 
 	if (transform_.position_.y < 0)
@@ -85,7 +86,7 @@ void Player::Update()
 
 	}
 	//左移動
-	else if (CheckHitKey(KEY_INPUT_A)) {
+	if (CheckHitKey(KEY_INPUT_A)) {
 		if (CheckHitKey(KEY_INPUT_LSHIFT))
 			transform_.position_.x -= MOVESPEED * Time::DeltaTime() * 2.0;
 		else
@@ -96,6 +97,10 @@ void Player::Update()
 		int Lhity = transform_.position_.y + LHITBOX.y;
 		int push = field->CollisionRightCheck(Lhitx, Lhity);
 		transform_.position_.x += push;
+	}
+
+	if (CheckHitKey(KEY_INPUT_J)) {
+
 	}
 
 	//右固定カメラ
@@ -127,8 +132,6 @@ void Player::Draw()
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr)
 		xpos -= cam->GetValue();
-
-
 
 	DrawRectGraph(xpos, ypos, 0, 0, IMAGESIZE, IMAGESIZE, hImage_, true);
 	DrawBox(xpos, ypos, xpos + IMAGESIZE, ypos + IMAGESIZE, GetColor(255, 0, 255), false);

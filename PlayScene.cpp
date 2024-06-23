@@ -23,7 +23,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "tutorial1.csv";
+	//Filename_ = "tutorial1.csv";
 	Reset();
 }
 
@@ -111,6 +111,8 @@ void PlayScene::UpdatePlay()
 
 	ImGui::Begin("timer");
 	ImGui::InputFloat("timer", &playtimer_);
+	float temp = Time::DeltaTime();
+	ImGui::InputFloat("timer", &temp);
 	ImGui::End();
 }
 

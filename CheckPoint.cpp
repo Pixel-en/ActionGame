@@ -11,7 +11,7 @@ CheckPoint::~CheckPoint()
 
 void CheckPoint::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\Player_test.png");
+	hImage_ = LoadGraph("Assets\\Image\\CheckPoint_test.png");
 	assert(hImage_ > 0);
 }
 
