@@ -7,7 +7,15 @@ class Player :public GameObject
 
 	int hImage_;
 
+	float pdir_;
+
 	void TestFunc();
+
+	int framecnt_;
+	bool attackon_;
+	float rigortimer_;
+	bool rigoron_;
+
 public:
 
 	//コンストラクタ

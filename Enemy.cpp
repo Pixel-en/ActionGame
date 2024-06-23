@@ -117,6 +117,8 @@ void Enemy::Draw()
 		xpos -= cam->GetValue();
 	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, 300, GetColor(255, 0, 0), false);
 	DrawRectGraph(xpos, ypos, 0, 0, 64, 64, hImage_, true);
+	DrawBox(xpos, ypos, xpos + IMAGESIZE.cx, ypos + IMAGESIZE.cy, GetColor(255, 255, 255), false);
+	DrawCircle(transform_.position_.x + IMAGESIZE.cx / 2, transform_.position_.y + IMAGESIZE.cy / 2, 3, GetColor(0, 255, 0), true);
 
 }
 
@@ -148,7 +150,12 @@ bool Enemy::IsExistPlayer()
 	float y = ceny - p->GetPosition().y;
 
 	if (x * x + y * y < LOOKRANGE * LOOKRANGE)
-		return true;
+		return false;
 
 	return false;
+}
+
+SIZE Enemy::GetImageSize()
+{	
+	return IMAGESIZE;
 }

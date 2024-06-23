@@ -14,6 +14,7 @@ class Enemy:public Object
 	float movetimer_;
 	bool startmove_;
 
+
 public:
 
 	//コンストラクタ
@@ -36,6 +37,8 @@ public:
 	void Release() override;
 
 	bool IsHitting() override;
+
+	SIZE GetImageSize();
 
 private:
 
