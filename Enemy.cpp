@@ -3,10 +3,11 @@
 #include "Camera.h"
 #include "Field.h"
 #include "ImGui/imgui.h"
+#include "Clear.h"
 
 namespace {
 	const SIZE IMAGESIZE{ 64,64 };
-	const int LOOKRANGE{ 300 };
+	const int LOOKRANGE{ 100 };
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
 	const VECTOR LHITBOX{ 64.0f,63.0f };	//左下の座標
 	const VECTOR RHITBOX{ 64.0f,63.0f };	//右下の座標
@@ -37,6 +38,12 @@ void Enemy::Update()
 
 	Field* field = GetParent()->FindGameObject<Field>();
 
+	Clear* clear= GetParent()->FindGameObject<Clear>();
+
+	if (clear->GetFlag())
+		return;
+
+
 	//当たり判定
 	int Rhitx = transform_.position_.x + RHITBOX.x;
 	int Rhity = transform_.position_.y + RHITBOX.y;
@@ -49,7 +56,7 @@ void Enemy::Update()
 	transform_.position_.x += push;
 
 
-	static float Gaccel=0;
+
 
 	Gaccel += GRAVITY;
 	transform_.position_.y += Gaccel;
@@ -86,8 +93,8 @@ void Enemy::Update()
 		inmoving_ = true;
 
 		move = XMVECTOR{ p->GetPosition().x - transform_.position_.x,0,0 };
-		XMMATRIX zrot = XMMatrixRotationZ(XMConvertToRadians(MOVEANGLE) * -(XMVectorGetX(move) / fabs(XMVectorGetX(move))));
-		move = XMVector3Transform(move, zrot);
+		//XMMATRIX zrot = XMMatrixRotationZ(XMConvertToRadians(MOVEANGLE) * -(XMVectorGetX(move) / fabs(XMVectorGetX(move))));
+		//move = XMVector3Transform(move, zrot);
 		move = XMVector3Normalize(move);
 		
 		Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
@@ -98,10 +105,14 @@ void Enemy::Update()
 	if (inmoving_) {
 
 		XMVECTOR pos = XMLoadFloat3(&transform_.position_);
-		pos = pos + move *200*Time::DeltaTime();
+		pos = pos + move * 500 * Time::DeltaTime();
 		XMStoreFloat3(&transform_.position_, pos);
 	}
-
+	
+	ImGui::Begin("a");
+	int temp = inmoving_;
+	ImGui::InputInt("a", &temp);
+	ImGui::End();
 
 }
 
@@ -115,10 +126,10 @@ void Enemy::Draw()
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr)
 		xpos -= cam->GetValue();
-	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, 300, GetColor(255, 0, 0), false);
+	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, LOOKRANGE, GetColor(255, 0, 0), false);
 	DrawRectGraph(xpos, ypos, 0, 0, 64, 64, hImage_, true);
-	DrawBox(xpos, ypos, xpos + IMAGESIZE.cx, ypos + IMAGESIZE.cy, GetColor(255, 255, 255), false);
-	DrawCircle(transform_.position_.x + IMAGESIZE.cx / 2, transform_.position_.y + IMAGESIZE.cy / 2, 3, GetColor(0, 255, 0), true);
+	DrawBox(transform_.position_.x, transform_.position_.y, transform_.position_.x + IMAGESIZE.cx, transform_.position_.y + IMAGESIZE.cy, GetColor(255, 255, 255), false);
+	DrawCircle(transform_.position_.x+IMAGESIZE.cx/2,transform_.position_.y+IMAGESIZE.cy/2,3,GetColor(0,255,0),true);
 
 }
 
@@ -150,7 +161,7 @@ bool Enemy::IsExistPlayer()
 	float y = ceny - p->GetPosition().y;
 
 	if (x * x + y * y < LOOKRANGE * LOOKRANGE)
-		return false;
+		return true;
 
 	return false;
 }

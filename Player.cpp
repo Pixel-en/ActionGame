@@ -5,27 +5,29 @@
 #include "Goal.h"
 #include "PlayScene.h"
 #include "Enemy.h"
+#include "Clear.h"
 
 namespace {
-	const float MOVESPEED{ 100 };			//動くスピード
+	const float MOVESPEED{ 200 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
 	const int IMAGESIZE{ 45 };				//画像サイズ	幅44*高さ44
 	const VECTOR LUPOINT{ 15.0f,4.0f };
 	const VECTOR LHITBOX{ 15.0f,44.0f };		//左下の座標
 	const VECTOR RHITBOX{ 35.0f,44.0f };	//右下の座標
 	const SIZE HITBOXSIZE{ 20,40 };			//当たり判定のボックスのサイズ
-	const int SWORDLENGTH{ 50 };
+	const int SWORDLENGTH{ 100 };
 	const float RIGORTIME{ 2.0f };		//攻撃後の硬直
+	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
 }
 
 void Player::TestFunc()
 {
-	if (CheckHitKey(KEY_INPUT_SPACE))
-		transform_.position_.y -= 10.0;
+
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(-1), framecnt_(0), attackon_(false), pdir_(1),rigoron_(false)
+	:GameObject(parent, "Player"), hImage_(-1), framecnt_(0), attackon_(false), pdir_(1),rigoron_(false),
+	onjump_(false)
 {
 }
 
@@ -35,7 +37,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\sprite\\sprite\\10.Attack\\resized_dot_img(3).png");
+	hImage_ = LoadGraph("Assets\\sprite\\sprite\\sprite\\1.idol\\resized_dot_img(2).png");
 	assert(hImage_ > 0);
 }
 
@@ -43,6 +45,10 @@ void Player::Update()
 {
 
 	Field* field = GetParent()->FindGameObject<Field>();
+	Clear* clear = GetParent()->FindGameObject<Clear>();
+
+	if (clear->GetFlag())
+		return;
 
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
@@ -59,6 +65,7 @@ void Player::Update()
 	if (push >= 1) {
 		transform_.position_.y -= push - 1;
 		Gaccel = 0.0f;
+		onjump_ = false;
 	}
 
 	PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
@@ -73,6 +80,24 @@ void Player::Update()
 		return;
 
 	TestFunc();
+	if (CheckHitKey(KEY_INPUT_SPACE)&&!onjump_) {
+		onjump_ = true;
+		Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+	}
+
+	if(onjump_){
+		//transform_.position_.y -= 9.0;
+		//右側当たり判定
+		int Rhitx = transform_.position_.x + RHITBOX.x;
+		int Rhity = transform_.position_.y + RHITBOX.y-1;
+		push = field->CollisionRightCheck(Rhitx, Rhity);
+
+		//左側当たり判定
+		int Lhitx = transform_.position_.x + LHITBOX.x;
+		int Lhity = transform_.position_.y + LHITBOX.y-1;
+		push = max(field->CollisionRightCheck(Lhitx, Lhity),push);
+		transform_.position_.y += push-1;
+	}
 
 	//右移動
 	if (CheckHitKey(KEY_INPUT_D)) {
@@ -84,7 +109,7 @@ void Player::Update()
 		//右側当たり判定
 		int Rhitx = transform_.position_.x + RHITBOX.x;
 		int Rhity = transform_.position_.y + RHITBOX.y;
-		int push = field->CollisionRightCheck(Rhitx, Rhity);
+		push = field->CollisionRightCheck(Rhitx, Rhity);
 		transform_.position_.x -= push;
 		pdir_ = 1.0;
 	}
@@ -98,7 +123,7 @@ void Player::Update()
 		//左側当たり判定
 		int Lhitx = transform_.position_.x + LHITBOX.x;
 		int Lhity = transform_.position_.y + LHITBOX.y;
-		int push = field->CollisionRightCheck(Lhitx, Lhity);
+		push = field->CollisionRightCheck(Lhitx, Lhity);
 		transform_.position_.x += push;
 		pdir_ = -1.0f;
 	}
@@ -108,6 +133,13 @@ void Player::Update()
 		framecnt_ = 0;
 	}
 
+
+	//不安定　できるだけ早く治すこと
+	static VECTOR boxcen;
+	static VECTOR Ecen;
+	static int temp;
+	static VECTOR box;
+	static SIZE ebox;
 	if (attackon_) {
 		framecnt_++;
 		if (framecnt_ > 5) {
@@ -116,22 +148,42 @@ void Player::Update()
 			rigortimer_ = RIGORTIME;
 		}
 		if (framecnt_ > 1 && framecnt_ < 5) {	//攻撃判定
-			VECTOR b1{ transform_.position_.x + LUPOINT.y + HITBOXSIZE.cy / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 - 10.0f };	//中心座標より10.0上
-			VECTOR b2{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2 + (SWORDLENGTH*pdir_), transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 + 10.0f };	//中心座標より10.0下
-			SIZE boxsize{ fabs(b2.x - b1.x),fabs(b2.y - b1.y) };
-			VECTOR boxcen{ b1.x + boxsize.cx / 2,b1.y + boxsize.cy / 2 };
+			VECTOR b1{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,							transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 - 10.0f };	//中心座標より10.0上
+			VECTOR b2{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2 + (SWORDLENGTH * pdir_), transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 + 10.0f };	//中心座標より10.0下
+			SIZE boxsize = { abs(b2.x - b1.x), abs(b2.y - b1.y) };
+			box.x = boxsize.cx;
+			box.y = boxsize.cy;
+			boxcen={ b1.x + boxsize.cx / 2.0f,b1.y + boxsize.cy / 2.0f };
+
+
 
 			std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
 
 			for (auto& Ene : enemies) {
-				float Ex = Ene->GetPosition().x + Ene->GetImageSize().cx / 2;
-				float Ey = Ene->GetPosition().y + Ene->GetImageSize().cy / 2;
-				if (abs(Ex - boxcen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0 &&
-					abs(Ey - boxcen.y) < boxsize.cy / 2.0 + Ene->GetImageSize().cy / 2.0)
+				Ecen={ Ene->GetPosition().x + Ene->GetImageSize().cx / 2,Ene->GetPosition().y + Ene->GetImageSize().cy / 2 };
+				ebox = Ene->GetImageSize();
+				if (fabs(boxcen.x-Ecen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0 &&
+					fabs(Ecen.y - boxcen.y) < boxsize.cy / 2.0 + Ene->GetImageSize().cy / 2.0)
 					Ene->KillMe();
+				temp= abs(Ecen.x - boxcen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0;
 			}
 		}
 	}
+
+	//ImGui::Begin("pos");
+	//ImGui::InputFloat("x",&boxcen.x);
+	//ImGui::InputFloat("y",&boxcen.y);
+	//ImGui::InputFloat("ex", &Ecen.x);
+	//ImGui::InputFloat("ey", &Ecen.y);
+	//ImGui::InputFloat("ex", &box.x);
+	//ImGui::InputFloat("ey", &box.y);
+	//float size = box.x / 2.0 + ebox.cx / 2.0;
+	//ImGui::InputFloat("size",&size);
+	//float tempa = fabs(Ecen.x - boxcen.x);
+	//ImGui::InputFloat("kyori", &tempa);
+	//ImGui::InputInt("booly", &temp);
+	//ImGui::End();
+
 
 	if (rigoron_) {
 		rigortimer_ -= Time::DeltaTime();
@@ -183,7 +235,7 @@ void Player::Draw()
 	HitCheck(xpos + LUPOINT.x, ypos + LUPOINT.y, HITBOXSIZE);
 
 	if (attackon_) {
-		VECTOR b1{ xpos+ LUPOINT.y + HITBOXSIZE.cy / 2,ypos + LUPOINT.y + HITBOXSIZE.cy / 2 - 10.0f };	//中心座標より10.0上
+		VECTOR b1{ xpos+ LUPOINT.x + HITBOXSIZE.cx / 2,ypos + LUPOINT.y + HITBOXSIZE.cy / 2 - 10.0f };	//中心座標より10.0上
 		VECTOR b2{ xpos + LUPOINT.x + HITBOXSIZE.cx / 2 + (SWORDLENGTH * pdir_), ypos + LUPOINT.y + HITBOXSIZE.cy / 2 + 10.0f };	//中心座標より10.0下
 		DrawBox(b1.x, b1.y, b2.x, b2.y, GetColor(255, 255, 152), true);	//剣の当たり判定
 	}

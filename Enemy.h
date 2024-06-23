@@ -14,7 +14,7 @@ class Enemy:public Object
 	float movetimer_;
 	bool startmove_;
 
-
+	float Gaccel = 0;
 public:
 
 	//コンストラクタ

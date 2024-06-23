@@ -11,7 +11,7 @@ namespace {
 	const float STIME{ 1.0f };
 	const float CDTIME{ 5.0f };
 	const float DTIME{ 1.0f };
-	const float PTIME{ 60.0f };
+	const float PTIME{ 180.0f };
 }
 
 PlayScene::PlayScene(GameObject* parent)
@@ -23,7 +23,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	//Filename_ = "tutorial1.csv";
+	Filename_ = "TestStage1.csv";
 	Reset();
 }
 

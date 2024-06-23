@@ -15,6 +15,7 @@ class Player :public GameObject
 	bool attackon_;
 	float rigortimer_;
 	bool rigoron_;
+	bool onjump_;
 
 public:
 
