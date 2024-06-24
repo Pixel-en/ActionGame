@@ -23,7 +23,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "TestStage1.csv";
+	Filename_ = "alphamap.csv";
 	Reset();
 }
 

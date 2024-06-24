@@ -27,7 +27,7 @@ void Player::TestFunc()
 
 Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), hImage_(-1), framecnt_(0), attackon_(false), pdir_(1),rigoron_(false),
-	onjump_(false)
+	onjump_(false),flagon_(false)
 {
 }
 
@@ -48,7 +48,7 @@ void Player::Update()
 	Clear* clear = GetParent()->FindGameObject<Clear>();
 
 	if (clear->GetFlag())
-		return;
+		flagon_ = true;
 
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
@@ -75,120 +75,124 @@ void Player::Update()
 		pc->DeadState();
 	}
 
-
 	if (!pc->CanMove())
 		return;
 
 	TestFunc();
-	if (CheckHitKey(KEY_INPUT_SPACE)&&!onjump_) {
-		onjump_ = true;
-		Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
-	}
 
-	if(onjump_){
-		//transform_.position_.y -= 9.0;
-		//右側当たり判定
-		int Rhitx = transform_.position_.x + RHITBOX.x;
-		int Rhity = transform_.position_.y + RHITBOX.y-1;
-		push = field->CollisionRightCheck(Rhitx, Rhity);
+	if (!flagon_) {
 
-		//左側当たり判定
-		int Lhitx = transform_.position_.x + LHITBOX.x;
-		int Lhity = transform_.position_.y + LHITBOX.y-1;
-		push = max(field->CollisionRightCheck(Lhitx, Lhity),push);
-		transform_.position_.y += push-1;
-	}
-
-	//右移動
-	if (CheckHitKey(KEY_INPUT_D)) {
-		if (CheckHitKey(KEY_INPUT_LSHIFT))
-			transform_.position_.x += MOVESPEED * Time::DeltaTime() * 2.0;
-		else
-			transform_.position_.x += MOVESPEED * Time::DeltaTime();
-
-		//右側当たり判定
-		int Rhitx = transform_.position_.x + RHITBOX.x;
-		int Rhity = transform_.position_.y + RHITBOX.y;
-		push = field->CollisionRightCheck(Rhitx, Rhity);
-		transform_.position_.x -= push;
-		pdir_ = 1.0;
-	}
-	//左移動
-	if (CheckHitKey(KEY_INPUT_A)) {
-		if (CheckHitKey(KEY_INPUT_LSHIFT))
-			transform_.position_.x -= MOVESPEED * Time::DeltaTime() * 2.0;
-		else
-			transform_.position_.x -= MOVESPEED * Time::DeltaTime();
-
-		//左側当たり判定
-		int Lhitx = transform_.position_.x + LHITBOX.x;
-		int Lhity = transform_.position_.y + LHITBOX.y;
-		push = field->CollisionRightCheck(Lhitx, Lhity);
-		transform_.position_.x += push;
-		pdir_ = -1.0f;
-	}
-
-	if (CheckHitKey(KEY_INPUT_J)&&!attackon_&&!rigoron_) {
-		attackon_ = true;
-		framecnt_ = 0;
-	}
-
-
-	//不安定　できるだけ早く治すこと
-	static VECTOR boxcen;
-	static VECTOR Ecen;
-	static int temp;
-	static VECTOR box;
-	static SIZE ebox;
-	if (attackon_) {
-		framecnt_++;
-		if (framecnt_ > 5) {
-			attackon_ = false;
-			rigoron_ = true;
-			rigortimer_ = RIGORTIME;
+		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
+			onjump_ = true;
+			Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
 		}
-		if (framecnt_ > 1 && framecnt_ < 5) {	//攻撃判定
-			VECTOR b1{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,							transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 - 10.0f };	//中心座標より10.0上
-			VECTOR b2{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2 + (SWORDLENGTH * pdir_), transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 + 10.0f };	//中心座標より10.0下
-			SIZE boxsize = { abs(b2.x - b1.x), abs(b2.y - b1.y) };
-			box.x = boxsize.cx;
-			box.y = boxsize.cy;
-			boxcen={ b1.x + boxsize.cx / 2.0f,b1.y + boxsize.cy / 2.0f };
+
+		if (onjump_) {
+			//transform_.position_.y -= 9.0;
+			//右側当たり判定
+			int Rhitx = transform_.position_.x + RHITBOX.x;
+			int Rhity = transform_.position_.y + RHITBOX.y - 1;
+			push = field->CollisionRightCheck(Rhitx, Rhity);
+
+			//左側当たり判定
+			int Lhitx = transform_.position_.x + LHITBOX.x;
+			int Lhity = transform_.position_.y + LHITBOX.y - 1;
+			push = max(field->CollisionRightCheck(Lhitx, Lhity), push);
+			transform_.position_.y += push - 1;
+		}
+
+		//右移動
+		if (CheckHitKey(KEY_INPUT_D)) {
+			if (CheckHitKey(KEY_INPUT_LSHIFT))
+				transform_.position_.x += MOVESPEED * Time::DeltaTime() * 2.0;
+			else
+				transform_.position_.x += MOVESPEED * Time::DeltaTime();
+
+			//右側当たり判定
+			int Rhitx = transform_.position_.x + RHITBOX.x;
+			int Rhity = transform_.position_.y + RHITBOX.y;
+			push = field->CollisionRightCheck(Rhitx, Rhity);
+			transform_.position_.x -= push;
+			pdir_ = 1.0;
+		}
+		//左移動
+		if (CheckHitKey(KEY_INPUT_A)) {
+			if (CheckHitKey(KEY_INPUT_LSHIFT))
+				transform_.position_.x -= MOVESPEED * Time::DeltaTime() * 2.0;
+			else
+				transform_.position_.x -= MOVESPEED * Time::DeltaTime();
+
+			//左側当たり判定
+			int Lhitx = transform_.position_.x + LHITBOX.x;
+			int Lhity = transform_.position_.y + LHITBOX.y;
+			push = field->CollisionRightCheck(Lhitx, Lhity);
+			transform_.position_.x += push;
+			pdir_ = -1.0f;
+		}
+
+		if (CheckHitKey(KEY_INPUT_J) && !attackon_ && !rigoron_) {
+			attackon_ = true;
+			framecnt_ = 0;
+		}
+
+
+		//不安定　できるだけ早く治すこと
+		static VECTOR boxcen;
+		static VECTOR Ecen;
+		static int temp;
+		static VECTOR box;
+		static SIZE ebox;
+		if (attackon_) {
+			framecnt_++;
+			if (framecnt_ > 5) {
+				attackon_ = false;
+				rigoron_ = true;
+				rigortimer_ = RIGORTIME;
+			}
+			if (framecnt_ > 1 && framecnt_ < 5) {	//攻撃判定
+				VECTOR b1{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,							transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 - 10.0f };	//中心座標より10.0上
+				VECTOR b2{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2 + (SWORDLENGTH * pdir_), transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 + 10.0f };	//中心座標より10.0下
+				SIZE boxsize = { abs(b2.x - b1.x), abs(b2.y - b1.y) };
+				box.x = boxsize.cx;
+				box.y = boxsize.cy;
+				boxcen = { b1.x + boxsize.cx / 2.0f,b1.y + boxsize.cy / 2.0f };
 
 
 
-			std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
+				std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
 
-			for (auto& Ene : enemies) {
-				Ecen={ Ene->GetPosition().x + Ene->GetImageSize().cx / 2,Ene->GetPosition().y + Ene->GetImageSize().cy / 2 };
-				ebox = Ene->GetImageSize();
-				if (fabs(boxcen.x-Ecen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0 &&
-					fabs(Ecen.y - boxcen.y) < boxsize.cy / 2.0 + Ene->GetImageSize().cy / 2.0)
-					Ene->KillMe();
-				temp= abs(Ecen.x - boxcen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0;
+				for (auto& Ene : enemies) {
+					Ecen = { Ene->GetPosition().x + Ene->GetImageSize().cx / 2,Ene->GetPosition().y + Ene->GetImageSize().cy / 2 };
+					ebox = Ene->GetImageSize();
+					if (fabs(boxcen.x - Ecen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0 &&
+						fabs(Ecen.y - boxcen.y) < boxsize.cy / 2.0 + Ene->GetImageSize().cy / 2.0)
+						Ene->KillMe();
+					temp = abs(Ecen.x - boxcen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0;
+				}
 			}
 		}
-	}
 
-	//ImGui::Begin("pos");
-	//ImGui::InputFloat("x",&boxcen.x);
-	//ImGui::InputFloat("y",&boxcen.y);
-	//ImGui::InputFloat("ex", &Ecen.x);
-	//ImGui::InputFloat("ey", &Ecen.y);
-	//ImGui::InputFloat("ex", &box.x);
-	//ImGui::InputFloat("ey", &box.y);
-	//float size = box.x / 2.0 + ebox.cx / 2.0;
-	//ImGui::InputFloat("size",&size);
-	//float tempa = fabs(Ecen.x - boxcen.x);
-	//ImGui::InputFloat("kyori", &tempa);
-	//ImGui::InputInt("booly", &temp);
-	//ImGui::End();
+		//ImGui::Begin("pos");
+		//ImGui::InputFloat("x",&boxcen.x);
+		//ImGui::InputFloat("y",&boxcen.y);
+		//ImGui::InputFloat("ex", &Ecen.x);
+		//ImGui::InputFloat("ey", &Ecen.y);
+		//ImGui::InputFloat("ex", &box.x);
+		//ImGui::InputFloat("ey", &box.y);
+		//float size = box.x / 2.0 + ebox.cx / 2.0;
+		//ImGui::InputFloat("size",&size);
+		//float tempa = fabs(Ecen.x - boxcen.x);
+		//ImGui::InputFloat("kyori", &tempa);
+		//ImGui::InputInt("booly", &temp);
+		//ImGui::End();
 
 
-	if (rigoron_) {
-		rigortimer_ -= Time::DeltaTime();
-		if (rigortimer_ < 0)
-			rigoron_ = false;
+		if (rigoron_) {
+			rigortimer_ -= Time::DeltaTime();
+			if (rigortimer_ < 0)
+				rigoron_ = false;
+		}
+
 	}
 
 	//右固定カメラ

@@ -17,6 +17,8 @@ class Player :public GameObject
 	bool rigoron_;
 	bool onjump_;
 
+	bool flagon_;
+
 public:
 
 	//コンストラクタ
