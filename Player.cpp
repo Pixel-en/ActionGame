@@ -10,11 +10,11 @@
 namespace {
 	const float MOVESPEED{ 200 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
-	const int IMAGESIZE{ 45 };				//画像サイズ	幅44*高さ44
-	const VECTOR LUPOINT{ 15.0f,4.0f };
-	const VECTOR LHITBOX{ 15.0f,44.0f };		//左下の座標
-	const VECTOR RHITBOX{ 35.0f,44.0f };	//右下の座標
-	const SIZE HITBOXSIZE{ 20,40 };			//当たり判定のボックスのサイズ
+	const int IMAGESIZE{ 48 };				//画像サイズ	幅44*高さ44
+	const VECTOR LUPOINT{ 1.0f,14.0f };
+	const VECTOR LHITBOX{ 1.0f,46.0f };		//左下の座標
+	const VECTOR RHITBOX{ 27.0f,46.0f };	//右下の座標
+	const SIZE HITBOXSIZE{ 26,32 };			//当たり判定のボックスのサイズ
 	const int SWORDLENGTH{ 100 };
 	const float RIGORTIME{ 2.0f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
@@ -27,7 +27,7 @@ void Player::TestFunc()
 
 Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), hImage_(-1), framecnt_(0), attackon_(false), pdir_(1),rigoron_(false),
-	onjump_(false),flagon_(false)
+	onjump_(false),flagon_(false),animtype_(0)
 {
 }
 
@@ -37,7 +37,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\sprite\\sprite\\sprite\\1.idol\\resized_dot_img(2).png");
+	hImage_ = LoadGraph("Assets\\Image\\Player.png");
 	assert(hImage_ > 0);
 }
 
@@ -48,7 +48,7 @@ void Player::Update()
 	Clear* clear = GetParent()->FindGameObject<Clear>();
 
 	if (clear->GetFlag())
-		flagon_ = true;
+		flagon_ = false;
 
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
@@ -66,6 +66,7 @@ void Player::Update()
 		transform_.position_.y -= push - 1;
 		Gaccel = 0.0f;
 		onjump_ = false;
+		animtype_ = 0;
 	}
 
 	PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
@@ -88,6 +89,7 @@ void Player::Update()
 		}
 
 		if (onjump_) {
+			animtype_ = 3;
 			//transform_.position_.y -= 9.0;
 			//右側当たり判定
 			int Rhitx = transform_.position_.x + RHITBOX.x;
@@ -103,11 +105,14 @@ void Player::Update()
 
 		//右移動
 		if (CheckHitKey(KEY_INPUT_D)) {
-			if (CheckHitKey(KEY_INPUT_LSHIFT))
-				transform_.position_.x += MOVESPEED * Time::DeltaTime() * 2.0;
-			else
+			if (CheckHitKey(KEY_INPUT_LSHIFT)) {
+				transform_.position_.x += MOVESPEED * Time::DeltaTime() * 2;
+				animtype_ = 2;
+			}
+			else {
 				transform_.position_.x += MOVESPEED * Time::DeltaTime();
-
+				animtype_ = 1;
+			}
 			//右側当たり判定
 			int Rhitx = transform_.position_.x + RHITBOX.x;
 			int Rhity = transform_.position_.y + RHITBOX.y;
@@ -117,11 +122,14 @@ void Player::Update()
 		}
 		//左移動
 		if (CheckHitKey(KEY_INPUT_A)) {
-			if (CheckHitKey(KEY_INPUT_LSHIFT))
+			if (CheckHitKey(KEY_INPUT_LSHIFT)) {
 				transform_.position_.x -= MOVESPEED * Time::DeltaTime() * 2.0;
-			else
+				animtype_ = 3;
+			}
+			else{
 				transform_.position_.x -= MOVESPEED * Time::DeltaTime();
-
+				animtype_ = 2;
+			}
 			//左側当たり判定
 			int Lhitx = transform_.position_.x + LHITBOX.x;
 			int Lhity = transform_.position_.y + LHITBOX.y;
@@ -143,6 +151,7 @@ void Player::Update()
 		static VECTOR box;
 		static SIZE ebox;
 		if (attackon_) {
+			animtype_ = 4;
 			framecnt_++;
 			if (framecnt_ > 5) {
 				attackon_ = false;
@@ -172,20 +181,21 @@ void Player::Update()
 			}
 		}
 
-		//ImGui::Begin("pos");
-		//ImGui::InputFloat("x",&boxcen.x);
-		//ImGui::InputFloat("y",&boxcen.y);
-		//ImGui::InputFloat("ex", &Ecen.x);
-		//ImGui::InputFloat("ey", &Ecen.y);
-		//ImGui::InputFloat("ex", &box.x);
-		//ImGui::InputFloat("ey", &box.y);
-		//float size = box.x / 2.0 + ebox.cx / 2.0;
-		//ImGui::InputFloat("size",&size);
-		//float tempa = fabs(Ecen.x - boxcen.x);
-		//ImGui::InputFloat("kyori", &tempa);
-		//ImGui::InputInt("booly", &temp);
-		//ImGui::End();
+		ImGui::Begin("pos");
+		ImGui::InputFloat("x",&boxcen.x);
+		ImGui::InputFloat("y",&boxcen.y);
+		ImGui::InputFloat("ex", &Ecen.x);
+		ImGui::InputFloat("ey", &Ecen.y);
+		ImGui::InputFloat("ex", &box.x);
+		ImGui::InputFloat("ey", &box.y);
+		float size = box.x / 2.0 + ebox.cx / 2.0;
+		ImGui::InputFloat("size",&size);
+		float tempa = fabs(Ecen.x - boxcen.x);
+		ImGui::InputFloat("kyori", &tempa);
+		ImGui::InputInt("booly", &temp);
+		ImGui::End();
 
+		DrawCircle(ebox.cx, ebox.cy, 64, GetColor(255, 255, 0), true);
 
 		if (rigoron_) {
 			rigortimer_ -= Time::DeltaTime();
@@ -225,7 +235,9 @@ void Player::Draw()
 	if (cam != nullptr)
 		xpos -= cam->GetValue();
 
-	DrawRectGraph(xpos, ypos, 0, 0, IMAGESIZE, IMAGESIZE, hImage_, true);
+	//メイン出力
+	DrawRectGraph(xpos, ypos, 0, animtype_*IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true);
+	//画像サイズ
 	DrawBox(xpos, ypos, xpos + IMAGESIZE, ypos + IMAGESIZE, GetColor(255, 0, 255), false);
 
 	//当たり判定確認用
@@ -254,8 +266,8 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 	int x = _x + _size.cx / 2;
 	int y = _y + _size.cy / 2;
 
-	int px = transform_.position_.x + IMAGESIZE / 2;
-	int py = transform_.position_.y + IMAGESIZE / 2;
+	int px = transform_.position_.x + HITBOXSIZE.cx / 2;
+	int py = transform_.position_.y + HITBOXSIZE.cy / 2;
 
 	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心
 

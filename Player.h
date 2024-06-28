@@ -19,6 +19,8 @@ class Player :public GameObject
 
 	bool flagon_;
 
+	int animtype_;
+
 public:
 
 	//コンストラクタ
