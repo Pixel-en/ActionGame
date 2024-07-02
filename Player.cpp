@@ -8,7 +8,7 @@
 #include "Clear.h"
 
 namespace {
-	const float MOVESPEED{ 200 };			//動くスピード
+	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
 	const int IMAGESIZE{ 48 };				//画像サイズ	幅44*高さ44
 	const VECTOR LUPOINT{ 1.0f,14.0f };
@@ -26,8 +26,8 @@ void Player::TestFunc()
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(-1), framecnt_(0), attackon_(false), pdir_(1),rigoron_(false),
-	onjump_(false),flagon_(false),animtype_(0)
+	:GameObject(parent, "Player"), hImage_(-1), attackon_(false), pdir_(1), framecnt_(0), animframe_(0),
+	onjump_(false), flagon_(false), animtype_(IDOL),FCmax_(0),AFmax_(0),BEanimtype_(NONE)
 {
 }
 
@@ -43,6 +43,11 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	//------アイドル状態のアニメーション-----
+	animtype_ = Animation::IDOL;
+	FCmax_ = 20;
+	AFmax_ = 4;
+
 
 	Field* field = GetParent()->FindGameObject<Field>();
 	Clear* clear = GetParent()->FindGameObject<Clear>();
@@ -66,11 +71,11 @@ void Player::Update()
 		transform_.position_.y -= push - 1;
 		Gaccel = 0.0f;
 		onjump_ = false;
-		animtype_ = 0;
+		animtype_ = Animation::IDOL;
 	}
 
 	PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
-	
+
 	if (transform_.position_.y > 1000.0f) {
 		transform_.position_.y = 1000.0f;
 		pc->DeadState();
@@ -81,15 +86,61 @@ void Player::Update()
 
 	TestFunc();
 
-	if (!flagon_) {
+	if (!flagon_&&!attackon_) {
 
+		//右移動
+		if (CheckHitKey(KEY_INPUT_D)) {
+			AFmax_ = 6;
+			if (CheckHitKey(KEY_INPUT_LSHIFT)) {
+				transform_.position_.x += MOVESPEED * Time::DeltaTime() * 2;
+				animtype_ = Animation::RUN;
+				FCmax_ = 11;
+			}
+			else {
+				transform_.position_.x += MOVESPEED * Time::DeltaTime();
+				animtype_ = Animation::WALK;
+				FCmax_ = 17;
+			}
+			//右側当たり判定
+			int Rhitx = transform_.position_.x + RHITBOX.x;
+			int Rhity = transform_.position_.y + RHITBOX.y;
+			push = field->CollisionRightCheck(Rhitx, Rhity);
+			transform_.position_.x -= push;
+			pdir_ = 1.0;
+
+		}
+		//左移動
+		if (CheckHitKey(KEY_INPUT_A)) {
+			
+			AFmax_ = 6;
+
+			if (CheckHitKey(KEY_INPUT_LSHIFT)) {
+				transform_.position_.x -= MOVESPEED * Time::DeltaTime() * 2.0;
+				animtype_ = RUN;
+				FCmax_ = 11;
+			}
+			else {
+				transform_.position_.x -= MOVESPEED * Time::DeltaTime();
+				animtype_ = WALK;
+				FCmax_ = 17;
+			}
+
+			//左側当たり判定
+			int Lhitx = transform_.position_.x + LHITBOX.x;
+			int Lhity = transform_.position_.y + LHITBOX.y;
+			push = field->CollisionRightCheck(Lhitx, Lhity);
+			transform_.position_.x += push;
+			pdir_ = -1.0f;
+			
+		}
+		//ジャンプ(消すかもわからん)
 		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
 			onjump_ = true;
 			Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
 		}
 
 		if (onjump_) {
-			animtype_ = 3;
+			animtype_ = Animation::JUMP;
 			//transform_.position_.y -= 9.0;
 			//右側当たり判定
 			int Rhitx = transform_.position_.x + RHITBOX.x;
@@ -103,41 +154,7 @@ void Player::Update()
 			transform_.position_.y += push - 1;
 		}
 
-		//右移動
-		if (CheckHitKey(KEY_INPUT_D)) {
-			if (CheckHitKey(KEY_INPUT_LSHIFT)) {
-				transform_.position_.x += MOVESPEED * Time::DeltaTime() * 2;
-				animtype_ = 2;
-			}
-			else {
-				transform_.position_.x += MOVESPEED * Time::DeltaTime();
-				animtype_ = 1;
-			}
-			//右側当たり判定
-			int Rhitx = transform_.position_.x + RHITBOX.x;
-			int Rhity = transform_.position_.y + RHITBOX.y;
-			push = field->CollisionRightCheck(Rhitx, Rhity);
-			transform_.position_.x -= push;
-			pdir_ = 1.0;
-		}
-		//左移動
-		if (CheckHitKey(KEY_INPUT_A)) {
-			if (CheckHitKey(KEY_INPUT_LSHIFT)) {
-				transform_.position_.x -= MOVESPEED * Time::DeltaTime() * 2.0;
-				animtype_ = 3;
-			}
-			else{
-				transform_.position_.x -= MOVESPEED * Time::DeltaTime();
-				animtype_ = 2;
-			}
-			//左側当たり判定
-			int Lhitx = transform_.position_.x + LHITBOX.x;
-			int Lhity = transform_.position_.y + LHITBOX.y;
-			push = field->CollisionRightCheck(Lhitx, Lhity);
-			transform_.position_.x += push;
-			pdir_ = -1.0f;
-		}
-
+#if 0
 		if (CheckHitKey(KEY_INPUT_J) && !attackon_ && !rigoron_) {
 			attackon_ = true;
 			framecnt_ = 0;
@@ -182,14 +199,14 @@ void Player::Update()
 		}
 
 		ImGui::Begin("pos");
-		ImGui::InputFloat("x",&boxcen.x);
-		ImGui::InputFloat("y",&boxcen.y);
+		ImGui::InputFloat("x", &boxcen.x);
+		ImGui::InputFloat("y", &boxcen.y);
 		ImGui::InputFloat("ex", &Ecen.x);
 		ImGui::InputFloat("ey", &Ecen.y);
 		ImGui::InputFloat("ex", &box.x);
 		ImGui::InputFloat("ey", &box.y);
 		float size = box.x / 2.0 + ebox.cx / 2.0;
-		ImGui::InputFloat("size",&size);
+		ImGui::InputFloat("size", &size);
 		float tempa = fabs(Ecen.x - boxcen.x);
 		ImGui::InputFloat("kyori", &tempa);
 		ImGui::InputInt("booly", &temp);
@@ -202,7 +219,43 @@ void Player::Update()
 			if (rigortimer_ < 0)
 				rigoron_ = false;
 		}
+	}
+#endif
 
+		if (CheckHitKey(KEY_INPUT_J) && !attackon_) {
+			attackon_ = true;
+		}
+	}
+
+	//攻撃中
+	if (attackon_) {
+		animtype_ = Animation::ATTACK;
+		FCmax_ = 8;
+		AFmax_ = 6;
+
+		if (animframe_ >= 5) {
+			attackon_ = false;
+		}
+		//３フレームから５フレームまで攻撃判定
+
+
+
+	}
+
+	//アニメーションの動作
+	if (true) {
+		//前フレームと違うアニメーションならカウントをゼロにする
+		if (BEanimtype_ != animtype_) {
+			framecnt_ = 0;
+			animframe_ = 0;
+		}
+
+		framecnt_++;
+		if (framecnt_ > FCmax_) {
+			framecnt_ = 0;
+			animframe_ = (animframe_ + 1) % AFmax_;
+		}
+		BEanimtype_ = animtype_;
 	}
 
 	//右固定カメラ
@@ -236,12 +289,24 @@ void Player::Draw()
 		xpos -= cam->GetValue();
 
 	//メイン出力
-	DrawRectGraph(xpos, ypos, 0, animtype_*IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true);
+	if (pdir_ > 0)
+		DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);
+	else
+		DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);
+
+#if 1
+
 	//画像サイズ
 	DrawBox(xpos, ypos, xpos + IMAGESIZE, ypos + IMAGESIZE, GetColor(255, 0, 255), false);
 
 	//当たり判定確認用
-	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);
+	if (pdir_ > 0)
+		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);
+	else {
+		xpos += IMAGESIZE / 2;
+		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);
+		xpos -= IMAGESIZE / 2;
+	}
 
 	DrawCircle(xpos, ypos, 3, GetColor(255, 0, 255), true);
 	DrawCircle(xpos + RHITBOX.x, ypos + RHITBOX.y, 3, GetColor(255, 0, 0), true);	//右
@@ -250,11 +315,8 @@ void Player::Draw()
 	DrawCircle(xpos + LHITBOX.x, ypos + LHITBOX.y + 1, 3, GetColor(0, 0, 255), true); //左下	
 	HitCheck(xpos + LUPOINT.x, ypos + LUPOINT.y, HITBOXSIZE);
 
-	if (attackon_) {
-		VECTOR b1{ xpos+ LUPOINT.x + HITBOXSIZE.cx / 2,ypos + LUPOINT.y + HITBOXSIZE.cy / 2 - 10.0f };	//中心座標より10.0上
-		VECTOR b2{ xpos + LUPOINT.x + HITBOXSIZE.cx / 2 + (SWORDLENGTH * pdir_), ypos + LUPOINT.y + HITBOXSIZE.cy / 2 + 10.0f };	//中心座標より10.0下
-		DrawBox(b1.x, b1.y, b2.x, b2.y, GetColor(255, 255, 152), true);	//剣の当たり判定
-	}
+
+#endif
 }
 
 void Player::Release()
@@ -266,8 +328,12 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 	int x = _x + _size.cx / 2;
 	int y = _y + _size.cy / 2;
 
-	int px = transform_.position_.x + HITBOXSIZE.cx / 2;
-	int py = transform_.position_.y + HITBOXSIZE.cy / 2;
+
+	int px = transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2;
+	int py = transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2;
+
+	if (pdir_ < 0)
+		px += IMAGESIZE / 2;
 
 	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心
 

@@ -7,19 +7,35 @@ class Player :public GameObject
 
 	int hImage_;
 
-	float pdir_;
+	float pdir_;	//プレイヤーの向き
 
 	void TestFunc();
 
-	int framecnt_;
-	bool attackon_;
-	float rigortimer_;
-	bool rigoron_;
-	bool onjump_;
+	bool attackon_;	//攻撃中かどうか
+	int framecnt_;	//フレームのカウント
+	int FCmax_;	//フレームカウントの最大値
+	int animframe_;	//アニメーションのフレームカウント
+	int AFmax_;		//アニメーションのフレーム数
+	bool onjump_;	//ジャンプしているか
 
 	bool flagon_;
 
-	int animtype_;
+	enum Animation {
+		NONE = -1,
+		IDOL = 0,
+		WALK,
+		RUN,
+		JUMP,
+		ATTACK,
+		CLIMB,
+		CRAFT,
+		PUSH,
+		DAMAGE,
+		DEATH,
+	};
+
+	Animation animtype_;	//アニメーションの種類
+	Animation BEanimtype_;
 
 public:
 
