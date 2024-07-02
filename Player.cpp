@@ -15,9 +15,9 @@ namespace {
 	const VECTOR LHITBOX{ 1.0f,46.0f };		//左下の座標
 	const VECTOR RHITBOX{ 27.0f,46.0f };	//右下の座標
 	const SIZE HITBOXSIZE{ 26,32 };			//当たり判定のボックスのサイズ
-	const int SWORDLENGTH{ 100 };
-	const float RIGORTIME{ 2.0f };		//攻撃後の硬直
+	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
+	const VECTOR ALHITBOX{ 27.0f,14.0f };
 }
 
 void Player::TestFunc()
@@ -25,8 +25,34 @@ void Player::TestFunc()
 
 }
 
+bool Player::HitAttack(int _x, int _y, SIZE _size)
+{
+	int x = _x + _size.cx / 2;
+	int y = _y + _size.cy / 2;
+	
+	SIZE BOXSIZE = { 30,20 };
+	if(pdir_<0)
+	BOXSIZE = { -40,20 };
+	int px = transform_.position_.x + ALHITBOX.x + BOXSIZE.cx / 2;
+	int py = transform_.position_.y + ALHITBOX.y + BOXSIZE.cy / 2;
+
+	//if (pdir_ < 0)
+	//	px += IMAGESIZE / 2;
+#if 1
+	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心
+	DrawBox(_x, _y, _x + _size.cx, _y + _size.cy, GetColor(111, 111, 255), false);
+	DrawBox(px - BOXSIZE.cx / 2, py - BOXSIZE.cy / 2, px + BOXSIZE.cx / 2, py + BOXSIZE.cy / 2, GetColor(255, 111, 111), false);
+#endif
+
+	if (abs(x - px) < _size.cx / 2 + abs(BOXSIZE.cx) / 2 &&
+		abs(y - py) < _size.cy / 2 + BOXSIZE.cy / 2)
+		return true;
+
+	return false;
+}
+
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(-1), attackon_(false), pdir_(1), framecnt_(0), animframe_(0),
+	:GameObject(parent, "Player"), hImage_(-1), attackon_(false), pdir_(1), framecnt_(0), animframe_(0),attackbuffer_(false),bufferTime_(BUFFER),
 	onjump_(false), flagon_(false), animtype_(IDOL),FCmax_(0),AFmax_(0),BEanimtype_(NONE)
 {
 }
@@ -154,92 +180,38 @@ void Player::Update()
 			transform_.position_.y += push - 1;
 		}
 
-#if 0
-		if (CheckHitKey(KEY_INPUT_J) && !attackon_ && !rigoron_) {
-			attackon_ = true;
-			framecnt_ = 0;
-		}
-
-
-		//不安定　できるだけ早く治すこと
-		static VECTOR boxcen;
-		static VECTOR Ecen;
-		static int temp;
-		static VECTOR box;
-		static SIZE ebox;
-		if (attackon_) {
-			animtype_ = 4;
-			framecnt_++;
-			if (framecnt_ > 5) {
-				attackon_ = false;
-				rigoron_ = true;
-				rigortimer_ = RIGORTIME;
-			}
-			if (framecnt_ > 1 && framecnt_ < 5) {	//攻撃判定
-				VECTOR b1{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,							transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 - 10.0f };	//中心座標より10.0上
-				VECTOR b2{ transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2 + (SWORDLENGTH * pdir_), transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 + 10.0f };	//中心座標より10.0下
-				SIZE boxsize = { abs(b2.x - b1.x), abs(b2.y - b1.y) };
-				box.x = boxsize.cx;
-				box.y = boxsize.cy;
-				boxcen = { b1.x + boxsize.cx / 2.0f,b1.y + boxsize.cy / 2.0f };
-
-
-
-				std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
-
-				for (auto& Ene : enemies) {
-					Ecen = { Ene->GetPosition().x + Ene->GetImageSize().cx / 2,Ene->GetPosition().y + Ene->GetImageSize().cy / 2 };
-					ebox = Ene->GetImageSize();
-					if (fabs(boxcen.x - Ecen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0 &&
-						fabs(Ecen.y - boxcen.y) < boxsize.cy / 2.0 + Ene->GetImageSize().cy / 2.0)
-						Ene->KillMe();
-					temp = abs(Ecen.x - boxcen.x) < boxsize.cx / 2.0 + Ene->GetImageSize().cx / 2.0;
-				}
-			}
-		}
-
-		ImGui::Begin("pos");
-		ImGui::InputFloat("x", &boxcen.x);
-		ImGui::InputFloat("y", &boxcen.y);
-		ImGui::InputFloat("ex", &Ecen.x);
-		ImGui::InputFloat("ey", &Ecen.y);
-		ImGui::InputFloat("ex", &box.x);
-		ImGui::InputFloat("ey", &box.y);
-		float size = box.x / 2.0 + ebox.cx / 2.0;
-		ImGui::InputFloat("size", &size);
-		float tempa = fabs(Ecen.x - boxcen.x);
-		ImGui::InputFloat("kyori", &tempa);
-		ImGui::InputInt("booly", &temp);
-		ImGui::End();
-
-		DrawCircle(ebox.cx, ebox.cy, 64, GetColor(255, 255, 0), true);
-
-		if (rigoron_) {
-			rigortimer_ -= Time::DeltaTime();
-			if (rigortimer_ < 0)
-				rigoron_ = false;
-		}
-	}
-#endif
-
 		if (CheckHitKey(KEY_INPUT_J) && !attackon_) {
 			attackon_ = true;
 		}
 	}
 
 	//攻撃中
-	if (attackon_) {
+	if (attackon_&&!attackbuffer_) {
 		animtype_ = Animation::ATTACK;
 		FCmax_ = 8;
 		AFmax_ = 6;
 
-		if (animframe_ >= 5) {
-			attackon_ = false;
-		}
 		//３フレームから５フレームまで攻撃判定
+		std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
+		if (animframe_ >= 2 && animframe_ <= 4) {
+			for (auto& E : enemies) {
+				if (HitAttack(E->GetPosition().x, E->GetPosition().y, E->GetImageSize()))
+					E->KillMe();
+			}
+		}
 
+		if (animframe_ >= 5) {
+			attackbuffer_ = true;
+		}
+	}
 
-
+	if (attackbuffer_) {
+		bufferTime_ -= Time::DeltaTime();
+		if (bufferTime_ < 0) {
+			attackon_ = false;
+			attackbuffer_ = false;
+			bufferTime_ = BUFFER;
+		}
 	}
 
 	//アニメーションの動作
@@ -315,7 +287,11 @@ void Player::Draw()
 	DrawCircle(xpos + LHITBOX.x, ypos + LHITBOX.y + 1, 3, GetColor(0, 0, 255), true); //左下	
 	HitCheck(xpos + LUPOINT.x, ypos + LUPOINT.y, HITBOXSIZE);
 
+	DrawCircle(xpos + RHITBOX.x, ypos + LUPOINT.y, 1, GetColor(145, 214, 75), false);
 
+	DrawCircle(xpos + IMAGESIZE / 2+20, ypos + IMAGESIZE / 2, 1, GetColor(148, 241, 111), false);
+	DrawCircle(xpos + IMAGESIZE / 2+20, ypos + IMAGESIZE / 2, 10, GetColor(148, 241, 111), false);
+	HitAttack(xpos, ypos, HITBOXSIZE);
 #endif
 }
 

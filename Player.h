@@ -8,14 +8,7 @@ class Player :public GameObject
 	int hImage_;
 
 	float pdir_;	//プレイヤーの向き
-
 	void TestFunc();
-
-	bool attackon_;	//攻撃中かどうか
-	int framecnt_;	//フレームのカウント
-	int FCmax_;	//フレームカウントの最大値
-	int animframe_;	//アニメーションのフレームカウント
-	int AFmax_;		//アニメーションのフレーム数
 	bool onjump_;	//ジャンプしているか
 
 	bool flagon_;
@@ -36,6 +29,18 @@ class Player :public GameObject
 
 	Animation animtype_;	//アニメーションの種類
 	Animation BEanimtype_;
+
+
+	bool attackon_;	//攻撃中かどうか
+	int framecnt_;	//フレームのカウント
+	int FCmax_;	//フレームカウントの最大値
+	int animframe_;	//アニメーションのフレームカウント
+	int AFmax_;		//アニメーションのフレーム数
+	bool attackbuffer_;	//攻撃後の待機中かどうか
+	float bufferTime_;	//待機時間
+
+
+	bool HitAttack(int _x, int _y, SIZE _size);
 
 public:
 
