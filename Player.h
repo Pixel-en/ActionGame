@@ -7,6 +7,8 @@ class Player :public GameObject
 
 	int hImage_;
 
+	float Gaccel_;	//重力加速
+
 	float pdir_;	//プレイヤーの向き
 	void TestFunc();
 	bool onjump_;	//ジャンプしているか
@@ -38,7 +40,6 @@ class Player :public GameObject
 	int AFmax_;		//アニメーションのフレーム数
 	bool attackbuffer_;	//攻撃後の待機中かどうか
 	float bufferTime_;	//待機時間
-
 
 	bool HitAttack(int _x, int _y, SIZE _size);
 

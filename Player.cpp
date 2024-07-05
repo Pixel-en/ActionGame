@@ -53,7 +53,7 @@ bool Player::HitAttack(int _x, int _y, SIZE _size)
 
 Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), hImage_(-1), attackon_(false), pdir_(1), framecnt_(0), animframe_(0),attackbuffer_(false),bufferTime_(BUFFER),
-	onjump_(false), flagon_(false), animtype_(IDOL),FCmax_(0),AFmax_(0),BEanimtype_(NONE)
+	onjump_(false), flagon_(false), animtype_(IDOL),FCmax_(0),AFmax_(0),BEanimtype_(NONE),Gaccel_(0.0f)
 {
 }
 
@@ -85,9 +85,8 @@ void Player::Update()
 		transform_.position_.y = 0;
 
 	//d—Í‰Á‘¬
-	static float Gaccel = 0;
-	Gaccel += GRAVITY;
-	transform_.position_.y += Gaccel;
+	Gaccel_ += GRAVITY;
+	transform_.position_.y += Gaccel_;
 
 	//‰º‘¤“–‚½‚è”»’è
 	int DLhit = field->CollisionDownCheck(transform_.position_.x + LHITBOX.x, transform_.position_.y + LHITBOX.y + 1);
@@ -95,7 +94,7 @@ void Player::Update()
 	int push = max(DLhit, DRhit);
 	if (push >= 1) {
 		transform_.position_.y -= push - 1;
-		Gaccel = 0.0f;
+		Gaccel_ = 0.0f;
 		onjump_ = false;
 		animtype_ = Animation::IDOL;
 	}
@@ -162,7 +161,7 @@ void Player::Update()
 		//ƒWƒƒƒ“ƒv(Á‚·‚©‚à‚í‚©‚ç‚ñ)
 		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
 			onjump_ = true;
-			Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
 		}
 
 		if (onjump_) {
@@ -180,13 +179,13 @@ void Player::Update()
 			transform_.position_.y += push - 1;
 		}
 
-		if (CheckHitKey(KEY_INPUT_J) && !attackon_) {
+		if (CheckHitKey(KEY_INPUT_J) && !attackbuffer_&&!attackon_) {
 			attackon_ = true;
 		}
 	}
 
 	//UŒ‚’†
-	if (attackon_&&!attackbuffer_) {
+	if (attackon_) {
 		animtype_ = Animation::ATTACK;
 		FCmax_ = 8;
 		AFmax_ = 6;
@@ -202,13 +201,13 @@ void Player::Update()
 
 		if (animframe_ >= 5) {
 			attackbuffer_ = true;
+			attackon_ = false;
 		}
 	}
 
 	if (attackbuffer_) {
 		bufferTime_ -= Time::DeltaTime();
 		if (bufferTime_ < 0) {
-			attackon_ = false;
 			attackbuffer_ = false;
 			bufferTime_ = BUFFER;
 		}

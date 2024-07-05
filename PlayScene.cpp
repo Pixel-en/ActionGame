@@ -3,6 +3,7 @@
 #include "Field.h"
 #include "Camera.h"
 #include "Clear.h"
+#include "BackGround.h"
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
@@ -23,7 +24,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "alphamap.csv";
+	Filename_ = "TestMap1.csv";
 	Reset();
 }
 
@@ -32,14 +33,16 @@ void PlayScene::Reset()
 	KillAllChildren();
 
 	Clear* c = Instantiate<Clear>(this);
-
 	Instantiate<Camera>(this);
-	Instantiate<Player>(this);
+
+	Instantiate<BackGround>(this);
 
 	Field* f = Instantiate<Field>(this);
 	f->SetFileName(Filename_);
 	Camera* cam = FindGameObject<Camera>();
 	cam->SetValue(0);
+
+	Instantiate<Player>(this);
 
 	f->Reset();
 	starttimer_ = STIME;
