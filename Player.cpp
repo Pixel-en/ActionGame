@@ -159,8 +159,8 @@ void Player::Update()
 			}
 
 			//左側当たり判定
-			int Lhitx = transform_.position_.x + LHITBOX.x;
-			int Lhity = transform_.position_.y + LHITBOX.y;
+			int Lhitx = transform_.position_.x + LHITBOX.x + pFieldBuffer.x;
+			int Lhity = transform_.position_.y + LHITBOX.y + pFieldBuffer.y;
 			push = field->CollisionLeftCheck(Lhitx, Lhity);
 			transform_.position_.x += push;
 			pRdir_ = false;
@@ -225,6 +225,7 @@ void Player::Update()
 			bufferTime_ = BUFFER;
 		}
 	}
+
 
 	//アニメーションの動作
 	if (true) {

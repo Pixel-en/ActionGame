@@ -121,7 +121,7 @@ void Enemy::Draw()
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr)
 		xpos -= cam->GetValue();
-	//DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, LOOKRANGE, GetColor(255, 0, 0), false);
+	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, LOOKRANGE, GetColor(255, 0, 0), false);
 	DrawRectGraph(xpos, ypos, 0, 0, 64, 64, hImage_, true);
 	//DrawBox(transform_.position_.x, transform_.position_.y, transform_.position_.x + IMAGESIZE.cx, transform_.position_.y + IMAGESIZE.cy, GetColor(255, 255, 255), false);
 	//DrawCircle(transform_.position_.x+IMAGESIZE.cx/2,transform_.position_.y+IMAGESIZE.cy/2,3,GetColor(0,255,0),true);
