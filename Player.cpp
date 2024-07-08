@@ -159,8 +159,8 @@ void Player::Update()
 			}
 
 			//¶‘¤“–‚½‚è”»’è
-			int Lhitx = transform_.position_.x + LHITBOX.x;
-			int Lhity = transform_.position_.y + LHITBOX.y;
+			int Lhitx = transform_.position_.x + LHITBOX.x + pFieldBuffer.x;
+			int Lhity = transform_.position_.y + LHITBOX.y + pFieldBuffer.y;
 			push = field->CollisionLeftCheck(Lhitx, Lhity);
 			transform_.position_.x += push;
 			pRdir_ = false;
