@@ -31,8 +31,9 @@ bool Player::HitAttack(int _x, int _y, SIZE _size)
 	int y = _y + _size.cy / 2;
 	
 	SIZE BOXSIZE = { 30,20 };
-	if(pdir_<0)
-	BOXSIZE = { -40,20 };
+	if (pRdir_ == false)
+		BOXSIZE = { -40,20 };
+
 	int px = transform_.position_.x + ALHITBOX.x + BOXSIZE.cx / 2;
 	int py = transform_.position_.y + ALHITBOX.y + BOXSIZE.cy / 2;
 
@@ -52,7 +53,7 @@ bool Player::HitAttack(int _x, int _y, SIZE _size)
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(-1), attackon_(false), pdir_(1), framecnt_(0), animframe_(0),attackbuffer_(false),bufferTime_(BUFFER),
+	:GameObject(parent, "Player"), hImage_(-1), attackon_(false), pRdir_(true), framecnt_(0), animframe_(0),attackbuffer_(false),bufferTime_(BUFFER),
 	onjump_(false), flagon_(false), animtype_(IDOL),FCmax_(0),AFmax_(0),BEanimtype_(NONE),Gaccel_(0.0f)
 {
 }
@@ -67,6 +68,8 @@ void Player::Initialize()
 	assert(hImage_ > 0);
 }
 
+
+
 void Player::Update()
 {
 	//------アイドル状態のアニメーション-----
@@ -74,6 +77,9 @@ void Player::Update()
 	FCmax_ = 20;
 	AFmax_ = 4;
 
+	VECTOR pFieldBuffer{ 0,0 };
+	if (!pRdir_)
+		pFieldBuffer = { 22,0 };
 
 	Field* field = GetParent()->FindGameObject<Field>();
 	Clear* clear = GetParent()->FindGameObject<Clear>();
@@ -89,8 +95,10 @@ void Player::Update()
 	transform_.position_.y += Gaccel_;
 
 	//下側当たり判定
-	int DLhit = field->CollisionDownCheck(transform_.position_.x + LHITBOX.x, transform_.position_.y + LHITBOX.y + 1);
-	int DRhit = field->CollisionDownCheck(transform_.position_.x + RHITBOX.x, transform_.position_.y + RHITBOX.y + 1);
+	int DLhit = field->CollisionDownCheck(transform_.position_.x + LHITBOX.x+ pFieldBuffer.x,
+										  transform_.position_.y + LHITBOX.y + 1+ pFieldBuffer.y);
+	int DRhit = field->CollisionDownCheck(transform_.position_.x + RHITBOX.x+ pFieldBuffer.x,
+										  transform_.position_.y + RHITBOX.y + 1+ pFieldBuffer.y);
 	int push = max(DLhit, DRhit);
 	if (push >= 1) {
 		transform_.position_.y -= push - 1;
@@ -112,7 +120,6 @@ void Player::Update()
 	TestFunc();
 
 	if (!flagon_&&!attackon_) {
-
 		//右移動
 		if (CheckHitKey(KEY_INPUT_D)) {
 			AFmax_ = 6;
@@ -127,16 +134,16 @@ void Player::Update()
 				FCmax_ = 17;
 			}
 			//右側当たり判定
-			int Rhitx = transform_.position_.x + RHITBOX.x;
-			int Rhity = transform_.position_.y + RHITBOX.y;
+			int Rhitx = transform_.position_.x + RHITBOX.x + pFieldBuffer.x;
+			int Rhity = transform_.position_.y + RHITBOX.y + pFieldBuffer.y;
 			push = field->CollisionRightCheck(Rhitx, Rhity);
 			transform_.position_.x -= push;
-			pdir_ = 1.0;
+			pRdir_ = true;
 
 		}
+
 		//左移動
 		if (CheckHitKey(KEY_INPUT_A)) {
-			
 			AFmax_ = 6;
 
 			if (CheckHitKey(KEY_INPUT_LSHIFT)) {
@@ -146,6 +153,7 @@ void Player::Update()
 			}
 			else {
 				transform_.position_.x -= MOVESPEED * Time::DeltaTime();
+				
 				animtype_ = WALK;
 				FCmax_ = 17;
 			}
@@ -153,11 +161,16 @@ void Player::Update()
 			//左側当たり判定
 			int Lhitx = transform_.position_.x + LHITBOX.x;
 			int Lhity = transform_.position_.y + LHITBOX.y;
-			push = field->CollisionRightCheck(Lhitx, Lhity);
+			push = field->CollisionLeftCheck(Lhitx, Lhity);
 			transform_.position_.x += push;
-			pdir_ = -1.0f;
+			pRdir_ = false;
 			
 		}
+
+		ImGui::Begin("pos");
+		ImGui::InputInt("x", &push);
+		ImGui::End();
+
 		//ジャンプ(消すかもわからん)
 		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
 			onjump_ = true;
@@ -168,13 +181,13 @@ void Player::Update()
 			animtype_ = Animation::JUMP;
 			//transform_.position_.y -= 9.0;
 			//右側当たり判定
-			int Rhitx = transform_.position_.x + RHITBOX.x;
-			int Rhity = transform_.position_.y + RHITBOX.y - 1;
+			int Rhitx = transform_.position_.x + RHITBOX.x + pFieldBuffer.x;
+			int Rhity = transform_.position_.y + RHITBOX.y - 1 + pFieldBuffer.y;
 			push = field->CollisionRightCheck(Rhitx, Rhity);
 
 			//左側当たり判定
-			int Lhitx = transform_.position_.x + LHITBOX.x;
-			int Lhity = transform_.position_.y + LHITBOX.y - 1;
+			int Lhitx = transform_.position_.x + LHITBOX.x + pFieldBuffer.x;
+			int Lhity = transform_.position_.y + LHITBOX.y - 1 + pFieldBuffer.y;
 			push = max(field->CollisionRightCheck(Lhitx, Lhity), push);
 			transform_.position_.y += push - 1;
 		}
@@ -260,7 +273,7 @@ void Player::Draw()
 		xpos -= cam->GetValue();
 
 	//メイン出力
-	if (pdir_ > 0)
+	if (pRdir_==true)
 		DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);
 	else
 		DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);
@@ -271,7 +284,7 @@ void Player::Draw()
 	DrawBox(xpos, ypos, xpos + IMAGESIZE, ypos + IMAGESIZE, GetColor(255, 0, 255), false);
 
 	//当たり判定確認用
-	if (pdir_ > 0)
+	if (pRdir_==true)
 		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);
 	else {
 		xpos += IMAGESIZE / 2;
@@ -279,11 +292,18 @@ void Player::Draw()
 		xpos -= IMAGESIZE / 2;
 	}
 
+
+
+
+	VECTOR pFieldBuffer{ 0,0 };
+	if (!pRdir_)
+		pFieldBuffer = { 22,0 };
+
 	DrawCircle(xpos, ypos, 3, GetColor(255, 0, 255), true);
-	DrawCircle(xpos + RHITBOX.x, ypos + RHITBOX.y, 3, GetColor(255, 0, 0), true);	//右
-	DrawCircle(xpos + LHITBOX.x, ypos + LHITBOX.y, 3, GetColor(0, 255, 0), true);	//左
-	DrawCircle(xpos + RHITBOX.x, ypos + RHITBOX.y + 1, 3, GetColor(0, 0, 255), true);	//右下
-	DrawCircle(xpos + LHITBOX.x, ypos + LHITBOX.y + 1, 3, GetColor(0, 0, 255), true); //左下	
+	DrawCircle(xpos + RHITBOX.x+pFieldBuffer.x, ypos + RHITBOX.y+pFieldBuffer.y, 3, GetColor(255, 0, 0), true);	//右　赤
+	DrawCircle(xpos + LHITBOX.x+pFieldBuffer.x, ypos + LHITBOX.y+pFieldBuffer.y, 3, GetColor(0, 255, 0), true);	//左　緑
+	//DrawCircle(xpos + RHITBOX.x+pFieldBuffer.x, ypos + RHITBOX.y+pFieldBuffer.y + 1, 3, GetColor(0, 0, 255), true);	//右下　青
+	//DrawCircle(xpos + LHITBOX.x+pFieldBuffer.x, ypos + LHITBOX.y+pFieldBuffer.y + 1, 3, GetColor(0, 0, 255), true); //左下	青
 	HitCheck(xpos + LUPOINT.x, ypos + LUPOINT.y, HITBOXSIZE);
 
 	DrawCircle(xpos + RHITBOX.x, ypos + LUPOINT.y, 1, GetColor(145, 214, 75), false);
@@ -307,7 +327,7 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 	int px = transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2;
 	int py = transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2;
 
-	if (pdir_ < 0)
+	if (pRdir_ == false)
 		px += IMAGESIZE / 2;
 
 	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心

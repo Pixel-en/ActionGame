@@ -9,7 +9,7 @@ class Player :public GameObject
 
 	float Gaccel_;	//重力加速
 
-	float pdir_;	//プレイヤーの向き
+	bool pRdir_;	//プレイヤーが右を向いているか
 	void TestFunc();
 	bool onjump_;	//ジャンプしているか
 

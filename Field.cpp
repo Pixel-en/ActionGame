@@ -126,7 +126,7 @@ int Field::CollisionDownCheck(int x, int y)
 int Field::CollisionLeftCheck(int x, int y)
 {
 	if (IsWallBlock(x, y))
-		return x % IMAGESIZE - 1;
+		return (x-16) % IMAGESIZE - 1;
 	return 0;
 }
 
@@ -148,7 +148,46 @@ bool Field::IsWallBlock(int x, int y)
 		//ï«orè∞Ç»Ç«
 		switch (Map[chipY * width + chipX])
 		{
+		case 0:
 		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+			
+		case 21:
+		case 22:
+		case 23:
+		case 24:
+		case 25:
+		case 26:
+		case 27:
+		case 28:
+		case 31:
+		case 34:
+
+		case 42:
+		case 43:
+		case 44:
+		case 45:
+		case 46:
+		case 47:
+		case 48:
+		case 49:
+		case 50:
+		case 51:
+		case 52:
+		case 53:
+		case 54:
+		case 55:
 			return true;
 		default:
 			break;
