@@ -9,7 +9,7 @@
 #include "CheckPoint.h"
 
 namespace {
-	const int IMAGESIZE{ 16 };
+	const int IMAGESIZE{ 32 };
 }
 
 
@@ -28,7 +28,7 @@ void Field::Initialize()
 
 void Field::Reset()
 {
-	hImage_ = LoadGraph("Assets\\Image\\MapTiles.png");
+	hImage_ = LoadGraph("Assets\\Image\\MapChip\\SwanpTile.png");
 	assert(hImage_ > 0);
 
 	std::string folder = "Assets\\Map\\";
@@ -106,7 +106,7 @@ void Field::Draw()
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			int chipNum = Map[i * width + j];
-			DrawRectGraph(j * IMAGESIZE - scroll, i * IMAGESIZE, IMAGESIZE * (chipNum %21), IMAGESIZE * (chipNum / 21), IMAGESIZE, IMAGESIZE, hImage_, true);
+			DrawRectGraph(j * IMAGESIZE - scroll, i * IMAGESIZE, IMAGESIZE * (chipNum % 10), IMAGESIZE * (chipNum / 10), IMAGESIZE, IMAGESIZE, hImage_, true);
 		}
 	}
 
@@ -120,6 +120,13 @@ int Field::CollisionDownCheck(int x, int y)
 {
 	if (IsWallBlock(x, y))
 		return y % IMAGESIZE + 1;	//‰Ÿ‚µ–ß‚·‚½‚ß
+	return 0;
+}
+
+int Field::CollisionUpCheck(int x, int y)
+{
+	if (IsWallBlock(x, y))
+		return y % IMAGESIZE - 1;
 	return 0;
 }
 

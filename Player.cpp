@@ -10,14 +10,19 @@
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
-	const int IMAGESIZE{ 48 };				//画像サイズ	幅44*高さ44
-	const VECTOR LUPOINT{ 1.0f,14.0f };
-	const VECTOR LHITBOX{ 1.0f,46.0f };		//左下の座標
-	const VECTOR RHITBOX{ 27.0f,46.0f };	//右下の座標
+	const int IMAGESIZE{ 48 };				//画像サイズ
+	//const VECTOR LUPOINT{ 1.0f,14.0f };
+	//const VECTOR RUPOINT{ 27.0f,14.0f };
+	//const VECTOR LHITBOX{ 1.0f,46.0f };
+	//const VECTOR RHITBOX{ 27.0f,46.0f };
+	const VECTOR LUPOINT{ 11.0f,14.0f };		//左上の座標
+	const VECTOR RUPOINT{ 37.0f,14.0f };	//右上の座標
+	const VECTOR LHITBOX{ 11.0f,46.0f };		//左下の座標
+	const VECTOR RHITBOX{ 37.0f,46.0f };	//右下の座標
 	const SIZE HITBOXSIZE{ 26,32 };			//当たり判定のボックスのサイズ
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
-	const VECTOR ALHITBOX{ 27.0f,14.0f };
+	const VECTOR PCENTER{ 26.0f,32.0f };
 }
 
 void Player::TestFunc()
@@ -30,12 +35,12 @@ bool Player::HitAttack(int _x, int _y, SIZE _size)
 	int x = _x + _size.cx / 2;
 	int y = _y + _size.cy / 2;
 	
-	SIZE BOXSIZE = { 30,20 };
-	if (pRdir_ == false)
-		BOXSIZE = { -40,20 };
+	SIZE BOXSIZE{ 30,30 };
+	if (!pRdir_)
+		BOXSIZE = { -30,30 };
 
-	int px = transform_.position_.x + ALHITBOX.x + BOXSIZE.cx / 2;
-	int py = transform_.position_.y + ALHITBOX.y + BOXSIZE.cy / 2;
+	int px = transform_.position_.x + PCENTER.x + BOXSIZE.cx / 2;
+	int py = transform_.position_.y + PCENTER.y;
 
 	//if (pdir_ < 0)
 	//	px += IMAGESIZE / 2;
@@ -77,9 +82,6 @@ void Player::Update()
 	FCmax_ = 20;
 	AFmax_ = 4;
 
-	VECTOR pFieldBuffer{ 0,0 };
-	if (!pRdir_)
-		pFieldBuffer = { 22,0 };
 
 	Field* field = GetParent()->FindGameObject<Field>();
 	Clear* clear = GetParent()->FindGameObject<Clear>();
@@ -95,10 +97,10 @@ void Player::Update()
 	transform_.position_.y += Gaccel_;
 
 	//下側当たり判定
-	int DLhit = field->CollisionDownCheck(transform_.position_.x + LHITBOX.x+ pFieldBuffer.x,
-										  transform_.position_.y + LHITBOX.y + 1+ pFieldBuffer.y);
-	int DRhit = field->CollisionDownCheck(transform_.position_.x + RHITBOX.x+ pFieldBuffer.x,
-										  transform_.position_.y + RHITBOX.y + 1+ pFieldBuffer.y);
+	int DLhit = field->CollisionDownCheck(transform_.position_.x + LHITBOX.x ,
+										  transform_.position_.y + LHITBOX.y + 1 );
+	int DRhit = field->CollisionDownCheck(transform_.position_.x + RHITBOX.x ,
+										  transform_.position_.y + RHITBOX.y + 1 );
 	int push = max(DLhit, DRhit);
 	if (push >= 1) {
 		transform_.position_.y -= push - 1;
@@ -134,8 +136,8 @@ void Player::Update()
 				FCmax_ = 17;
 			}
 			//右側当たり判定
-			int Rhitx = transform_.position_.x + RHITBOX.x + pFieldBuffer.x;
-			int Rhity = transform_.position_.y + RHITBOX.y + pFieldBuffer.y;
+			int Rhitx = transform_.position_.x + RHITBOX.x  ;
+			int Rhity = transform_.position_.y + RHITBOX.y  ;
 			push = field->CollisionRightCheck(Rhitx, Rhity);
 			transform_.position_.x -= push;
 			pRdir_ = true;
@@ -159,17 +161,14 @@ void Player::Update()
 			}
 
 			//左側当たり判定
-			int Lhitx = transform_.position_.x + LHITBOX.x + pFieldBuffer.x;
-			int Lhity = transform_.position_.y + LHITBOX.y + pFieldBuffer.y;
+			int Lhitx = transform_.position_.x + LHITBOX.x  ;
+			int Lhity = transform_.position_.y + LHITBOX.y  ;
 			push = field->CollisionLeftCheck(Lhitx, Lhity);
 			transform_.position_.x += push;
 			pRdir_ = false;
 			
 		}
 
-		ImGui::Begin("pos");
-		ImGui::InputInt("x", &push);
-		ImGui::End();
 
 		//ジャンプ(消すかもわからん)
 		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
@@ -181,15 +180,32 @@ void Player::Update()
 			animtype_ = Animation::JUMP;
 			//transform_.position_.y -= 9.0;
 			//右側当たり判定
-			int Rhitx = transform_.position_.x + RHITBOX.x + pFieldBuffer.x;
-			int Rhity = transform_.position_.y + RHITBOX.y - 1 + pFieldBuffer.y;
+			int Rhitx = transform_.position_.x + RHITBOX.x  ;
+			int Rhity = transform_.position_.y + RHITBOX.y - 1  ;
 			push = field->CollisionRightCheck(Rhitx, Rhity);
 
 			//左側当たり判定
-			int Lhitx = transform_.position_.x + LHITBOX.x + pFieldBuffer.x;
-			int Lhity = transform_.position_.y + LHITBOX.y - 1 + pFieldBuffer.y;
+			int Lhitx = transform_.position_.x + LHITBOX.x  ;
+			int Lhity = transform_.position_.y + LHITBOX.y - 1  ;
 			push = max(field->CollisionRightCheck(Lhitx, Lhity), push);
 			transform_.position_.y += push - 1;
+
+			//上方向当たり判定
+			int ULhit = field->CollisionDownCheck(transform_.position_.x + LUPOINT.x  ,
+				transform_.position_.y + LUPOINT.y + 1  );
+			int URhit = field->CollisionDownCheck(transform_.position_.x + RUPOINT.x  ,
+				transform_.position_.y + RUPOINT.y + 1  );
+			push = max(ULhit, URhit);
+			transform_.position_.y += push + 1;
+			if (push > 0) {
+				Gaccel_ = 0.0;
+			}
+			static int test = -1;
+
+			if (test < push)test = push;
+			ImGui::Begin("y");
+			ImGui::InputInt("push", &test);
+			ImGui::End();
 		}
 
 		if (CheckHitKey(KEY_INPUT_J) && !attackbuffer_&&!attackon_) {
@@ -280,6 +296,7 @@ void Player::Draw()
 		DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);
 
 #if 1
+	//デバッグ用出力
 
 	//画像サイズ
 	DrawBox(xpos, ypos, xpos + IMAGESIZE, ypos + IMAGESIZE, GetColor(255, 0, 255), false);
@@ -294,15 +311,9 @@ void Player::Draw()
 	}
 
 
-
-
-	VECTOR pFieldBuffer{ 0,0 };
-	if (!pRdir_)
-		pFieldBuffer = { 22,0 };
-
 	DrawCircle(xpos, ypos, 3, GetColor(255, 0, 255), true);
-	DrawCircle(xpos + RHITBOX.x+pFieldBuffer.x, ypos + RHITBOX.y+pFieldBuffer.y, 3, GetColor(255, 0, 0), true);	//右　赤
-	DrawCircle(xpos + LHITBOX.x+pFieldBuffer.x, ypos + LHITBOX.y+pFieldBuffer.y, 3, GetColor(0, 255, 0), true);	//左　緑
+	DrawCircle(xpos + RHITBOX.x , ypos + RHITBOX.y, 3, GetColor(255, 0, 0), true);	//右　赤
+	DrawCircle(xpos + LHITBOX.x , ypos + LHITBOX.y, 3, GetColor(0, 255, 0), true);	//左　緑
 	//DrawCircle(xpos + RHITBOX.x+pFieldBuffer.x, ypos + RHITBOX.y+pFieldBuffer.y + 1, 3, GetColor(0, 0, 255), true);	//右下　青
 	//DrawCircle(xpos + LHITBOX.x+pFieldBuffer.x, ypos + LHITBOX.y+pFieldBuffer.y + 1, 3, GetColor(0, 0, 255), true); //左下	青
 	HitCheck(xpos + LUPOINT.x, ypos + LUPOINT.y, HITBOXSIZE);

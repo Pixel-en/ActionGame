@@ -51,6 +51,14 @@ public:
 	int CollisionDownCheck(int x, int y);
 
 	/// <summary>
+	/// 上方向の当たり判定のチェック
+	/// </summary>
+	/// <param name="x">x座標</param>
+	/// <param name="y">y座標</param>
+	/// <returns></returns>
+	int CollisionUpCheck(int x, int y);
+
+	/// <summary>
 	/// 左方向の当たり判定チェック
 	/// </summary>
 	/// <param name="x">x座標</param>

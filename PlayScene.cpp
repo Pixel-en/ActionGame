@@ -24,7 +24,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "TestMap1.csv";
+	Filename_ = "SwanpTestMap1.csv";
 	Reset();
 }
 
