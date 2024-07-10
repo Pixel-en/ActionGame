@@ -73,8 +73,6 @@ void Player::Initialize()
 	assert(hImage_ > 0);
 }
 
-
-
 void Player::Update()
 {
 	//------アイドル状態のアニメーション-----
@@ -169,6 +167,17 @@ void Player::Update()
 			
 		}
 
+		if (CheckHitKey(KEY_INPUT_W)) {
+			if (field->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + 46.0f)) {
+				animtype_ = Animation::CLIMB;
+				FCmax_ = 17;
+				AFmax_ = 6;
+				
+				Gaccel_ = 0.0;
+				transform_.position_.y -= MOVESPEED * Time::DeltaTime();
+				onjump_ = true;
+			}
+		}
 
 		//ジャンプ(消すかもわからん)
 		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
@@ -177,11 +186,11 @@ void Player::Update()
 		}
 
 		if (onjump_) {
-			animtype_ = Animation::JUMP;
+			//animtype_ = Animation::JUMP;
 			//transform_.position_.y -= 9.0;
 			//右側当たり判定
 			int Rhitx = transform_.position_.x + RHITBOX.x  ;
-			int Rhity = transform_.position_.y + RHITBOX.y - 1  ;
+			int Rhity = transform_.position_.y + RHITBOX.y - 1;
 			push = field->CollisionRightCheck(Rhitx, Rhity);
 
 			//左側当たり判定
@@ -200,12 +209,6 @@ void Player::Update()
 			if (push > 0) {
 				Gaccel_ = 0.0;
 			}
-			static int test = -1;
-
-			if (test < push)test = push;
-			ImGui::Begin("y");
-			ImGui::InputInt("push", &test);
-			ImGui::End();
 		}
 
 		if (CheckHitKey(KEY_INPUT_J) && !attackbuffer_&&!attackon_) {
@@ -322,6 +325,8 @@ void Player::Draw()
 
 	DrawCircle(xpos + IMAGESIZE / 2+20, ypos + IMAGESIZE / 2, 1, GetColor(148, 241, 111), false);
 	DrawCircle(xpos + IMAGESIZE / 2+20, ypos + IMAGESIZE / 2, 10, GetColor(148, 241, 111), false);
+	DrawCircle(xpos + PCENTER.x, ypos + 46.0f, 5, GetColor(147, 54, 84), false);
+	DrawCircle(transform_.position_.x + PCENTER.x, transform_.position_.y + 45.0f, 5, GetColor(145, 48, 241), true);
 	HitAttack(xpos, ypos, HITBOXSIZE);
 #endif
 }

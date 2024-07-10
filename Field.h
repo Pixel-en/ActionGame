@@ -11,7 +11,13 @@ class Field :public GameObject
 
 	std::string filename;
 
-	bool IsWallBlock(int x, int y);
+	/// <summary>
+	/// 何のブロックか
+	/// </summary>
+	/// <param name="x">x座標</param>
+	/// <param name="y">y座標</param>
+	/// <returns>ブロックの名前</returns>
+	std::string WhatBlock(int x, int y);
 
 public:
 
@@ -74,5 +80,13 @@ public:
 	/// <param name="y">y座標</param>
 	/// <returns></returns>
 	int CollisionRightCheck(int x, int y);
+	
+	/// <summary>
+	/// オブジェクトとの当たり判定をチェック
+	/// </summary>
+	/// <param name="x">x座標</param>
+	/// <param name="y">y座標</param>
+	/// <returns></returns>
+	bool CollisionObjectCheck(int x, int y);
 };
 

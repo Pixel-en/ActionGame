@@ -28,7 +28,7 @@ void Field::Initialize()
 
 void Field::Reset()
 {
-	hImage_ = LoadGraph("Assets\\Image\\MapChip\\SwanpTile.png");
+	hImage_ = LoadGraph("Assets\\Image\\MapChip\\SwanpTiles.png");
 	assert(hImage_ > 0);
 
 	std::string folder = "Assets\\Map\\";
@@ -118,33 +118,43 @@ void Field::Release()
 
 int Field::CollisionDownCheck(int x, int y)
 {
-	if (IsWallBlock(x, y))
+	if (WhatBlock(x, y) == "Wall")
 		return y % IMAGESIZE + 1;	//押し戻すため
 	return 0;
 }
 
 int Field::CollisionUpCheck(int x, int y)
 {
-	if (IsWallBlock(x, y))
-		return y % IMAGESIZE - 1;
+	if (WhatBlock(x, y) == "Wall")
+		return IMAGESIZE - (y % IMAGESIZE);
 	return 0;
 }
 
 int Field::CollisionLeftCheck(int x, int y)
 {
-	if (IsWallBlock(x, y))
-		return IMAGESIZE- (x % IMAGESIZE);
+	if (WhatBlock(x, y) == "Wall")
+		return IMAGESIZE - (x % IMAGESIZE);
 	return 0;
 }
 
 int Field::CollisionRightCheck(int x, int y)
 {
-	if (IsWallBlock(x, y))
+	if (WhatBlock(x, y) == "Wall")
 		return x % IMAGESIZE + 1;
 	return 0;
 }
 
-bool Field::IsWallBlock(int x, int y)
+bool Field::CollisionObjectCheck(int x, int y)
+{
+	//何かオブジェクトの当たり判定があったらチェックする用
+
+	if (WhatBlock(x, y) == "Ladder")
+		return true;
+
+	return false;
+}
+
+std::string Field::WhatBlock(int x, int y)
 {
 	int chipX = x / IMAGESIZE;	//キャラクターとマップのサイズを合わせるため
 	int chipY = y / IMAGESIZE;
@@ -169,7 +179,13 @@ bool Field::IsWallBlock(int x, int y)
 		case 11:
 		case 12:
 		case 13:
-			
+		case 14:
+		case 15:
+		case 16:
+		case 17:
+		case 18:
+		case 19:
+		case 20:
 		case 21:
 		case 22:
 		case 23:
@@ -178,9 +194,19 @@ bool Field::IsWallBlock(int x, int y)
 		case 26:
 		case 27:
 		case 28:
+		case 29:
+		case 30:
 		case 31:
+		case 32:
+		case 33:
 		case 34:
-
+		case 35:
+		case 36:
+		case 37:
+		case 38:
+		case 39:
+		case 40:
+		case 41:
 		case 42:
 		case 43:
 		case 44:
@@ -195,11 +221,21 @@ bool Field::IsWallBlock(int x, int y)
 		case 53:
 		case 54:
 		case 55:
-			return true;
+		case 56:
+		case 57:
+		case 58:
+		case 59:
+			return "Wall";
+			break;
+		case 60:
+		case 61:
+		case 62:
+			return "Ladder";
+			break;
 		default:
 			break;
 		}
 	}
 
-	return false;
+	return "";
 }

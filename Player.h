@@ -22,6 +22,8 @@ class Player :public GameObject
 		RUN,
 		JUMP,
 		ATTACK,
+		ATTACK2,
+		ATTACK3,
 		CLIMB,
 		CRAFT,
 		PUSH,
@@ -30,7 +32,7 @@ class Player :public GameObject
 	};
 
 	Animation animtype_;	//アニメーションの種類
-	Animation BEanimtype_;
+	Animation BEanimtype_;	//前のフレームのアニメーション
 
 
 	bool attackon_;	//攻撃中かどうか
