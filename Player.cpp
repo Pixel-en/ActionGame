@@ -179,6 +179,10 @@ void Player::Update()
 			}
 		}
 
+		ImGui::Begin("aa");
+		ImGui::InputFloat("g", &Gaccel_);
+		ImGui::End();
+
 		//ジャンプ(消すかもわからん)
 		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
 			onjump_ = true;
@@ -200,10 +204,10 @@ void Player::Update()
 			transform_.position_.y += push - 1;
 
 			//上方向当たり判定
-			int ULhit = field->CollisionDownCheck(transform_.position_.x + LUPOINT.x  ,
-				transform_.position_.y + LUPOINT.y + 1  );
-			int URhit = field->CollisionDownCheck(transform_.position_.x + RUPOINT.x  ,
-				transform_.position_.y + RUPOINT.y + 1  );
+			int ULhit = field->CollisionUpCheck(transform_.position_.x + LUPOINT.x  ,
+				transform_.position_.y + LUPOINT.y - 1  );
+			int URhit = field->CollisionUpCheck(transform_.position_.x + RUPOINT.x  ,
+				transform_.position_.y + RUPOINT.y - 1  );
 			push = max(ULhit, URhit);
 			transform_.position_.y += push + 1;
 			if (push > 0) {
@@ -317,6 +321,8 @@ void Player::Draw()
 	DrawCircle(xpos, ypos, 3, GetColor(255, 0, 255), true);
 	DrawCircle(xpos + RHITBOX.x , ypos + RHITBOX.y, 3, GetColor(255, 0, 0), true);	//右　赤
 	DrawCircle(xpos + LHITBOX.x , ypos + LHITBOX.y, 3, GetColor(0, 255, 0), true);	//左　緑
+	DrawCircle(xpos + RUPOINT.x, ypos + RUPOINT.y, 3, GetColor(255, 0, 0), true);	//右　赤
+	DrawCircle(xpos + LUPOINT.x, ypos + LUPOINT.y, 3, GetColor(0, 255, 0), true);	//左　緑
 	//DrawCircle(xpos + RHITBOX.x+pFieldBuffer.x, ypos + RHITBOX.y+pFieldBuffer.y + 1, 3, GetColor(0, 0, 255), true);	//右下　青
 	//DrawCircle(xpos + LHITBOX.x+pFieldBuffer.x, ypos + LHITBOX.y+pFieldBuffer.y + 1, 3, GetColor(0, 0, 255), true); //左下	青
 	HitCheck(xpos + LUPOINT.x, ypos + LUPOINT.y, HITBOXSIZE);

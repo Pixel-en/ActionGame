@@ -126,7 +126,7 @@ int Field::CollisionDownCheck(int x, int y)
 int Field::CollisionUpCheck(int x, int y)
 {
 	if (WhatBlock(x, y) == "Wall")
-		return IMAGESIZE - (y % IMAGESIZE);
+		return IMAGESIZE - (y % IMAGESIZE) - 1;
 	return 0;
 }
 
