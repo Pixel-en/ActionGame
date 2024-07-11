@@ -179,10 +179,6 @@ void Player::Update()
 			}
 		}
 
-		ImGui::Begin("aa");
-		ImGui::InputFloat("g", &Gaccel_);
-		ImGui::End();
-
 		//ÉWÉÉÉìÉv(è¡Ç∑Ç©Ç‡ÇÌÇ©ÇÁÇÒ)
 		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
 			onjump_ = true;

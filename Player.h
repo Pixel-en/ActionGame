@@ -43,6 +43,8 @@ class Player :public GameObject
 	bool attackbuffer_;	//UŒ‚Œã‚Ì‘Ò‹@’†‚©‚Ç‚¤‚©
 	float bufferTime_;	//‘Ò‹@ŠÔ
 
+	Transform jumpbe_;
+
 	bool HitAttack(int _x, int _y, SIZE _size);
 
 public:

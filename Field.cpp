@@ -46,38 +46,38 @@ void Field::Reset()
 		}
 	}
 
-#if 0
+#if 1
 
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			switch (csv->GetInt(i, j))
 			{
-			case 2:{
+			case 102:{
 				Goal* g = Instantiate<Goal>(GetParent());
 				g->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 				g->Reset();
 			}
 				break;
-			case 3: {
+			case 103: {
 				c->AddMcount();
 				Material* m = Instantiate<Material>(GetParent());
 				m->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 				m->Reset();
 			}
 				break;
-			case 4: {
+			case 104: {
 				c->AddEcount();
 				Enemy* e = Instantiate<Enemy>(GetParent());
 				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 				e->Reset();
 			}
 				break;
-			case 5: {
+			case 105: {
 				Player* p = GetParent()->FindGameObject<Player>();
 				p->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 			}
 				  break;
-			case 6: {
+			case 106: {
 				CheckPoint* ch = Instantiate<CheckPoint>(GetParent());
 				ch->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 				ch->Reset();

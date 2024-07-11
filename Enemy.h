@@ -15,6 +15,11 @@ class Enemy:public Object
 	bool startmove_;
 
 	float Gaccel = 0;
+
+	float speed_;
+	float distance;
+	int range_;
+	float EPDistance();
 public:
 
 	//コンストラクタ

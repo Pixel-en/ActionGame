@@ -12,13 +12,28 @@ namespace {
 	const VECTOR LHITBOX{ 64.0f,63.0f };	//左下の座標
 	const VECTOR RHITBOX{ 64.0f,63.0f };	//右下の座標
 	const VECTOR LRHITBOX{ 4.0f,4.0f };		//当たり判定の左上座標
-	const float JUMPHEIGHT{ IMAGESIZE.cx * 3.0f };	//ジャンプの高さ
+	const float JUMPHEIGHT{ IMAGESIZE.cx * 2.5f };	//ジャンプの高さ
 	const int MOVEANGLE{ 45 };
 	const float MOVETIME{ 1.0f };
 }
 
+float Enemy::EPDistance()
+{
+	Player* p = GetParent()->FindGameObject<Player>();
+	if (p == nullptr)
+		return 0.0;
+
+	float cenx = transform_.position_.x;
+	float ceny = transform_.position_.y;
+
+	float x = cenx - p->GetPosition().x;
+	float y = ceny - p->GetPosition().y;
+
+	return sqrt( x * x + y * y);
+}
+
 Enemy::Enemy(GameObject* parent)
-	:Object(parent, "Enemy"), inmoving_(false),movetimer_(MOVETIME),startmove_(false)
+	:Object(parent, "Enemy"), inmoving_(false),movetimer_(MOVETIME),startmove_(false),speed_(0),distance(1),range_(LOOKRANGE)
 {
 }
 
@@ -71,6 +86,9 @@ void Enemy::Update()
 		startmove_ = false;
 	}
 
+	if (p == nullptr)
+		return;
+	//プレイヤーが死んでてもここまではする
 
 	if (transform_.position_.y > 1000.0f) {
 		transform_.position_.y = 1000.0f;
@@ -88,25 +106,42 @@ void Enemy::Update()
 
 	static XMVECTOR move;
 
+
+
 	//動きの計算
 	if (IsExistPlayer() && !inmoving_&&startmove_) {
 		inmoving_ = true;
 
-		move = XMVECTOR{ p->GetPosition().x - transform_.position_.x,0,0 };
+		//move = XMVECTOR{ p->GetPosition().x - transform_.position_.x,0,0 };
 		//XMMATRIX zrot = XMMatrixRotationZ(XMConvertToRadians(MOVEANGLE) * -(XMVectorGetX(move) / fabs(XMVectorGetX(move))));
 		//move = XMVector3Transform(move, zrot);
-		move = XMVector3Normalize(move);
+		//move = XMVector3Normalize(move);
 		
 		Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
 
+		if (EPDistance() > 80)
+			speed_ = 100;
+		else if (EPDistance() > 40)
+			speed_ = 70;
+		else
+			speed_ = 50;
+
+		distance =  p->GetPosition().x-transform_.position_.x;
 	}
+
+	ImGui::Begin(" ");
+	ImGui::InputFloat("dis", &distance);
+	ImGui::End();
 
 	//動き
 	if (inmoving_) {
 
-		XMVECTOR pos = XMLoadFloat3(&transform_.position_);
-		pos = pos + move * 200 * Time::DeltaTime();
-		XMStoreFloat3(&transform_.position_, pos);
+		//XMVECTOR pos = XMLoadFloat3(&transform_.position_);
+		//pos = pos + move * 200 * Time::DeltaTime();
+		//XMStoreFloat3(&transform_.position_, pos);
+
+		transform_.position_.x += speed_ * Time::DeltaTime() * (distance / fabs(distance));
+		
 	}
 
 }
@@ -121,7 +156,7 @@ void Enemy::Draw()
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr)
 		xpos -= cam->GetValue();
-	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, LOOKRANGE, GetColor(255, 0, 0), false);
+	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, range_, GetColor(255, 0, 0), false);
 	DrawRectGraph(xpos, ypos, 0, 0, 64, 64, hImage_, true);
 	//DrawBox(transform_.position_.x, transform_.position_.y, transform_.position_.x + IMAGESIZE.cx, transform_.position_.y + IMAGESIZE.cy, GetColor(255, 255, 255), false);
 	//DrawCircle(transform_.position_.x+IMAGESIZE.cx/2,transform_.position_.y+IMAGESIZE.cy/2,3,GetColor(0,255,0),true);
@@ -145,19 +180,12 @@ bool Enemy::IsHitting()
 
 bool Enemy::IsExistPlayer()
 {
-	Player* p = GetParent()->FindGameObject<Player>();
-	if (p == nullptr)
-		return false;
-
-	float cenx = transform_.position_.x;
-	float ceny = transform_.position_.y;
-
-	float x = cenx - p->GetPosition().x;
-	float y = ceny - p->GetPosition().y;
-
-	if (x * x + y * y < LOOKRANGE * LOOKRANGE)
+	if (powf(EPDistance(), 2) < range_ * range_) {
+		range_ = LOOKRANGE * 2;
 		return true;
+	}
 
+	range_ = LOOKRANGE;
 	return false;
 }
 
