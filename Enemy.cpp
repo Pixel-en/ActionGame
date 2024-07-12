@@ -107,7 +107,6 @@ void Enemy::Update()
 	static XMVECTOR move;
 
 
-
 	//動きの計算
 	if (IsExistPlayer() && !inmoving_&&startmove_) {
 		inmoving_ = true;
@@ -117,32 +116,41 @@ void Enemy::Update()
 		//move = XMVector3Transform(move, zrot);
 		//move = XMVector3Normalize(move);
 		
-		Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+		//Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
 
 		if (EPDistance() > 80)
 			speed_ = 100;
-		else if (EPDistance() > 40)
-			speed_ = 70;
-		else
-			speed_ = 50;
+		//else if (EPDistance() > 40)
+		//	speed_ = 70;
+		//else
+		//	speed_ = 50;
 
 		distance =  p->GetPosition().x-transform_.position_.x;
-	}
 
-	ImGui::Begin(" ");
-	ImGui::InputFloat("dis", &distance);
-	ImGui::End();
+		reachdistance_= p->GetPosition().x - transform_.position_.x;	//到達距離をだす
+		angle_ = atanf(4 * JUMPHEIGHT / reachdistance_);				//打ち出し角度を出す
+
+		Gaccel = sqrt(2 * GRAVITY * reachdistance_) / sin(angle_);		//初速を出す
+		movedir_ = { cosf(angle_),sinf(angle_) };
+	}
 
 	//動き
 	if (inmoving_) {
 
-		//XMVECTOR pos = XMLoadFloat3(&transform_.position_);
+		XMVECTOR pos = XMLoadFloat3(&transform_.position_);
 		//pos = pos + move * 200 * Time::DeltaTime();
 		//XMStoreFloat3(&transform_.position_, pos);
 
-		transform_.position_.x += speed_ * Time::DeltaTime() * (distance / fabs(distance));
-		
+		//transform_.position_.x += speed_ * Time::DeltaTime() * (distance / fabs(distance));
+		pos += movedir_ * Gaccel * Time::DeltaTime() * (distance / fabs(distance));
+		XMStoreFloat3(&transform_.position_, pos);
 	}
+
+
+
+	ImGui::Begin(" ");
+
+	ImGui::End();
 
 }
 

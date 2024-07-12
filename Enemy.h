@@ -14,7 +14,10 @@ class Enemy:public Object
 	float movetimer_;
 	bool startmove_;
 
-	float Gaccel = 0;
+	float Gaccel = 0;	//v0
+	float angle_ = 0;
+	float reachdistance_;	//“ž’B‹——£
+	XMVECTOR movedir_;
 
 	float speed_;
 	float distance;
