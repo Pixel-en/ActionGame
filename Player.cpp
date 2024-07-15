@@ -124,7 +124,7 @@ void Player::Update()
 		if (CheckHitKey(KEY_INPUT_D)) {
 			AFmax_ = 6;
 			if (CheckHitKey(KEY_INPUT_LSHIFT)) {
-				transform_.position_.x += MOVESPEED * Time::DeltaTime() * 2;
+				transform_.position_.x += MOVESPEED * 2 * Time::DeltaTime();
 				animtype_ = Animation::RUN;
 				FCmax_ = 11;
 			}

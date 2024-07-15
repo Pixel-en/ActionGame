@@ -14,18 +14,25 @@ class Enemy:public Object
 
 	float Gaccel = 0;
 
+	bool charge;
+
 	float speed_;
 	int range_;
 	bool onGround_;
+
+	int dir_;
+	XMFLOAT3 Ppos;
 
 	int framecnt_;	//フレームのカウント
 	int FCmax_;	//フレームカウントの最大値
 	int animframe_;	//アニメーションのフレームカウント
 	int AFmax_;		//アニメーションのフレーム数
 
+	int attackfrm_;
+
 	XMFLOAT3 SpawnPoint_;	//初期値
 
-	enum  Animation
+	enum  EAnimation
 	{
 		IDOL,
 		MOVE,
@@ -34,7 +41,8 @@ class Enemy:public Object
 		DEATH
 	};
 
-	Animation animtype_;
+	EAnimation animtype_;
+	EAnimation BEanimtype_;
 
 	/// <summary>
 	/// 敵とプレイヤーの距離
