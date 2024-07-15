@@ -79,7 +79,7 @@ void Player::Update()
 	animtype_ = Animation::IDOL;
 	FCmax_ = 20;
 	AFmax_ = 4;
-
+	onjump_ = true;
 
 	Field* field = GetParent()->FindGameObject<Field>();
 	Clear* clear = GetParent()->FindGameObject<Clear>();
@@ -174,6 +174,9 @@ void Player::Update()
 				AFmax_ = 6;
 				
 				Gaccel_ = 0.0;
+
+
+
 				transform_.position_.y -= MOVESPEED * Time::DeltaTime();
 				onjump_ = true;
 			}
@@ -358,4 +361,9 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 
 
 	return false;
+}
+
+XMFLOAT3 Player::GetHitBoxPosition()
+{
+	return { transform_.position_.x + LUPOINT.x, transform_.position_.y + LUPOINT.y, 0 };
 }

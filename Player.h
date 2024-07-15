@@ -70,5 +70,7 @@ public:
 
 	bool HitCheck(int _x, int _y, SIZE _size);
 
+	XMFLOAT3 GetHitBoxPosition();
+
 };
 

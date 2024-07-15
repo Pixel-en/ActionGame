@@ -8,21 +8,45 @@
 //敵のクラス
 class Enemy:public Object
 {
-	bool inmoving_;
-	XMVECTOR despos_;
 
 	float movetimer_;
 	bool startmove_;
 
-	float Gaccel = 0;	//v0
-	float angle_ = 0;
-	float reachdistance_;	//到達距離
-	XMVECTOR movedir_;
+	float Gaccel = 0;
 
 	float speed_;
-	float distance;
 	int range_;
+	bool onGround_;
+
+	int framecnt_;	//フレームのカウント
+	int FCmax_;	//フレームカウントの最大値
+	int animframe_;	//アニメーションのフレームカウント
+	int AFmax_;		//アニメーションのフレーム数
+
+	XMFLOAT3 SpawnPoint_;	//初期値
+
+	enum  Animation
+	{
+		IDOL,
+		MOVE,
+		RUN,
+		ATTACK,
+		DEATH
+	};
+
+	Animation animtype_;
+
+	/// <summary>
+	/// 敵とプレイヤーの距離
+	/// </summary>
 	float EPDistance();
+
+	void UpdateIdol();
+	void UpdateMove();
+	void UpdateRun();
+	void UpdateAttack();
+	void UpdateDeath();
+
 public:
 
 	//コンストラクタ
@@ -51,7 +75,7 @@ public:
 private:
 
 	//プレイヤーが検知エリアに入ったかどうか
-	bool IsExistPlayer();
+	bool IsExistPlayer(float _range);
 
 };
 
