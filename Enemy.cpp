@@ -206,9 +206,8 @@ void Enemy::AnimationCheck()
 			framecnt_ = 0;
 			animframe_ = (animframe_ + 1) % AFmax_;
 		}
-		if (animtype_ == EAnimation::DEATH)
-			MessageBox(NULL, "test", NULL, MB_OK);
 	}
+	BEanimtype_ = animtype_;
 
 }
 
