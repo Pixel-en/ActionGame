@@ -25,11 +25,6 @@ namespace {
 	const VECTOR PCENTER{ 26.0f,32.0f };
 }
 
-void Player::TestFunc()
-{
-
-}
-
 bool Player::HitAttack(int _x, int _y, SIZE _size)
 {
 	int x = _x + _size.cx / 2;
@@ -75,11 +70,27 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	//------アイドル状態のアニメーション-----
-	animtype_ = Animation::IDOL;
-	FCmax_ = 20;
-	AFmax_ = 4;
-	onjump_ = true;
+
+
+	PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
+
+	if (animtype_ == Animation::DEATH) {
+		if (animframe_ == 5) {
+			FCmax_ = 120;
+			if (framecnt_ == 120) {
+				pc->DeadState();
+				KillMe();
+			}
+		}
+		//MessageBox(NULL, "test", NULL, MB_OK);
+	}
+	else {
+		//------アイドル状態のアニメーション-----
+		animtype_ = Animation::IDOL;
+		FCmax_ = 20;
+		AFmax_ = 4;
+		onjump_ = true;
+	}
 
 	Field* field = GetParent()->FindGameObject<Field>();
 	Clear* clear = GetParent()->FindGameObject<Clear>();
@@ -104,10 +115,9 @@ void Player::Update()
 		transform_.position_.y -= push - 1;
 		Gaccel_ = 0.0f;
 		onjump_ = false;
-		animtype_ = Animation::IDOL;
+		//animtype_ = Animation::IDOL;
 	}
 
-	PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
 
 	if (transform_.position_.y > 1000.0f) {
 		transform_.position_.y = 1000.0f;
@@ -117,9 +127,8 @@ void Player::Update()
 	if (!pc->CanMove())
 		return;
 
-	TestFunc();
 
-	if (!flagon_&&!attackon_) {
+	if (!flagon_&&!attackon_&&animtype_!=Animation::DEATH) {
 		//右移動
 		if (CheckHitKey(KEY_INPUT_D)) {
 			AFmax_ = 6;
@@ -230,7 +239,7 @@ void Player::Update()
 		if (animframe_ >= 2 && animframe_ <= 4) {
 			for (auto& E : enemies) {
 				if (HitAttack(E->GetPosition().x, E->GetPosition().y, E->GetImageSize()))
-					E->KillMe();
+					E->DeadState();
 			}
 		}
 
@@ -264,6 +273,8 @@ void Player::Update()
 		}
 		BEanimtype_ = animtype_;
 	}
+
+
 
 	//右固定カメラ
 	Camera* cam = GetParent()->FindGameObject<Camera>();
@@ -308,13 +319,7 @@ void Player::Draw()
 	DrawBox(xpos, ypos, xpos + IMAGESIZE, ypos + IMAGESIZE, GetColor(255, 0, 255), false);
 
 	//当たり判定確認用
-	if (pRdir_==true)
-		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);
-	else {
-		xpos += IMAGESIZE / 2;
-		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);
-		xpos -= IMAGESIZE / 2;
-	}
+	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RHITBOX.x, ypos + RHITBOX.y, GetColor(255, 255, 255), FALSE);
 
 
 	DrawCircle(xpos, ypos, 3, GetColor(255, 0, 255), true);
@@ -349,9 +354,6 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 	int px = transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2;
 	int py = transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2;
 
-	if (pRdir_ == false)
-		px += IMAGESIZE / 2;
-
 	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心
 
 	if (abs(x - px) < _size.cx / 2 + HITBOXSIZE.cx / 2 &&
@@ -366,4 +368,13 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 XMFLOAT3 Player::GetHitBoxPosition()
 {
 	return { transform_.position_.x + LUPOINT.x, transform_.position_.y + LUPOINT.y, 0 };
+}
+
+void Player::DeadState()
+{
+	animtype_ = Animation::DEATH;
+	FCmax_ = 20;
+	AFmax_ = 6;
+	framecnt_ = 0;
+	animframe_ = 0;
 }

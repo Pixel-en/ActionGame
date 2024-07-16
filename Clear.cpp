@@ -62,8 +62,7 @@ void Clear::Update()
 		}
 		for (Enemy* E : e) {
 			if (E->IsHitting()) {
-				PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
-				pc->DeadState();
+				p->DeadState();
 			}
 
 		}

@@ -38,6 +38,7 @@ class Enemy:public Object
 		MOVE,
 		RUN,
 		ATTACK,
+		HURT,
 		DEATH
 	};
 
@@ -67,6 +68,8 @@ public:
 	//初期化
 	void Initialize() override;
 
+	void Reset() override;
+
 	//更新
 	void Update() override;
 
@@ -80,6 +83,7 @@ public:
 
 	SIZE GetImageSize();
 
+	void DeadState();
 private:
 
 	//プレイヤーが検知エリアに入ったかどうか

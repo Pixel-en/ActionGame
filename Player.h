@@ -10,7 +10,6 @@ class Player :public GameObject
 	float Gaccel_;	//重力加速
 
 	bool pRdir_;	//プレイヤーが右を向いているか
-	void TestFunc();
 	bool onjump_;	//ジャンプしているか
 
 	bool flagon_;
@@ -71,6 +70,8 @@ public:
 	bool HitCheck(int _x, int _y, SIZE _size);
 
 	XMFLOAT3 GetHitBoxPosition();
+
+	void DeadState();
 
 };
 

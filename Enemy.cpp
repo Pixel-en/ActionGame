@@ -136,24 +136,33 @@ void Enemy::Update()
 		break;
 	}
 
-	if (animtype_ != EAnimation::ATTACK) {
-		//前フレームと違うアニメーションならカウントをゼロにする
-		if (BEanimtype_ != animtype_) {
-			framecnt_ = 0;
-			animframe_ = 0;
-		}
 
+	//前フレームと違うアニメーションならカウントをゼロにする
+	if (BEanimtype_ != animtype_) {
+		framecnt_ = 0;
+		animframe_ = 0;
+	}
+	if (animtype_ != EAnimation::ATTACK) {
 		framecnt_++;
 		if (framecnt_ > FCmax_) {
 			framecnt_ = 0;
 			animframe_ = (animframe_ + 1) % AFmax_;
 		}
-		BEanimtype_ = animtype_;
+		if(animtype_==EAnimation::DEATH)
+		MessageBox(NULL, "test", NULL, MB_OK);
 	}
+	
 
-	float a = attackfrm_;
+	float a = animtype_;
+	float time = Time::DeltaTime();
 	ImGui::Begin("a");
 	ImGui::InputFloat("frm", &a);
+	ImGui::InputInt("frmc", &framecnt_);
+	ImGui::InputInt("fc", &FCmax_);
+	ImGui::InputInt("animf", &animframe_);
+	ImGui::InputInt("af", &AFmax_);
+	ImGui::InputFloat3("pos", &SpawnPoint_.x);
+	ImGui::InputFloat("time", &time);
 	ImGui::End();
 }
 
@@ -192,11 +201,19 @@ bool Enemy::IsHitting()
 {
 	Player* p = GetParent()->FindGameObject<Player>();
 	if (p->HitCheck(transform_.position_.x + LUPOINT.x, transform_.position_.y + LUPOINT.y, HITBOXSIZE)) {
-		p->KillMe();
 		return true;
 	}
 
 	return false;
+}
+
+void Enemy::DeadState()
+{
+	animtype_ = EAnimation::DEATH;
+	FCmax_ = 20;
+	AFmax_ = 3;
+	framecnt_ = 0;
+	animframe_ = 0;
 }
 
 bool Enemy::IsExistPlayer(float _range)
@@ -216,8 +233,8 @@ void Enemy::UpdateIdol()
 {
 	AFmax_ = 8;
 	FCmax_ = 20;
-	if (BEanimtype_ != EAnimation::MOVE)
-		SpawnPoint_ = transform_.position_;
+
+
 	//攻撃バッファ
 	if (!startmove_) {
 		movetimer_ -= Time::DeltaTime();
@@ -237,15 +254,16 @@ void Enemy::UpdateMove()
 {
 
 	AFmax_ = 8;
-	FCmax_ = 17;
-	if(IsExistPlayer(range_)) {
+	FCmax_ = 11;
+	if (IsExistPlayer(range_)) {
 		speed_ = RUNSPEED;
 		range_ = LOOKRANGE * 2;
 		animtype_ = EAnimation::RUN;
 	}
+	else
+		range_ = LOOKRANGE;
 
-	if(!charge)
-		transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
+	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
 
 	if (SpawnPoint_.x - transform_.position_.x > 30.0f) {
 		dir_ = 1;
@@ -345,6 +363,7 @@ void Enemy::UpdateAttack()
 
 	if (onGround_) {
 		speed_ = MOVESPEED;
+		SpawnPoint_ = transform_.position_;
 		animtype_ = EAnimation::IDOL;
 
 	}
@@ -352,5 +371,37 @@ void Enemy::UpdateAttack()
 
 void Enemy::UpdateDeath()
 {
+	if (animframe_ == 2) {
+		FCmax_ = 60;
+		if (framecnt_ == 60) {
+			KillMe();
+		}
+	}
+}
+
+void Enemy::Reset()
+{
+	Field* field = GetParent()->FindGameObject<Field>();
+
+	int DLhit = field->CollisionDownCheck(transform_.position_.x + LDPOINT.x, transform_.position_.y + LDPOINT.y + 1);
+	int DRhit = field->CollisionDownCheck(transform_.position_.x + RDPOINT.x, transform_.position_.y + RDPOINT.y + 1);
+	int push = max(DLhit, DRhit);
+	if (push >= 1) {
+		transform_.position_.y -= push - 1;
+	}
+
+	//右側当たり判定
+	int Rhitx = transform_.position_.x + RDPOINT.x;
+	int Rhity = transform_.position_.y + RDPOINT.y;
+	push = field->CollisionRightCheck(Rhitx, Rhity);
+	transform_.position_.x -= push;
+
+	//左側当たり判定
+	int Lhitx = transform_.position_.x + LDPOINT.x;
+	int Lhity = transform_.position_.y + LDPOINT.y;
+	push = field->CollisionLeftCheck(Lhitx, Lhity);
+	transform_.position_.x += push;
+
+	SpawnPoint_ = transform_.position_;
 }
 
