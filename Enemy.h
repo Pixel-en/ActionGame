@@ -45,6 +45,8 @@ class Enemy:public Object
 	EAnimation animtype_;
 	EAnimation BEanimtype_;
 
+	void AnimationCheck();
+
 	/// <summary>
 	/// “G‚ÆƒvƒŒƒCƒ„[‚Ì‹——£
 	/// </summary>
@@ -55,6 +57,8 @@ class Enemy:public Object
 	void UpdateRun();
 	void UpdateAttack();
 	void UpdateDeath();
+
+
 
 public:
 

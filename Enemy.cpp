@@ -136,22 +136,7 @@ void Enemy::Update()
 		break;
 	}
 
-
-	//前フレームと違うアニメーションならカウントをゼロにする
-	if (BEanimtype_ != animtype_) {
-		framecnt_ = 0;
-		animframe_ = 0;
-	}
-	if (animtype_ != EAnimation::ATTACK) {
-		framecnt_++;
-		if (framecnt_ > FCmax_) {
-			framecnt_ = 0;
-			animframe_ = (animframe_ + 1) % AFmax_;
-		}
-		if(animtype_==EAnimation::DEATH)
-		MessageBox(NULL, "test", NULL, MB_OK);
-	}
-	
+	AnimationCheck();
 
 	float a = animtype_;
 	float time = Time::DeltaTime();
@@ -207,6 +192,26 @@ bool Enemy::IsHitting()
 	return false;
 }
 
+void Enemy::AnimationCheck()
+{
+
+	//前フレームと違うアニメーションならカウントをゼロにする
+	if (BEanimtype_ != animtype_) {
+		framecnt_ = 0;
+		animframe_ = 0;
+	}
+	if (animtype_ != EAnimation::ATTACK) {
+		framecnt_++;
+		if (framecnt_ > FCmax_) {
+			framecnt_ = 0;
+			animframe_ = (animframe_ + 1) % AFmax_;
+		}
+		if (animtype_ == EAnimation::DEATH)
+			MessageBox(NULL, "test", NULL, MB_OK);
+	}
+
+}
+
 void Enemy::DeadState()
 {
 	animtype_ = EAnimation::DEATH;
@@ -254,11 +259,12 @@ void Enemy::UpdateMove()
 {
 
 	AFmax_ = 8;
-	FCmax_ = 11;
+	FCmax_ = 10;
 	if (IsExistPlayer(range_)) {
 		speed_ = RUNSPEED;
 		range_ = LOOKRANGE * 2;
 		animtype_ = EAnimation::RUN;
+		return;
 	}
 	else
 		range_ = LOOKRANGE;
