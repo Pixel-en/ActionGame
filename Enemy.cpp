@@ -4,6 +4,7 @@
 #include "Field.h"
 #include "ImGui/imgui.h"
 #include "Clear.h"
+#include "HitObject.h"
 
 namespace {
 	const SIZE IMAGESIZE{ 128,128 };
@@ -48,10 +49,10 @@ Enemy::Enemy(GameObject* parent)
 {
 
 	/*アニメーション*/
-	framecnt_=0;	
-	FCmax_=0;	
-	animframe_=0;
-	AFmax_=0;
+	framecnt_ = 0;
+	FCmax_ = 0;
+	animframe_ = 0;
+	AFmax_ = 0;
 }
 
 Enemy::~Enemy()

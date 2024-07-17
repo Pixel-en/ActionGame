@@ -92,6 +92,7 @@
     <ClCompile Include="CheckPoint.cpp" />
     <ClCompile Include="MoveObject.cpp" />
     <ClCompile Include="BackGround.cpp" />
+    <ClCompile Include="HitObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -174,5 +175,6 @@
     <ClInclude Include="CheckPoint.h" />
     <ClInclude Include="MoveObject.h" />
     <ClInclude Include="BackGround.h" />
+    <ClInclude Include="HitObject.h" />
   </ItemGroup>
 </Project>
