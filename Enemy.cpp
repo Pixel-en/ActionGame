@@ -4,7 +4,6 @@
 #include "Field.h"
 #include "ImGui/imgui.h"
 #include "Clear.h"
-#include "HitObject.h"
 
 namespace {
 	const SIZE IMAGESIZE{ 128,128 };
@@ -53,10 +52,14 @@ Enemy::Enemy(GameObject* parent)
 	FCmax_ = 0;
 	animframe_ = 0;
 	AFmax_ = 0;
+
+	hitobj_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 }
 
 Enemy::~Enemy()
 {
+	if (hitobj_ == nullptr)
+		delete hitobj_;
 }
 
 void Enemy::Initialize()
@@ -82,27 +85,12 @@ void Enemy::Update()
 	Gaccel += GRAVITY;
 	transform_.position_.y += Gaccel;
 
-	//下側当たり判定
-	int DLhit = field->CollisionDownCheck(transform_.position_.x + LDPOINT.x, transform_.position_.y + LDPOINT.y + 1);
-	int DRhit = field->CollisionDownCheck(transform_.position_.x + RDPOINT.x, transform_.position_.y + RDPOINT.y + 1);
-	int push = max(DLhit, DRhit);
-	if (push >= 1) {
-		transform_.position_.y -= push - 1;
+
+	short cflag = hitobj_->AllCollisionCheck();
+	if (cflag & 0b1000 || cflag & 0b0100) {
 		Gaccel = 0;
 		onGround_ = true;
 	}
-
-	//右側当たり判定
-	int Rhitx = transform_.position_.x + RDPOINT.x;
-	int Rhity = transform_.position_.y + RDPOINT.y;
-	push = field->CollisionRightCheck(Rhitx, Rhity);
-	transform_.position_.x -= push;
-
-	//左側当たり判定
-	int Lhitx = transform_.position_.x + LDPOINT.x;
-	int Lhity = transform_.position_.y + LDPOINT.y;
-	push = field->CollisionLeftCheck(Lhitx, Lhity);
-	transform_.position_.x += push;
 
 	if (p == nullptr)
 		return;

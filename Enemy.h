@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "HitObject.h"
 
 //プレイヤーが当たったらプレイヤーの負け
 //攻撃してくる
@@ -59,6 +60,7 @@ class Enemy:public Object
 	void UpdateDeath();
 
 
+	HitObject* hitobj_;
 
 public:
 

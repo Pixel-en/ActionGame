@@ -18,11 +18,19 @@ HitObject::~HitObject()
 
 bool HitObject::RightCollisionCheck()
 {
-	int Uhit = field->CollisionUpCheck(obj_->GetPosition().x + Ru_.x,
-		obj_->GetPosition().y + Ru_.y);
-	int Dhit = field->CollisionUpCheck(obj_->GetPosition().x + Rd_.x,
-		obj_->GetPosition().y + Rd_.y);
-	int push = max(Uhit, Dhit);
+	//int Uhit = field->CollisionRightCheck(obj_->GetPosition().x + Ru_.x,
+	//	obj_->GetPosition().y + Ru_.y);
+	//int Dhit = field->CollisionRightCheck(obj_->GetPosition().x + Rd_.x,
+	//	obj_->GetPosition().y + Rd_.y);
+	//int push = max(Uhit, Dhit);
+	//if (push >= 1) {
+	//	float val = obj_->GetPosition().x - push;
+	//	obj_->SetPositionX(val);
+	//	return true;
+	//}
+	//return false;
+
+	int push = field->CollisionRightCheck(obj_->GetPosition().x + Rd_.x, obj_->GetPosition().y + Rd_.y);
 	if (push >= 1) {
 		float val = obj_->GetPosition().x - push;
 		obj_->SetPositionX(val);
@@ -33,9 +41,9 @@ bool HitObject::RightCollisionCheck()
 
 bool HitObject::LeftCollisionCheck()
 {
-	//int Uhit = field->CollisionUpCheck(obj_->GetPosition().x + Lu_.x,
+	//int Uhit = field->CollisionLeftCheck(obj_->GetPosition().x + Lu_.x,
 	//	obj_->GetPosition().y + Lu_.y);
-	//int Dhit = field->CollisionUpCheck(obj_->GetPosition().x + Ld_.x,
+	//int Dhit = field->CollisionLeftCheck(obj_->GetPosition().x + Ld_.x,
 	//	obj_->GetPosition().y + Ld_.y);
 	//int push = max(Uhit, Dhit);
 	//if (push >= 1) {
@@ -45,12 +53,7 @@ bool HitObject::LeftCollisionCheck()
 	//}
 	//return false;
 
-	int push = 0;
-
-	//¶‘¤“–‚½‚è”»’è
-	int Lhitx = obj_->GetPosition().x + Ld_.x;
-	int Lhity = obj_->GetPosition().y + Ld_.y;
-	push = max(field->CollisionRightCheck(Lhitx, Lhity), push);
+	int push = field->CollisionLeftCheck(obj_->GetPosition().x + Ld_.x, obj_->GetPosition().y + Ld_.y);
 	if (push >= 1) {
 		float val = obj_->GetPosition().x + push;
 		obj_->SetPositionX(val);
@@ -94,28 +97,30 @@ bool HitObject::DownCollisionCheck()
 short HitObject::AllCollisionCheck()
 {
 	short bit = 0b0000;
-
-	if (DownCollisionCheck()) { bit |= 0b1000; }
-	if (UpCollisionCheck()) { bit |= 0b0100; }
 	if (LeftCollisionCheck()) { bit |= 0b0010; }
 	if (RightCollisionCheck()) { bit |= 0b0001; }
+	if (DownCollisionCheck()) { bit |= 0b1000; }
+	if (UpCollisionCheck()) { bit |= 0b0100; }
+
 
 	return bit;
 }
 
 short HitObject::SelectCollisionCheck(short _bit)
 {
+	short bit=0b0000;
+
 	if (_bit & 0b1000)
-		DownCollisionCheck();
+		if (DownCollisionCheck()) { bit |= 0b1000; }
 
 	if (_bit & 0b0100)
-		UpCollisionCheck();
+		if (UpCollisionCheck()) { bit |= 0b0100; }
 
 	if (_bit & 0b0010)
-		LeftCollisionCheck();
+		if (LeftCollisionCheck()) { bit |= 0b0010; }
 
 	if (_bit & 0b0001)
-		RightCollisionCheck();
+		if (RightCollisionCheck()) { bit |= 0b0001; }
 
-	return 0;
+	return bit;
 }

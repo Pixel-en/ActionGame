@@ -65,7 +65,8 @@ Player::Player(GameObject* parent)
 
 Player::~Player()
 {
-	delete hitobj_;
+	if (hitobj_ == nullptr)
+		delete hitobj_;
 }
 
 void Player::Initialize()
@@ -111,18 +112,12 @@ void Player::Update()
 	Gaccel_ += GRAVITY;
 	transform_.position_.y += Gaccel_;
 
-	//下側当たり判定
-	int DLhit = field->CollisionDownCheck(transform_.position_.x + LDPOINT.x ,
-										  transform_.position_.y + LDPOINT.y + 1 );
-	int DRhit = field->CollisionDownCheck(transform_.position_.x + RDPOINT.x ,
-										  transform_.position_.y + RDPOINT.y + 1 );
-	int push = max(DLhit, DRhit);
-	if (push >= 1) {
-		transform_.position_.y -= push - 1;
+
+	if (hitobj_->DownCollisionCheck()) {
 		Gaccel_ = 0.0f;
 		onjump_ = false;
-		//animtype_ = Animation::IDOL;
 	}
+
 
 
 	if (transform_.position_.y > 1000.0f) {
@@ -184,8 +179,6 @@ void Player::Update()
 				
 				Gaccel_ = 0.0;
 
-
-
 				transform_.position_.y -= MOVESPEED * Time::DeltaTime();
 				onjump_ = true;
 			}
@@ -198,29 +191,10 @@ void Player::Update()
 		}
 
 		if (onjump_) {
-			//animtype_ = Animation::JUMP;
-			//transform_.position_.y -= 9.0;
-			//右側当たり判定
-			int Rhitx = transform_.position_.x + RDPOINT.x  ;
-			int Rhity = transform_.position_.y + RDPOINT.y - 1;
-			push = field->CollisionRightCheck(Rhitx, Rhity);
-
-			//左側当たり判定
-			int Lhitx = transform_.position_.x + LDPOINT.x  ;
-			int Lhity = transform_.position_.y + LDPOINT.y - 1  ;
-			push = max(field->CollisionRightCheck(Lhitx, Lhity), push);
-			transform_.position_.y += push - 1;
-
-			//上方向当たり判定
-			int ULhit = field->CollisionUpCheck(transform_.position_.x + LUPOINT.x  ,
-				transform_.position_.y + LUPOINT.y - 1  );
-			int URhit = field->CollisionUpCheck(transform_.position_.x + RUPOINT.x  ,
-				transform_.position_.y + RUPOINT.y - 1  );
-			push = max(ULhit, URhit);
-			transform_.position_.y += push + 1;
-			if (push > 0) {
-				Gaccel_ = 0.0;
-			}
+			short cflag = hitobj_->SelectCollisionCheck(0b0111);
+			//ここ消すと天井スライドができる
+			if (cflag & 0b0100)
+				Gaccel_ = 0;
 		}
 
 		if (CheckHitKey(KEY_INPUT_J) && !attackbuffer_&&!attackon_) {
@@ -273,12 +247,6 @@ void Player::Update()
 		}
 		BEanimtype_ = animtype_;
 	}
-
-	//int a = hitobj_->AllCollisionCheck();
-	//ImGui::Begin("a");
-	//ImGui::InputInt("a", &a);
-	//ImGui::End();
-
 
 	//右固定カメラ
 	Camera* cam = GetParent()->FindGameObject<Camera>();
