@@ -24,10 +24,6 @@ class Enemy:public Object
 	int dir_;
 	XMFLOAT3 Ppos;
 
-	int framecnt_;	//フレームのカウント
-	int FCmax_;	//フレームカウントの最大値
-	int animframe_;	//アニメーションのフレームカウント
-	int AFmax_;		//アニメーションのフレーム数
 
 	int attackfrm_;
 

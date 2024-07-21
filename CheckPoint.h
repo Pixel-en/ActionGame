@@ -2,8 +2,6 @@
 #include "Object.h"
 
 
-//オブジェクトを作るときのコピー用テンプレート
-//注意：このオブジェクトを継承しないこと
 class CheckPoint :public Object
 {
 
@@ -22,7 +20,12 @@ public:
 	//更新
 	void Update() override;
 
+	//描画
+	void Draw() override;
+
 	//開放
 	void Release() override;
+
+
 };
 

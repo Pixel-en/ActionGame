@@ -1,12 +1,11 @@
 #pragma once
-#include "Engine/GameObject.h"
+#include "Object.h"
 
 
-class MoveObject :public GameObject
+class MoveObject :public Object
 {
-
-	int hImage_;
-
+	float sinAngle_;
+	float baseY_;
 public:
 
 	//コンストラクタ
@@ -14,7 +13,7 @@ public:
 	MoveObject(GameObject* parent);
 
 	//デストラクタ
-	~MoveObject();
+	~MoveObject() override;
 
 	//初期化
 	void Initialize() override;
@@ -27,5 +26,7 @@ public:
 
 	//開放
 	void Release() override;
+
+	void Setpos(float x, float y);
 };
 

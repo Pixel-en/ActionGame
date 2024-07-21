@@ -93,6 +93,7 @@
     <ClCompile Include="MoveObject.cpp" />
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="HitObject.cpp" />
+    <ClCompile Include="HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -176,5 +177,6 @@
     <ClInclude Include="MoveObject.h" />
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="HitObject.h" />
+    <ClInclude Include="HUD.h" />
   </ItemGroup>
 </Project>

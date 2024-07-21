@@ -5,6 +5,7 @@ class BackGround :public GameObject
 {
 
 	int hImage_;
+	int hImagemove_;
 
 public:
 

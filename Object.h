@@ -1,10 +1,20 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "HitObject.h"
 
 class Object :public GameObject
 {
 protected:
 	int hImage_;
+
+	int framecnt_;	//フレームのカウント
+	int FCmax_;	//フレームカウントの最大値
+	int animframe_;	//アニメーションのフレームカウント
+	int AFmax_;		//アニメーションのフレーム数
+
+	SIZE hitsize_;
+
+	HitObject* hitobj_;
 
 public:
 

@@ -46,8 +46,8 @@ class Player :public GameObject
 	Transform jumpbe_;
 
 	bool HitAttack(int _x, int _y, SIZE _size);
-
 	HitObject* hitobj_;
+
 
 public:
 

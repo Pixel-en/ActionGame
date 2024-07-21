@@ -6,6 +6,7 @@
 #include "global.h"
 #include "RootObject.h"
 #include "../ImGui/imgui_impl_dxlib.hpp"
+#include <time.h>
 
 namespace Screen {
 	static const int WIDTH = 1280;
@@ -18,6 +19,9 @@ namespace Screen {
 // エントリーポイント
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+
+	srand((unsigned)time(NULL));
+
 	SetGraphMode(Screen::WIDTH, Screen::HEIGHT, 32);
 	SetOutApplicationLogValidFlag(FALSE); // ログを出さない
 
@@ -49,6 +53,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	ImGui_ImplDXlib_Init();
+
 
 	RootObject* pRootObject = new RootObject;
 	pRootObject->Initialize();

@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Clear.h"
 #include "CheckPoint.h"
+#include "MoveObject.h"
 
 namespace {
 	const int IMAGESIZE{ 32 };
@@ -52,37 +53,45 @@ void Field::Reset()
 		for (int j = 0; j < width; j++) {
 			switch (csv->GetInt(i, j))
 			{
-			case 102:{
+			case 102: {
 				Goal* g = Instantiate<Goal>(GetParent());
 				g->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 				g->Reset();
 			}
-				break;
+					break;
 			case 103: {
-				c->AddMcount();
-				Material* m = Instantiate<Material>(GetParent());
-				m->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
-				m->Reset();
+				CheckPoint* ch = Instantiate<CheckPoint>(GetParent());
+				ch->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				ch->Reset();
 			}
-				break;
+					break;
 			case 104: {
 				c->AddEcount();
 				Enemy* e = Instantiate<Enemy>(GetParent());
 				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 				e->Reset();
 			}
-				break;
+					break;
 			case 105: {
 				Player* p = GetParent()->FindGameObject<Player>();
 				p->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
 			}
-				  break;
+					break;
 			case 106: {
-				CheckPoint* ch = Instantiate<CheckPoint>(GetParent());
-				ch->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
-				ch->Reset();
+
+				c->AddMcount();
+				Material* m = Instantiate<Material>(GetParent());
+				m->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				m->Reset();
 			}
-				  break;
+					break;
+			case 107:{
+				MoveObject * mo = Instantiate<MoveObject>(GetParent());
+				mo->Setpos(j * IMAGESIZE, i * IMAGESIZE);
+				//mo->Reset();
+
+				break;
+			}
 			default:
 				break;
 			}

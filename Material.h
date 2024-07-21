@@ -1,10 +1,15 @@
 #pragma once
 #include "Object.h"
+#include <vector>
 
 //材料のクラス
 class Material :public Object
 {
+	int sizeX_;
+	int sizeY_;
 
+	std::vector<std::string> Mlist;
+	float Gaccel;
 public:
 
 	//コンストラクタ
@@ -19,6 +24,9 @@ public:
 
 	//更新
 	void Update() override;
+
+	//描画
+	void Draw() override;
 
 	//開放
 	void Release() override;

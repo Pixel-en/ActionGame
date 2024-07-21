@@ -20,6 +20,9 @@ public:
 	//XV
 	void Update() override;
 
+	//•`‰æ
+	void Draw() override;
+
 	//ŠJ•ú
 	void Release() override;
 
