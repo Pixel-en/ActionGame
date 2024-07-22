@@ -8,6 +8,7 @@
 #include "Clear.h"
 #include "bitset"
 #include <string>
+#include "MoveObject.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -54,7 +55,7 @@ bool Player::HitAttack(int _x, int _y, SIZE _size)
 
 Player::Player(GameObject* parent)
 	:GameObject(parent, "Player"), hImage_(-1), attackon_(false), pRdir_(true), framecnt_(0), animframe_(0),attackbuffer_(false),bufferTime_(BUFFER),
-	onjump_(false), flagon_(false), animtype_(IDOL),FCmax_(0),AFmax_(0),BEanimtype_(NONE),Gaccel_(0.0f)
+	onjump_(false), flagon_(false), animtype_(IDOL),FCmax_(0),AFmax_(0),BEanimtype_(NONE),Gaccel_(0.0f),beCol_(false)
 {
 	hitobj_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 }
@@ -191,6 +192,19 @@ void Player::Update()
 			//ここ消すと天井スライドができる
 			if (cflag & 0b0100)
 				Gaccel_ = 0;
+		}
+
+		MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
+		short bit = mo->CollisionCheck(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this, HITBOXSIZE);
+		if (bit & 0b1000 || bit & 0b0100) {
+			Gaccel_ = 9.8f;
+			if (bit & 0b1000)
+				onjump_ = false;
+			beCol_ = true;
+		}
+		else if (beCol_) {
+			Gaccel_ = 0.0f;
+			beCol_ = false;
 		}
 
 		if (CheckHitKey(KEY_INPUT_J) && !attackbuffer_&&!attackon_) {

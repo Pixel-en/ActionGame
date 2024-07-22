@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "Player.h"
 
 
 class MoveObject :public Object
@@ -28,11 +29,21 @@ public:
 	//開放
 	void Release() override;
 
-	void CollisionCheck(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj);
+	/// <summary>
+	/// 足場判定があるかどうが
+	/// </summary>
+	/// <param name="_Lu">左上の点</param>
+	/// <param name="_Ru">右上の点</param>
+	/// <param name="_Ld">左下の点</param>
+	/// <param name="_Rd">右下の点</param>
+	/// <param name="_obj">プレイヤー</param>
+	/// <param name="_boxsize">ヒットボックスのサイズ</param>
+	/// <returns>当たった4ビット列　左から下、上、左、右</returns>
+	short CollisionCheck(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, Player* _obj,SIZE _boxsize);
 
-	void InstantL() { left = Instantiate<Left>(this); ins |= 0b001; }
-	void InstantR() { right = Instantiate<Right>(this); ins |= 0b010;}
-	void InstantC() { center = Instantiate<Center>(this); ins |= 0b100;}
+	void InstantL() { left = Instantiate<Left>(GetParent()); ins |= 0b001; }
+	void InstantR() { right = Instantiate<Right>(GetParent()); ins |= 0b010;}
+	void InstantC() { center = Instantiate<Center>(GetParent()); ins |= 0b100;}
 
 	void SetLpos(float x, float y) { left->SetPosition(x, y, 0); baseY_ = y; }
 	void SetRpos(float x, float y) { right->SetPosition(x, y, 0); baseY_ = y; }

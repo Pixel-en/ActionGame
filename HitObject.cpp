@@ -119,7 +119,7 @@ short HitObject::AllCollisionCheck()
 
 short HitObject::SelectCollisionCheck(short _bit)
 {
-	short bit=0b0000;
+	short bit = 0b0000;
 
 	if (_bit & 0b1000)
 		if (DownCollisionCheck()) { bit |= 0b1000; }

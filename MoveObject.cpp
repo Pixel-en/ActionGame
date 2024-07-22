@@ -51,31 +51,71 @@ void MoveObject::Draw()
 	if (!(ins & 0b111))
 		return;
 
-
 	left->Draw();
 	right->Draw();
 	center->Draw();
-
-	ImGui::Begin("temp");
-	ImGui::InputFloat("x", &transform_.position_.x);
-	ImGui::InputFloat("y", &transform_.position_.y);
-	ImGui::End();
-
 }
 
 void MoveObject::Release()
 {
 }
 
-void MoveObject::CollisionCheck(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj)
+short MoveObject::CollisionCheck(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, Player* _obj,SIZE _boxsize)
 {
+	short temp = 0b0000;
+
 	if (!(ins & 0b111))
-		return;
+		return temp;
+
+	Transform trans_;
+	trans_.position_ = _obj->GetPosition();
 
 	VECTOR LUPOINT{ left->GetPosition().x,left->GetPosition().y };
-	VECTOR RUPOINT{ right->GetPosition().x+IMAGESIZE.cx,right->GetPosition().y};
-	VECTOR LDPOINT{ left->GetPosition().x,left->GetPosition().y + IMAGESIZE.cy };
-	VECTOR RDPOINT{ right->GetPosition().x + IMAGESIZE.cx,right->GetPosition().y + IMAGESIZE.cy };
+	VECTOR RUPOINT{ right->GetPosition().x + IMAGESIZE.cx,right->GetPosition().y };
+	VECTOR LDPOINT{ left->GetPosition().x,left->GetPosition().y + IMAGESIZE.cy / 2 };
+	VECTOR RDPOINT{ right->GetPosition().x + IMAGESIZE.cx,right->GetPosition().y + IMAGESIZE.cy / 2 };
+	SIZE BOXSIZE{ fabs(LUPOINT.x - RUPOINT.x),fabs(LUPOINT.y - LDPOINT.y) };
+	
+	if (_obj->HitCheck(LUPOINT.x, LUPOINT.y, BOXSIZE)) {
+		//down
+		if (max(abs(trans_.position_.y+ _Ld.y + 1 - LUPOINT.y),
+			abs(trans_.position_.y + _Rd.y + 1 - RUPOINT.y)) >= 1
+			
+			&& max(abs(trans_.position_.y + _Ld.y + 1 - LUPOINT.y),
+			abs(trans_.position_.y + _Rd.y + 1 - RUPOINT.y)) < BOXSIZE.cy) {
+			
+			int push = max(abs(trans_.position_.y + _Ld.y + 1 - LUPOINT.y), abs(trans_.position_.y +_Rd.y + 1 - RUPOINT.y));
+			trans_.position_.y -= push - 1;
+			temp |= 0b1000;
+		}
+		//up
+		if (max(abs(trans_.position_.y + _Ld.y - 1 - LUPOINT.y),
+			abs(trans_.position_.y + _Rd.y - 1 - RUPOINT.y)) >= 1
+
+			&& max(abs(trans_.position_.y + _Ld.y - 1 - LUPOINT.y),
+				abs(trans_.position_.y + _Rd.y - 1 - RUPOINT.y)) < BOXSIZE.cy) {
+
+			int push = max(abs(trans_.position_.y + _Ld.y - 1 - LUPOINT.y), abs(trans_.position_.y + _Rd.y - 1 - RUPOINT.y));
+			trans_.position_.y += push + 1;
+			temp |= 0b0100;
+		}
+		//left
+		if (abs(trans_.position_.y + _Ld.x - RDPOINT.x) >= 1 && abs(trans_.position_.y + _Ld.x - RDPOINT.x) < _boxsize.cx) {
+			int push = abs(trans_.position_.y + _Ld.x - RDPOINT.x);
+			transform_.position_.x += push;
+			temp |= 0b0010;
+		}
+		//right
+		if (abs(trans_.position_.y + _Rd.x - LDPOINT.x) >= 1 && abs(trans_.position_.y + _Rd.x - LDPOINT.x) < _boxsize.cx) {
+			int push = abs(trans_.position_.y + _Rd.x - LDPOINT.x);
+			transform_.position_.x -= push;
+			temp |= 0b0001;
+		}
+
+		_obj->SetPosition(trans_.position_);
+	}
+
+	return temp;
 }
 
 MoveObject::Left::Left(GameObject* parent)
@@ -167,7 +207,7 @@ void MoveObject::Center::Update()
 void MoveObject::Center::Draw()
 {
 
-	int xpos = this->transform_.position_.x;
+	int xpos = transform_.position_.x;
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();

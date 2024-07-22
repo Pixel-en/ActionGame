@@ -43,10 +43,12 @@ class Player :public GameObject
 	bool attackbuffer_;	//攻撃後の待機中かどうか
 	float bufferTime_;	//待機時間
 
-	Transform jumpbe_;
+	//前フレームにリフトに乗っていたかどうか
+	bool beCol_;
 
 	bool HitAttack(int _x, int _y, SIZE _size);
 	HitObject* hitobj_;
+
 
 
 public:

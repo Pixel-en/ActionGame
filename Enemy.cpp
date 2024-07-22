@@ -126,18 +126,6 @@ void Enemy::Update()
 	}
 
 	AnimationCheck();
-
-	float a = animtype_;
-	float time = Time::DeltaTime();
-	ImGui::Begin("a");
-	ImGui::InputFloat("frm", &a);
-	ImGui::InputInt("frmc", &framecnt_);
-	ImGui::InputInt("fc", &FCmax_);
-	ImGui::InputInt("animf", &animframe_);
-	ImGui::InputInt("af", &AFmax_);
-	ImGui::InputFloat3("pos", &SpawnPoint_.x);
-	ImGui::InputFloat("time", &time);
-	ImGui::End();
 }
 
 void Enemy::Draw()
