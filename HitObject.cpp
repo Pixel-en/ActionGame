@@ -1,19 +1,18 @@
 #include "HitObject.h"
 
 HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj)
-	:Lu_(_Lu),Ru_(_Ru),Ld_(_Ld),Rd_(_Rd),obj_(nullptr)
+	:Lu_(_Lu), Ru_(_Ru), Ld_(_Ld), Rd_(_Rd), obj_(nullptr)
 {
 	obj_ = _obj;
-	objectName_ = "HitObject";
 	field = obj_->GetParent()->FindGameObject<Field>();
-	if (field == nullptr)
-		MessageBox(NULL, "Fieldオブジェクトが見つかりません", NULL, MB_OK);
+	if (field == nullptr) {
+		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
+		assert(false);
+	}
 }
 
 HitObject::~HitObject()
 {
-	if (obj_ != nullptr)
-		delete obj_;
 }
 
 bool HitObject::RightCollisionCheck()

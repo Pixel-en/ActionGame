@@ -58,7 +58,7 @@ Enemy::Enemy(GameObject* parent)
 
 Enemy::~Enemy()
 {
-	if (hitobj_ == nullptr)
+	if (hitobj_ != nullptr)
 		delete hitobj_;
 }
 

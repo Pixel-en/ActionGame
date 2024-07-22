@@ -227,7 +227,8 @@ void GameObject::UpdateSub()
 
 	for (auto it = childList_.begin(); it != childList_.end(); it++)
 	{
-		(*it)->UpdateSub();
+		if((*it)->IsEntered() == true)
+			(*it)->UpdateSub();
 	}
 
 	for (auto it = childList_.begin(); it != childList_.end();)
@@ -252,7 +253,8 @@ void GameObject::DrawSub()
 	//その子オブジェクトの描画処理
 	for (auto it = childList_.begin(); it != childList_.end(); it++)
 	{
-		(*it)->DrawSub();
+		if((*it)->IsVisibled() == true)
+			(*it)->DrawSub();
 	}
 }
 

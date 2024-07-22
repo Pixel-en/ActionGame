@@ -13,10 +13,6 @@ namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
 	const int IMAGESIZE{ 48 };				//画像サイズ
-	//const VECTOR LUPOINT{ 1.0f,14.0f };
-	//const VECTOR RUPOINT{ 27.0f,14.0f };
-	//const VECTOR LDPOINT{ 1.0f,46.0f };
-	//const VECTOR RDPOINT{ 27.0f,46.0f };
 	const VECTOR LUPOINT{ 11.0f,14.0f };		//左上の座標
 	const VECTOR RUPOINT{ 37.0f,14.0f };	//右上の座標
 	const VECTOR LDPOINT{ 11.0f,46.0f };		//左下の座標
@@ -65,7 +61,7 @@ Player::Player(GameObject* parent)
 
 Player::~Player()
 {
-	if (hitobj_ == nullptr)
+	if (hitobj_ != nullptr)
 		delete hitobj_;
 }
 

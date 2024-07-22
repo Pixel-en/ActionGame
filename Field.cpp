@@ -85,11 +85,22 @@ void Field::Reset()
 				m->Reset();
 			}
 					break;
-			case 107:{
-				MoveObject * mo = Instantiate<MoveObject>(GetParent());
-				mo->Setpos(j * IMAGESIZE, i * IMAGESIZE);
-				//mo->Reset();
-
+			case 107: {
+				MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
+				mo->InstantL();
+				mo->SetLpos(j * IMAGESIZE, i * IMAGESIZE);
+				break;
+			}
+			case 108: {
+				MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
+				mo->InstantC();
+				mo->SetCpos(j * IMAGESIZE, i * IMAGESIZE);
+				break;
+			}
+			case 109: {
+				MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
+				mo->InstantR();
+				mo->SetRpos(j * IMAGESIZE, i * IMAGESIZE);
 				break;
 			}
 			default:

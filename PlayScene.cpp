@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Clear.h"
 #include "BackGround.h"
+#include "MoveObject.h"
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
@@ -37,11 +38,12 @@ void PlayScene::Reset()
 
 	Instantiate<BackGround>(this);
 
+
 	Field* f = Instantiate<Field>(this);
 	f->SetFileName(Filename_);
 	Camera* cam = FindGameObject<Camera>();
 	cam->SetValue(0);
-
+	Instantiate<MoveObject>(this);
 	Instantiate<Player>(this);
 
 	f->Reset();

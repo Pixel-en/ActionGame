@@ -1,11 +1,10 @@
 #pragma once
-#include "Engine/GameObject.h"
 #include "Field.h"
 
 /// <summary>
 /// ’nŒ`‚Æ‚Ì“–‚½‚è”»’è
 /// </summary>
-class HitObject :public GameObject
+class HitObject
 {
 	VECTOR Lu_, Ru_, Ld_, Rd_;
 	GameObject* obj_;
