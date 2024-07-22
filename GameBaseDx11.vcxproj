@@ -145,7 +145,6 @@
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="HitObject.cpp" />
-    <ClCompile Include="HUD.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_dx11.cpp" />
@@ -158,6 +157,7 @@
     <ClCompile Include="MoveObject.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayGUI.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -178,7 +178,6 @@
     <ClInclude Include="Field.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="HitObject.h" />
-    <ClInclude Include="HUD.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -193,6 +192,7 @@
     <ClInclude Include="MoveObject.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayGUI.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />

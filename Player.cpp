@@ -18,10 +18,24 @@ namespace {
 	const VECTOR RUPOINT{ 37.0f,14.0f };	//右上の座標
 	const VECTOR LDPOINT{ 11.0f,46.0f };		//左下の座標
 	const VECTOR RDPOINT{ 37.0f,46.0f };	//右下の座標
-	const SIZE HITBOXSIZE{ 26,32 };			//当たり判定のボックスのサイズ
+	const SIZE HITBOXSIZE{ 26,32};			//当たり判定のボックスのサイズ
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
 	const VECTOR PCENTER{ 26.0f,32.0f };
+}
+
+namespace SET2{
+	const float MOVESPEED{ 100 };			//動くスピード
+	const float GRAVITY{ 9.8f / 60.0f };	//重力
+	const int IMAGESIZE{ 48 * 2 };				//画像サイズ
+	const VECTOR LUPOINT{ 11.0f * 2,14.0f * 2 };		//左上の座標
+	const VECTOR RUPOINT{ 37.0f * 2,14.0f * 2 };	//右上の座標
+	const VECTOR LDPOINT{ 11.0f * 2,46.0f * 2 };		//左下の座標
+	const VECTOR RDPOINT{ 37.0f * 2,46.0f * 2 };	//右下の座標
+	const SIZE HITBOXSIZE{ 26 * 2,32 * 2 };			//当たり判定のボックスのサイズ
+	const float BUFFER{ 0.5f };		//攻撃後の硬直
+	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
+	const VECTOR PCENTER{ 26.0f * 2,32.0f * 2 };
 }
 
 bool Player::HitAttack(int _x, int _y, SIZE _size)
@@ -290,9 +304,9 @@ void Player::Draw()
 
 	//メイン出力
 	if (pRdir_==true)
-		DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);
+		DrawRectGraph(xpos, ypos,  animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);
 	else
-		DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);
+		DrawRectGraph(xpos, ypos,  animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);
 
 #if 1
 	//デバッグ用出力

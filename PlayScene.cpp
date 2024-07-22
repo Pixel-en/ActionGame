@@ -5,6 +5,7 @@
 #include "Clear.h"
 #include "BackGround.h"
 #include "MoveObject.h"
+#include "PlayGUI.h"
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
@@ -52,7 +53,7 @@ void PlayScene::Reset()
 	deathtimer_ = DTIME;
 	playtimer_ = PTIME;
 	state = PlayScene::STAY;
-	
+	Instantiate<PlayGUI>(this);
 
 }
 
