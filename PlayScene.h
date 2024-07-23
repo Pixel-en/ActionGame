@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "vector"
 
 //テストシーンを管理するクラス
 class PlayScene : public GameObject
@@ -26,6 +27,9 @@ private:
 	void UpdateClear();
 	void UpdateDeath();
 
+	std::vector<std::string> maplist;
+	int listnum;
+
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
@@ -48,4 +52,6 @@ public:
 	bool CanMove() { return (state == PlayState::PLAY); };
 
 	void DeadState();
+
+	float GetPlayTimer() { return playtimer_; };
 };

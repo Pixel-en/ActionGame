@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
-#include "PlayScene.h"
+#include "PlaySound.h"
 
 Clear::Clear(GameObject* parent)
 	:GameObject(parent,"Clear")
@@ -44,11 +44,17 @@ void Clear::Update()
 	if (!isgoal_&&!isGetM_ && !isKillE_&&p!=nullptr) {
 		if (ch != nullptr) {
 			if (ch->IsHitting() || ischeck_) {
+				if (!ischeck_){
+					Playsound* ps = GetParent()->FindGameObject<Playsound>();
+					ps->SoundON("Flag");
+				}
 				ischeck_ = true;
 				ch->SetPosition(-100, 100, 0);
 				if (g != nullptr) {
 					if (g->IsHitting())
 					{
+						Playsound* ps = GetParent()->FindGameObject<Playsound>();
+						ps->SoundON("Flag");
 						isgoal_ = true;
 						g->KillMe();
 					}
@@ -57,11 +63,14 @@ void Clear::Update()
 		}
 		for (Material* M : m) {
 			if (M->IsHitting()) {
+				Playsound* ps = GetParent()->FindGameObject<Playsound>();
+				ps->SoundON("Mine");
 				M->KillMe();
 			}
 		}
 		for (Enemy* E : e) {
 			if (E->IsHitting()) {
+
 				p->DeadState();
 			}
 

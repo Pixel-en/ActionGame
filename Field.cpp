@@ -47,7 +47,6 @@ void Field::Reset()
 		}
 	}
 
-#if 1
 
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
@@ -109,7 +108,6 @@ void Field::Reset()
 
 		}
 	}
-#endif
 }
 
 void Field::Update()
@@ -131,7 +129,6 @@ void Field::Draw()
 			DrawRectGraph(j * IMAGESIZE - scroll, i * IMAGESIZE-scrollY, IMAGESIZE * (chipNum % 10), IMAGESIZE * (chipNum / 10), IMAGESIZE, IMAGESIZE, hImage_, true);
 		}
 	}
-
 }
 
 void Field::Release()

@@ -78,5 +78,10 @@ public:
 
 	void DeadState();
 
+	bool isIdol() {
+		if (animtype_ == Animation::IDOL)
+			return true;
+		return false;
+	};
 };
 

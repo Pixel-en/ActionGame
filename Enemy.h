@@ -86,6 +86,8 @@ public:
 	SIZE GetImageSize();
 
 	void DeadState();
+
+	SIZE GetSize() override;
 private:
 
 	//プレイヤーが検知エリアに入ったかどうか

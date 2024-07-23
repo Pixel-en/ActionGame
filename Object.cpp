@@ -4,7 +4,7 @@
 
 namespace {
 	const SIZE HITSIZE{ 64,64 };
-	const int IMAGESIZE{ 64 };				//画像サイズ
+	const SIZE IMAGESIZE{ 64,64 };				//画像サイズ
 	const VECTOR LUPOINT{ 0.0f,1.0f };	//左上の座標
 	const VECTOR RUPOINT{ 64.0f,1.0f };	//右上の座標
 	const VECTOR LDPOINT{ 0.0f,63.0f };	//左下の座標
@@ -77,4 +77,9 @@ bool Object::IsHitting()
 		return true;
 
 	return false;
+}
+
+SIZE Object::GetSize()
+{
+	return IMAGESIZE;
 }

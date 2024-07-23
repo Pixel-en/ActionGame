@@ -133,7 +133,10 @@
   <ItemGroup>
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="CheckPoint.cpp" />
+    <ClCompile Include="ClaerScene.cpp" />
     <ClCompile Include="Clear.cpp" />
+    <ClCompile Include="ClearPlayer.cpp" />
+    <ClCompile Include="CleraLogo.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Engine\CsvReader.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
@@ -159,15 +162,20 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayGUI.cpp" />
     <ClCompile Include="PlayScene.cpp" />
+    <ClCompile Include="PlaySound.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TitleText.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CheckPoint.h" />
+    <ClInclude Include="ClaerScene.h" />
     <ClInclude Include="Clear.h" />
+    <ClInclude Include="ClearPlayer.h" />
+    <ClInclude Include="CleraLogo.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Engine\CsvReader.h" />
     <ClInclude Include="Engine\GameObject.h" />
@@ -195,10 +203,16 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayGUI.h" />
     <ClInclude Include="PlayScene.h" />
+    <ClInclude Include="PlaySound.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="TitleText.h" />
+    <ClInclude Include="Tutorial.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ActionGame.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

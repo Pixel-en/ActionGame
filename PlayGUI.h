@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include <vector>
 
 class PlayGUI final :public GameObject
 {
@@ -11,6 +12,22 @@ class PlayGUI final :public GameObject
 	std::string text;
 	float x, y;
 
+	std::vector<VECTOR> chipnum_;
+
+	int Enum;
+	int Mnum;
+	struct Data
+	{
+		int handle;
+		SIZE imagesize;
+	};
+	Data Edata;
+	Data Mdata;
+
+	float CDtimer_;
+	bool outset_;
+
+	int playtimer_;
 public:
 
 	//コンストラクタ
@@ -31,9 +48,6 @@ public:
 
 	//開放
 	void Release() override;
-
-
-private:
 
 	/// <summary>
 	/// 文字表示

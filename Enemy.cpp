@@ -4,7 +4,7 @@
 #include "Field.h"
 #include "ImGui/imgui.h"
 #include "Clear.h"
-
+#include "PlaySound.h"
 namespace {
 	const SIZE IMAGESIZE{ 128,128 };
 	const float LOOKRANGE{ 150 };
@@ -192,6 +192,10 @@ void Enemy::AnimationCheck()
 
 void Enemy::DeadState()
 {
+	if (animtype_ != EAnimation::DEATH) {
+		Playsound* ps = GetParent()->FindGameObject<Playsound>();
+		ps->SoundON("EDeath");
+	}
 	animtype_ = EAnimation::DEATH;
 	FCmax_ = 20;
 	AFmax_ = 3;
@@ -279,6 +283,8 @@ void Enemy::UpdateRun()
 		if (IsExistPlayer(ATTACKRANGE)) {
 			speed_ = ATTACKSPEED;
 			Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+			Playsound* ps = GetParent()->FindGameObject<Playsound>();
+			ps->SoundON("EAttack");
 			animtype_ = EAnimation::ATTACK;
 			attackfrm_ = 0;
 			startmove_ = false;
@@ -312,6 +318,7 @@ void Enemy::UpdateRun()
 
 void Enemy::UpdateAttack()
 {
+
 
 	if (attackfrm_ < 5)
 		animframe_ = 3;
@@ -387,5 +394,9 @@ void Enemy::Reset()
 	transform_.position_.x += push;
 
 	SpawnPoint_ = transform_.position_;
+}
+
+SIZE Enemy::GetSize() {
+	return IMAGESIZE;
 }
 

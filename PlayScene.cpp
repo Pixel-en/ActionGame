@@ -9,17 +9,19 @@
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
+#include "Engine/CsvReader.h"
+#include "PlaySound.h"
 
 namespace {
-	const float STIME{ 1.0f };
+	const float STIME{ 2.0f };
 	const float CDTIME{ 5.0f };
 	const float DTIME{ 1.0f };
 	const float PTIME{ 180.0f };
 }
 
 PlayScene::PlayScene(GameObject* parent)
-	:GameObject(parent,"PlayScene"),Filename_("alphamap.csv"),starttimer_(STIME),state(PlayState::STAY),counttimer_(CDTIME),
-	deathtimer_(DTIME),playtimer_(PTIME)
+	:GameObject(parent, "PlayScene"), Filename_("alphamap.csv"), starttimer_(STIME), state(PlayState::STAY), counttimer_(CDTIME),
+	deathtimer_(DTIME), playtimer_(PTIME), listnum(0)
 {
 }
 
@@ -27,12 +29,32 @@ void PlayScene::Initialize()
 {
 
 	Filename_ = "SwanpTestMap1.csv";
+
+	CsvReader* csv = new CsvReader("Assets\\Map\\PlayMap.csv");
+	for (int i = 0; i < csv->GetLines(); i++) {
+		for (int j = 0; j < csv->GetColumns(0); j++) {
+			maplist.push_back(csv->GetString(i, j));
+		}
+	}
+	Filename_ = maplist[listnum];
+	StopSound();
+
 	Reset();
+
+
 }
 
 void PlayScene::Reset()
 {
+	InitSoundMem();
+
+
+	Playsound* pc = Instantiate<Playsound>(this);
+	pc->PlayMusics("Play");
+
 	KillAllChildren();
+
+	Instantiate<Playsound>(this);
 
 	Clear* c = Instantiate<Clear>(this);
 	Instantiate<Camera>(this);
@@ -53,6 +75,7 @@ void PlayScene::Reset()
 	deathtimer_ = DTIME;
 	playtimer_ = PTIME;
 	state = PlayScene::STAY;
+
 	Instantiate<PlayGUI>(this);
 
 }
@@ -95,8 +118,9 @@ void PlayScene::DeadState()
 void PlayScene::UpdateStay()
 {
 	starttimer_ -= Time::DeltaTime();
-	if (starttimer_ < 0)
+	if (starttimer_ < 0) {
 		state = PlayScene::PLAY;
+	}
 }
 
 void PlayScene::UpdatePlay()
@@ -114,24 +138,25 @@ void PlayScene::UpdatePlay()
 			state = PlayScene::DEATH;
 		}
 	}
-
-	ImGui::Begin("timer");
-	ImGui::InputFloat("timer", &playtimer_);
-	float temp = Time::DeltaTime();
-	ImGui::InputFloat("timer", &temp);
-	ImGui::End();
 }
 
 void PlayScene::UpdateClear()
 {
-
-	Filename_ = "alphamap.csv";
+	listnum++;
+	if (listnum > maplist.size()) {
+		StopSound();
+		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+	}
+	Filename_ = maplist[listnum];
+	StopSound();
 	Reset();
 }
 
 void PlayScene::UpdateDeath()
 {
 	deathtimer_ -= Time::DeltaTime();
-	if (deathtimer_ < 0)
+	if (deathtimer_ < 0) {
+		StopSound();
 		Reset();
+	}
 }

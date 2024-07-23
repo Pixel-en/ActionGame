@@ -9,6 +9,7 @@
 #include "bitset"
 #include <string>
 #include "MoveObject.h"
+#include "PlaySound.h"
 
 namespace SET1{
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -127,6 +128,8 @@ void Player::Update()
 	Field* field = GetParent()->FindGameObject<Field>();
 	Clear* clear = GetParent()->FindGameObject<Clear>();
 
+	Playsound* ps = GetParent()->FindGameObject<Playsound>();
+
 	if (clear->GetFlag())
 		flagon_ = false;
 
@@ -203,7 +206,10 @@ void Player::Update()
 				AFmax_ = 6;
 				
 				Gaccel_ = 0.0;
-
+				if (animframe_ == 1) {
+					Playsound* ps = GetParent()->FindGameObject<Playsound>();
+					ps->SoundON("Ladder");
+				}
 				transform_.position_.y -= MOVESPEED * Time::DeltaTime();
 				onjump_ = true;
 			}
@@ -240,6 +246,7 @@ void Player::Update()
 
 		if (CheckHitKey(KEY_INPUT_J) && !attackbuffer_&&!attackon_) {
 			attackon_ = true;
+			ps->SoundON("Attack");
 		}
 	}
 
@@ -294,14 +301,6 @@ void Player::Update()
 	int x = (int)transform_.position_.x - cam->GetValue();
 	int y = (int)transform_.position_.y - cam->GetValueY();
 
-	int a = beCol_;
-	int temp = cam->GetValueY();
-	ImGui::Begin("test");
-	ImGui::InputInt("jump" ,&a);
-	ImGui::InputInt("y", &y);
-	ImGui::InputFloat("ty", &transform_.position_.y);
-	ImGui::InputInt("cam", &temp);
-	ImGui::End();
 	
 
 	if (y > 500) {
@@ -341,6 +340,7 @@ void Player::Update()
 			cam->SetValue(0);
 
 	}
+
 
 }
 
@@ -419,6 +419,10 @@ XMFLOAT3 Player::GetHitBoxPosition()
 
 void Player::DeadState()
 {
+	if (animtype_ != Animation::DEATH) {
+		Playsound* ps = GetParent()->FindGameObject<Playsound>();
+		ps->SoundON("Death");
+	}
 	animtype_ = Animation::DEATH;
 	FCmax_ = 20;
 	AFmax_ = 6;

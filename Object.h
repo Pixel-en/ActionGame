@@ -39,5 +39,8 @@ public:
 	virtual void Release() override;
 
 	virtual bool IsHitting();
+
+	virtual int GetImageHandle() { return hImage_; }
+	virtual SIZE GetSize();
 };
 

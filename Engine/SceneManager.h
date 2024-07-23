@@ -31,6 +31,7 @@ public:
 		SCENE_ID_TEST = 0,
 		SCENE_ID_TITLE,
 		SCENE_ID_PLAY,
+		SCENE_ID_CLEAR
 	};
 	void ChangeScene(SCENE_ID next);
 
