@@ -136,8 +136,10 @@ void Enemy::Draw()
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr) {
 		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
 	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE.cx, animtype_ * IMAGESIZE.cy, IMAGESIZE.cx,IMAGESIZE.cy, hImage_, true, dir_ - 1);
 
 #if 1

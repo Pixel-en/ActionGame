@@ -58,8 +58,10 @@ void Object::Draw()
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr) {
 		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
 
 	DrawRectGraph(xpos, ypos, 0, 0, 64, 64, hImage_, true);
 }

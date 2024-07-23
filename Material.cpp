@@ -59,8 +59,10 @@ void Material::Draw()
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr) {
 		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
 
 	DrawRectGraph(xpos, ypos, 0, 0, sizeX_, sizeY_, hImage_, true);
 	DrawBox(xpos, ypos, xpos + sizeX_, ypos + sizeY_, GetColor(255, 0, 255), false);

@@ -10,7 +10,7 @@
 #include "MoveObject.h"
 
 namespace {
-	const int IMAGESIZE{ 32 };
+	const int IMAGESIZE{ 48 };	//32*1.5
 }
 
 
@@ -29,7 +29,7 @@ void Field::Initialize()
 
 void Field::Reset()
 {
-	hImage_ = LoadGraph("Assets\\Image\\MapChip\\SwanpTiles.png");
+	hImage_ = LoadGraph("Assets\\Image\\MapChip\\SwanpTiles1.5.png");
 	assert(hImage_ > 0);
 
 	std::string folder = "Assets\\Map\\";
@@ -119,14 +119,16 @@ void Field::Update()
 void Field::Draw()
 {
 	int scroll = 0;
+	int scrollY = 0;
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr) {
 		scroll = cam->GetValue();
-
+		scrollY = cam->GetValueY();
+	}
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			int chipNum = Map[i * width + j];
-			DrawRectGraph(j * IMAGESIZE - scroll, i * IMAGESIZE, IMAGESIZE * (chipNum % 10), IMAGESIZE * (chipNum / 10), IMAGESIZE, IMAGESIZE, hImage_, true);
+			DrawRectGraph(j * IMAGESIZE - scroll, i * IMAGESIZE-scrollY, IMAGESIZE * (chipNum % 10), IMAGESIZE * (chipNum / 10), IMAGESIZE, IMAGESIZE, hImage_, true);
 		}
 	}
 

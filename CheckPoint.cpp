@@ -37,8 +37,10 @@ void CheckPoint::Draw()
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr) {
 		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
 
 	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, 0, IMAGESIZE, IMAGESIZE, hImage_, true);
 }

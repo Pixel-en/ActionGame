@@ -3,7 +3,7 @@
 #include "ImGui/imgui.h"
 
 namespace {
-	const SIZE IMAGESIZE{ 32,32 };
+	const SIZE IMAGESIZE{ 48,48 };
 
 }
 
@@ -145,8 +145,10 @@ void MoveObject::Left::Draw()
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr) {
 		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
 
 	DrawRectGraph(xpos, ypos, 0, 0, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 }
@@ -178,8 +180,10 @@ void MoveObject::Right::Draw()
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr) {
 		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
 
 	DrawRectGraph(xpos, ypos, 0, 0, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 }
@@ -211,8 +215,10 @@ void MoveObject::Center::Draw()
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr){
 		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
 
 	DrawRectGraph(xpos, ypos, 0, 0, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 }

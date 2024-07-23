@@ -10,7 +10,7 @@
 #include <string>
 #include "MoveObject.h"
 
-namespace {
+namespace SET1{
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
 	const int IMAGESIZE{ 48 };				//画像サイズ
@@ -36,6 +36,20 @@ namespace SET2{
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
 	const VECTOR PCENTER{ 26.0f * 2,32.0f * 2 };
+}
+
+namespace {
+	const float MOVESPEED{ 100 };			//動くスピード
+	const float GRAVITY{ 9.8f / 60.0f };	//重力
+	const float IMAGESIZE{ 48 * 1.5 };				//画像サイズ
+	const VECTOR LUPOINT{ 11.0f * 1.5f,14.0f * 1.5f };		//左上の座標
+	const VECTOR RUPOINT{ 37.0f * 1.5f,14.0f * 1.5f };	//右上の座標
+	const VECTOR LDPOINT{ 11.0f * 1.5f,46.0f * 1.5f };		//左下の座標
+	const VECTOR RDPOINT{ 37.0f * 1.5f,46.0f * 1.5f };	//右下の座標
+	const SIZE HITBOXSIZE{ 26*1.5f,32 * 1.5f };			//当たり判定のボックスのサイズ
+	const float BUFFER{ 0.5f };		//攻撃後の硬直
+	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
+	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
 }
 
 bool Player::HitAttack(int _x, int _y, SIZE _size)
@@ -82,7 +96,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\Player.png");
+	hImage_ = LoadGraph("Assets\\Image\\Player1.5.png");
 	assert(hImage_ > 0);
 }
 
@@ -183,7 +197,7 @@ void Player::Update()
 		}
 
 		if (CheckHitKey(KEY_INPUT_W)) {
-			if (field->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + 46.0f)) {
+			if (field->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + 46.0f*1.5f)) {
 				animtype_ = Animation::CLIMB;
 				FCmax_ = 17;
 				AFmax_ = 6;
@@ -193,19 +207,6 @@ void Player::Update()
 				transform_.position_.y -= MOVESPEED * Time::DeltaTime();
 				onjump_ = true;
 			}
-		}
-
-		//ジャンプ(消すかもわからん)
-		if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
-			onjump_ = true;
-			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
-		}
-
-		if (onjump_) {
-			short cflag = hitobj_->SelectCollisionCheck(0b0111);
-			//ここ消すと天井スライドができる
-			if (cflag & 0b0100)
-				Gaccel_ = 0;
 		}
 
 		MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
@@ -220,6 +221,22 @@ void Player::Update()
 			Gaccel_ = 0.0f;
 			beCol_ = false;
 		}
+
+		//ジャンプ(消すかもわからん)
+		//if (CheckHitKey(KEY_INPUT_SPACE) && !onjump_) {
+		//	Gaccel_ = 0.0;
+		//	onjump_ = true;
+		//	Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+		//}
+
+		if (onjump_) {
+			short cflag = hitobj_->SelectCollisionCheck(0b0111);
+			//ここ消すと天井スライドができる
+			if (cflag & 0b0100)
+				Gaccel_ = 0;
+		}
+
+
 
 		if (CheckHitKey(KEY_INPUT_J) && !attackbuffer_&&!attackon_) {
 			attackon_ = true;
@@ -275,6 +292,40 @@ void Player::Update()
 	//右固定カメラ
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	int x = (int)transform_.position_.x - cam->GetValue();
+	int y = (int)transform_.position_.y - cam->GetValueY();
+
+	int a = beCol_;
+	int temp = cam->GetValueY();
+	ImGui::Begin("test");
+	ImGui::InputInt("jump" ,&a);
+	ImGui::InputInt("y", &y);
+	ImGui::InputFloat("ty", &transform_.position_.y);
+	ImGui::InputInt("cam", &temp);
+	ImGui::End();
+	
+
+	if (y > 500) {
+		y = 500;
+		cam->SetValueY(transform_.position_.y - y);
+	}
+	else if (y < 100) {
+
+		y = 100;
+		cam->SetValueY(transform_.position_.y - y);
+		if (transform_.position_.y < 0)
+			transform_.position_.y = 0;
+		if (cam->GetValueY() < 0)
+			cam->SetValueY(0);
+		//MessageBox(NULL, "test", NULL, MB_OK);
+	}
+	else {
+		//y = 500;
+		cam->SetValueY(transform_.position_.y - y);
+	}
+	if (cam->GetValueY() > 300)
+		cam->SetValueY(300);
+		
+
 	if (x > 400) {
 		x = 400;
 		cam->SetValue(transform_.position_.x - x);
@@ -299,9 +350,10 @@ void Player::Draw()
 	int ypos = transform_.position_.y;
 
 	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr)
+	if (cam != nullptr) {
 		xpos -= cam->GetValue();
-
+		ypos -= cam->GetValueY();
+	}
 	//メイン出力
 	if (pRdir_==true)
 		DrawRectGraph(xpos, ypos,  animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);
@@ -316,7 +368,6 @@ void Player::Draw()
 
 	//当たり判定確認用
 	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RDPOINT.x, ypos + RDPOINT.y, GetColor(255, 255, 255), FALSE);
-
 
 	DrawCircle(xpos, ypos, 3, GetColor(255, 0, 255), true);
 	DrawCircle(xpos + RDPOINT.x , ypos + RDPOINT.y, 3, GetColor(255, 0, 0), true);	//右　赤
