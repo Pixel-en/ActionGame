@@ -66,7 +66,6 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="TitleScene.cpp" />
-    <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Engine\time.cpp">
       <Filter>01Engine\GameObject</Filter>
     </ClCompile>
@@ -88,12 +87,28 @@
     <ClCompile Include="Player.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="CheckPoint.cpp" />
-    <ClCompile Include="MoveObject.cpp" />
-    <ClCompile Include="BackGround.cpp" />
-    <ClCompile Include="HitObject.cpp" />
-    <ClCompile Include="PlayGUI.cpp" />
+    <ClCompile Include="BackGround.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckPoint.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="HitObject.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveObject.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayGUI.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -146,7 +161,6 @@
       <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="TitleScene.h" />
-    <ClInclude Include="PlayScene.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="Engine\time.h">
       <Filter>01Engine\GameObject</Filter>
@@ -172,11 +186,27 @@
     <ClInclude Include="Player.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="CheckPoint.h" />
-    <ClInclude Include="MoveObject.h" />
-    <ClInclude Include="BackGround.h" />
-    <ClInclude Include="HitObject.h" />
-    <ClInclude Include="PlayGUI.h" />
+    <ClInclude Include="PlayScene.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="BackGround.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckPoint.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="HitObject.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveObject.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayGUI.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleText.h" />
   </ItemGroup>
 </Project>

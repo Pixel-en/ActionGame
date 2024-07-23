@@ -17,7 +17,6 @@ void TestScene::Initialize()
 //XV
 void TestScene::Update()
 {
-	SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
 }
 
 //•`‰æ
