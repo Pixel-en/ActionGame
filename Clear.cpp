@@ -46,7 +46,7 @@ void Clear::Update()
 			if (ch->IsHitting() || ischeck_) {
 				if (!ischeck_){
 					Playsound* ps = GetParent()->FindGameObject<Playsound>();
-					ps->SoundON("Flag");
+					ps->SoundON("Rune");
 				}
 				ischeck_ = true;
 				ch->SetPosition(-100, 100, 0);

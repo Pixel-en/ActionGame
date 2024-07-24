@@ -7,6 +7,8 @@ class PlayGUI final :public GameObject
 	int hImage_;
 	int hImageUI_;
 
+	int hImagekey_;
+
 	int CharNum(char c);
 
 	std::string text;

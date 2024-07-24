@@ -41,6 +41,8 @@ void PlayGUI::Initialize()
 	assert(hImage_ > 0);
 	hImageUI_ = LoadGraph("Assets\\Image\\UI2.png");
 	assert(hImageUI_ > 0);
+	hImagekey_ = LoadGraph("Assets\\Image\\Key.png");
+	assert(hImagekey_ > 0);
 
 	int x, y;
 
@@ -103,6 +105,8 @@ void PlayGUI::Update()
 void PlayGUI::Draw()
 {
 	float xpos = transform_.position_.x;
+
+	DrawString("A D   J", 100, 30);
 
 	//ìGÇÃêî
 	for (int i = 0; i < chipnum_.size(); i++) {

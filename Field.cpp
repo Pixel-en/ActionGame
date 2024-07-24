@@ -40,6 +40,7 @@ void Field::Reset()
 	Map = new int[height * width];
 
 	Clear* c = GetParent()->FindGameObject<Clear>();
+	//c->Reset();
 
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
@@ -108,6 +109,7 @@ void Field::Reset()
 
 		}
 	}
+
 }
 
 void Field::Update()

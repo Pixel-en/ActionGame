@@ -20,7 +20,8 @@ void Playsound::Initialize()
 				{"Choise",LoadSoundMem("Assets\\Sound\\Choise.mp3")},
 				{"Ladder",LoadSoundMem("Assets\\Sound\\ladder.mp3")},
 				{"Flag",LoadSoundMem("Assets\\Sound\\Flag.mp3")}, 
-				{"Rune",LoadSoundMem("Assets\\Sound\\Rune.mp3")}, };
+				{"Rune",LoadSoundMem("Assets\\Sound\\Rune.mp3")},
+				{"Clear",LoadSoundMem("Assets\\Sound\\clear01.mp3")}, };
 	for (auto i:hSound_) {
 		assert(i.second > 0);
 	}
@@ -51,10 +52,17 @@ void Playsound::SoundON(std::string str)
 void Playsound::PlayMusics(std::string str)
 {	
 	StopMusic();
-	if(str == "Play")
+	if (str == "Play") {
 		PlayMusic("Assets\\Sound\\Play.mp3", DX_PLAYTYPE_LOOP);
+
+		SetVolumeMusic(255);
+		return;
+	}
 	if(str=="Title")
 		PlayMusic("Assets\\Sound\\Start.mp3", DX_PLAYTYPE_LOOP);
 	if(str=="Clear")
 		PlayMusic("Assets\\Sound\\Clear.mp3", DX_PLAYTYPE_LOOP);
+
+	SetVolumeMusic(255);
+
 }

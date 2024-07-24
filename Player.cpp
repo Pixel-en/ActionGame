@@ -148,10 +148,10 @@ void Player::Update()
 
 
 
-	if (transform_.position_.y > 1000.0f) {
-		transform_.position_.y = 1000.0f;
-		pc->DeadState();
-	}
+	//if (transform_.position_.y > 1000.0f) {
+	//	transform_.position_.y = 1000.0f;
+	//	pc->DeadState();
+	//}
 
 	if (!pc->CanMove())
 		return;
@@ -260,7 +260,7 @@ void Player::Update()
 		std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
 		if (animframe_ >= 2 && animframe_ <= 4) {
 			for (auto& E : enemies) {
-				if (HitAttack(E->GetPosition().x, E->GetPosition().y, E->GetImageSize()))
+				if (HitAttack(E->GetPosition().x, E->GetPosition().y, E->GetImageSize())&&!E->isdeath())
 					E->DeadState();
 			}
 		}
@@ -360,7 +360,7 @@ void Player::Draw()
 	else
 		DrawRectGraph(xpos, ypos,  animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);
 
-#if 1
+#if 0
 	//デバッグ用出力
 
 	//画像サイズ

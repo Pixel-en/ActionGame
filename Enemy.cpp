@@ -142,7 +142,7 @@ void Enemy::Draw()
 	}
 	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE.cx, animtype_ * IMAGESIZE.cy, IMAGESIZE.cx,IMAGESIZE.cy, hImage_, true, dir_ - 1);
 
-#if 1
+#if 0
 	//発見範囲
 	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, ATTACKRANGE, GetColor(255, 0, 0), false);
 	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, range_, GetColor(255, 0, 0), false);

@@ -88,6 +88,8 @@ public:
 	void DeadState();
 
 	SIZE GetSize() override;
+
+	bool isdeath() { return (animtype_ == EAnimation::DEATH); };
 private:
 
 	//プレイヤーが検知エリアに入ったかどうか

@@ -48,7 +48,6 @@ void PlayScene::Reset()
 {
 	InitSoundMem();
 
-
 	Playsound* pc = Instantiate<Playsound>(this);
 	pc->PlayMusics("Play");
 
@@ -70,6 +69,7 @@ void PlayScene::Reset()
 	Instantiate<Player>(this);
 
 	f->Reset();
+	//c->Reset();
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;
@@ -100,6 +100,9 @@ void PlayScene::Update()
 	default:
 		break;
 	}
+
+	if(CheckHitKey(KEY_INPUT_ESCAPE))
+		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
 }
 
 void PlayScene::Draw()
@@ -128,8 +131,12 @@ void PlayScene::UpdatePlay()
 	Clear* c = FindGameObject<Clear>();
 	if (c->GetFlag()) {
 		counttimer_ -= Time::DeltaTime();
-		if(counttimer_<0)
+		if (counttimer_ < 0) {
+
+			Playsound* ps =FindGameObject<Playsound>();
+			ps->SoundON("Clear");
 			state = PlayScene::CLEAR;
+		}
 	}
 	else {
 		playtimer_ -= Time::DeltaTime();
@@ -143,9 +150,10 @@ void PlayScene::UpdatePlay()
 void PlayScene::UpdateClear()
 {
 	listnum++;
-	if (listnum > maplist.size()) {
+	if (listnum >= maplist.size()) {
 		StopSound();
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+		return;
 	}
 	Filename_ = maplist[listnum];
 	StopSound();
