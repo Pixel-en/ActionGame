@@ -23,8 +23,6 @@ public:
 	//ŠJ•ú
 	void Release() override;
 
-	bool IsHitting() override;
-
 	SIZE GetImageSize();
 
 	void DeadState();

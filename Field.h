@@ -1,6 +1,21 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+enum ObjectNumber
+{
+	GOAL = 102,//ゴール
+	CHECKPOINT = 103,//チェックポイント
+	PLAYER = 105,//プレイヤー
+	ITEM = 106,//回収アイテム
+	RIFT_L = 107,//リフト右
+	RIFT_C = 108,//リフト中
+	RIFT_R = 109,//リフト左
+
+	SLIME_BLUE = 201,//青スライム
+	SLIME_GREEN = 202,//緑スライム
+	SLIME_RED = 203//赤スライム
+};
+
 class Field :public GameObject
 {
 	int hImage_;

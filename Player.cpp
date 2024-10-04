@@ -10,7 +10,7 @@
 #include <string>
 #include "MoveObject.h"
 #include "PlaySound.h"
-#include "PlayerAttack.h"
+//#include "PlayerAttack.h"
 
 namespace SET1{
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -250,7 +250,7 @@ void Player::Update()
 			ps->SoundON("Attack");
 		}
 
-		PlayerAttack::Update(FCmax_,AFmax_);
+		//PlayerAttack::Update(FCmax_,AFmax_);
 
 	}
 

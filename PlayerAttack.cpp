@@ -9,7 +9,7 @@ void PlayerAttack::Update(int& _FCmax, int& _AFmax,int& _animtype)
 
 
 
-	std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
+	//std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
 }
 
 void PlayerAttack::Attack(int _type)

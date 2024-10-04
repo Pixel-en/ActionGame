@@ -104,16 +104,6 @@ void BlueSlime::Release()
 {
 }
 
-bool BlueSlime::IsHitting()
-{
-	Player* p = GetParent()->FindGameObject<Player>();
-	if (p->HitCheck(transform_.position_.x + ENEMY_LUPOINT.x, transform_.position_.y + ENEMY_LUPOINT.y, ENEMY_HITBOXSIZE)) {
-		return true;
-	}
-
-	return false;
-}
-
 SIZE BlueSlime::GetImageSize()
 {
 	return ENEMY_IMAGESIZE;
