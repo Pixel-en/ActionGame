@@ -10,7 +10,7 @@
 #include <string>
 #include "MoveObject.h"
 #include "PlaySound.h"
-#include "PlayerAttack.h"
+#include "Engine/CsvReader.h"
 
 namespace SET1{
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -250,8 +250,6 @@ void Player::Update()
 			ps->SoundON("Attack");
 		}
 
-		PlayerAttack::Update(FCmax_,AFmax_);
-
 	}
 
 	//攻撃中
@@ -260,14 +258,7 @@ void Player::Update()
 		FCmax_ = 8;
 		AFmax_ = 6;
 
-		//３フレームから５フレームまで攻撃判定
-		std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
-		if (animframe_ >= 2 && animframe_ <= 4) {
-			for (auto& E : enemies) {
-				if (HitAttack(E->GetPosition().x, E->GetPosition().y, E->GetImageSize())&&!E->isdeath())
-					E->DeadState();
-			}
-		}
+
 
 		if (animframe_ >= 5) {
 			attackbuffer_ = true;
@@ -299,6 +290,9 @@ void Player::Update()
 		}
 		BEanimtype_ = animtype_;
 	}
+
+
+
 
 	//右固定カメラ
 	Camera* cam = GetParent()->FindGameObject<Camera>();
@@ -432,4 +426,53 @@ void Player::DeadState()
 	AFmax_ = 6;
 	framecnt_ = 0;
 	animframe_ = 0;
+}
+
+void Player::AttackUpdate()
+{
+
+
+	//３フレームから５フレームまで攻撃判定
+	std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
+	if (animframe_ >= 2 && animframe_ <= 4) {
+		for (auto& E : enemies) {
+			if (HitAttack(E->GetPosition().x, E->GetPosition().y, E->GetImageSize()) && !E->isdeath())
+				E->DeadState();
+		}
+	}
+}
+
+void Player::Attack(int _type)
+{
+	AFmax_ = type[_type].AF;
+	FCmax_ = type[_type].FC;
+}
+
+void  Player::AttackReset(int _type)
+{
+	enum States
+	{
+		DAMAGE,
+		RANGE,
+		FRAME,
+		ATTACKSTARTFRAME,
+		ATTACKENDFRAME,
+		ANIMFRAME,
+		RECHAGE,
+		MAX
+	};
+
+
+	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerAttack.csv");
+	for (int k = 0; k < ATTACKTYPENUM; k++) {
+		for (int i = 1; i < csv->GetLines(); i++) {
+			type[k].Damage = csv->GetInt(i, States::DAMAGE);
+			type[k].Range = csv->GetInt(i, States::RANGE);
+			type[k].FC = csv->GetInt(i, FRAME);
+			type[k].ASF = csv->GetInt(i, ATTACKSTARTFRAME);
+			type[k].AEF = csv->GetInt(i, ATTACKENDFRAME);
+			type[k].AF = csv->GetInt(i, ANIMFRAME);
+			type[k].RC = csv->GetInt(i, States::RECHAGE);
+		}
+	}
 }

@@ -106,8 +106,6 @@ void PlayGUI::Draw()
 {
 	float xpos = transform_.position_.x;
 
-	DrawString("A D   J", 100, 30);
-
 	//ìGÇÃêî
 	for (int i = 0; i < chipnum_.size(); i++) {
 		//DrawRectGraph(0 + i * UISIZE.cx, 0, 0 + (UISIZE.cx+8) * (i + 6), (UISIZE.cy+8)* 16, UISIZE.cx, UISIZE.cy, hImageUI_, true);

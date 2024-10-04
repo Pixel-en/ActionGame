@@ -161,7 +161,6 @@
     <ClCompile Include="MoveObject.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerAttack.cpp" />
     <ClCompile Include="PlayGUI.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="PlaySound.cpp" />
@@ -206,7 +205,6 @@
     <ClInclude Include="MoveObject.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerAttack.h" />
     <ClInclude Include="PlayGUI.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="PlaySound.h" />

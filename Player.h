@@ -2,9 +2,37 @@
 #include "Engine/GameObject.h"
 #include "HitObject.h"
 
+const int ATTACKTYPENUM{ 5 };
 
 class Player :public GameObject
 {
+	enum Attacktype
+	{
+		ATTACK1 = 0,
+		ATTACK2,
+		ATTACK3,
+		MAGIC1,
+		MAGIC2,
+		MAX,
+	};
+
+	struct AttackStatus
+	{
+		int Damage;
+		int Range;
+		int AF;
+		int ASF;	//攻撃フレームのはじめ
+		int AEF;	//攻撃フレームの終わり
+		int FC;
+		int RC;
+	};
+	AttackStatus type[ATTACKTYPENUM];
+	bool attackon_;
+	void AttackUpdate();
+	void Attack(int _type);
+	void AttackReset(int _type);
+
+
 
 	int hImage_;
 
@@ -48,7 +76,6 @@ class Player :public GameObject
 
 	bool HitAttack(int _x, int _y, SIZE _size);
 	HitObject* hitobj_;
-
 
 
 public:
