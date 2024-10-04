@@ -111,7 +111,7 @@ public:
 		return false;
 	};
 
-	bool isDead() {
+	bool isDie() {
 		if (animtype_ == Animation::DEATH)
 			return true;
 		return false;

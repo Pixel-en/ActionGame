@@ -30,6 +30,7 @@ namespace {
 enum ENEMY_TYPE
 {
 	BLUE_SLIME, GREEN_SLIME, RED_SLIME, ENEMY_TYPE_END
+	//ç°ÇÕENEMY_TYPE_ENDà»äOégÇ¡ÇƒÇ»Ç¢
 };
 const int Status_Size{ 4 };
 
