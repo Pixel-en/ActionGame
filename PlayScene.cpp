@@ -20,7 +20,7 @@ namespace {
 }
 
 PlayScene::PlayScene(GameObject* parent)
-	:GameObject(parent, "PlayScene"), Filename_("alphamap.csv"), starttimer_(STIME), state(PlayState::STAY), counttimer_(CDTIME),
+	:GameObject(parent, "PlayScene"), Filename_("Test.csv"), starttimer_(STIME), state(PlayState::STAY), counttimer_(CDTIME),
 	deathtimer_(DTIME), playtimer_(PTIME), listnum(0)
 {
 }
@@ -28,15 +28,15 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "SwanpTestMap1.csv";
+	Filename_ = "Test.csv";
 
-	CsvReader* csv = new CsvReader("Assets\\Map\\PlayMap.csv");
+	CsvReader* csv = new CsvReader("Assets\\Map\\Test.csv");
 	for (int i = 0; i < csv->GetLines(); i++) {
 		for (int j = 0; j < csv->GetColumns(0); j++) {
 			maplist.push_back(csv->GetString(i, j));
 		}
 	}
-	Filename_ = maplist[listnum];
+	//Filename_ = maplist[listnum];
 	StopSound();
 
 	Reset();
