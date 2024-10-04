@@ -147,6 +147,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="Goal.cpp" />
+    <ClCompile Include="GreenSlime.cpp" />
     <ClCompile Include="HitObject.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -163,6 +164,8 @@
     <ClCompile Include="PlayGUI.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="PlaySound.cpp" />
+    <ClCompile Include="BlueSlime.cpp" />
+    <ClCompile Include="RedSlime.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TitleText.cpp" />
@@ -186,6 +189,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="GreenSlime.h" />
     <ClInclude Include="HitObject.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -204,7 +208,9 @@
     <ClInclude Include="PlayGUI.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="PlaySound.h" />
+    <ClInclude Include="RedSlime.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="BlueSlime.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />

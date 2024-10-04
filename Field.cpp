@@ -3,7 +3,9 @@
 #include "Camera.h"
 #include "Goal.h"
 #include "Material.h"
-#include "Enemy.h"
+#include "BlueSlime.h"
+#include "GreenSlime.h"
+#include "RedSlime.h"
 #include "Player.h"
 #include "Clear.h"
 #include "CheckPoint.h"
@@ -65,13 +67,6 @@ void Field::Reset()
 				ch->Reset();
 			}
 					break;
-			case 104: {
-				c->AddEcount();
-				Enemy* e = Instantiate<Enemy>(GetParent());
-				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
-				e->Reset();
-			}
-					break;
 			case 105: {
 				Player* p = GetParent()->FindGameObject<Player>();
 				p->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
@@ -102,7 +97,33 @@ void Field::Reset()
 				mo->InstantR();
 				mo->SetRpos(j * IMAGESIZE, i * IMAGESIZE);
 				break;
+
+
 			}
+			case 201: {
+				c->AddEcount();
+				BlueSlime* e = Instantiate<BlueSlime>(GetParent());
+				e->StatusReader(201);
+				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				e->Reset();
+			}
+					break;
+			case 202: {
+				c->AddEcount();
+				GreenSlime* e = Instantiate<GreenSlime>(GetParent());
+				e->StatusReader(202);
+				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				e->Reset();
+			}
+					break;
+			case 203: {
+				c->AddEcount();
+				RedSlime* e = Instantiate<RedSlime>(GetParent());
+				e->StatusReader(203);
+				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				e->Reset();
+			}
+					break;
 			default:
 				break;
 			}

@@ -1,27 +1,9 @@
 ﻿#include "Enemy.h"
-#include "Player.h"
-#include "Camera.h"
 #include "Field.h"
 #include "ImGui/imgui.h"
-#include "Clear.h"
 #include "PlaySound.h"
-namespace {
-	const SIZE IMAGESIZE{ 128,128 };
-	const float LOOKRANGE{ 150 };
-	const float ATTACKRANGE{ 101.5f };
-	const float GRAVITY{ 9.8f / 60.0f };	//重力
-	const VECTOR LUPOINT{ 34.0f,90.0f };	//左上の座標
-	const VECTOR RUPOINT{ 94.0f,90.0f };	//右上の座標
-	const VECTOR LDPOINT{ 34.0f,127.0f };	//左下の座標
-	const VECTOR RDPOINT{ 94.0f,127.0f };	//右下の座標
-	const SIZE HITBOXSIZE{ 60,37 };
-	const float JUMPHEIGHT{ IMAGESIZE.cx * 1.5f };	//ジャンプの高さ
-	const float MOVESPEED{ 85 };
-	const float RUNSPEED{ 170 };	//ダッシュスピード
-	const float ATTACKSPEED{ 1500 };
-	const float SPEEDDOWN{ 50 };
-	const float MOVETIME{ 1.0f };
-}
+#include "Engine/CsvReader.h"
+
 
 float Enemy::EPDistance()
 {
@@ -30,8 +12,8 @@ float Enemy::EPDistance()
 		return 0.0;
 	}
 
-	float cenx = transform_.position_.x + LUPOINT.x;
-	float ceny = transform_.position_.y + LUPOINT.y;
+	float cenx = transform_.position_.x + ENEMY_LUPOINT.x;
+	float ceny = transform_.position_.y + ENEMY_LUPOINT.y;
 
 	float x = cenx - p->GetHitBoxPosition().x;
 	float y = ceny - p->GetHitBoxPosition().y;
@@ -42,8 +24,26 @@ float Enemy::EPDistance()
 	return sqrt(x * x + y * y);
 }
 
+void Enemy::StatusReader(int _enemyNumber)
+{
+	CsvReader* csv = new CsvReader("Assets\\Status\\EnemyStatus.csv");
+	for (int i = 0; i < ENEMY_TYPE_END; i++) {
+		if (_enemyNumber == csv->GetInt(i, 0))
+		{
+			baseSpeed = csv->GetInt(i, 1);
+			baseRunSpeed = csv->GetInt(i, 2);
+			baseHp = csv->GetInt(i, 3);
+			baseMovetimer = csv->GetInt(i, 4);
+			speed_ = baseSpeed;
+			hp_ = baseHp;
+			movetimer_ = baseMovetimer;
+		}
+	}
+
+}
+
 Enemy::Enemy(GameObject* parent)
-	:Object(parent, "Enemy"), movetimer_(MOVETIME), startmove_(false), speed_(0), onGround_(false), range_(LOOKRANGE)
+	:Object(parent, "Enemy"), movetimer_(1.0f), startmove_(false), speed_(0), onGround_(false), range_(ENEMY_LOOKRANGE)
 	,animtype_(EAnimation::IDOL),SpawnPoint_(transform_.position_),dir_(1),attackfrm_(0)
 {
 
@@ -53,7 +53,7 @@ Enemy::Enemy(GameObject* parent)
 	animframe_ = 0;
 	AFmax_ = 0;
 
-	hitobj_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
+	hitobj_ = new HitObject(ENEMY_LUPOINT, ENEMY_RUPOINT, ENEMY_LDPOINT, ENEMY_RDPOINT, this);
 }
 
 Enemy::~Enemy()
@@ -79,10 +79,9 @@ void Enemy::Update()
 	if (clear->GetFlag() || p == nullptr)
 		return;
 
-	//animtype_ = EAnimation::IDOL;
 	onGround_ = false;
 	Ppos = p->GetPosition();
-	Gaccel += GRAVITY;
+	Gaccel += ENEMY_GRAVITY;
 	transform_.position_.y += Gaccel;
 
 
@@ -140,21 +139,7 @@ void Enemy::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE.cx, animtype_ * IMAGESIZE.cy, IMAGESIZE.cx,IMAGESIZE.cy, hImage_, true, dir_ - 1);
-
-#if 0
-	//発見範囲
-	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, ATTACKRANGE, GetColor(255, 0, 0), false);
-	DrawCircle(xpos + IMAGESIZE.cx / 2, ypos + IMAGESIZE.cy / 2, range_, GetColor(255, 0, 0), false);
-
-	DrawCircle(transform_.position_.x, transform_.position_.y, 5, GetColor(148,31, 48), false);
-	DrawBox(transform_.position_.x, transform_.position_.y, transform_.position_.x + IMAGESIZE.cx, transform_.position_.y + IMAGESIZE.cy, GetColor(255, 255, 255), false);
-	DrawCircle(transform_.position_.x + IMAGESIZE.cx / 2, transform_.position_.y + IMAGESIZE.cy / 2, 3, GetColor(0, 255, 0), true);
-	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + RDPOINT.x, ypos + RDPOINT.y, GetColor(255, 0, 0), false);
-	DrawCircle(xpos+LDPOINT.x,ypos+LDPOINT.y,3,GetColor(0,0,255),false);
-	DrawCircle(xpos+RDPOINT.x,ypos+RDPOINT.y,3,GetColor(0,0,255),false);
-	EPDistance();
-#endif
+	DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, animtype_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
 }
 
 void Enemy::Release()
@@ -164,7 +149,7 @@ void Enemy::Release()
 bool Enemy::IsHitting()
 {
 	Player* p = GetParent()->FindGameObject<Player>();
-	if (p->HitCheck(transform_.position_.x + LUPOINT.x, transform_.position_.y + LUPOINT.y, HITBOXSIZE)) {
+	if (p->HitCheck(transform_.position_.x + ENEMY_LUPOINT.x, transform_.position_.y + ENEMY_LUPOINT.y, ENEMY_HITBOXSIZE)) {
 		return true;
 	}
 
@@ -173,7 +158,6 @@ bool Enemy::IsHitting()
 
 void Enemy::AnimationCheck()
 {
-
 	//前フレームと違うアニメーションならカウントをゼロにする
 	if (BEanimtype_ != animtype_) {
 		framecnt_ = 0;
@@ -187,7 +171,6 @@ void Enemy::AnimationCheck()
 		}
 	}
 	BEanimtype_ = animtype_;
-
 }
 
 void Enemy::DeadState()
@@ -213,183 +196,49 @@ bool Enemy::IsExistPlayer(float _range)
 
 SIZE Enemy::GetImageSize()
 {
-	return IMAGESIZE;
+	return ENEMY_IMAGESIZE;
 }
 
 void Enemy::UpdateIdol()
 {
-	AFmax_ = 8;
-	FCmax_ = 20;
-
-
-	//攻撃バッファ
-	if (!startmove_) {
-		movetimer_ -= Time::DeltaTime();
-		if (movetimer_ < 0) {
-			movetimer_ = MOVETIME;
-			startmove_ = true;
-		}
-	}
-	else {
-		speed_ = MOVESPEED;
-		animtype_ = EAnimation::MOVE;
-	}
-
 }
 
 void Enemy::UpdateMove()
 {
-
-	AFmax_ = 8;
-	FCmax_ = 10;
-	if (IsExistPlayer(range_)) {
-		speed_ = RUNSPEED;
-		range_ = LOOKRANGE * 2;
-		animtype_ = EAnimation::RUN;
-		return;
-	}
-	else
-		range_ = LOOKRANGE;
-
-	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
-
-	if (SpawnPoint_.x - transform_.position_.x > 30.0f) {
-		dir_ = 1;
-		transform_.position_.x = SpawnPoint_.x - 30.0f;
-		startmove_ = false;
-		animtype_ = EAnimation::IDOL;
-	}
-	else if (SpawnPoint_.x - transform_.position_.x < -30.0f) {
-		dir_ = -1;
-		transform_.position_.x = SpawnPoint_.x + 30.0f;
-		startmove_ = false;
-		animtype_ = EAnimation::IDOL;
-	}
-
 }
 
 void Enemy::UpdateRun()
 {
-
-	AFmax_ = 7;
-	FCmax_ = 11;
-
-	if (Ppos.x - transform_.position_.x < 0)
-		dir_ = -1;
-	else
-		dir_ = 1;
-
-	if (IsExistPlayer(range_)) {
-		if (IsExistPlayer(ATTACKRANGE)) {
-			speed_ = ATTACKSPEED;
-			Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
-			Playsound* ps = GetParent()->FindGameObject<Playsound>();
-			ps->SoundON("EAttack");
-			animtype_ = EAnimation::ATTACK;
-			attackfrm_ = 0;
-			startmove_ = false;
-		}
-		else {
-			transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
-		}
-	}
-	else {
-		speed_ = MOVESPEED;
-		range_ = LOOKRANGE;
-		animtype_ = EAnimation::MOVE;
-	}
-	////動きの計算
-	//if (IsExistPlayer() && !inmoving_ && startmove_) {
-	//	inmoving_ = true;
-
-	//	Gaccel = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
-	//	speed_ = ATTACKSPPED;
-	//	trs = transform_;
-	//}
-	////動き
-	//if (inmoving_) {
-
-	//	transform_.position_.x += speed_ * Time::DeltaTime();
-	//	speed_ -= SPEEDDOWN;
-	//	if (speed_ < 0)
-	//		speed_ = 0;
-	//}
 }
 
 void Enemy::UpdateAttack()
 {
-
-
-	if (attackfrm_ < 5)
-		animframe_ = 3;
-	else if (attackfrm_ < 40)
-		animframe_ = 4;
-	else if (attackfrm_ < 50)
-		animframe_ = 5;
-	else if (attackfrm_ < 60)
-		animframe_ = 6;
-	else if (attackfrm_ < 70)
-		animframe_ = 7;
-	else if (attackfrm_ < 80)
-		animframe_ = 8;
-	else if (attackfrm_ < 90)
-		animframe_ = 9;
-
-	int frm[4] = { 5,10,20,30 };
-	static int i = 0;
-	int rate = 0;
-	//96f	48f
-	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
-
-	if (attackfrm_ == frm[i]&&i<4) {
-		i++;
-		rate++;
-	}
-
-	if (speed_ > 0)
-		speed_ -= SPEEDDOWN - rate * 10;
-	else
-		speed_ = 0;
-	attackfrm_++;
-
-	if (onGround_) {
-		speed_ = MOVESPEED;
-		SpawnPoint_ = transform_.position_;
-		animtype_ = EAnimation::IDOL;
-
-	}
 }
 
 void Enemy::UpdateDeath()
 {
-	if (animframe_ == 2) {
-		FCmax_ = 60;
-		if (framecnt_ == 60) {
-			KillMe();
-		}
-	}
 }
 
 void Enemy::Reset()
 {
 	Field* field = GetParent()->FindGameObject<Field>();
 
-	int DLhit = field->CollisionDownCheck(transform_.position_.x + LDPOINT.x, transform_.position_.y + LDPOINT.y + 1);
-	int DRhit = field->CollisionDownCheck(transform_.position_.x + RDPOINT.x, transform_.position_.y + RDPOINT.y + 1);
+	int DLhit = field->CollisionDownCheck(transform_.position_.x + ENEMY_LDPOINT.x, transform_.position_.y + ENEMY_LDPOINT.y + 1);
+	int DRhit = field->CollisionDownCheck(transform_.position_.x + ENEMY_RDPOINT.x, transform_.position_.y + ENEMY_RDPOINT.y + 1);
 	int push = max(DLhit, DRhit);
 	if (push >= 1) {
 		transform_.position_.y -= push - 1;
 	}
 
 	//右側当たり判定
-	int Rhitx = transform_.position_.x + RDPOINT.x;
-	int Rhity = transform_.position_.y + RDPOINT.y;
+	int Rhitx = transform_.position_.x + ENEMY_RDPOINT.x;
+	int Rhity = transform_.position_.y + ENEMY_RDPOINT.y;
 	push = field->CollisionRightCheck(Rhitx, Rhity);
 	transform_.position_.x -= push;
 
 	//左側当たり判定
-	int Lhitx = transform_.position_.x + LDPOINT.x;
-	int Lhity = transform_.position_.y + LDPOINT.y;
+	int Lhitx = transform_.position_.x + ENEMY_LDPOINT.x;
+	int Lhity = transform_.position_.y + ENEMY_LDPOINT.y;
 	push = field->CollisionLeftCheck(Lhitx, Lhity);
 	transform_.position_.x += push;
 
@@ -397,6 +246,5 @@ void Enemy::Reset()
 }
 
 SIZE Enemy::GetSize() {
-	return IMAGESIZE;
+	return ENEMY_IMAGESIZE;
 }
-
