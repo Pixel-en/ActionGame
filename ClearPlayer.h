@@ -19,6 +19,7 @@ public:
 	//引数：parent  親オブジェクト（ObjectManager）
 	Clearplayer(GameObject* parent);
 
+
 	//デストラクタ
 	~Clearplayer();
 

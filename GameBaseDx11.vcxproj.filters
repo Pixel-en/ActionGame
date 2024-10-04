@@ -114,7 +114,13 @@
     <ClCompile Include="CleraLogo.cpp" />
     <ClCompile Include="PlaySound.cpp" />
     <ClCompile Include="Tutorial.cpp" />
-    <ClCompile Include="PlayerAttack.cpp" />
+    <ClCompile Include="BlueSlime.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="GreenSlime.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="RedSlime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -220,7 +226,13 @@
     <ClInclude Include="PlaySound.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Tutorial.h" />
-    <ClInclude Include="PlayerAttack.h" />
+    <ClInclude Include="BlueSlime.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="GreenSlime.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="RedSlime.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">

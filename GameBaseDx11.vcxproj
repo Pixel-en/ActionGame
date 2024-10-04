@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.2\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.2\lib\vs2019\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\lib\vs2017\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\lib\vs2017\x64\debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.2\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;$(IncludePath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用</IncludePath>
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.2\lib\vs2019\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\lib\vs2017\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\lib\vs2017\x64\debug;$(LibraryPath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\lib\vs2017\x64\release;C:\Program Files\Autodesk\FBX\FBX SDK\2020.0\lib\vs2017\x64\release;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\lib\vs2017\x64\release;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.0\include;$(IncludePath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用</IncludePath>
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\lib\vs2017\x64\release;C:\Program Files\Autodesk\FBX\FBX SDK\2020.0\lib\vs2017\x64\release;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\lib\vs2017\x64\release;$(LibraryPath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -147,6 +147,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="Goal.cpp" />
+    <ClCompile Include="GreenSlime.cpp" />
     <ClCompile Include="HitObject.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -164,6 +165,8 @@
     <ClCompile Include="PlayGUI.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="PlaySound.cpp" />
+    <ClCompile Include="BlueSlime.cpp" />
+    <ClCompile Include="RedSlime.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TitleText.cpp" />
@@ -187,6 +190,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="GreenSlime.h" />
     <ClInclude Include="HitObject.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -206,7 +210,9 @@
     <ClInclude Include="PlayGUI.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="PlaySound.h" />
+    <ClInclude Include="RedSlime.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="BlueSlime.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
