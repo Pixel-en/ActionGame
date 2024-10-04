@@ -1,74 +1,41 @@
 #include "PlayerAttack.h"
+#include "Engine/CsvReader.h"
+#include "Enemy.h"
 
-void PlayerAttack::Update(int& _FCmax, int& _AFmax)
+void PlayerAttack::Update(int& _FCmax, int& _AFmax,int& _animtype)
 {
-	if (CheckHitKey(KEY_INPUT_U)) {
-		if(Rechagecnt_[Attack::ATTACK1]>RCmax_[Attack::ATTACK1])
-			Attack1();
-	}
-	if (CheckHitKey(KEY_INPUT_I)) {
-		if (Rechagecnt_[Attack::ATTACK2] > RCmax_[Attack::ATTACK2])
-			Attack2();
-	}
-	if (CheckHitKey(KEY_INPUT_O)) {
-		if (Rechagecnt_[Attack::ATTACK3] > RCmax_[Attack::ATTACK3])
-			Attack3();
-	}
-	if (CheckHitKey(KEY_INPUT_J)) {
-		if (Rechagecnt_[Attack::MAGIC1] > RCmax_[Attack::MAGIC1])
-			Magic1();
-	}
-	if (CheckHitKey(KEY_INPUT_K)) {
-		if (Rechagecnt_[Attack::MAGIC2] > RCmax_[Attack::MAGIC2])
-			Magic2();
-	}
+	if (CheckHitKey(KEY_INPUT_0))
+		Attack(0);
 
-	for (int i = 0; i < ATTACKTYPENUM; i++) {
-		if (isAttack_[i])
-			Rechagecnt_[i]++;
-	}
+
+
+	std::list<Enemy*> enemies = GetParent()->FindGameObjects<Enemy>();
 }
 
-void PlayerAttack::Attack1()
+void PlayerAttack::Attack(int _type)
 {
-	Reset(Attack::ATTACK1);
-	isAttack_[Attack::ATTACK1] = true;
+	attackon_ = true;
 }
 
-void PlayerAttack::Attack2()
+void PlayerAttack::Reset(int _type)
 {
-	Reset(Attack::ATTACK2);
-	isAttack_[Attack::ATTACK2] = true;
-}
+	enum States
+	{
+		DAMAGE,
+		RANGE,
+		FRAME,
+		RECHAGE,
+		MAX
+	};
 
-void PlayerAttack::Attack3()
-{
-	Reset(Attack::ATTACK3);
-	isAttack_[Attack::ATTACK3] = true;
-}
 
-void PlayerAttack::Magic1()
-{
-	Reset(Attack::MAGIC1);
-	isAttack_[Attack::MAGIC1] = true;
-}
-
-void PlayerAttack::Magic2()
-{
-	Reset(Attack::MAGIC2);
-	isAttack_[Attack::MAGIC2] = true;
-
-}
-
-void PlayerAttack::Reset(int type)
-{
-	Damage = 0;
-	Range = 0;
-	AFmax_ = 0;
-	FCmax_ = 0;
-	animframe_ = 0;
-	framecnt_ = 0;
-	RCmax_[type] = 0;
-	Rechagecnt_[type] = 0;
-	isAttack_[type] = false;
+	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerAttack.csv");
+	for (int k = 0; k < ATTACKTYPENUM; k++) {
+		for (int i = 1; i < csv->GetLines(); i++) {
+			type[k].Damage = csv->GetInt(i, States::DAMAGE);
+			type[k].Range = csv->GetInt(i, States::RANGE);
+			type[k].FC = csv->GetInt(i, FRAME);
+			type[k].RC = csv->GetInt(i, States::RECHAGE);
+		}
+	}
 }

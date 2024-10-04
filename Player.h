@@ -83,5 +83,12 @@ public:
 			return true;
 		return false;
 	};
+
+	bool isDead() {
+		if (animtype_ == Animation::DEATH)
+			return true;
+		return false;
+	};
+
 };
 

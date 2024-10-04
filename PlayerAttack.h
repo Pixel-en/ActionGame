@@ -5,7 +5,7 @@ const int ATTACKTYPENUM{ 5 };
 
 namespace PlayerAttack {
 
-	enum Attack
+	enum Attacktype
 	{
 		ATTACK1=0,
 		ATTACK2,
@@ -15,23 +15,22 @@ namespace PlayerAttack {
 		MAX,
 	};
 
-	int Damage;
-	int Range;
-	int FCmax_;	//フレームカウントの最大
-	int AFmax_;	//アニメーションのカウントの最大
-	int RCmax_[ATTACKTYPENUM];	//リチャージ時間の最大
-	int animframe_;	//アニメーションのフレームカウント
-	int framecnt_;	//フレームのカウント
-	int Rechagecnt_[ATTACKTYPENUM];	//リチャージのカウント
-	bool isAttack_[ATTACKTYPENUM]{ false,false,false,false,false };
+	struct AttackStatus
+	{
+		int Damage;
+		int Range;
+		int AF;
+		int FC;
+		int RC;
+	};
 
-	void Update(int& _FCmax,int& _AFmax);
+	AttackStatus type[ATTACKTYPENUM];
 
-	void Attack1();
-	void Attack2();
-	void Attack3();
-	void Magic1();
-	void Magic2();
+	bool attackon_;
+
+	void Update(int& _FCmax,int& _AFmax,int& _animtype);
+
+	void Attack(int type);
 
 	void Reset(int type);
 }
