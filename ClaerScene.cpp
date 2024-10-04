@@ -8,6 +8,10 @@
 #include "TitleText.h"
 #include "PlaySound.h"
 
+#include"RankingsSystem.h"
+
+char* Name;
+
 ClearScene::ClearScene(GameObject* parent)
 	:GameObject(parent,"ClearScene"),hImage_(0)
 {
@@ -34,15 +38,20 @@ void ClearScene::Initialize()
 
 void ClearScene::Update()
 {
+
+	KeyInputString(300, 300, 10, Name,TRUE);
 	if(CheckHitKey(KEY_INPUT_RETURN)) {
 		StopSound();
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
 	}
+	RankingsSystem::SetRankings(GetKeyInputString(Name,),);
 }
 
 void ClearScene::Draw()
 {
 	DrawGraph(transform_.position_.x, transform_.position_.y, hImage_, true);
+
+	DrawString(300, 350, "–¼‘O‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢", GetColor(255, 255, 255));
 
 
 }

@@ -109,6 +109,12 @@
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="TitleText.cpp" />
+    <ClCompile Include="ClaerScene.cpp" />
+    <ClCompile Include="ClearPlayer.cpp" />
+    <ClCompile Include="CleraLogo.cpp" />
+    <ClCompile Include="PlaySound.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="RankingsSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -208,5 +214,17 @@
       <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="TitleText.h" />
+    <ClInclude Include="ClaerScene.h" />
+    <ClInclude Include="ClearPlayer.h" />
+    <ClInclude Include="CleraLogo.h" />
+    <ClInclude Include="PlaySound.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="RankingsSystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ActionGame.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
