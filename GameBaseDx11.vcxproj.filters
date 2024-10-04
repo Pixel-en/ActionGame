@@ -120,7 +120,10 @@
     <ClCompile Include="GreenSlime.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="RedSlime.cpp" />
+    <ClCompile Include="PlayerAttack.cpp" />
+    <ClCompile Include="RedSlime.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -232,7 +235,10 @@
     <ClInclude Include="GreenSlime.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="RedSlime.h" />
+    <ClInclude Include="PlayerAttack.h" />
+    <ClInclude Include="RedSlime.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">

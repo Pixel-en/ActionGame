@@ -8,11 +8,11 @@ class Player :public GameObject
 {
 	enum Attacktype
 	{
-		ATTACK1 = 0,
-		ATTACK2,
-		ATTACK3,
-		MAGIC1,
-		MAGIC2,
+		ATTACKTYPE1 = 0,
+		ATTACKTYPE2,
+		ATTACKTYPE3,
+		MAGICTYPE1,
+		MAGICTYPE2,
 		MAX,
 	};
 
@@ -27,7 +27,6 @@ class Player :public GameObject
 		int RC;
 	};
 	AttackStatus type[ATTACKTYPENUM];
-	bool attackon_;
 	void AttackUpdate();
 	void Attack(int _type);
 	void AttackReset(int _type);
@@ -111,7 +110,7 @@ public:
 		return false;
 	};
 
-	bool isDead() {
+	bool isDie() {
 		if (animtype_ == Animation::DEATH)
 			return true;
 		return false;

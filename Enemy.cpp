@@ -27,7 +27,7 @@ float Enemy::EPDistance()
 void Enemy::StatusReader(int _enemyNumber)
 {
 	CsvReader* csv = new CsvReader("Assets\\Status\\EnemyStatus.csv");
-	for (int i = 0; i < ENEMY_TYPE_END; i++) {
+	for (int i = 1; i < ENEMY_TYPE_END+1; i++) {
 		if (_enemyNumber == csv->GetInt(i, 0))
 		{
 			baseSpeed = csv->GetInt(i, 1);

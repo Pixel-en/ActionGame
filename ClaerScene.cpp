@@ -44,7 +44,7 @@ void ClearScene::Update()
 		StopSound();
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
 	}
-	RankingsSystem::SetRankings(GetKeyInputString(Name,),);
+	//RankingsSystem::SetRankings(GetKeyInputString(Name,),);
 }
 
 void ClearScene::Draw()
