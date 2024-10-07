@@ -6,41 +6,9 @@ const int ATTACKTYPENUM{ 5 };
 
 class Player :public GameObject
 {
-	enum Attacktype
-	{
-		ATTACKTYPE1 = 0,
-		ATTACKTYPE2,
-		ATTACKTYPE3,
-		MAGICTYPE1,
-		MAGICTYPE2,
-		MAX,
-	};
-
-	struct AttackStatus
-	{
-		int Damage;
-		int Range;
-		int AF;
-		int ASF;	//攻撃フレームのはじめ
-		int AEF;	//攻撃フレームの終わり
-		int FC;
-		int RC;
-	};
-	AttackStatus type[ATTACKTYPENUM];
-	void AttackUpdate();
-	void Attack(int _type);
-	void AttackReset(int _type);
-
-
 
 	int hImage_;
 
-	float Gaccel_;	//重力加速
-
-	bool pRdir_;	//プレイヤーが右を向いているか
-	bool onjump_;	//ジャンプしているか
-
-	bool flagon_;
 
 	enum Animation {
 		NONE = -1,
@@ -52,8 +20,8 @@ class Player :public GameObject
 		ATTACK2,
 		ATTACK3,
 		CLIMB,
-		CRAFT,
-		PUSH,
+		COLLECTION,
+		MAGIC,
 		DAMAGE,
 		DEATH,
 	};
@@ -61,21 +29,7 @@ class Player :public GameObject
 	Animation animtype_;	//アニメーションの種類
 	Animation BEanimtype_;	//前のフレームのアニメーション
 
-
-	bool attackon_;	//攻撃中かどうか
-	int framecnt_;	//フレームのカウント
-	int FCmax_;	//フレームカウントの最大値
-	int animframe_;	//アニメーションのフレームカウント
-	int AFmax_;		//アニメーションのフレーム数
-	bool attackbuffer_;	//攻撃後の待機中かどうか
-	float bufferTime_;	//待機時間
-
-	//前フレームにリフトに乗っていたかどうか
-	bool beCol_;
-
-	bool HitAttack(int _x, int _y, SIZE _size);
-	HitObject* hitobj_;
-
+	int animframe_;
 
 public:
 
