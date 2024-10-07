@@ -64,5 +64,4 @@ void Playsound::PlayMusics(std::string str)
 		PlayMusic("Assets\\Sound\\Clear.mp3", DX_PLAYTYPE_LOOP);
 
 	SetVolumeMusic(255);
-
 }

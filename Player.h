@@ -2,9 +2,36 @@
 #include "Engine/GameObject.h"
 #include "HitObject.h"
 
+const int ATTACKTYPENUM{ 5 };
 
 class Player :public GameObject
 {
+	enum Attacktype
+	{
+		ATTACKTYPE1 = 0,
+		ATTACKTYPE2,
+		ATTACKTYPE3,
+		MAGICTYPE1,
+		MAGICTYPE2,
+		MAX,
+	};
+
+	struct AttackStatus
+	{
+		int Damage;
+		int Range;
+		int AF;
+		int ASF;	//攻撃フレームのはじめ
+		int AEF;	//攻撃フレームの終わり
+		int FC;
+		int RC;
+	};
+	AttackStatus type[ATTACKTYPENUM];
+	void AttackUpdate();
+	void Attack(int _type);
+	void AttackReset(int _type);
+
+
 
 	int hImage_;
 
@@ -50,7 +77,6 @@ class Player :public GameObject
 	HitObject* hitobj_;
 
 
-
 public:
 
 	//コンストラクタ
@@ -83,5 +109,12 @@ public:
 			return true;
 		return false;
 	};
+
+	bool isDie() {
+		if (animtype_ == Animation::DEATH)
+			return true;
+		return false;
+	};
+
 };
 
