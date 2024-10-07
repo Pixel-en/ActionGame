@@ -250,7 +250,7 @@ void Player::Update()
 			ps->SoundON("Attack");
 		}
 
-		PlayerAttack::Update(FCmax_,AFmax_);
+		/*PlayerAttack::Update(FCmax_,AFmax_);*/
 
 	}
 

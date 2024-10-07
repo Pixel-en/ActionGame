@@ -121,6 +121,8 @@
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="RedSlime.cpp" />
+    <ClCompile Include="PlayerAttack.cpp" />
+    <ClCompile Include="RankingsSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -233,6 +235,8 @@
       <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="RedSlime.h" />
+    <ClInclude Include="PlayerAttack.h" />
+    <ClInclude Include="RankingsSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">
