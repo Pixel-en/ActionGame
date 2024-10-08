@@ -30,6 +30,7 @@ void PlayScene::Initialize()
 
 	Filename_ = "Test.csv";
 
+	//おそらくマップリストの読み込み
 	CsvReader* csv = new CsvReader("Assets\\Map\\Test.csv");
 	for (int i = 0; i < csv->GetLines(); i++) {
 		for (int j = 0; j < csv->GetColumns(0); j++) {
@@ -59,6 +60,7 @@ void PlayScene::Reset()
 	Instantiate<Camera>(this);
 
 	Instantiate<BackGround>(this);
+
 
 
 	Field* f = Instantiate<Field>(this);

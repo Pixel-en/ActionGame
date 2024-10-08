@@ -1,5 +1,6 @@
 #include"Player.h"
 #include "Camera.h"
+#include "Field.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -16,8 +17,20 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-	:hImage_(0)
+	:hImage_(0),Gaccel_(0)
 {
+	//アニメーションの初期化
+	anim_.animtype_ = Animation::IDOL;
+	anim_.BEanimtype_ = Animation::NONE;
+	anim_.AFmax_ = 0;
+	anim_.animframe_ = 0;
+	anim_.AFCmax_ = 0;
+	anim_.animframecount_ = 0;
+	
+	transform_.position_ = { 0,0,0 };
+
+	//当たり判定の初期化
+	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 }
 
 Player::~Player()
@@ -33,6 +46,58 @@ void Player::Initialize()
 void Player::Update()
 {
 
+
+	//重力
+	Gaccel_ += GRAVITY;
+	transform_.position_.y += Gaccel_;
+
+	if (hitobject_->DownCollisionCheck()) {
+		Gaccel_ = 0;
+	}
+
+	CameraScroll();
+}
+
+void Player::Draw()
+{
+	int xpos = transform_.position_.x;
+	int ypos = transform_.position_.y;
+
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
+	////メイン出力
+	////if (pRdir_ == true)
+	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);/*
+	//else
+	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
+
+	DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE, anim_.animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true);
+}
+
+void Player::Release()
+{
+}
+
+bool Player::HitCheck(int _x, int _y, SIZE _size)
+{
+	return false;
+}
+
+XMFLOAT3 Player::GetHitBoxPosition()
+{
+	return { 0,0,0 };
+}
+
+void Player::DeadState()
+{
+}
+
+
+void Player::CameraScroll()
+{
 	//右固定カメラ
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	int x = (int)transform_.position_.x - cam->GetValue();
@@ -75,39 +140,5 @@ void Player::Update()
 			cam->SetValue(0);
 
 	}
-
 }
 
-void Player::Draw()
-{
-	int xpos = transform_.position_.x;
-	int ypos = transform_.position_.y;
-
-	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr) {
-		xpos -= cam->GetValue();
-		ypos -= cam->GetValueY();
-	}
-	//メイン出力
-	//if (pRdir_ == true)
-		DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);/*
-	else
-		DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
-
-}
-
-void Player::Release()
-{
-}
-
-bool Player::HitCheck(int _x, int _y, SIZE _size)
-{
-}
-
-XMFLOAT3 Player::GetHitBoxPosition()
-{
-}
-
-void Player::DeadState()
-{
-}

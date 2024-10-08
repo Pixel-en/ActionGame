@@ -9,6 +9,9 @@ class Player :public GameObject
 
 	int hImage_;
 
+	//重力加速度
+	float Gaccel_;
+
 
 	enum Animation {
 		NONE = -1,
@@ -25,13 +28,28 @@ class Player :public GameObject
 		DAMAGE,
 		DEATH,
 	};
+	struct AnimParts
+	{
+		Animation animtype_;	//アニメーションの種類
+		Animation BEanimtype_;	//前のフレームのアニメーション
+		int AFmax_;		//アニメーションのフレーム数
+		int animframe_;	//現在アニメーションが何フレーム目か
+		int AFCmax_;	//アニメーションが変わるまでのフレーム数
+		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 
-	Animation animtype_;	//アニメーションの種類
-	Animation BEanimtype_;	//前のフレームのアニメーション
+	};
+	AnimParts anim_;
 
-	int animframe_;
+	/// <summary>
+	/// スクロールの計算とポジションへのセット
+	/// </summary>
+	void CameraScroll();
 
+	
 public:
+
+	//当たり判定
+	HitObject* hitobject_;
 
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
@@ -59,13 +77,13 @@ public:
 	void DeadState();
 
 	bool isIdol() {
-		if (animtype_ == Animation::IDOL)
+		if (anim_.animtype_ == Animation::IDOL)
 			return true;
 		return false;
 	};
 
 	bool isDie() {
-		if (animtype_ == Animation::DEATH)
+		if (anim_.animtype_ == Animation::DEATH)
 			return true;
 		return false;
 	};
