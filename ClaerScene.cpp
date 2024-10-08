@@ -7,6 +7,7 @@
 #include "CleraLogo.h"
 #include "TitleText.h"
 #include "PlaySound.h"
+#include"RankingsSystem.h"
 
 #if 0
 #include"RankingsSystem.h"
@@ -39,6 +40,7 @@ void ClearScene::Initialize()
 	Clearplayer* cp = Instantiate<Clearplayer>(this);
 	ClearLogo* logo = Instantiate<ClearLogo>(this);
 	TitleText* tt = Instantiate<TitleText>(this);
+	RankingsSystem* pR = Instantiate<RankingsSystem>(this);
 
 #if 0
 	// ï`âÊêÊÇó†Ç…Ç∑ÇÈ
@@ -47,6 +49,7 @@ void ClearScene::Initialize()
 	InputHandle = MakeKeyInput(10, TRUE, FALSE, FALSE);
 	SetActiveKeyInput(InputHandle);
 #endif
+
 }
 
 void ClearScene::Update()

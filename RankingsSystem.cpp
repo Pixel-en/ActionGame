@@ -1,26 +1,24 @@
 #include "RankingsSystem.h"
 #include"Engine/CsvReader.h"
-#include<string>
-#include<fstream>
-#include<sstream>
-#include<map>
+#include"CleraLogo.h"
 
-#define INFTY 1000000001
-
+#if 0
 namespace {
 	/*std::string input_csv_file_path = "Assets\\Rankings\\RankingsSystem.csv";*/
-	std::string output_csv_file_path = "Assets\\Rankings\\RankingsSystem.csv";
-	CsvReader* csv = new CsvReader(output_csv_file_path);
+	std::string output_csv_file_path_ScoreData = "Assets\\Rankings\\RankingsSystem.csv";
+	std::string output_csv_file_path_SortData = "Assets\\Rankings\\RankingsSystemClearSort.csv";
+	CsvReader* csv = new CsvReader(output_csv_file_path_ScoreData);
 	int width = csv->GetColumns(0);
 	int height = csv->GetLines();
 	std::map <std::string, float> Rankings;
+	std::vector<std::pair<float,std::string>> r;
 }
 
 
 
 void RankingsSystem::SetRankings(std::string _Pname, float _Pscore)
 {
-	std::ofstream ofs_csv_file(output_csv_file_path,std::ios::app);
+	std::ofstream ofs_csv_file(output_csv_file_path_ScoreData,std::ios::app);
 	ofs_csv_file << _Pname << ","<< _Pscore;
 	ofs_csv_file << std::endl;
 }
@@ -31,32 +29,75 @@ void RankingsSystem::SortScore()
 		for (int h = 1; h < height; h++) {
 			Rankings.insert(std::pair<std::string, float>(csv->GetString(h, 0), csv->GetFloat(h, 1)));
 		}
+
+		for (std::map<std::string, float>::iterator it = Rankings.begin(); it != Rankings.end(); it++) {
+			r.push_back({ it->second, it->first });
+		}
+		sort(r.rbegin(), r.rend());
+
+
+		std::ofstream ofs_csv_file(output_csv_file_path_SortData);
+		ofs_csv_file << "PlayerName" << "," << "PlayerScore";
+		ofs_csv_file << std::endl;
+		for (auto itr = r.begin(); itr != r.end(); ++itr) {
+			ofs_csv_file << itr->second << "," << itr->first;
+			ofs_csv_file << std::endl;
+		}
 	}
-
-	
 }
+#endif
 
-void RankingsSystem::DrawRankings()
+RankingsSystem::RankingsSystem(GameObject* parent)
 {
 	
 }
 
-//void RankingsSystem::SetRankings()
-//{
-//	/*std::ofstream ifs_csv_file(input_csv_file_path);*/
-//	std::ofstream ofs_csv_file(output_csv_file_path,std::ios::app);
-//    /*std::ifstream file(input_csv_file_path);
-//
-//    int lineCount = 0;
-//    std::string line;
-//
-//    while (std::getline(file, line)) {
-//		
-//        lineCount++;
-//    }
-//
-//    file.close();*/
-//
-//	ofs_csv_file << "tanaka" << ",," << 700;
-//	ofs_csv_file << std::endl;
-//}
+RankingsSystem::~RankingsSystem()
+{
+}
+
+void RankingsSystem::Initialize()
+{
+	output_csv_file_path_ScoreData = "Assets\\Rankings\\RankingsSystem.csv";
+	output_csv_file_path_SortData = "Assets\\Rankings\\RankingsSystemClearSort.csv";
+	csv = new CsvReader(output_csv_file_path_ScoreData);
+	width = csv->GetColumns(0);
+	height = csv->GetLines();
+
+	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
+	InputHandle = MakeKeyInput(50, FALSE, FALSE, FALSE);
+
+	// 作成したキー入力ハンドルをアクティブにする
+	SetActiveKeyInput(InputHandle);
+
+}
+
+void RankingsSystem::Update()
+{
+        // 入力が終了している場合は終了
+	/*if (CheckKeyInput(InputHandle) != 0) ;*/
+
+        // 画面の初期化
+    ClearDrawScreen();
+
+        // 入力モードを描画
+    DrawKeyInputModeString(640,480);
+
+    //    // 入力途中の文字列を描画
+    //DrawKeyInputString(0,0, InputHandle);
+
+    // 入力された文字列を取得
+    GetKeyInputString(Name, InputHandle);
+}
+
+void RankingsSystem::Draw()
+{
+    // 入力された文字列を画面に表示する
+   /* DrawString(0, 0, "あなたが入力した文字列は", GetColor(255, 255, 255));*/
+    DrawString(300,300, Name, GetColor(255, 255, 255));
+	SetFontSize(30);
+}
+
+void RankingsSystem::Release()
+{
+}

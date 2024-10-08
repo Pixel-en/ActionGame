@@ -102,10 +102,12 @@ void Player::Release()
 
 bool Player::HitCheck(int _x, int _y, SIZE _size)
 {
+	return false;
 }
 
 XMFLOAT3 Player::GetHitBoxPosition()
 {
+	return { 1,1,1 };
 }
 
 void Player::DeadState()
