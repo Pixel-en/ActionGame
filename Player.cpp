@@ -18,9 +18,9 @@ namespace {
 
 }
 
-void Player::LoadStates()
+void Player::LoadParameter()
 {
-	enum CSVSTATUS
+	enum CSVPARAM
 	{
 		STRENGTH=1,
 		TECHNIC,
@@ -28,24 +28,24 @@ void Player::LoadStates()
 		HP,
 	};
 
-	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerStatus.csv");
-	status_.strength_= csv->GetInt(1, CSVSTATUS::STRENGTH);
-	status_.technic_ = csv->GetInt(1, CSVSTATUS::TECHNIC);
-	status_.speed_ = csv->GetInt(1, CSVSTATUS::SPEED);
-	status_.hp_ = csv->GetInt(1, CSVSTATUS::HP);
+	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerParameter.csv");
+	param_.strength_= csv->GetInt(1, CSVPARAM::STRENGTH);
+	param_.technic_ = csv->GetInt(1, CSVPARAM::TECHNIC);
+	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED);
+	param_.hp_ = csv->GetInt(1, CSVPARAM::HP);
 
 	for (int i = 4; i < csv->GetLines(); i++) {
-		StaCorre_[i-4].strength_ = csv->GetInt(i, CSVSTATUS::STRENGTH);
-		StaCorre_[i-4].technic_ = csv->GetInt(i, CSVSTATUS::TECHNIC);
-		StaCorre_[i-4].speed_ = csv->GetInt(i, CSVSTATUS::SPEED);
-		StaCorre_[i-4].hp_ = csv->GetInt(i, CSVSTATUS::HP);
+		ParamCorre_[i-4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
+		ParamCorre_[i-4].technic_ = csv->GetInt(i, CSVPARAM::TECHNIC);
+		ParamCorre_[i-4].speed_ = csv->GetInt(i, CSVPARAM::SPEED);
+		ParamCorre_[i-4].hp_ = csv->GetInt(i, CSVPARAM::HP);
 	}
 
 
-	status_.strength_ = Clamp(status_.strength_, 1, 5);
-	status_.technic_ = Clamp(status_.technic_, 1, 5);
-	status_.speed_ = Clamp(status_.speed_, 1, 5);
-	status_.hp_ = Clamp(status_.hp_, 1, 5);
+	param_.strength_ = Clamp(param_.strength_, 1, 5);
+	param_.technic_ = Clamp(param_.technic_, 1, 5);
+	param_.speed_ = Clamp(param_.speed_, 1, 5);
+	param_.hp_ = Clamp(param_.hp_, 1, 5);
 	
 }
 
@@ -66,7 +66,7 @@ Player::Player(GameObject* parent)
 	//当たり判定の初期化
 	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 
-	LoadStates();
+	LoadParameter();
 }
 
 Player::~Player()
@@ -81,17 +81,11 @@ void Player::Initialize()
 
 void Player::Update()
 {
-
-
-	//重力
-	Gaccel_ += GRAVITY;
-	transform_.position_.y += Gaccel_;
-	//地面との当たり判定
-	if (hitobject_->DownCollisionCheck()) {
-		Gaccel_ = 0;
-	}
+	anim_.animtype_ = Animation::IDOL;
 
 	MoveControl();
+
+	AnimStatus();
 
 	CameraScroll();
 }
@@ -182,20 +176,35 @@ void Player::CameraScroll()
 
 void Player::MoveControl()
 {
+
+	//重力
+	Gaccel_ += GRAVITY;
+	transform_.position_.y += Gaccel_;
+	//地面との当たり判定
+	if (hitobject_->DownCollisionCheck()) {
+		Gaccel_ = 0;
+	}
+
 	float Dash = 1.0f;
 
-
-	if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT))
+	//ダッシュ
+	if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
 		Dash = 2.0f;
+		anim_.animtype_ = Animation::RUN;
+	}
 
 	//左移動
 	if (CheckHitKey(KEY_INPUT_A)) {
-		transform_.position_.x += -MOVESPEED * StaCorre_[status_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
+		if(anim_.animtype_!=Animation::RUN)
+			anim_.animtype_ = Animation::WALK;
+		transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
 	}
 
 	//右移動
 	if (CheckHitKey(KEY_INPUT_D)) {
-		transform_.position_.x += MOVESPEED * StaCorre_[status_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
+		if (anim_.animtype_ != Animation::RUN)
+			anim_.animtype_ = Animation::WALK;
+		transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
 
 	}
 
@@ -210,6 +219,79 @@ void Player::MoveControl()
 	//	transform_.position_.x = -MOVESPEED * Time::DeltaTime();
 	//}
 
+	hitobject_->AllCollisionCheck();
+
 }
 
+void Player::AnimStatus()
+{
+	switch (anim_.animtype_)
+	{
+	case Player::NONE:
+		anim_.AFmax_ = 0;
+		anim_.AFCmax_ = 0;
+		break;
+	case Player::IDOL:
+		anim_.AFmax_ = 4;
+		anim_.AFCmax_ = 20;
+		break;
+	case Player::WALK:
+		anim_.AFmax_ =6;
+		anim_.AFCmax_ = 17;
+		break;
+	case Player::RUN:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 11;
+		break;
+	case Player::JUMP:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 0;
+		break;
+	case Player::ATTACK:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 8;
+		break;
+	case Player::ATTACK2:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 8;
+		break;
+	case Player::ATTACK3:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 8;
+		break;
+	case Player::CLIMB:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 17;
+		break;
+	case Player::COLLECTION:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 0;
+		break;
+	case Player::MAGIC:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 0;
+		break;
+	case Player::DAMAGE:
+		anim_.AFmax_ = 3;
+		anim_.AFCmax_ = 0;
+		break;
+	case Player::DEATH:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 20;
+		break;
+	}
+	
+	//フレームのカウント
+	if (anim_.BEanimtype_ != anim_.animtype_) {
+		anim_.animframe_ = 0;
+		anim_.animframecount_ = 0;
+	}
 
+	anim_.animframecount_++;
+	if (anim_.animframecount_ > anim_.AFCmax_) {
+		anim_.animframecount_ = 0;
+		anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+	}
+	anim_.BEanimtype_ = anim_.animtype_;
+
+}

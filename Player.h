@@ -3,7 +3,7 @@
 #include "HitObject.h"
 
 const int ATTACKTYPENUM{ 5 };
-const int STATUSMEMORY{ 5 };	//ステータスの最大割り振り
+const int PARAMMEMORY{ 5 };	//ステータスの最大割り振り
 
 class Player :public GameObject
 {
@@ -13,7 +13,7 @@ class Player :public GameObject
 	//重力加速度
 	float Gaccel_;
 
-
+	//アニメーションの番号
 	enum Animation {
 		NONE = -1,
 		IDOL = 0,
@@ -29,6 +29,7 @@ class Player :public GameObject
 		DAMAGE,
 		DEATH,
 	};
+	//アニメーションに必要なパーツ
 	struct AnimParts
 	{
 		Animation animtype_;	//アニメーションの種類
@@ -39,7 +40,8 @@ class Player :public GameObject
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 
 	};
-	struct Status
+	//プレイヤーのパラメータ
+	struct Parameter
 	{
 		int strength_;	//攻撃力
 		int speed_;		//スピード
@@ -47,7 +49,8 @@ class Player :public GameObject
 		int technic_;	//採取
 
 	};
-	struct StatusCorrection
+	//パラメータによる補正
+	struct ParameterCorrection
 	{
 		float strength_;
 		int speed_;		//スピード
@@ -56,8 +59,8 @@ class Player :public GameObject
 	};
 
 	AnimParts anim_;
-	Status status_;
-	StatusCorrection StaCorre_[STATUSMEMORY];
+	Parameter param_;
+	ParameterCorrection ParamCorre_[PARAMMEMORY];
 
 	/*----------関数----------*/
 
@@ -72,10 +75,11 @@ class Player :public GameObject
 	void MoveControl();
 
 	/// <summary>
-	/// ステータスを読み込む
+	/// パラメータを読み込む
 	/// </summary>
-	void LoadStates();
+	void LoadParameter();
 
+	void AnimStatus();
 	
 public:
 
