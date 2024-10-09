@@ -6,8 +6,10 @@ class CsvReader {
 public:
 	CsvReader(std::string filename);
 	~CsvReader();
-	int GetLines();
-	int GetColumns(int line);
+	//c
+	int GetLines();	
+	//‰¡
+	int GetColumns(int line);	
 	std::string GetString(int line, int column);
 	int GetInt(int line, int column);
 	float GetFloat(int line, int column);

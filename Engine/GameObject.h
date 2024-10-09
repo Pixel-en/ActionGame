@@ -203,6 +203,30 @@ private:
 
 	//子オブジェクトリスト
 	std::list<GameObject*> childList_;
+
+//便利関数系を作ったら入れておきたい
+public:
+	
+	/// <summary>
+	/// 値を丸めて返す
+	/// </summary>
+	/// <typeparam name="T">型(boolは動作未定義)</typeparam>
+	/// <param name="_val">丸める値</param>
+	/// <param name="_min">最小値</param>
+	/// <param name="_max">最大値</param>
+	/// <returns>丸めた値</returns>
+	template <typename T>
+	T Clamp(T _val,T _min,T _max) {
+		if (_min > _max)
+			return 0;
+
+		if (_val <= _min)
+			return _min;
+		else if (_val >= _max)
+			return _max;
+		return _val;
+	}
+
 };
 
 

@@ -3,6 +3,7 @@
 #include "HitObject.h"
 
 const int ATTACKTYPENUM{ 5 };
+const int STATUSMEMORY{ 5 };	//ステータスの最大割り振り
 
 class Player :public GameObject
 {
@@ -38,12 +39,42 @@ class Player :public GameObject
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 
 	};
+	struct Status
+	{
+		int strength_;	//攻撃力
+		int speed_;		//スピード
+		int hp_;		//体力
+		int technic_;	//採取
+
+	};
+	struct StatusCorrection
+	{
+		float strength_;
+		int speed_;		//スピード
+		int hp_;		//体力
+		int technic_;	//採取
+	};
+
 	AnimParts anim_;
+	Status status_;
+	StatusCorrection StaCorre_[STATUSMEMORY];
+
+	/*----------関数----------*/
 
 	/// <summary>
 	/// スクロールの計算とポジションへのセット
 	/// </summary>
 	void CameraScroll();
+
+	/// <summary>
+	/// プレイヤーの動き
+	/// </summary>
+	void MoveControl();
+
+	/// <summary>
+	/// ステータスを読み込む
+	/// </summary>
+	void LoadStates();
 
 	
 public:

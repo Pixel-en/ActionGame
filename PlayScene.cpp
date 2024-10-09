@@ -68,6 +68,7 @@ void PlayScene::Reset()
 	Camera* cam = FindGameObject<Camera>();
 	cam->SetValue(0);
 	Instantiate<MoveObject>(this);
+
 	Instantiate<Player>(this);
 
 	f->Reset();

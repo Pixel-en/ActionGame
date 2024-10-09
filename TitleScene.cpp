@@ -74,7 +74,7 @@ void TitleScene::Update()
 			if (transform_.position_.x <= -1280 * 3) {
 				if (updown) {
 					StopSound();
-					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
 				}
 				else {}
 			}
