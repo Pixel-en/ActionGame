@@ -70,7 +70,7 @@ void Clear::Update()
 		}
 		for (Enemy* E : e) {
 			//‚±‚±‚ ‚Æ‚Å’¼‚·
-			if (E->IsHitting() && !p->isDie()) {
+			if (E->IsHitting() && !p->IsAnimState(p->DEATH)) {
 
 				p->DeadState();
 			}

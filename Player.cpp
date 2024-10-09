@@ -71,6 +71,8 @@ Player::Player(GameObject* parent)
 
 Player::~Player()
 {
+	if (hitobject_ != nullptr)
+		delete hitobject_;
 }
 
 void Player::Initialize()
@@ -81,9 +83,11 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	anim_.animtype_ = Animation::IDOL;
+	if (anim_.animtype_ < Animation::DEATH) {
+		anim_.animtype_ = Animation::IDOL;
 
-	MoveControl();
+		MoveControl();
+	}
 
 	AnimStatus();
 
@@ -112,21 +116,6 @@ void Player::Draw()
 void Player::Release()
 {
 }
-
-bool Player::HitCheck(int _x, int _y, SIZE _size)
-{
-	return false;
-}
-
-XMFLOAT3 Player::GetHitBoxPosition()
-{
-	return { 0,0,0 };
-}
-
-void Player::DeadState()
-{
-}
-
 
 void Player::CameraScroll()
 {
@@ -187,23 +176,31 @@ void Player::MoveControl()
 
 	float Dash = 1.0f;
 
-	//ダッシュ
-	if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
-		Dash = 2.0f;
-		anim_.animtype_ = Animation::RUN;
-	}
-
 	//左移動
 	if (CheckHitKey(KEY_INPUT_A)) {
-		if(anim_.animtype_!=Animation::RUN)
-			anim_.animtype_ = Animation::WALK;
+
+		anim_.animtype_ = Animation::WALK;
+
+		//ダッシュ
+		if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+			Dash = 2.0f;
+			anim_.animtype_ = Animation::RUN;
+		}
+
 		transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
 	}
 
 	//右移動
 	if (CheckHitKey(KEY_INPUT_D)) {
-		if (anim_.animtype_ != Animation::RUN)
-			anim_.animtype_ = Animation::WALK;
+
+		anim_.animtype_ = Animation::WALK;
+
+		//ダッシュ
+		if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+			Dash = 2.0f;
+			anim_.animtype_ = Animation::RUN;
+		}
+
 		transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
 
 	}
@@ -228,8 +225,8 @@ void Player::AnimStatus()
 	switch (anim_.animtype_)
 	{
 	case Player::NONE:
-		anim_.AFmax_ = 0;
-		anim_.AFCmax_ = 0;
+		anim_.AFmax_ = 1;
+		anim_.AFCmax_ = 1;
 		break;
 	case Player::IDOL:
 		anim_.AFmax_ = 4;
@@ -278,6 +275,15 @@ void Player::AnimStatus()
 	case Player::DEATH:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 20;
+		if (anim_.animframe_ >= 5) {
+			anim_.AFCmax_ = 120;
+		}
+		if (anim_.animframecount_ >= 120)
+			anim_.animtype_ = Animation::RESET;
+		break;
+	case Player::RESET:
+		anim_.AFmax_ = 1;
+		anim_.AFCmax_ = 1;
 		break;
 	}
 	
@@ -294,4 +300,35 @@ void Player::AnimStatus()
 	}
 	anim_.BEanimtype_ = anim_.animtype_;
 
+}
+
+
+bool Player::HitCheck(int _x, int _y, SIZE _size)
+{
+	int x = _x + _size.cx / 2;
+	int y = _y + _size.cy / 2;
+
+
+	int px = transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2;
+	int py = transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2;
+
+	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心
+
+	if (abs(x - px) < _size.cx / 2 + HITBOXSIZE.cx / 2 &&
+		abs(y - py) < _size.cy / 2 + HITBOXSIZE.cy / 2)
+		return true;
+
+
+
+	return false;
+}
+
+XMFLOAT3 Player::GetHitBoxPosition()
+{
+	return { transform_.position_.x + LUPOINT.x, transform_.position_.y + LUPOINT.y, 0 };
+}
+
+void Player::DeadState()
+{
+	anim_.animtype_ = Animation::DEATH;
 }

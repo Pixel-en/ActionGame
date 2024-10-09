@@ -13,6 +13,8 @@ class Player :public GameObject
 	//重力加速度
 	float Gaccel_;
 
+public:
+
 	//アニメーションの番号
 	enum Animation {
 		NONE = -1,
@@ -28,7 +30,11 @@ class Player :public GameObject
 		MAGIC,
 		DAMAGE,
 		DEATH,
+		RESET,
 	};
+
+private:
+
 	//アニメーションに必要なパーツ
 	struct AnimParts
 	{
@@ -105,23 +111,19 @@ public:
 	//開放
 	void Release() override;
 
+	/*基本外部から参照する用*/
+
 	bool HitCheck(int _x, int _y, SIZE _size);
 
 	XMFLOAT3 GetHitBoxPosition();
 
 	void DeadState();
 
-	bool isIdol() {
-		if (anim_.animtype_ == Animation::IDOL)
+	//プレイヤーの状態と一致しているか
+	bool IsAnimState(Animation _anim) {
+		if (anim_.animtype_ == _anim)
 			return true;
 		return false;
-	};
-
-	bool isDie() {
-		if (anim_.animtype_ == Animation::DEATH)
-			return true;
-		return false;
-	};
-
+	}
 };
 

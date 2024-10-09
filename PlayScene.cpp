@@ -148,6 +148,10 @@ void PlayScene::UpdatePlay()
 			state = PlayScene::DEATH;
 		}
 	}
+
+	Player* p = FindGameObject<Player>();
+	if (p->IsAnimState(p->RESET))
+		state = PlayScene::DEATH;
 }
 
 void PlayScene::UpdateClear()

@@ -79,7 +79,7 @@ void PlayGUI::Update()
 	if (p == nullptr)
 		return;
 	
-	if (p->isIdol()&&outset_) {
+	if (p->IsAnimState(p->IDOL)&&outset_) {
 		if (CDtimer_ > 0)
 			CDtimer_ -= Time::DeltaTime();
 		else {
