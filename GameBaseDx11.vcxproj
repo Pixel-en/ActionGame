@@ -167,6 +167,7 @@
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="PlaySound.cpp" />
     <ClCompile Include="BlueSlime.cpp" />
+    <ClCompile Include="RankingsScene.cpp" />
     <ClCompile Include="RankingsSystem.cpp" />
     <ClCompile Include="RedSlime.cpp" />
     <ClCompile Include="TestScene.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="PlayGUI.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="PlaySound.h" />
+    <ClInclude Include="RankingsScene.h" />
     <ClInclude Include="RankingsSystem.h" />
     <ClInclude Include="RedSlime.h" />
     <ClInclude Include="resource.h" />

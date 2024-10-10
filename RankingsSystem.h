@@ -9,15 +9,8 @@
 #include"Engine/GameObject.h"
 
 class CsvReader;
-
-#if 0
-namespace RankingsSystem
-{
-	void SetRankings(std::string _Pname,float _Pscore);
-	void SortScore();
-	void DrawRankings();
-};
-#endif
+class ClearLogo;
+class TitleText;
 
 class RankingsSystem : public GameObject
 {
@@ -34,6 +27,16 @@ public:
 
 	void Release();
 
+	/// <summary>
+	/// ランキングのに必要なデータをcsvに挿入
+	/// </summary>
+	void SetRankings(std::string _name, float _score);
+
+	/// <summary>
+	/// csvに保存されたデータをソート
+	/// </summary>
+	void SortScore();
+
 private:
 	std::string output_csv_file_path_ScoreData;
 	std::string output_csv_file_path_SortData;
@@ -43,8 +46,12 @@ private:
 	std::map <std::string, float> Rankings;
 	std::vector<std::pair<float, std::string>> r;
 
+	ClearLogo* cLogo;
+	TitleText* tText;
+
 	int InputHandle;
 	char Name[256];
-	std::string PlayerName;
+
+	bool SetEnd;
 };
 
