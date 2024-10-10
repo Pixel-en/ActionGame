@@ -26,8 +26,8 @@ void TitleScene::Initialize()
 	hImage2_ = LoadGraph("Assets\\Image\\Arrow.png");
 	assert(hImage2_ > 0);
 
-	Playsound* pc = Instantiate<Playsound>(this);
-	pc->PlayMusics("Title");
+	/*Playsound* pc = Instantiate<Playsound>(this);
+	pc->PlayMusics("Title");*/
 
 	Instantiate<TitleText>(this);
 	transform_.position_.x = 0;
@@ -60,8 +60,8 @@ void TitleScene::Update()
 
 	if (CheckHitKey(KEY_INPUT_RETURN) || decision_) {
 		if (!decision_){
-			Playsound* ps = FindGameObject<Playsound>();
-		ps->SoundON("Choise");
+			/*Playsound* ps = FindGameObject<Playsound>();
+		ps->SoundON("Choise");*/
 		}
 		decision_ = true;
 
@@ -74,7 +74,7 @@ void TitleScene::Update()
 			if (transform_.position_.x <= -1280 * 3) {
 				if (updown) {
 					StopSound();
-					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
+					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
 				}
 				else {}
 			}

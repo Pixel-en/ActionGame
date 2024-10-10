@@ -29,5 +29,7 @@ public:
 
 	//ŠJ•ú
 	void Release() override;
+
+	bool GetOutput() { return output_; }
 };
 
