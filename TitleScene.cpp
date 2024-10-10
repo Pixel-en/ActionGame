@@ -2,7 +2,6 @@
 #include "Engine/SceneManager.h"
 #include "TitleText.h"
 #include "Camera.h"
-#include "Playsound.h"
 
 namespace {
 	const float WAITTIME{ 2.0f };
@@ -25,9 +24,6 @@ void TitleScene::Initialize()
 	assert(hImage_ > 0);
 	hImage2_ = LoadGraph("Assets\\Image\\Arrow.png");
 	assert(hImage2_ > 0);
-
-	Playsound* pc = Instantiate<Playsound>(this);
-	pc->PlayMusics("Title");
 
 	Instantiate<TitleText>(this);
 	transform_.position_.x = 0;
@@ -59,10 +55,6 @@ void TitleScene::Update()
 	}
 
 	if (CheckHitKey(KEY_INPUT_RETURN) || decision_) {
-		if (!decision_){
-			Playsound* ps = FindGameObject<Playsound>();
-		ps->SoundON("Choise");
-		}
 		decision_ = true;
 
 		if (wait_ < WAITTIME)
@@ -73,10 +65,8 @@ void TitleScene::Update()
 			transform_.position_.x -= speed * Time::DeltaTime();
 			if (transform_.position_.x <= -1280 * 3) {
 				if (updown) {
-					StopSound();
 					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
 				}
-				else {}
 			}
 		}
 	}

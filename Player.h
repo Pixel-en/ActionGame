@@ -12,6 +12,8 @@ class Player :public GameObject
 
 	//重力加速度
 	float Gaccel_;
+	//無敵
+	bool invincible_;
 
 public:
 
@@ -30,7 +32,7 @@ public:
 		MAGIC,
 		DAMAGE,
 		DEATH,
-		RESET,
+		RESET=20,
 	};
 
 private:
@@ -40,10 +42,11 @@ private:
 	{
 		Animation animtype_;	//アニメーションの種類
 		Animation BEanimtype_;	//前のフレームのアニメーション
-		int AFmax_;		//アニメーションのフレーム数
-		int animframe_;	//現在アニメーションが何フレーム目か
-		int AFCmax_;	//アニメーションが変わるまでのフレーム数
+		int AFmax_;				//アニメーションのフレーム数
+		int animframe_;			//現在アニメーションが何フレーム目か
+		int AFCmax_;			//アニメーションが変わるまでのフレーム数
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
+		bool animloop_;			//アニメーションをループするか
 
 	};
 	//プレイヤーのパラメータ
@@ -86,6 +89,8 @@ private:
 	void LoadParameter();
 
 	void AnimStatus();
+
+	void DeadState();
 	
 public:
 
@@ -115,9 +120,20 @@ public:
 
 	bool HitCheck(int _x, int _y, SIZE _size);
 
+	/// <summary>
+	/// ノックバックの方向を計算する
+	/// </summary>
+	/// <param name="_vec">中心座標</param>
+	/// <returns>方向</returns>
+	VECTOR KnockBackDir(VECTOR _vec);
+
 	XMFLOAT3 GetHitBoxPosition();
 
-	void DeadState();
+	/// <summary>
+	/// ダメージを受けたとき
+	/// </summary>
+	/// <param name="_dir">ノックバックの方向</param>
+	void HitDamage(VECTOR _dir);
 
 	//プレイヤーの状態と一致しているか
 	bool IsAnimState(Animation _anim) {

@@ -10,7 +10,6 @@
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
 #include "Engine/CsvReader.h"
-#include "PlaySound.h"
 
 namespace {
 	const float STIME{ 2.0f };
@@ -38,7 +37,6 @@ void PlayScene::Initialize()
 		}
 	}
 	//Filename_ = maplist[listnum];
-	StopSound();
 
 	Reset();
 
@@ -47,14 +45,8 @@ void PlayScene::Initialize()
 
 void PlayScene::Reset()
 {
-	InitSoundMem();
-
-	Playsound* pc = Instantiate<Playsound>(this);
-	pc->PlayMusics("Play");
 
 	KillAllChildren();
-
-	Instantiate<Playsound>(this);
 
 	Clear* c = Instantiate<Clear>(this);
 	Instantiate<Camera>(this);
@@ -135,9 +127,6 @@ void PlayScene::UpdatePlay()
 	if (c->GetFlag()) {
 		counttimer_ -= Time::DeltaTime();
 		if (counttimer_ < 0) {
-
-			Playsound* ps =FindGameObject<Playsound>();
-			ps->SoundON("Clear");
 			state = PlayScene::CLEAR;
 		}
 	}
@@ -158,12 +147,10 @@ void PlayScene::UpdateClear()
 {
 	listnum++;
 	if (listnum >= maplist.size()) {
-		StopSound();
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
 		return;
 	}
 	Filename_ = maplist[listnum];
-	StopSound();
 	Reset();
 }
 
@@ -171,7 +158,6 @@ void PlayScene::UpdateDeath()
 {
 	deathtimer_ -= Time::DeltaTime();
 	if (deathtimer_ < 0) {
-		StopSound();
 		Reset();
 	}
 }

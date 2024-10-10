@@ -6,7 +6,6 @@
 #include "ClearPlayer.h"
 #include "CleraLogo.h"
 #include "TitleText.h"
-#include "PlaySound.h"
 #include"RankingsSystem.h"
 
 #if 0
@@ -25,8 +24,6 @@ ClearScene::ClearScene(GameObject* parent)
 
 void ClearScene::Initialize()
 {
-	Playsound* pc = Instantiate<Playsound>(this);
-	pc->PlayMusics("Clear");
 
 	Camera* cam=Instantiate<Camera>(this);
 
@@ -65,7 +62,6 @@ void ClearScene::Update()
 	//}
 
 	/*if(CheckHitKey(KEY_INPUT_RETURN)) {
-		StopSound();
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
 	}*/
 

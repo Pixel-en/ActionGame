@@ -1,7 +1,7 @@
 #include"Player.h"
 #include "Camera.h"
 #include "Engine/CsvReader.h"
-#include <algorithm>
+#include "ImGui/imgui.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -50,7 +50,7 @@ void Player::LoadParameter()
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),hImage_(0), Gaccel_(0)
+	:GameObject(parent,"Player"),hImage_(0), Gaccel_(0),invincible_(false)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -59,7 +59,8 @@ Player::Player(GameObject* parent)
 	anim_.animframe_ = 0;
 	anim_.AFCmax_ = 0;
 	anim_.animframecount_ = 0;
-	
+	anim_.animloop_ = false;
+
 	transform_.position_ = { 0,0,0 };
 	//std::string str = GetParent()->GetParent()->GetObjectName();
 
@@ -83,11 +84,15 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	if (anim_.animtype_ < Animation::DEATH) {
+	if (anim_.animtype_ < Animation::DAMAGE) {
 		anim_.animtype_ = Animation::IDOL;
 
 		MoveControl();
 	}
+
+	ImGui::Begin("debug");
+	ImGui::InputInt("hp", &param_.hp_);
+	ImGui::End();
 
 	AnimStatus();
 
@@ -222,11 +227,17 @@ void Player::MoveControl()
 
 void Player::AnimStatus()
 {
+
+	static float timecnt = 0;
+
+	anim_.animloop_ = true;
+
 	switch (anim_.animtype_)
 	{
 	case Player::NONE:
 		anim_.AFmax_ = 1;
 		anim_.AFCmax_ = 1;
+		anim_.animloop_ = false;
 		break;
 	case Player::IDOL:
 		anim_.AFmax_ = 4;
@@ -270,23 +281,44 @@ void Player::AnimStatus()
 		break;
 	case Player::DAMAGE:
 		anim_.AFmax_ = 3;
-		anim_.AFCmax_ = 0;
+		anim_.AFCmax_ = 10;
+		anim_.animloop_ = false;
+		invincible_ = true;
 		break;
 	case Player::DEATH:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 20;
+		anim_.animloop_ = false;
 		if (anim_.animframe_ >= 5) {
-			anim_.AFCmax_ = 120;
+			anim_.animframecount_ = 0;
 		}
-		if (anim_.animframecount_ >= 120)
+		timecnt += Time::DeltaTime();
+		if (timecnt >= 2.0) {
+			timecnt = 0.0f;
 			anim_.animtype_ = Animation::RESET;
+		}
 		break;
 	case Player::RESET:
 		anim_.AFmax_ = 1;
-		anim_.AFCmax_ = 1;
+		anim_.AFCmax_ = 100;
+		anim_.animframe_ = 0;
+		anim_.animframecount_ = 0;
+		anim_.animloop_ = false;
 		break;
 	}
+
+	//無敵時間
+	if (invincible_) {
+		timecnt += Time::DeltaTime();
+		if (timecnt >= 1.0) {
+			timecnt = 0.0f;
+			invincible_ = false;
+		}
+	}
+
 	
+	/*----アニメーションの切り替えなど-----*/
+
 	//フレームのカウント
 	if (anim_.BEanimtype_ != anim_.animtype_) {
 		anim_.animframe_ = 0;
@@ -296,7 +328,13 @@ void Player::AnimStatus()
 	anim_.animframecount_++;
 	if (anim_.animframecount_ > anim_.AFCmax_) {
 		anim_.animframecount_ = 0;
-		anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+		if(anim_.animloop_)
+			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+		else {
+			anim_.animframe_ = anim_.animframe_ + 1;
+			if (anim_.animframe_ == anim_.AFmax_)
+				anim_.animtype_ = Animation::IDOL;
+		}
 	}
 	anim_.BEanimtype_ = anim_.animtype_;
 
@@ -323,12 +361,32 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 	return false;
 }
 
+VECTOR Player::KnockBackDir(VECTOR _vec)
+{
+	return VECTOR();
+}
+
 XMFLOAT3 Player::GetHitBoxPosition()
 {
 	return { transform_.position_.x + LUPOINT.x, transform_.position_.y + LUPOINT.y, 0 };
 }
 
+void Player::HitDamage(VECTOR _dir)
+{
+	//ダメージを受けていたり死んでいないとき
+	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
+		param_.hp_--;
+		if (param_.hp_ < 1)
+			anim_.animtype_ = Animation::DEATH;
+		else
+			anim_.animtype_ = Animation::DAMAGE;
+	}
+}
+
 void Player::DeadState()
 {
+	if(anim_.animtype_==Animation::RESET)
+		return;
+
 	anim_.animtype_ = Animation::DEATH;
 }

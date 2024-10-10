@@ -1,6 +1,5 @@
 #include "BlueSlime.h"
 #include "Enemy.h"
-#include "PlaySound.h"
 
 BlueSlime::BlueSlime(GameObject* parent)
 	:Enemy(parent)
@@ -112,8 +111,6 @@ SIZE BlueSlime::GetImageSize()
 void BlueSlime::DeadState()
 {
 	if (animtype_ != EAnimation::DEATH) {
-		Playsound* ps = GetParent()->FindGameObject<Playsound>();
-		ps->SoundON("EDeath");
 	}
 	animtype_ = EAnimation::DEATH;
 	FCmax_ = 20;
@@ -190,8 +187,6 @@ void BlueSlime::UpdateRun()
 		if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
 			speed_ = ENEMY_ATTACKSPEED;
 			Gaccel = -sqrtf(2 * ENEMY_GRAVITY * ENEMY_JUMPHEIGHT);
-			Playsound* ps = GetParent()->FindGameObject<Playsound>();
-			ps->SoundON("EAttack");
 			animtype_ = EAnimation::ATTACK;
 			attackfrm_ = 0;
 			startmove_ = false;
