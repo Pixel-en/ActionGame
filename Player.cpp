@@ -363,10 +363,17 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
+	//ƒxƒNƒgƒ‹‚Ì‹““®‚ªˆÓ–¡‚í‚©‚ç‚ñ‚©‚Á‚½
+#if 0
 	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
 
 	VECTOR dir = VSub(_vec, Pcenter);
 	dir = VNorm(dir);
+#endif
+	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
+	VECTOR dir = { PCENTER.x - _vec.x };
+	dir = VNorm(dir);
+
 	return dir;
 }
 
@@ -384,10 +391,12 @@ void Player::HitDamage(VECTOR _dir)
 			anim_.animtype_ = Animation::DEATH;
 		else {
 			anim_.animtype_ = Animation::DAMAGE;
-			VECTOR transPos = VScale(VScale(KnockBackDir(_dir), MOVESPEED), Time::DeltaTime());
-			transform_.position_.x = transPos.x;
-			transform_.position_.y = transPos.y;
-			transform_.position_.z = transPos.z;
+			VECTOR transPos = VScale(VScale(KnockBackDir(_dir), 10.0f), Time::DeltaTime());
+			transform_.position_.x += transPos.x;
+			transform_.position_.y += transPos.y;
+			transform_.position_.z += transPos.z;
+
+
 		}
 	}
 
