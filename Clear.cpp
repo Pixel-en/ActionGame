@@ -72,7 +72,7 @@ void Clear::Update()
 			//‚±‚±‚ ‚Æ‚Å’¼‚·
 			if (E->IsHitting() && !p->IsAnimState(p->DEATH)) {
 
-				p->HitDamage();
+				/*p->HitDamage();*/
 			}
 
 		}

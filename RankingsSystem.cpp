@@ -59,7 +59,9 @@ void RankingsSystem::Update()
 
 void RankingsSystem::Draw()
 {
-    DrawString(450,400, Name, GetColor(255, 255, 255));
+	DrawBoxAA(0,0,30,10, GetColor(255, 255, 255), TRUE);
+	tText->DrawString(Name, 450, 400);
+   /* DrawString(450,400, Name, GetColor(255, 255, 255));*/
 	SetFontSize(50);
 }
 
