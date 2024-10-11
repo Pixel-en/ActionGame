@@ -50,8 +50,8 @@ void TitleScene::Update()
 
 		if (updown)
 			y = 500;
-		//else
-		//	y = 550;
+		else
+			y = 550;
 	}
 
 	if (CheckHitKey(KEY_INPUT_RETURN) || decision_) {
@@ -67,6 +67,8 @@ void TitleScene::Update()
 				if (updown) {
 					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
 				}
+				else
+					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
 			}
 		}
 	}
@@ -89,6 +91,6 @@ void TitleScene::Draw()
 	DrawGraph(xpos+x, ypos+y, hImage2_, true);
 
 	TitleText* tt = FindGameObject<TitleText>();
-	tt->DrawString("Play", xpos + 700, ypos + 500);/*
-	tt->DrawString("Tutorial", xpos + 700, ypos + 550);*/
+	tt->DrawString("Play", xpos + 700, ypos + 500);
+	tt->DrawString("Clear", xpos + 700, ypos + 550);
 }
