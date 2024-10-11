@@ -384,7 +384,10 @@ void Player::HitDamage(VECTOR _dir)
 			anim_.animtype_ = Animation::DEATH;
 		else {
 			anim_.animtype_ = Animation::DAMAGE;
-			/*transform_.position_ += KnockBackDir(_dir) * MOVESPEED * Time::DeltaTime();*/
+			VECTOR transPos = VScale(VScale(KnockBackDir(_dir), MOVESPEED), Time::DeltaTime());
+			transform_.position_.x = transPos.x;
+			transform_.position_.y = transPos.y;
+			transform_.position_.z = transPos.z;
 		}
 	}
 
