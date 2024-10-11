@@ -132,5 +132,7 @@ public:
 	bool isdeath() { return (animtype_ == EAnimation::DEATH); }
 	
 	void StatusReader(int _enemyNumber);
+
+	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_LUPOINT.x, transform_.position_.y + ENEMY_LUPOINT.y }; };
 };
 

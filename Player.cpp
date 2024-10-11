@@ -363,7 +363,11 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
-	return VECTOR();
+	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
+	
+	VECTOR dir = VSub(_vec, Pcenter);
+	dir = VNorm(dir);
+	return dir;
 }
 
 XMFLOAT3 Player::GetHitBoxPosition()
@@ -378,9 +382,12 @@ void Player::HitDamage(VECTOR _dir)
 		param_.hp_--;
 		if (param_.hp_ < 1)
 			anim_.animtype_ = Animation::DEATH;
-		else
+		else {
 			anim_.animtype_ = Animation::DAMAGE;
+			transform_.position_ += KnockBackDir(_dir) * MOVESPEED * Time::DeltaTime();
+		}
 	}
+
 }
 
 void Player::DeadState()
