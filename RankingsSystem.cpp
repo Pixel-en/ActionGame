@@ -3,6 +3,8 @@
 #include"CleraLogo.h"
 #include"TitleText.h"
 
+
+
 RankingsSystem::RankingsSystem(GameObject* parent)
 	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name()
 {
@@ -34,7 +36,14 @@ void RankingsSystem::Initialize()
 	flame = 1.0f / 60.0f;
 	eraseAlpha = 0;
 
-	x1,y1,x2,y2 = 455, 440, 478, 445;
+	x1 = 455;
+	y1 = 440;
+	x2 = 455;
+	y2 = 445;
+
+	space = 9;
+	word = 23;
+	count = 0;
 }
 
 void RankingsSystem::Update()
@@ -66,7 +75,7 @@ void RankingsSystem::Update()
 
 void RankingsSystem::Draw()
 {
-	/*if (cLogo->GetOutput()) {*/
+	if (cLogo->GetOutput()) {
 		if (eraseTimer > eraseTime) {
 			eraseTimer = 0.0f;
 			eraseAlpha = 0;
@@ -74,27 +83,33 @@ void RankingsSystem::Draw()
 		eraseTimer += flame;
 		eraseAlpha = 255 - 255 * eraseTimer / eraseTime;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
-		DrawBoxAA(435, 390, 440, 440, GetColor(255, 255, 255), TRUE);//ì¸óÕÉoÅ[
+		std::string str = Name;
+		str.size();
+		if (str.size() > 0) {
+			DrawBoxAA(450 +(word+space)*str.size(), 405, 455+(word+space)*str.size(), 435, GetColor(255, 255, 255), TRUE);//ì¸óÕÉoÅ[
+		}
+		else {
+			DrawBoxAA(450, 405, 455, 435, GetColor(255, 255, 255), TRUE);//ì¸óÕÉoÅ[
+		}
+		
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-		//for (int i = 0; i < 10; i++) {
-		//	int space = 8;
-		//	int word = 23;
-		//	int n = y2 + space;
-		//	if(i > 0)
-		//	  DrawBoxAA(n, y1, x2 + word, y2, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
-		//	else
-		//	  DrawBoxAA(x1, y1, x2, y2 , GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
-		//}
-
-		DrawBoxAA(519, 440, 542, 445, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
-		DrawBoxAA(486, 440, 511, 445, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
-		DrawBoxAA(x1,y1,x2,y2, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
+		for (int i = 0; i < 10; i++) {
+			if (i > 0) {
+				n = a + space;
+				DrawBoxAA(n, y1,n+word, y2, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
+				a = n + word;
+			}
+			else
+			{
+				DrawBoxAA(x1, y1, x2+word, y2, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
+				a = x2 + word;
+			}
+		}
 		DrawBoxAA(430, 380, 840, 450, GetColor(255, 255, 255), FALSE); //ì¸óÕògê¸
 		tText->DrawString(Name, 450, 400);
-		/* DrawString(450,400, Name, GetColor(255, 255, 255));*/
 		SetFontSize(50);
-	/*}*/
+	}
 }
 
 void RankingsSystem::Release()

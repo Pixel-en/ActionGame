@@ -60,5 +60,11 @@ private:
 	float eraseAlpha;
 
 	int x1,y1,x2,y2;
+
+	int space = 8;
+	int word = 23;
+	int  n = x2 + space;
+	int a = n;
+	int count;
 };
 
