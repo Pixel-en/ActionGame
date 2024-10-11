@@ -22,23 +22,23 @@ void Player::LoadParameter()
 {
 	enum CSVPARAM
 	{
-		STRENGTH=1,
+		STRENGTH = 1,
 		TECHNIC,
 		SPEED,
 		HP,
 	};
 
 	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerParameter.csv");
-	param_.strength_= csv->GetInt(1, CSVPARAM::STRENGTH);
+	param_.strength_ = csv->GetInt(1, CSVPARAM::STRENGTH);
 	param_.technic_ = csv->GetInt(1, CSVPARAM::TECHNIC);
 	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED);
 	param_.hp_ = csv->GetInt(1, CSVPARAM::HP);
 
 	for (int i = 4; i < csv->GetLines(); i++) {
-		ParamCorre_[i-4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
-		ParamCorre_[i-4].technic_ = csv->GetInt(i, CSVPARAM::TECHNIC);
-		ParamCorre_[i-4].speed_ = csv->GetInt(i, CSVPARAM::SPEED);
-		ParamCorre_[i-4].hp_ = csv->GetInt(i, CSVPARAM::HP);
+		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
+		ParamCorre_[i - 4].technic_ = csv->GetInt(i, CSVPARAM::TECHNIC);
+		ParamCorre_[i - 4].speed_ = csv->GetInt(i, CSVPARAM::SPEED);
+		ParamCorre_[i - 4].hp_ = csv->GetInt(i, CSVPARAM::HP);
 	}
 
 
@@ -46,11 +46,11 @@ void Player::LoadParameter()
 	param_.technic_ = Clamp(param_.technic_, 1, 5);
 	param_.speed_ = Clamp(param_.speed_, 1, 5);
 	param_.hp_ = Clamp(param_.hp_, 1, 5);
-	
+
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),hImage_(0), Gaccel_(0),invincible_(false)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -244,7 +244,7 @@ void Player::AnimStatus()
 		anim_.AFCmax_ = 20;
 		break;
 	case Player::WALK:
-		anim_.AFmax_ =6;
+		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
 		break;
 	case Player::RUN:
@@ -316,7 +316,7 @@ void Player::AnimStatus()
 		}
 	}
 
-	
+
 	/*----アニメーションの切り替えなど-----*/
 
 	//フレームのカウント
@@ -328,7 +328,7 @@ void Player::AnimStatus()
 	anim_.animframecount_++;
 	if (anim_.animframecount_ > anim_.AFCmax_) {
 		anim_.animframecount_ = 0;
-		if(anim_.animloop_)
+		if (anim_.animloop_)
 			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
 		else {
 			anim_.animframe_ = anim_.animframe_ + 1;
@@ -364,7 +364,7 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
 	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
-	
+
 	VECTOR dir = VSub(_vec, Pcenter);
 	dir = VNorm(dir);
 	return dir;
@@ -395,7 +395,7 @@ void Player::HitDamage(VECTOR _dir)
 
 void Player::DeadState()
 {
-	if(anim_.animtype_==Animation::RESET)
+	if (anim_.animtype_ == Animation::RESET)
 		return;
 
 	anim_.animtype_ = Animation::DEATH;

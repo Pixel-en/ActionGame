@@ -53,12 +53,5 @@ private:
 	char Name[256];
 
 	bool SetEnd;
-
-	float eraseTime;
-	float eraseTimer;
-	float flame;
-	float eraseAlpha;
-
-	int x1,y1,x2,y2;
 };
 

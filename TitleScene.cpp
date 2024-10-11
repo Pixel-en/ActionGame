@@ -92,5 +92,5 @@ void TitleScene::Draw()
 
 	TitleText* tt = FindGameObject<TitleText>();
 	tt->DrawString("Play", xpos + 700, ypos + 500);
-	tt->DrawString("Clear", xpos + 700, ypos + 550);
+	//tt->DrawString("Clear", xpos + 700, ypos + 550);
 }
