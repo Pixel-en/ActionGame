@@ -28,6 +28,13 @@ void RankingsSystem::Initialize()
 
 	// ÉLÅ[ì¸óÕÉnÉìÉhÉãÇçÏÇÈ(ÉLÉÉÉìÉZÉãÇ»ÇµëSäpï∂éöóLÇËêîílì¸óÕÇ∂Ç·Ç»Çµ)
 	InputHandle = MakeKeyInput(10,FALSE,TRUE,FALSE);
+
+	eraseTime = 1.2f;
+	eraseTimer = 0.0f;
+	flame = 1.0f / 60.0f;
+	eraseAlpha = 0;
+
+	x1,y1,x2,y2 = 455, 440, 478, 445;
 }
 
 void RankingsSystem::Update()
@@ -59,13 +66,35 @@ void RankingsSystem::Update()
 
 void RankingsSystem::Draw()
 {
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA,30);
-	DrawBoxAA(450,400,455,430, GetColor(255, 255, 255), TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,255);
-	DrawBoxAA(440, 380, 750, 450, GetColor(255, 255, 255),FALSE);
-	tText->DrawString(Name, 450, 400);
-   /* DrawString(450,400, Name, GetColor(255, 255, 255));*/
-	SetFontSize(50);
+	/*if (cLogo->GetOutput()) {*/
+		if (eraseTimer > eraseTime) {
+			eraseTimer = 0.0f;
+			eraseAlpha = 0;
+		}
+		eraseTimer += flame;
+		eraseAlpha = 255 - 255 * eraseTimer / eraseTime;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
+		DrawBoxAA(435, 390, 440, 440, GetColor(255, 255, 255), TRUE);//ì¸óÕÉoÅ[
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+		//for (int i = 0; i < 10; i++) {
+		//	int space = 8;
+		//	int word = 23;
+		//	int n = y2 + space;
+		//	if(i > 0)
+		//	  DrawBoxAA(n, y1, x2 + word, y2, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
+		//	else
+		//	  DrawBoxAA(x1, y1, x2, y2 , GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
+		//}
+
+		DrawBoxAA(519, 440, 542, 445, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
+		DrawBoxAA(486, 440, 511, 445, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
+		DrawBoxAA(x1,y1,x2,y2, GetColor(255, 255, 255), TRUE); //ÇµÇΩñ_
+		DrawBoxAA(430, 380, 840, 450, GetColor(255, 255, 255), FALSE); //ì¸óÕògê¸
+		tText->DrawString(Name, 450, 400);
+		/* DrawString(450,400, Name, GetColor(255, 255, 255));*/
+		SetFontSize(50);
+	/*}*/
 }
 
 void RankingsSystem::Release()
