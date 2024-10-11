@@ -65,7 +65,7 @@ void TitleScene::Update()
 			transform_.position_.x -= speed * Time::DeltaTime();
 			if (transform_.position_.x <= -1280 * 3) {
 				if (updown) {
-					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
 				}
 			}
 		}

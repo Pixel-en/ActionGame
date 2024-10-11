@@ -17,9 +17,9 @@ void SceneManager::Initialize()
 {
 	Time::Init();
 	//Å‰‚ÌƒV[ƒ“‚ğ€”õ
-	currentSceneID_ = SCENE_ID_TITLE;
+	currentSceneID_ = SCENE_ID_CLEAR;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<TitleScene>(this);
+	Instantiate<ClearScene>(this);
 
 }
 

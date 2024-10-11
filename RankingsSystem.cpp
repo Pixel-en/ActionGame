@@ -59,7 +59,10 @@ void RankingsSystem::Update()
 
 void RankingsSystem::Draw()
 {
-	DrawBoxAA(0,0,30,10, GetColor(255, 255, 255), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA,30);
+	DrawBoxAA(450,400,455,430, GetColor(255, 255, 255), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,255);
+	DrawBoxAA(440, 380, 750, 450, GetColor(255, 255, 255),FALSE);
 	tText->DrawString(Name, 450, 400);
    /* DrawString(450,400, Name, GetColor(255, 255, 255));*/
 	SetFontSize(50);
