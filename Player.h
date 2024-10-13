@@ -15,6 +15,8 @@ class Player :public GameObject
 	//無敵
 	bool invincible_;
 
+	bool isjamp_;
+
 public:
 
 	//アニメーションの番号
