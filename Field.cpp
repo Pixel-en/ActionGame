@@ -6,6 +6,7 @@
 #include "BlueSlime.h"
 #include "GreenSlime.h"
 #include "RedSlime.h"
+#include "BardA.h"
 #include "Player.h"
 #include "Clear.h"
 #include "CheckPoint.h"
@@ -57,73 +58,79 @@ void Field::Reset()
 			{
 			case GOAL: {
 				Goal* g = Instantiate<Goal>(GetParent());
-				g->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				g->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				g->Reset();
 			}
 					break;
 			case CHECKPOINT: {
 				CheckPoint* ch = Instantiate<CheckPoint>(GetParent());
-				ch->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				ch->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				ch->Reset();
 			}
 					break;
 			case PLAYER: {
 				Player* p = GetParent()->FindGameObject<Player>();
-				p->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				p->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 			}
 					break;
 			case ITEM: {
 
 				c->AddMcount();
 				Material* m = Instantiate<Material>(GetParent());
-				m->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				m->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				m->Reset();
 			}
 					break;
 			case RIFT_L: {
 				MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
 				mo->InstantL();
-				mo->SetLpos(j * IMAGESIZE, i * IMAGESIZE);
+				mo->SetLpos(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2);
 				break;
 			}
 			case RIFT_C: {
 				MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
 				mo->InstantC();
-				mo->SetCpos(j * IMAGESIZE, i * IMAGESIZE);
+				mo->SetCpos(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2);
 				break;
 			}
 			case RIFT_R: {
 				MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
 				mo->InstantR();
-				mo->SetRpos(j * IMAGESIZE, i * IMAGESIZE);
+				mo->SetRpos(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2);
 				break;
-
-
 			}
-			case SLIME_BLUE: {
+			case SLIME_A + 201: {
 				c->AddEcount();
 				BlueSlime* e = Instantiate<BlueSlime>(GetParent());
-				e->StatusReader(SLIME_BLUE);
-				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				e->StatusReader(SLIME_A + 201);
+				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				e->Reset();
 			}
 					break;
-			case SLIME_GREEN: {
+			case SLIME_B + 201: {
 				c->AddEcount();
 				GreenSlime* e = Instantiate<GreenSlime>(GetParent());
-				e->StatusReader(SLIME_GREEN);
-				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				e->StatusReader(SLIME_B + 201);
+				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				e->Reset();
 			}
 					break;
-			case SLIME_RED: {
+			case SLIME_C + 201: {
 				c->AddEcount();
 				RedSlime* e = Instantiate<RedSlime>(GetParent());
-				e->StatusReader(SLIME_RED);
-				e->SetPosition(j * IMAGESIZE, i * IMAGESIZE, 0);
+				e->StatusReader(SLIME_C + 201);
+				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				e->Reset();
 			}
 					break;
+			case BARD_A + 201: {
+				c->AddEcount();
+				BardA* e = Instantiate<BardA>(GetParent());
+				e->StatusReader(BARD_A + 201);
+				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
+				e->Reset();
+			}
+						break;
 			default:
 				break;
 			}

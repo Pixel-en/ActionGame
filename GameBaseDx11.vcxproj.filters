@@ -20,6 +20,9 @@
     <Filter Include="PlayScene">
       <UniqueIdentifier>{d8d5ad11-e720-45b0-b059-0d34a8ad85fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayScene\Enemy">
+      <UniqueIdentifier>{a2124d14-6fba-47b4-838e-be48ada8c790}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObject.cpp">
@@ -114,13 +117,20 @@
     <ClCompile Include="CleraLogo.cpp" />
     <ClCompile Include="PlaySound.cpp" />
     <ClCompile Include="Tutorial.cpp" />
-    <ClCompile Include="BlueSlime.cpp">
-      <Filter>PlayScene</Filter>
-    </ClCompile>
+    <ClCompile Include="RankingsScene.cpp" />
+    <ClCompile Include="RankingsSystem.cpp" />
     <ClCompile Include="GreenSlime.cpp">
-      <Filter>PlayScene</Filter>
+      <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="RedSlime.cpp" />
+    <ClCompile Include="RedSlime.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BlueSlime.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BardA.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -226,15 +236,19 @@
     <ClInclude Include="PlaySound.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Tutorial.h" />
-    <ClInclude Include="BlueSlime.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
+    <ClInclude Include="RankingsScene.h" />
+    <ClInclude Include="RankingsSystem.h" />
     <ClInclude Include="GreenSlime.h">
-      <Filter>PlayScene</Filter>
+      <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerAttack.h" />
     <ClInclude Include="RedSlime.h">
-      <Filter>PlayScene</Filter>
+      <Filter>PlayScene\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueSlime.h">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BardA.h">
+      <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

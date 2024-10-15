@@ -4,21 +4,23 @@
 #include "Player.h"
 #include "Camera.h"
 #include "Clear.h"
+#include <vector>
 
 //プレイヤーが当たったらプレイヤーの負け
 //攻撃してくる
 //
 namespace {
-	const SIZE ENEMY_IMAGESIZE{ 128,128 };
-	const float ENEMY_LOOKRANGE{ 150 };
+	//const SIZE ENEMY_IMAGESIZE{ 48,48 };
+	//const SIZE ENEMY_HITBOXSIZE{ 48 / 2,48 / 2 };
+	//const float ENEMY_JUMPHEIGHT{ ENEMY_IMAGESIZE.cx * 1.5f };	//ジャンプの高さ
+	//const float ENEMY_LOOKRANGE{ 150 };
 	const float ENEMY_ATTACKRANGE{ 101.5f };
 	const float ENEMY_GRAVITY{ 9.8f / 60.0f };	//重力
-	const VECTOR ENEMY_LUPOINT{ 34.0f,90.0f };	//左上の座標
-	const VECTOR ENEMY_RUPOINT{ 94.0f,90.0f };	//右上の座標
-	const VECTOR ENEMY_LDPOINT{ 34.0f,127.0f };	//左下の座標
-	const VECTOR ENEMY_RDPOINT{ 94.0f,127.0f };	//右下の座標
-	const SIZE ENEMY_HITBOXSIZE{ 60,37 };
-	const float ENEMY_JUMPHEIGHT{ ENEMY_IMAGESIZE.cx * 1.5f };	//ジャンプの高さ
+	//const VECTOR ENEMY_LUPOINT{ 34.0f,90.0f };	//左上の座標
+	//const VECTOR ENEMY_RUPOINT{ 94.0f,90.0f };	//右上の座標
+	//const VECTOR ENEMY_LDPOINT{ 34.0f,127.0f };	//左下の座標
+	//const VECTOR ENEMY_RDPOINT{ 94.0f,127.0f };	//右下の座標
+	
 	//const float ENEMY_MOVESPEED{ 85 };
 	//const float ENEMY_RUNSPEED{ 170 };	//ダッシュスピード
 	const float ENEMY_ATTACKSPEED{ 1500 };
@@ -29,8 +31,7 @@ namespace {
 
 enum ENEMY_TYPE
 {
-	BLUE_SLIME, GREEN_SLIME, RED_SLIME, ENEMY_TYPE_END
-	//今はENEMY_TYPE_END以外使ってない
+	SLIME_A, SLIME_B, SLIME_C, BARD_A, ENEMY_TYPE_END
 };
 const int Status_Size{ 4 };
 
@@ -38,6 +39,10 @@ const int Status_Size{ 4 };
 class Enemy:public Object
 {
 protected:
+	const SIZE ENEMY_IMAGESIZE{ 48,48 };
+	const SIZE ENEMY_HITBOXSIZE{ 48 / 2,48 / 2 };
+	const float ENEMY_JUMPHEIGHT{ ENEMY_IMAGESIZE.cx * 1.5f };	//ジャンプの高さ
+	const float ENEMY_LOOKRANGE{ 150 };
 	//次に動くまでのタイマー
 	float movetimer_;
 	float baseMovetimer;
@@ -66,18 +71,19 @@ protected:
 	int attackfrm_;
 
 	XMFLOAT3 SpawnPoint_;	//初期値
+	XMFLOAT3 TargetPoint_;
 
 	enum  EAnimation
 	{
-		IDOL,
 		MOVE,
-		RUN,
 		ATTACK,
+		IDOL,
+		RUN,
 		HURT,
 		DEATH
 	};
 
-	EAnimation animtype_;
+	EAnimation state_;
 	EAnimation BEanimtype_;
 
 	void AnimationCheck();
@@ -86,6 +92,8 @@ protected:
 	/// 敵とプレイヤーの距離
 	/// </summary>
 	float EPDistance();
+	XMFLOAT3 EPVector();
+	XMFLOAT3 TargetPos();
 
 	virtual void UpdateIdol();
 	virtual void UpdateMove();
@@ -129,10 +137,10 @@ public:
 
 	SIZE GetSize() override;
 
-	bool isdeath() { return (animtype_ == EAnimation::DEATH); }
+	bool isdeath() { return (state_ == EAnimation::DEATH); }
 	
 	void StatusReader(int _enemyNumber);
 
-	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_LUPOINT.x, transform_.position_.y + ENEMY_LUPOINT.y }; };
+	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_IMAGESIZE.cx / 2, transform_.position_.y + ENEMY_IMAGESIZE.cy / 2 }; };
 };
 

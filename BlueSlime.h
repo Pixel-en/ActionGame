@@ -2,6 +2,9 @@
 #include "Enemy.h"
 class BlueSlime :public Enemy
 {
+	SIZE ENEMY_IMAGESIZE{ 48,48 };
+	SIZE ENEMY_HITBOXSIZE{ 48 / 2,48 / 2 };
+
 	void UpdateIdol();
 	void UpdateMove();
 	void UpdateRun();

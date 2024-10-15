@@ -16,7 +16,7 @@ MoveObject::MoveObject(GameObject* parent)
 	VECTOR LDPOINT{ 0.0f,IMAGESIZE.cy };
 	VECTOR RDPOINT{ IMAGESIZE.cx,IMAGESIZE.cy };
 
-	hitobj_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
+	hitobj_ = new HitObject(IMAGESIZE, this);
 	ins = 0b000;
 
 	left = nullptr;

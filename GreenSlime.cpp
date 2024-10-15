@@ -9,7 +9,7 @@ GreenSlime::GreenSlime(GameObject* parent)
 	speed_ = 0;
 	onGround_ = false;
 	range_ = ENEMY_LOOKRANGE;
-	animtype_ = EAnimation::IDOL;
+	state_ = EAnimation::IDOL;
 	SpawnPoint_ = transform_.position_;
 	dir_ = 1;
 	attackfrm_ = 0;
@@ -22,7 +22,7 @@ GreenSlime::~GreenSlime()
 
 void GreenSlime::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\GreenSlimeScript.png");
+	hImage_ = LoadGraph("Assets\\Image\\ゲーム用モンスター素材\\スライム\\スライムB_sprite.png");
 	assert(hImage_ > 0);
 }
 
@@ -37,7 +37,7 @@ void GreenSlime::Update()
 	if (clear->GetFlag() || p == nullptr)
 		return;
 
-	//animtype_ = EAnimation::IDOL;
+	//state_ = EAnimation::IDOL;
 	onGround_ = false;
 	Ppos = p->GetPosition();
 	Gaccel += ENEMY_GRAVITY;
@@ -62,7 +62,7 @@ void GreenSlime::Update()
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
 
-	switch (animtype_)
+	switch (state_)
 	{
 	case Enemy::IDOL:
 		UpdateIdol();
@@ -96,7 +96,7 @@ void GreenSlime::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-	DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, animtype_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
+	DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
 }
 
 void GreenSlime::Release()
@@ -110,9 +110,9 @@ SIZE GreenSlime::GetImageSize()
 
 void GreenSlime::DeadState()
 {
-	if (animtype_ != EAnimation::DEATH) {
+	if (state_ != EAnimation::DEATH) {
 	}
-	animtype_ = EAnimation::DEATH;
+	state_ = EAnimation::DEATH;
 	FCmax_ = 20;
 	AFmax_ = 3;
 	framecnt_ = 0;
@@ -140,7 +140,7 @@ void GreenSlime::UpdateIdol()
 	}
 	else {
 		speed_ = baseSpeed;
-		animtype_ = EAnimation::MOVE;
+		state_ = EAnimation::MOVE;
 	}
 }
 
@@ -151,7 +151,7 @@ void GreenSlime::UpdateMove()
 	if (IsExistPlayer(range_)) {
 		speed_ = baseRunSpeed;
 		range_ = ENEMY_LOOKRANGE * 2;
-		animtype_ = EAnimation::RUN;
+		state_ = EAnimation::RUN;
 		return;
 	}
 	else
@@ -163,13 +163,13 @@ void GreenSlime::UpdateMove()
 		dir_ = 1;
 		transform_.position_.x = SpawnPoint_.x - 30.0f;
 		startmove_ = false;
-		animtype_ = EAnimation::IDOL;
+		state_ = EAnimation::IDOL;
 	}
 	else if (SpawnPoint_.x - transform_.position_.x < -30.0f) {
 		dir_ = -1;
 		transform_.position_.x = SpawnPoint_.x + 30.0f;
 		startmove_ = false;
-		animtype_ = EAnimation::IDOL;
+		state_ = EAnimation::IDOL;
 	}
 }
 
@@ -187,7 +187,7 @@ void GreenSlime::UpdateRun()
 		if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
 			speed_ = ENEMY_ATTACKSPEED;
 			Gaccel = -sqrtf(2 * ENEMY_GRAVITY * ENEMY_JUMPHEIGHT);
-			animtype_ = EAnimation::ATTACK;
+			state_ = EAnimation::ATTACK;
 			attackfrm_ = 0;
 			startmove_ = false;
 		}
@@ -198,7 +198,7 @@ void GreenSlime::UpdateRun()
 	else {
 		speed_ = baseSpeed;
 		range_ = ENEMY_LOOKRANGE;
-		animtype_ = EAnimation::MOVE;
+		state_ = EAnimation::MOVE;
 	}
 	////動きの計算
 	//if (IsExistPlayer() && !inmoving_ && startmove_) {
@@ -255,7 +255,7 @@ void GreenSlime::UpdateAttack()
 	if (onGround_) {
 		speed_ = baseMovetimer;
 		SpawnPoint_ = transform_.position_;
-		animtype_ = EAnimation::IDOL;
+		state_ = EAnimation::IDOL;
 
 	}
 }

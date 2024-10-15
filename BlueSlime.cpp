@@ -9,11 +9,13 @@ BlueSlime::BlueSlime(GameObject* parent)
 	speed_ = 0;
 	onGround_ = false;
 	range_ = ENEMY_LOOKRANGE;
-	animtype_ = EAnimation::IDOL;
+	state_ = EAnimation::IDOL;
 	SpawnPoint_ = transform_.position_;
 	dir_ = 1;
 	attackfrm_ = 0;
 	hp_ = baseHp;
+
+	hitobj_ = new HitObject(ENEMY_HITBOXSIZE, this);
 }
 
 BlueSlime::~BlueSlime()
@@ -22,7 +24,7 @@ BlueSlime::~BlueSlime()
 
 void BlueSlime::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\BlueSlimeScript.png");
+	hImage_ = LoadGraph("Assets\\Image\\ゲーム用モンスター素材\\スライム\\スライムA_sprite.png");
 	assert(hImage_ > 0);
 }
 
@@ -37,7 +39,7 @@ void BlueSlime::Update()
 	if (clear->GetFlag() || p == nullptr)
 		return;
 
-	//animtype_ = EAnimation::IDOL;
+	//state_ = EAnimation::IDOL;
 	onGround_ = false;
 	Ppos = p->GetPosition();
 	Gaccel += ENEMY_GRAVITY;
@@ -62,7 +64,7 @@ void BlueSlime::Update()
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
 
-	switch (animtype_)
+	switch (state_)
 	{
 	case Enemy::IDOL:
 		UpdateIdol();
@@ -96,7 +98,20 @@ void BlueSlime::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-	DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, animtype_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
+	//DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
+	/*DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, 1 * animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ + 1);
+
+	DrawLine(transform_.position_.x - (ENEMY_IMAGESIZE.cx / 2) - cam->GetValue(), transform_.position_.y - (ENEMY_IMAGESIZE.cy / 2) - cam->GetValueY(), transform_.position_.x - (ENEMY_IMAGESIZE.cy / 2) - cam->GetValue(), transform_.position_.y + (ENEMY_IMAGESIZE.cy / 2) - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x - (ENEMY_IMAGESIZE.cx / 2) - cam->GetValue(), transform_.position_.y - (ENEMY_IMAGESIZE.cy / 2) - cam->GetValueY(), transform_.position_.x + (ENEMY_IMAGESIZE.cy / 2) - cam->GetValue(), transform_.position_.y - (ENEMY_IMAGESIZE.cy / 2) - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x + (ENEMY_IMAGESIZE.cx / 2) - cam->GetValue(), transform_.position_.y + (ENEMY_IMAGESIZE.cy / 2) - cam->GetValueY(), transform_.position_.x - (ENEMY_IMAGESIZE.cy / 2) - cam->GetValue(), transform_.position_.y + (ENEMY_IMAGESIZE.cy / 2) - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x + (ENEMY_IMAGESIZE.cx / 2) - cam->GetValue(), transform_.position_.y + (ENEMY_IMAGESIZE.cy / 2) - cam->GetValueY(), transform_.position_.x + (ENEMY_IMAGESIZE.cy / 2) - cam->GetValue(), transform_.position_.y - (ENEMY_IMAGESIZE.cy / 2) - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));*/
+	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
+
+
+	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
 }
 
 void BlueSlime::Release()
@@ -110,9 +125,9 @@ SIZE BlueSlime::GetImageSize()
 
 void BlueSlime::DeadState()
 {
-	if (animtype_ != EAnimation::DEATH) {
+	if (state_ != EAnimation::DEATH) {
 	}
-	animtype_ = EAnimation::DEATH;
+	state_ = EAnimation::DEATH;
 	FCmax_ = 20;
 	AFmax_ = 3;
 	framecnt_ = 0;
@@ -127,8 +142,8 @@ SIZE BlueSlime::GetSize()
 
 void BlueSlime::UpdateIdol()
 {
-	AFmax_ = 8;
-	FCmax_ = 20;
+	AFmax_ = 3;
+	FCmax_ = 25;
 
 	//攻撃バッファ
 	if (!startmove_) {
@@ -140,18 +155,18 @@ void BlueSlime::UpdateIdol()
 	}
 	else {
 		speed_ = baseSpeed;
-		animtype_ = EAnimation::MOVE;
+		state_ = EAnimation::MOVE;
 	}
 }
 
 void BlueSlime::UpdateMove()
 {
-	AFmax_ = 8;
-	FCmax_ = 10;
+	AFmax_ = 4;
+	FCmax_ = 15;
 	if (IsExistPlayer(range_)) {
 		speed_ = baseRunSpeed;
 		range_ = ENEMY_LOOKRANGE * 2;
-		animtype_ = EAnimation::RUN;
+		state_ = EAnimation::RUN;
 		return;
 	}
 	else
@@ -163,13 +178,13 @@ void BlueSlime::UpdateMove()
 		dir_ = 1;
 		transform_.position_.x = SpawnPoint_.x - 30.0f;
 		startmove_ = false;
-		animtype_ = EAnimation::IDOL;
+		state_ = EAnimation::IDOL;
 	}
 	else if (SpawnPoint_.x - transform_.position_.x < -30.0f) {
 		dir_ = -1;
 		transform_.position_.x = SpawnPoint_.x + 30.0f;
 		startmove_ = false;
-		animtype_ = EAnimation::IDOL;
+		state_ = EAnimation::IDOL;
 	}
 }
 
@@ -187,7 +202,7 @@ void BlueSlime::UpdateRun()
 		if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
 			speed_ = ENEMY_ATTACKSPEED;
 			Gaccel = -sqrtf(2 * ENEMY_GRAVITY * ENEMY_JUMPHEIGHT);
-			animtype_ = EAnimation::ATTACK;
+			state_ = EAnimation::ATTACK;
 			attackfrm_ = 0;
 			startmove_ = false;
 		}
@@ -198,7 +213,7 @@ void BlueSlime::UpdateRun()
 	else {
 		speed_ = baseSpeed;
 		range_ = ENEMY_LOOKRANGE;
-		animtype_ = EAnimation::MOVE;
+		state_ = EAnimation::MOVE;
 	}
 	////動きの計算
 	//if (IsExistPlayer() && !inmoving_ && startmove_) {
@@ -224,7 +239,7 @@ void BlueSlime::UpdateAttack()
 		animframe_ = 3;
 	else if (attackfrm_ < 40)
 		animframe_ = 4;
-	else if (attackfrm_ < 50)
+	/*else if (attackfrm_ < 50)
 		animframe_ = 5;
 	else if (attackfrm_ < 60)
 		animframe_ = 6;
@@ -233,13 +248,13 @@ void BlueSlime::UpdateAttack()
 	else if (attackfrm_ < 80)
 		animframe_ = 8;
 	else if (attackfrm_ < 90)
-		animframe_ = 9;
+		animframe_ = 9;*/
 
 	int frm[4] = { 5,10,20,30 };
 	static int i = 0;
 	int rate = 0;
 	//96f	48f
-	transform_.position_.x += 140.0/*speed_*/ * Time::DeltaTime() * dir_;
+	transform_.position_.x += 200.0/*speed_*/ * Time::DeltaTime() * dir_;
 
 	if (attackfrm_ == frm[i] && i < 4) {
 		i++;
@@ -255,7 +270,7 @@ void BlueSlime::UpdateAttack()
 	if (onGround_) {
 		speed_ = baseMovetimer;
 		SpawnPoint_ = transform_.position_;
-		animtype_ = EAnimation::IDOL;
+		state_ = EAnimation::IDOL;
 
 	}
 }

@@ -11,9 +11,10 @@ enum ObjectNumber
 	RIFT_C = 108,//リフト中
 	RIFT_R = 109,//リフト左
 
-	SLIME_BLUE = 201,//青スライム
-	SLIME_GREEN = 202,//緑スライム
-	SLIME_RED = 203//赤スライム
+	//201 青スライム
+	//202 緑スライム
+	//203 赤スライム
+	//204 鳥A
 };
 
 class Field :public GameObject

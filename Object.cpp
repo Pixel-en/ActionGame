@@ -40,7 +40,7 @@ Object::~Object()
 
 void Object::Initialize()
 {
-	hitobj_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
+	hitobj_ = new HitObject(hitsize_, this);
 }
 
 void Object::Reset()

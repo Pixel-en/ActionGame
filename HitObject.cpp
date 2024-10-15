@@ -1,8 +1,19 @@
 #include "HitObject.h"
 #include "MoveObject.h"
 
-HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj)
-	:Lu_(_Lu), Ru_(_Ru), Ld_(_Ld), Rd_(_Rd), obj_(nullptr)
+//HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj)
+//	:Lu_(_Lu), Ru_(_Ru), Ld_(_Ld), Rd_(_Rd), obj_(nullptr)
+//{
+//	obj_ = _obj;
+//	field = obj_->GetParent()->FindGameObject<Field>();
+//	if (field == nullptr) {
+//		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
+//		assert(false);
+//	}
+//}
+
+HitObject::HitObject(SIZE _size, GameObject* _obj)
+	:size_(_size), obj_(nullptr)
 {
 	obj_ = _obj;
 	field = obj_->GetParent()->FindGameObject<Field>();
@@ -33,7 +44,7 @@ bool HitObject::RightCollisionCheck()
 	Transform trns;
 	trns.position_ = obj_->GetPosition();
 
-	int push = field->CollisionRightCheck(trns.position_.x + Rd_.x, trns.position_.y + Rd_.y);
+	int push = field->CollisionRightCheck(trns.position_.x + size_.cx, trns.position_.y + size_.cy);
 	if (push >= 1) {
 
 		trns.position_.x -= push;
@@ -60,7 +71,7 @@ bool HitObject::LeftCollisionCheck()
 	Transform trns;
 	trns.position_ = obj_->GetPosition();
 	
-	int push = field->CollisionLeftCheck(trns.position_.x + Ld_.x, trns.position_.y + Ld_.y);
+	int push = field->CollisionLeftCheck(trns.position_.x - size_.cx, trns.position_.y + size_.cy);
 	if (push >= 1) {
 		trns.position_.x += push;
 		obj_->SetPosition(trns.position_);
@@ -74,10 +85,10 @@ bool HitObject::UpCollisionCheck()
 	Transform trns;
 	trns.position_ = obj_->GetPosition();
 
-	int Lhit = field->CollisionUpCheck(trns.position_.x + Lu_.x,
-		trns.position_.y + Lu_.y - 1);
-	int Rhit = field->CollisionUpCheck(trns.position_.x + Ru_.x,
-		trns.position_.y + Ru_.y - 1);
+	int Lhit = field->CollisionUpCheck(trns.position_.x - size_.cx,
+		trns.position_.y - size_.cy - 1);
+	int Rhit = field->CollisionUpCheck(trns.position_.x + size_.cx,
+		trns.position_.y - size_.cy - 1);
 	int push = max(Lhit, Rhit);
 	if (push >= 1) {
 
@@ -93,10 +104,10 @@ bool HitObject::DownCollisionCheck()
 	Transform trns;
 	trns.position_ = obj_->GetPosition();
 
-	int Lhit = field->CollisionDownCheck(trns.position_.x + Ld_.x,
-		trns.position_.y + Ld_.y + 1);
-	int Rhit = field->CollisionDownCheck(trns.position_.x + Rd_.x,
-		trns.position_.y + Rd_.y + 1);
+	int Lhit = field->CollisionDownCheck(trns.position_.x - size_.cx,
+		trns.position_.y + size_.cy + 1);
+	int Rhit = field->CollisionDownCheck(trns.position_.x + size_.cx,
+		trns.position_.y + size_.cy + 1);
 	int push = max(Lhit, Rhit);
 	if (push >= 1) {
 

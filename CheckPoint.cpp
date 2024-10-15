@@ -19,7 +19,7 @@ void CheckPoint::Initialize()
 	hImage_ = LoadGraph("Assets\\Image\\Objects\\Rune.png");
 	assert(hImage_ > 0);
 
-	hitobj_ = new HitObject({ 0.0f,0.0f }, { IMAGESIZE,0.0f }, { 0.0f,IMAGESIZE }, { IMAGESIZE,IMAGESIZE }, this);
+	hitobj_ = new HitObject({IMAGESIZE}, this);
 }
 
 void CheckPoint::Update()

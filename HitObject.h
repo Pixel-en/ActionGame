@@ -6,7 +6,8 @@
 /// </summary>
 class HitObject
 {
-	VECTOR Lu_, Ru_, Ld_, Rd_;
+	//VECTOR Lu_, Ru_, Ld_, Rd_;
+	SIZE size_;
 	GameObject* obj_;
 	Field* field;
 public:
@@ -19,7 +20,9 @@ public:
 	/// <param name="_Ld">左下の点</param>
 	/// <param name="_Rd">右下の点</param>
 	/// <param name="_obj">チェック対象のオブジェクト</param>
-	HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj);
+	//HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj);
+
+	HitObject(SIZE _size, GameObject* _obj);
 
 	//デストラクタ
 	~HitObject();

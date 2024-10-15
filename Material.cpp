@@ -30,10 +30,11 @@ Material::Material(GameObject* parent)
 	VECTOR LDPOINT{ 0.0f,sizeY_ + 1 };
 	VECTOR RDPOINT{ sizeX_,sizeY_ + 1 };
 
-	hitobj_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
+	//hitobj_ = new HitObject(, this);
 
 	hitsize_ = { sizeX_,sizeY_ };
 
+	hitobj_ = new HitObject(hitsize_, this);
 }
 
 Material::~Material()

@@ -6,14 +6,14 @@
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
-	const float IMAGESIZE{ 48 * 1.5 };				//画像サイズ
-	const VECTOR LUPOINT{ 11.0f * 1.5f,14.0f * 1.5f };		//左上の座標
-	const VECTOR RUPOINT{ 37.0f * 1.5f,14.0f * 1.5f };	//右上の座標
-	const VECTOR LDPOINT{ 11.0f * 1.5f,46.0f * 1.5f };		//左下の座標
-	const VECTOR RDPOINT{ 37.0f * 1.5f,46.0f * 1.5f };	//右下の座標
+	const SIZE IMAGESIZE{ 48 * 1.5,48 * 1.5 };			//画像サイズ
+	//const VECTOR LUPOINT{ 11.0f * 1.5f,14.0f * 1.5f };		//左上の座標
+	//const VECTOR RUPOINT{ 37.0f * 1.5f,14.0f * 1.5f };	//右上の座標
+	//const VECTOR LDPOINT{ 11.0f * 1.5f,46.0f * 1.5f };		//左下の座標
+	//const VECTOR RDPOINT{ 37.0f * 1.5f,46.0f * 1.5f };	//右下の座標
 	const SIZE HITBOXSIZE{ 26 * 1.5f,32 * 1.5f };			//当たり判定のボックスのサイズ
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
-	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
+	const float JUMPHEIGHT{ (float)(IMAGESIZE.cy * 4.0) };
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
 
 }
@@ -65,7 +65,7 @@ Player::Player(GameObject* parent)
 	//std::string str = GetParent()->GetParent()->GetObjectName();
 
 	//当たり判定の初期化
-	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
+	hitobject_ = new HitObject(HITBOXSIZE, this);
 
 	LoadParameter();
 }
@@ -109,13 +109,24 @@ void Player::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
+
 	////メイン出力
 	////if (pRdir_ == true)
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);/*
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
-	DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE, anim_.animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true);
+	DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
+
+	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+
+	/*DrawLine(transform_.position_.x - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	DrawLine(transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));*/
 }
 
 void Player::Release()
@@ -343,12 +354,12 @@ void Player::AnimStatus()
 
 bool Player::HitCheck(int _x, int _y, SIZE _size)
 {
-	int x = _x + _size.cx / 2;
-	int y = _y + _size.cy / 2;
+	int x = _x /*+ _size.cx / 2*/;
+	int y = _y /*+ _size.cy / 2*/;
 
 
-	int px = transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2;
-	int py = transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2;
+	int px = transform_.position_.x /*+ LUPOINT.x*/ /*+ HITBOXSIZE.cx / 2*/;
+	int py = transform_.position_.y /*+ LUPOINT.y*/ /*+ HITBOXSIZE.cy / 2*/;
 
 	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心
 
@@ -370,7 +381,7 @@ VECTOR Player::KnockBackDir(VECTOR _vec)
 	VECTOR dir = VSub(_vec, Pcenter);
 	dir = VNorm(dir);
 #endif
-	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
+	VECTOR Pcenter = { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.cx / 2,transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.cy / 2 };
 	VECTOR dir = { PCENTER.x - _vec.x };
 	dir = VNorm(dir);
 
@@ -379,7 +390,7 @@ VECTOR Player::KnockBackDir(VECTOR _vec)
 
 XMFLOAT3 Player::GetHitBoxPosition()
 {
-	return { transform_.position_.x + LUPOINT.x, transform_.position_.y + LUPOINT.y, 0 };
+	return { transform_.position_.x /*+ LUPOINT.x*/+HITBOXSIZE.cx / 2, transform_.position_.y /*+ LUPOINT.y*/+HITBOXSIZE.cy / 2, 0 };
 }
 
 void Player::HitDamage(VECTOR _dir)
