@@ -15,7 +15,7 @@ namespace {
 	const float BUFFER{ 0.5f };		//UŒ‚Œã‚Ìd’¼
 	const float JUMPHEIGHT{ IMAGESIZE * 4.0 };
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
-
+	
 }
 
 void Player::LoadParameter()
@@ -221,7 +221,7 @@ void Player::MoveControl()
 
 	if (isjamp_) {
 		anim_.animtype_ = Animation::JUMP;
-		WaitKey();
+		//WaitKey();
 	}
 	////ãˆÚ“®
 	//if (CheckHitKey(KEY_INPUT_W)) {
@@ -229,10 +229,10 @@ void Player::MoveControl()
 	//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
 	//}
 
-	//if (CheckHitKey(KEY_INPUT_SPACE)) {
-
-	//	transform_.position_.x = -MOVESPEED * Time::DeltaTime();
-	//}
+	//ÌŽæ
+	if (CheckHitKey(KEY_INPUT_I)) {
+		anim_.animtype_ = Animation::COLLECTION;
+	}
 
 	hitobject_->AllCollisionCheck();
 
@@ -375,7 +375,6 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 	int x = _x + _size.cx / 2;
 	int y = _y + _size.cy / 2;
 
-
 	int px = transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2;
 	int py = transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2;
 
@@ -384,8 +383,6 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 	if (abs(x - px) < _size.cx / 2 + HITBOXSIZE.cx / 2 &&
 		abs(y - py) < _size.cy / 2 + HITBOXSIZE.cy / 2)
 		return true;
-
-
 
 	return false;
 }
@@ -413,11 +410,15 @@ XMFLOAT3 Player::GetHitBoxPosition()
 
 void Player::HitDamage(VECTOR _dir)
 {
+
+	static int HP = ParamCorre_[param_.hp_ - 1].hp_;
 	//ƒ_ƒ[ƒW‚ðŽó‚¯‚Ä‚¢‚½‚èŽ€‚ñ‚Å‚¢‚È‚¢‚Æ‚«
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
-		param_.hp_--;
-		if (param_.hp_ < 1)
+		HP--;
+		if (HP < 1) {
 			anim_.animtype_ = Animation::DEATH;
+			HP = ParamCorre_[param_.hp_].hp_;
+		}
 		else {
 			anim_.animtype_ = Animation::DAMAGE;
 			VECTOR transPos = VScale(VScale(KnockBackDir(_dir), 100.0f), Time::DeltaTime());

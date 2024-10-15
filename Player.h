@@ -34,7 +34,7 @@ public:
 		MAGIC,
 		DAMAGE,
 		DEATH,
-		RESET=20,
+		RESET = 20,
 	};
 
 private:
