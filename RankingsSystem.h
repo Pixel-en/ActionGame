@@ -37,6 +37,8 @@ public:
 	/// </summary>
 	void SortScore();
 
+	void DrawWriteUI();
+
 private:
 	std::string output_csv_file_path_ScoreData;
 	std::string output_csv_file_path_SortData;
@@ -61,10 +63,11 @@ private:
 
 	int x1,y1,x2,y2;
 
-	int space = 8;
-	int word = 23;
-	int  n = x2 + space;
-	int a = n;
+	int space;
+	int word;
+	int n;
+	int a;
 	int count;
+	int MaxWord;
 };
 

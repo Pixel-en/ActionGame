@@ -15,7 +15,7 @@ namespace {
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ (float)(IMAGESIZE.cy * 4.0) };
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
-
+	
 }
 
 void Player::LoadParameter()
@@ -41,7 +41,6 @@ void Player::LoadParameter()
 		ParamCorre_[i - 4].hp_ = csv->GetInt(i, CSVPARAM::HP);
 	}
 
-
 	param_.strength_ = Clamp(param_.strength_, 1, 5);
 	param_.technic_ = Clamp(param_.technic_, 1, 5);
 	param_.speed_ = Clamp(param_.speed_, 1, 5);
@@ -50,7 +49,7 @@ void Player::LoadParameter()
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false),isjamp_(true)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -84,14 +83,26 @@ void Player::Initialize()
 
 void Player::Update()
 {
+
+	//重力
+	Gaccel_ += GRAVITY;
+	transform_.position_.y += Gaccel_;
+	//地面との当たり判定
+	if (hitobject_->DownCollisionCheck()) {
+		Gaccel_ = 0;
+		isjamp_ = false;
+	}
+
 	if (anim_.animtype_ < Animation::DAMAGE) {
 		anim_.animtype_ = Animation::IDOL;
 
 		MoveControl();
 	}
-
+	int temp = anim_.animtype_;
 	ImGui::Begin("debug");
-	ImGui::InputInt("hp", &param_.hp_);
+	ImGui::InputFloat("hp", &Gaccel_);
+	ImGui::InputInt("anim", &temp);
+	ImGui::InputInt("animframe", &anim_.animframe_);
 	ImGui::End();
 
 	AnimStatus();
@@ -182,14 +193,6 @@ void Player::CameraScroll()
 void Player::MoveControl()
 {
 
-	//重力
-	Gaccel_ += GRAVITY;
-	transform_.position_.y += Gaccel_;
-	//地面との当たり判定
-	if (hitobject_->DownCollisionCheck()) {
-		Gaccel_ = 0;
-	}
-
 	float Dash = 1.0f;
 
 	//左移動
@@ -221,16 +224,26 @@ void Player::MoveControl()
 
 	}
 
+	//ジャンプ
+	if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
+		isjamp_ = true;
+		Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+	}
+
+	if (isjamp_) {
+		anim_.animtype_ = Animation::JUMP;
+		//WaitKey();
+	}
 	////上移動
 	//if (CheckHitKey(KEY_INPUT_W)) {
 
 	//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
 	//}
 
-	//if (CheckHitKey(KEY_INPUT_SPACE)) {
-
-	//	transform_.position_.x = -MOVESPEED * Time::DeltaTime();
-	//}
+	//採取
+	if (CheckHitKey(KEY_INPUT_I)) {
+		anim_.animtype_ = Animation::COLLECTION;
+	}
 
 	hitobject_->AllCollisionCheck();
 
@@ -264,7 +277,24 @@ void Player::AnimStatus()
 		break;
 	case Player::JUMP:
 		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 0;
+		anim_.AFCmax_ = 120;
+		anim_.animloop_ = false;
+		if (Gaccel_<= -sqrtf(2 * GRAVITY * JUMPHEIGHT)*0.5) {
+			anim_.animframe_ = 1;
+		}
+		else if (Gaccel_ <= -1.0) {
+			anim_.animframe_ = 2;
+		}
+		else if (Gaccel_ <= 1.0) {
+			anim_.animframe_ = 3;
+		}
+		else if (Gaccel_ <= sqrtf(2 * GRAVITY * JUMPHEIGHT) * 0.7) {
+			anim_.animframe_ = 4;
+		}
+		else {
+			anim_.animframe_ = 5;
+		}
+		anim_.animframecount_ = 0;
 		break;
 	case Player::ATTACK:
 		anim_.AFmax_ = 6;
@@ -348,7 +378,6 @@ void Player::AnimStatus()
 		}
 	}
 	anim_.BEanimtype_ = anim_.animtype_;
-
 }
 
 
@@ -367,15 +396,13 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 		abs(y - py) < _size.cy / 2 + HITBOXSIZE.cy / 2)
 		return true;
 
-
-
 	return false;
 }
 
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
 	//ベクトルの挙動が意味わからんかった
-#if 0
+#if 1
 	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
 
 	VECTOR dir = VSub(_vec, Pcenter);
@@ -384,6 +411,9 @@ VECTOR Player::KnockBackDir(VECTOR _vec)
 	VECTOR Pcenter = { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.cx / 2,transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.cy / 2 };
 	VECTOR dir = { PCENTER.x - _vec.x };
 	dir = VNorm(dir);
+	//VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
+	//VECTOR dir = { PCENTER.x - _vec.x };
+	//dir = VNorm(dir);
 
 	return dir;
 }
@@ -395,14 +425,18 @@ XMFLOAT3 Player::GetHitBoxPosition()
 
 void Player::HitDamage(VECTOR _dir)
 {
+
+	static int HP = ParamCorre_[param_.hp_ - 1].hp_;
 	//ダメージを受けていたり死んでいないとき
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
-		param_.hp_--;
-		if (param_.hp_ < 1)
+		HP--;
+		if (HP < 1) {
 			anim_.animtype_ = Animation::DEATH;
+			HP = ParamCorre_[param_.hp_].hp_;
+		}
 		else {
 			anim_.animtype_ = Animation::DAMAGE;
-			VECTOR transPos = VScale(VScale(KnockBackDir(_dir), 10.0f), Time::DeltaTime());
+			VECTOR transPos = VScale(VScale(KnockBackDir(_dir), 100.0f), Time::DeltaTime());
 			transform_.position_.x += transPos.x;
 			transform_.position_.y += transPos.y;
 			transform_.position_.z += transPos.z;
@@ -420,3 +454,4 @@ void Player::DeadState()
 
 	anim_.animtype_ = Animation::DEATH;
 }
+

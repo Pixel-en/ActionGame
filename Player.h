@@ -15,6 +15,8 @@ class Player :public GameObject
 	//無敵
 	bool invincible_;
 
+	bool isjamp_;
+
 public:
 
 	//アニメーションの番号
@@ -32,7 +34,7 @@ public:
 		MAGIC,
 		DAMAGE,
 		DEATH,
-		RESET=20,
+		RESET = 20,
 	};
 
 private:
