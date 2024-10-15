@@ -7,6 +7,7 @@
 
 RankingsSystem::RankingsSystem(GameObject* parent)
 	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name()
+	,eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
 {
 	
 }
@@ -28,9 +29,6 @@ void RankingsSystem::Initialize()
 	cLogo = Instantiate<ClearLogo>(this);
 	tText = Instantiate<TitleText>(this);
 
-	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
-	InputHandle = MakeKeyInput(10,FALSE,TRUE,FALSE);
-
 	eraseTime = 1.2f;
 	eraseTimer = 0.0f;
 	flame = 1.0f / 60.0f;
@@ -44,6 +42,10 @@ void RankingsSystem::Initialize()
 	space = 9;
 	word = 23;
 	count = 0;
+	MaxWord = 10;
+
+	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
+	InputHandle = MakeKeyInput(MaxWord,FALSE,TRUE,FALSE);
 }
 
 void RankingsSystem::Update()
@@ -76,39 +78,7 @@ void RankingsSystem::Update()
 void RankingsSystem::Draw()
 {
 	if (cLogo->GetOutput()) {
-		if (eraseTimer > eraseTime) {
-			eraseTimer = 0.0f;
-			eraseAlpha = 0;
-		}
-		eraseTimer += flame;
-		eraseAlpha = 255 - 255 * eraseTimer / eraseTime;
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
-		std::string str = Name;
-		str.size();
-		if (str.size() > 0) {
-			DrawBoxAA(450 +(word+space)*str.size(), 405, 455+(word+space)*str.size(), 435, GetColor(255, 255, 255), TRUE);//入力バー
-		}
-		else {
-			DrawBoxAA(450, 405, 455, 435, GetColor(255, 255, 255), TRUE);//入力バー
-		}
-		
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-
-		for (int i = 0; i < 10; i++) {
-			if (i > 0) {
-				n = a + space;
-				DrawBoxAA(n, y1,n+word, y2, GetColor(255, 255, 255), TRUE); //した棒
-				a = n + word;
-			}
-			else
-			{
-				DrawBoxAA(x1, y1, x2+word, y2, GetColor(255, 255, 255), TRUE); //した棒
-				a = x2 + word;
-			}
-		}
-		DrawBoxAA(430, 380, 840, 450, GetColor(255, 255, 255), FALSE); //入力枠線
-		tText->DrawString(Name, 450, 400);
-		SetFontSize(50);
+		DrawWriteUI();
 	}
 }
 
@@ -148,4 +118,42 @@ void RankingsSystem::SortScore()
 		ofs_csv_file << std::endl;
 		ofs_csv_file.close();
 	}
+}
+
+void RankingsSystem::DrawWriteUI()
+{
+	//文字入力バー表示
+	if (eraseTimer > eraseTime) {
+		eraseTimer = 0.0f;
+		eraseAlpha = 0;
+	}
+	eraseTimer += flame;
+	eraseAlpha = 255 - 255 * eraseTimer / eraseTime;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
+	std::string str = Name;
+	str.size();
+	if (str.size() > 0) {
+		DrawBoxAA(450 + (word + space) * str.size(), 405, 455 + (word + space) * str.size(), 435, GetColor(255, 255, 255), TRUE);//入力バー
+	}
+	else {
+		DrawBoxAA(450, 405, 455, 435, GetColor(255, 255, 255), TRUE);//入力バー
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	//入力可能文字数がわかるボックス表示
+	for (int i = 0; i < MaxWord; i++) {
+		if (i > 0) {
+			n = a + space;
+			DrawBoxAA(n, y1, n + word, y2, GetColor(255, 255, 255), TRUE); //した棒
+			a = n + word;
+		}
+		else
+		{
+			DrawBoxAA(x1, y1, x2 + word, y2, GetColor(255, 255, 255), TRUE); //した棒
+			a = x2 + word;
+		}
+	}
+
+	DrawBoxAA(430, 380,(x1+25) + MaxWord*word +( MaxWord-1 )* space, 450, GetColor(255, 255, 255), FALSE); //入力枠線
+	tText->DrawString(Name, 450, 400);
 }
