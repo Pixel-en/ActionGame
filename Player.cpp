@@ -61,7 +61,6 @@ Player::Player(GameObject* parent)
 	anim_.animloop_ = false;
 
 	transform_.position_ = { 0,0,0 };
-	//std::string str = GetParent()->GetParent()->GetObjectName();
 
 	//“–‚½‚è”»’è‚Ì‰Šú‰»
 	hitobject_ = new HitObject(HITBOXSIZE, this);
@@ -126,18 +125,24 @@ void Player::Draw()
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);/*
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
+	
+
+	DrawRectGraph(xpos , ypos, 0 * IMAGESIZE.cx, 0 * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 
 	DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
+
+	DrawBox(xpos, ypos, xpos + IMAGESIZE.cx, ypos + IMAGESIZE.cy, GetColor(255, 0, 0), false);
+
+	DrawCircle(xpos, ypos, 5, GetColor(255, 0, 0), true);
+	DrawCircle(xpos + HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, 5, GetColor(255, 0, 0), true);
+	DrawCircle(xpos - HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, 5, GetColor(0, 255, 0), true);
+	DrawCircle(xpos + HITBOXSIZE.cx, ypos - HITBOXSIZE.cy, 5, GetColor(0, 0, 255), true);
+	DrawCircle(xpos - HITBOXSIZE.cx, ypos - HITBOXSIZE.cy, 5, GetColor(255, 255, 255), true);
 
 	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
 	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
 	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
 	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-
-	/*DrawLine(transform_.position_.x - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));*/
 }
 
 void Player::Release()
@@ -402,7 +407,7 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
 	//ƒxƒNƒgƒ‹‚Ì‹““®‚ªˆÓ–¡‚í‚©‚ç‚ñ‚©‚Á‚½
-#if 1
+#if 0
 	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
 
 	VECTOR dir = VSub(_vec, Pcenter);
