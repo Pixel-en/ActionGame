@@ -127,11 +127,15 @@ void Player::Draw()
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 	
 
-	DrawRectGraph(xpos , ypos, 0 * IMAGESIZE.cx, 0 * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
+	//DrawRectGraph(xpos , ypos, 0 * IMAGESIZE.cx, 0 * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 
-	DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
+	//DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
+
+	DrawRectGraph(xpos-HITBOXSIZE.cx/2.0 , ypos-HITBOXSIZE.cy, anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.cx, ypos + IMAGESIZE.cy, GetColor(255, 0, 0), false);
+	DrawBox(xpos, ypos, xpos + HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, GetColor(0, 255, 0), false);
+	DrawBox(xpos - HITBOXSIZE.cx / 2, ypos - HITBOXSIZE.cx / 2, xpos + HITBOXSIZE.cx / 2, ypos + HITBOXSIZE.cy / 2, GetColor(0, 0, 255), false);
 
 	DrawCircle(xpos, ypos, 5, GetColor(255, 0, 0), true);
 	DrawCircle(xpos + HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, 5, GetColor(255, 0, 0), true);
@@ -400,6 +404,8 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 	if (abs(x - px) < _size.cx / 2 + HITBOXSIZE.cx / 2 &&
 		abs(y - py) < _size.cy / 2 + HITBOXSIZE.cy / 2)
 		return true;
+
+	DrawBox(px, py, px + HITBOXSIZE.cx / 2, py + HITBOXSIZE.cy / 2, GetColor(0, 0, 255), false);
 
 	return false;
 }

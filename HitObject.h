@@ -12,16 +12,12 @@ class HitObject
 	Field* field;
 public:
 
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="_Lu">左上の点</param>
-	/// <param name="_Ru">右上の点</param>
-	/// <param name="_Ld">左下の点</param>
-	/// <param name="_Rd">右下の点</param>
-	/// <param name="_obj">チェック対象のオブジェクト</param>
-	//HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj);
-
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">オブジェクト</param>
 	HitObject(SIZE _size, GameObject* _obj);
 
 	//デストラクタ
@@ -63,6 +59,16 @@ public:
 	/// <param name="_bit">操作したい4ビット列　左から下、上、左、右</param>
 	/// <returns>当たっているかの4ビット列</returns>
 	short SelectCollisionCheck(short _bit);
+
+	/// <summary>
+	/// オブジェクト同士の当たり判定
+	/// </summary>
+	/// <param name="_trans1">対象1のTransform</param>
+	/// <param name="_size1">対象1の当たり判定のボックス</param>
+	/// <param name="_trans2">対象2のTransform</param>
+	/// <param name="_size2">対象2の当たり判定のボックス</param>
+	/// <returns>当たっているかどうか</returns>
+	bool HitObjectANDObject(Transform _trans1,VECTOR _size1, Transform _trans2, VECTOR _size2);
 
 };
 

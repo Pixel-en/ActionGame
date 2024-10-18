@@ -1,17 +1,6 @@
 #include "HitObject.h"
 #include "MoveObject.h"
 
-//HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj)
-//	:Lu_(_Lu), Ru_(_Ru), Ld_(_Ld), Rd_(_Rd), obj_(nullptr)
-//{
-//	obj_ = _obj;
-//	field = obj_->GetParent()->FindGameObject<Field>();
-//	if (field == nullptr) {
-//		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
-//		assert(false);
-//	}
-//}
-
 HitObject::HitObject(SIZE _size, GameObject* _obj)
 	:size_(_size), obj_(nullptr)
 {
@@ -146,4 +135,9 @@ short HitObject::SelectCollisionCheck(short _bit)
 		if (RightCollisionCheck()) { bit |= 0b0001; }
 
 	return bit;
+}
+
+bool HitObject::HitObjectANDObject(Transform _trans1, VECTOR _size1, Transform _trans2, VECTOR _size2)
+{
+	return false;
 }
