@@ -6,12 +6,21 @@
 /// </summary>
 class HitObject
 {
-	//VECTOR Lu_, Ru_, Ld_, Rd_;
-	SIZE size_;
+	VECTOR Lu_, Ru_, Ld_, Rd_;
+	VECTOR size_;
 	GameObject* obj_;
 	Field* field;
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_Lu">左上の点</param>
+	/// <param name="_Ru">右上の点</param>
+	/// <param name="_Ld">左下の点</param>
+	/// <param name="_Rd">右下の点</param>
+	/// <param name="_obj">チェック対象のオブジェクト</param>
+	HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj);
 
 	/// <summary>
 	/// コンストラクタ
@@ -19,6 +28,13 @@ public:
 	/// <param name="_size">当たり判定のサイズ</param>
 	/// <param name="_obj">オブジェクト</param>
 	HitObject(SIZE _size, GameObject* _obj);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">オブジェクト</param>
+	HitObject(VECTOR _size, GameObject* _obj);
 
 	//デストラクタ
 	~HitObject();
@@ -69,6 +85,21 @@ public:
 	/// <param name="_size2">対象2の当たり判定のボックス</param>
 	/// <returns>当たっているかどうか</returns>
 	bool HitObjectANDObject(Transform _trans1,VECTOR _size1, Transform _trans2, VECTOR _size2);
+
+	/// <summary>
+	/// ヒットボックスを出力する
+	/// </summary>
+	/// <param name="trans">出力するtrans</param>
+	void DrawHitBox(XMFLOAT3 trans);
+
+	/// <summary>
+	/// ヒットボックスを色指定で出力する
+	/// </summary>
+	/// <param name="trans">出力するtrans</param>
+	/// <param name="Red">赤(上限255)</param>
+	/// <param name="Green">緑(上限255)</param>
+	/// <param name="Blue">青(上限255)</param>
+	void DrawHitBox(XMFLOAT3 trans,int Red,int Green,int Blue);
 
 };
 

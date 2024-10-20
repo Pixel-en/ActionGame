@@ -143,5 +143,11 @@ public:
 			return true;
 		return false;
 	}
+
+	/// <summary>
+	/// “–‚½‚è”»’è‚ÌŽž‚ÌTransform‚ðŽæ“¾‚·‚é
+	/// </summary>
+	/// <returns>“–‚½‚è”»’èŽž‚ÌTransform</returns>
+	Transform GetHitTrans();
 };
 

@@ -75,9 +75,6 @@
     <ClCompile Include="Clear.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>PlayScene</Filter>
-    </ClCompile>
     <ClCompile Include="Field.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
@@ -129,6 +126,9 @@
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="BardA.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
@@ -193,9 +193,6 @@
     <ClInclude Include="Clear.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
     <ClInclude Include="Field.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
@@ -248,6 +245,9 @@
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="BardA.h">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

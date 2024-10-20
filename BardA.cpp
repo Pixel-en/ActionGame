@@ -100,12 +100,18 @@ void BardA::Draw()
 	}
 	
 	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy) / 2, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
+	DrawRectGraph(xpos , ypos, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
 
+	DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), true);
+	DrawBox(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy) / 2, xpos + ENEMY_IMAGESIZE.cx/2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy) / 2 + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255), false);
+	DrawBox(xpos, ypos, xpos + ENEMY_IMAGESIZE.cx, ypos + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255),false);
 
-	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	hitobj_->DrawHitBox({(float)xpos,(float)ypos,0});
+
+	//DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	//DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	//DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	//DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
 }
 
 void BardA::Release()
