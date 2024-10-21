@@ -61,6 +61,7 @@ Player::Player(GameObject* parent)
 	anim_.AFCmax_ = 0;
 	anim_.animframecount_ = 0;
 	anim_.animloop_ = false;
+	anim_.canmove_ = true;
 
 	transform_.position_ = { 0,0,0 };
 	miningtime_ = 0.0f;
@@ -97,7 +98,6 @@ void Player::Update()
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
 		anim_.animtype_ = Animation::IDOL;
-
 		MoveControl();
 	}
 	float time = Time::DeltaTime();
@@ -219,60 +219,71 @@ void Player::MoveControl()
 	float Dash = 1.0f;
 	miningtime_ = 0.0f;
 
-	//左移動
-	if (CheckHitKey(KEY_INPUT_A)) {
+	if(!ActionControl()){
 
-		anim_.animtype_ = Animation::WALK;
+		//左移動
+		if (CheckHitKey(KEY_INPUT_A)) {
 
-		//ダッシュ
-		if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
-			Dash = 2.0f;
-			anim_.animtype_ = Animation::RUN;
+			anim_.animtype_ = Animation::WALK;
+
+			//ダッシュ
+			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+				Dash = 2.0f;
+				anim_.animtype_ = Animation::RUN;
+			}
+
+			transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
 		}
 
-		transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
-	}
+		//右移動
+		if (CheckHitKey(KEY_INPUT_D)) {
 
-	//右移動
-	if (CheckHitKey(KEY_INPUT_D)) {
+			anim_.animtype_ = Animation::WALK;
 
-		anim_.animtype_ = Animation::WALK;
+			//ダッシュ
+			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+				Dash = 2.0f;
+				anim_.animtype_ = Animation::RUN;
+			}
 
-		//ダッシュ
-		if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
-			Dash = 2.0f;
-			anim_.animtype_ = Animation::RUN;
+			transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
+
 		}
 
-		transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
+		//ジャンプ
+		if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
+			isjamp_ = true;
+			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+		}
 
-	}
+		if (isjamp_) {
+			anim_.animtype_ = Animation::JUMP;
+			//WaitKey();
+		}
+		////上移動
+		//if (CheckHitKey(KEY_INPUT_W)) {
 
-	//ジャンプ
-	if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
-		isjamp_ = true;
-		Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
-	}
-
-	if (isjamp_) {
-		anim_.animtype_ = Animation::JUMP;
-		//WaitKey();
-	}
-	////上移動
-	//if (CheckHitKey(KEY_INPUT_W)) {
-
-	//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
-	//}
-
-	//採取
-	if (CheckHitKey(KEY_INPUT_I)) {
-		anim_.animtype_ = Animation::COLLECTION;
-		//値が小さくなりすぎて送れないため
-		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
+		//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
+		//}
 	}
 
 	hitobject_->AllCollisionCheck();
 
+}
+
+bool Player::ActionControl()
+{
+
+	//採取
+	if (CheckHitKey(KEY_INPUT_I)) {
+		anim_.animtype_ = Animation::COLLECTION;
+		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
+	}
+
+	if (anim_.animtype_ == Animation::IDOL)
+		return false;
+	else
+		return true;
 }
 
 void Player::AnimStatus()
@@ -281,6 +292,7 @@ void Player::AnimStatus()
 	static float timecnt = 0;
 
 	anim_.animloop_ = true;
+	anim_.canmove_ = true;
 
 	switch (anim_.animtype_)
 	{
@@ -288,7 +300,7 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 1;
 		anim_.AFCmax_ = 1;
 		anim_.animloop_ = false;
-		
+		anim_.canmove_ = false;
 		break;
 	case Player::IDOL:
 		anim_.AFmax_ = 4;
@@ -342,6 +354,7 @@ void Player::AnimStatus()
 	case Player::COLLECTION:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
+		anim_.canmove_ = false;
 		break;
 	case Player::MAGIC:
 		anim_.AFmax_ = 6;
@@ -352,11 +365,13 @@ void Player::AnimStatus()
 		anim_.AFCmax_ = 10;
 		anim_.animloop_ = false;
 		invincible_ = true;
+		anim_.canmove_ = false;
 		break;
 	case Player::DEATH:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 20;
 		anim_.animloop_ = false;
+		anim_.canmove_ = false;
 		if (anim_.animframe_ >= 5) {
 			anim_.animframecount_ = 0;
 		}
@@ -372,6 +387,7 @@ void Player::AnimStatus()
 		anim_.animframe_ = 0;
 		anim_.animframecount_ = 0;
 		anim_.animloop_ = false;
+		anim_.canmove_ = false;
 		break;
 	}
 

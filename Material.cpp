@@ -71,7 +71,7 @@ void Material::Draw()
 
 	DrawRectGraph(xpos, ypos, 0, 0, sizeX_, sizeY_, hImage_, true);
 
-	//DrawBox(xpos, ypos, xpos + sizeX_, ypos + sizeY_, GetColor(255, 0, 255), false);
+	DrawBox(xpos, ypos, xpos + sizeX_, ypos + sizeY_, GetColor(255, 0, 255), false);
 	DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, (MAXDURABILITY - durability_) / MAXDURABILITY * 10.0f, GetColor(255, 255, 255), true);
 	DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, 10, GetColor(255, 255, 255), false);
 	//DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), false);

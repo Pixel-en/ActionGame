@@ -51,8 +51,7 @@ private:
 		int AFCmax_;			//アニメーションが変わるまでのフレーム数
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 		bool animloop_;			//アニメーションをループするか
-
-		short animbit_ = 0b000000000000;	//最上位ビットがRESET
+		bool canmove_;
 	};
 	//プレイヤーのパラメータ
 	struct Parameter
@@ -87,6 +86,12 @@ private:
 	/// プレイヤーの動き
 	/// </summary>
 	void MoveControl();
+
+	/// <summary>
+	/// プレイヤーのアクション
+	/// </summary>
+	/// <returns>アクション中かどうか</returns>
+	bool ActionControl();
 
 	/// <summary>
 	/// パラメータを読み込む
