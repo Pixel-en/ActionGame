@@ -34,10 +34,25 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">オブジェクト</param>
+	HitObject(VECTOR _size, GameObject* _obj);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	/// <param name="trans">当たり判定のヒットボックス</param>
 	/// <param name="_size">当たり判定のサイズ</param>
 	/// <param name="_obj">オブジェクト</param>
 	HitObject(Transform trans,VECTOR _size, GameObject* _obj);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="trans">当たり判定のヒットボックス</param>
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">オブジェクト</param>
+	HitObject(Transform trans, SIZE _size, GameObject* _obj);
 
 	//デストラクタ
 	~HitObject();
