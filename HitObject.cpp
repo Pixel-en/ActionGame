@@ -4,6 +4,7 @@
 HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj)
 	:Lu_(_Lu), Ru_(_Ru), Ld_(_Ld), Rd_(_Rd), obj_(nullptr)
 {
+	trans_.position_ = { -1,-1,-1 };
 	obj_ = _obj;
 	field = obj_->GetParent()->FindGameObject<Field>();
 	size_ = { -1,-1 };
@@ -16,6 +17,7 @@ HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject*
 HitObject::HitObject(SIZE _size, GameObject* _obj)
 	:obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
+	trans_.position_ = {-1,-1,-1};
 	size_.x = _size.cx;
 	size_.y = _size.cy;
 	obj_ = _obj;
@@ -26,16 +28,18 @@ HitObject::HitObject(SIZE _size, GameObject* _obj)
 	}
 }
 
-HitObject::HitObject(VECTOR _size, GameObject* _obj)
+HitObject::HitObject(Transform trans,VECTOR _size, GameObject* _obj)
 	:size_(_size), obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
 	obj_ = _obj;
+	trans_ = trans;
 	field = obj_->GetParent()->FindGameObject<Field>();
 	if (field == nullptr) {
 		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
 		assert(false);
 	}
 }
+
 
 HitObject::~HitObject()
 {
@@ -45,7 +49,11 @@ bool HitObject::RightCollisionCheck()
 {
 
 	Transform trns;
-	trns.position_ = obj_->GetPosition();
+
+	if (trans_.position_.x < 0)
+		trns.position_ = obj_->GetPosition();
+	else
+		trns = trans_;
 	int push;
 	if (size_.x > 0)
 		push = field->CollisionRightCheck(trns.position_.x + size_.x, trns.position_.y + size_.y);
@@ -65,7 +73,11 @@ bool HitObject::LeftCollisionCheck()
 {
 
 	Transform trns;
-	trns.position_ = obj_->GetPosition();
+	if (trans_.position_.x < 0)
+		trns.position_ = obj_->GetPosition();
+	else
+		trns = trans_;
+
 	int push;
 	if (size_.x > 0)
 		push = field->CollisionLeftCheck(trns.position_.x - size_.x, trns.position_.y + size_.y);
@@ -83,7 +95,11 @@ bool HitObject::LeftCollisionCheck()
 bool HitObject::UpCollisionCheck()
 {
 	Transform trns;
-	trns.position_ = obj_->GetPosition();
+	if (trans_.position_.x < 0)
+		trns.position_ = obj_->GetPosition();
+	else
+		trns = trans_;
+
 	int push;
 
 	if (size_.x > 0) {
@@ -113,7 +129,10 @@ bool HitObject::UpCollisionCheck()
 bool HitObject::DownCollisionCheck()
 {
 	Transform trns;
-	trns.position_ = obj_->GetPosition();
+	if (trans_.position_.x < 0)
+		trns.position_ = obj_->GetPosition();
+	else
+		trns = trans_;
 
 	int push;
 	if (size_.x > 0) {

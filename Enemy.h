@@ -133,5 +133,7 @@ public:
 	void StatusReader(int _enemyNumber);
 
 	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_IMAGESIZE.cx / 2, transform_.position_.y + ENEMY_IMAGESIZE.cy / 2 }; };
+
+	Transform GetHitTransform() { return hittransform_; };
 };
 
