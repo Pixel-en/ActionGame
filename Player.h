@@ -52,6 +52,7 @@ private:
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 		bool animloop_;			//アニメーションをループするか
 
+		short animbit_ = 0b000000000000;	//最上位ビットがRESET
 	};
 	//プレイヤーのパラメータ
 	struct Parameter

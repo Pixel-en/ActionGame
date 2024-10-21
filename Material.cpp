@@ -5,7 +5,7 @@
 
 namespace {
 	const float GRAVITY{ 9.8f / 60.0f };
-	const float MAXDURABILITY{ 2.0f };
+	const float MAXDURABILITY{ 5.0f };
 }
 
 Material::Material(GameObject* parent)
@@ -56,11 +56,6 @@ void Material::Update()
 	}
 	Gaccel = 0.0f;
 
-	float temp = (MAXDURABILITY - durability_ / MAXDURABILITY);
-	ImGui::Begin("a");
-	ImGui::InputFloat("durability", &durability_);
-	ImGui::InputFloat("gauge", &temp);
-	ImGui::End();
 }
 
 void Material::Draw()
@@ -88,6 +83,7 @@ void Material::Release()
 
 void Material::Mining(float _mintime)
 {
+
 	durability_ -= _mintime;
 	if (durability_ < 0)
 		KillMe();

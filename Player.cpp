@@ -16,7 +16,7 @@ namespace {
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ (float)(IMAGESIZE.y * 4.0) };
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
-	
+
 }
 
 void Player::LoadParameter()
@@ -30,10 +30,10 @@ void Player::LoadParameter()
 	};
 
 	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerParameter.csv");
-	param_.strength_ = csv->GetInt(1, CSVPARAM::STRENGTH);
-	param_.technic_ = csv->GetInt(1, CSVPARAM::TECHNIC);
-	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED);
-	param_.hp_ = csv->GetInt(1, CSVPARAM::HP);
+	param_.strength_ = csv->GetInt(1, CSVPARAM::STRENGTH) - 1;
+	param_.technic_ = csv->GetInt(1, CSVPARAM::TECHNIC) - 1;
+	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED) - 1;
+	param_.hp_ = csv->GetInt(1, CSVPARAM::HP) - 1;
 
 	for (int i = 4; i < csv->GetLines(); i++) {
 		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
@@ -42,15 +42,15 @@ void Player::LoadParameter()
 		ParamCorre_[i - 4].hp_ = csv->GetInt(i, CSVPARAM::HP);
 	}
 
-	param_.strength_ = Clamp(param_.strength_, 1, 5);
-	param_.technic_ = Clamp(param_.technic_, 1, 5);
-	param_.speed_ = Clamp(param_.speed_, 1, 5);
-	param_.hp_ = Clamp(param_.hp_, 1, 5);
+	param_.strength_ = Clamp(param_.strength_, 0, 4);
+	param_.technic_ = Clamp(param_.technic_, 0, 4);
+	param_.speed_ = Clamp(param_.speed_, 0, 4);
+	param_.hp_ = Clamp(param_.hp_, 0, 4);
 
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false),isjamp_(true)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjamp_(true)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -102,7 +102,7 @@ void Player::Update()
 	float time = Time::DeltaTime();
 	float temp;
 	ImGui::Begin("debug");
-	ImGui::InputFloat("time", &time);
+	//ImGui::InputFloat("time", &time);
 	//temp = time*ParamCorre_[0].technic_;
 	//ImGui::InputFloat("0", &temp);
 	//temp = time*ParamCorre_[1].technic_;
@@ -229,7 +229,7 @@ void Player::MoveControl()
 			anim_.animtype_ = Animation::RUN;
 		}
 
-		transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
+		transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
 	}
 
 	//右移動
@@ -243,7 +243,7 @@ void Player::MoveControl()
 			anim_.animtype_ = Animation::RUN;
 		}
 
-		transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
+		transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
 
 	}
 
@@ -266,6 +266,7 @@ void Player::MoveControl()
 	//採取
 	if (CheckHitKey(KEY_INPUT_I)) {
 		anim_.animtype_ = Animation::COLLECTION;
+		//値が小さくなりすぎて送れないため
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
@@ -286,6 +287,7 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 1;
 		anim_.AFCmax_ = 1;
 		anim_.animloop_ = false;
+		
 		break;
 	case Player::IDOL:
 		anim_.AFmax_ = 4;
@@ -303,7 +305,7 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 120;
 		anim_.animloop_ = false;
-		if (Gaccel_<= -sqrtf(2 * GRAVITY * JUMPHEIGHT)*0.5) {
+		if (Gaccel_ <= -sqrtf(2 * GRAVITY * JUMPHEIGHT) * 0.5) {
 			anim_.animframe_ = 1;
 		}
 		else if (Gaccel_ <= -1.0) {
@@ -417,17 +419,17 @@ VECTOR Player::KnockBackDir(VECTOR _vec)
 
 XMFLOAT3 Player::GetHitBoxPosition()
 {
-	return { transform_.position_.x /*+ LUPOINT.x*/+HITBOXSIZE.x / 2, transform_.position_.y /*+ LUPOINT.y*/+HITBOXSIZE.y / 2, 0 };
+	return { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.x / 2, transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.y / 2, 0 };
 }
 
 void Player::HitDamage(VECTOR _dir)
 {
 
-	static int HP = ParamCorre_[param_.hp_ - 1].hp_;
+	static int HP = ParamCorre_[param_.hp_].hp_;
 	//ダメージを受けていたり死んでいないとき
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
 		HP--;
-		if (HP < 1) {
+		if (HP < 0) {
 			anim_.animtype_ = Animation::DEATH;
 			HP = ParamCorre_[param_.hp_].hp_;
 		}
