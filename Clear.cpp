@@ -71,7 +71,7 @@ void Clear::Update()
 		for (Enemy* E : e) {
 			//‚±‚±‚ ‚Æ‚Å’¼‚·
 			if (E->IsHitting() && !p->IsAnimState(p->DEATH)) {
-
+				
 				p->HitDamage(E->GetCenter());
 			}
 

@@ -193,5 +193,8 @@ void HitObject::DrawHitBox(XMFLOAT3 trans)
 
 void HitObject::DrawHitBox(XMFLOAT3 trans,int Red, int Green, int Blue)
 {
-	DrawBox(obj_->GetPosition().x, obj_->GetPosition().y, obj_->GetPosition().x + size_.x, obj_->GetPosition().y + size_.y, GetColor(Red, Green, Blue), false);
+	if (size_.x > 0)
+		DrawBox(trans.x, trans.y, trans.x + size_.x, trans.y + size_.y, GetColor(Red, Green, Blue), false);
+	else
+		DrawBox(trans.x + Lu_.x, trans.y + Lu_.y, trans.x + Rd_.x, trans.y + Rd_.y, GetColor(Red, Green, Blue), false);
 }

@@ -16,6 +16,9 @@ BardA::BardA(GameObject* parent)
 	hp_ = baseHp;
 
 	hitobj_ = new HitObject(ENEMY_HITBOXSIZE, this);
+
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
 }
 
 BardA::~BardA()
@@ -30,6 +33,11 @@ void BardA::Initialize()
 
 void BardA::Update()
 {
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x -ENEMY_HITBOXSIZE.cx / 2
+								,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2
+								,transform_.position_.z };
+
 	Player* p = GetParent()->FindGameObject<Player>();
 
 	Field* field = GetParent()->FindGameObject<Field>();
@@ -93,20 +101,29 @@ void BardA::Draw()
 	int xpos = transform_.position_.x;
 	int ypos = transform_.position_.y;
 
+	float hitxpos = hittransform_.position_.x;
+	float hitypos = hittransform_.position_.y;
+
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
+		hitxpos -= cam->GetValue();
+		hitypos -= cam->GetValueY();
 	}
 	
-	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy) / 2, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
+	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
 	DrawRectGraph(xpos , ypos, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
 
 	DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), true);
-	DrawBox(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy) / 2, xpos + ENEMY_IMAGESIZE.cx/2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy) / 2 + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255), false);
+	DrawBox(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, xpos + ENEMY_IMAGESIZE.cx/2, ypos - ENEMY_IMAGESIZE.cy/ 2 + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255), false);
 	DrawBox(xpos, ypos, xpos + ENEMY_IMAGESIZE.cx, ypos + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255),false);
 
-	hitobj_->DrawHitBox({(float)xpos,(float)ypos,0});
+	hitobj_->DrawHitBox({ hitxpos, hitypos, 0 },0, 255, 0);
+
+	hitobj_->DrawHitBox({ (float)xpos,(float)ypos,0 }, 255, 0, 0);
+
+
 
 	//DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
 	//DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
