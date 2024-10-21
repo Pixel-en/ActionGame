@@ -218,12 +218,12 @@ short HitObject::SelectCollisionCheck(short _bit)
 	return bit;
 }
 
-bool HitObject::HitObjectANDObject(Transform _trans1, VECTOR _size1, Transform _trans2, VECTOR _size2)
+bool HitObject::HitObjectANDObject(XMFLOAT3 _trans1, VECTOR _size1, XMFLOAT3 _trans2, VECTOR _size2)
 {
 
 	Transform trans1, trans2;
-	trans1.position_ = { _trans1.position_.x + _size1.x / 2.0f,_trans1.position_.y + _size1.y / 2.0f,_trans1.position_.z };
-	trans2.position_ = { _trans2.position_.x + _size2.x / 2.0f,_trans2.position_.y + _size2.y / 2.0f,_trans2.position_.z };
+	trans1.position_ = { _trans1.x + _size1.x / 2.0f,_trans1.y + _size1.y / 2.0f,_trans1.z };
+	trans2.position_ = { _trans2.x + _size2.x / 2.0f,_trans2.y + _size2.y / 2.0f,_trans2.z };
 
 	if (fabs(trans1.position_.x - trans2.position_.x) < _size1.x / 2.0f + _size2.x / 2.0f &&
 		fabs(trans1.position_.y - trans2.position_.y) < _size1.y / 2.0f + _size2.y / 2.0f)

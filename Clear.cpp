@@ -43,7 +43,7 @@ void Clear::Update()
 
 	if (!isgoal_&&!isGetM_ && !isKillE_&&p!=nullptr) {
 		if (ch != nullptr) {
-			if (ch->IsHitting() || ischeck_) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), ch->GetPosition(), ch->GetHitBox()) || ischeck_) {
 				if (!ischeck_){
 					Playsound* ps = GetParent()->FindGameObject<Playsound>();
 					ps->SoundON("Rune");
@@ -51,7 +51,7 @@ void Clear::Update()
 				ischeck_ = true;
 				ch->SetPosition(-100, 100, 0);
 				if (g != nullptr) {
-					if (g->IsHitting())
+					if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), g->GetPosition(), g->GetHitBox()))
 					{
 						Playsound* ps = GetParent()->FindGameObject<Playsound>();
 						ps->SoundON("Flag");
@@ -62,7 +62,7 @@ void Clear::Update()
 			}
 		}
 		for (Material* M : m) {
-			if (M->IsHitting()) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),M->GetPosition(),M->GetHitBox() ) ) {
 				Playsound* ps = GetParent()->FindGameObject<Playsound>();
 				ps->SoundON("Mine");
 				M->KillMe();
@@ -70,8 +70,7 @@ void Clear::Update()
 		}
 		for (Enemy* E : e) {
 			//‚±‚±‚ ‚Æ‚Å’¼‚·
-			if (E->IsHitting() && !p->IsAnimState(p->DEATH)) {
-				
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetPosition(),E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
 				p->HitDamage(E->GetCenter());
 			}
 

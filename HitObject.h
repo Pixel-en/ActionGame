@@ -108,7 +108,7 @@ public:
 	/// <param name="_trans2">対象2のTransform</param>
 	/// <param name="_size2">対象2の当たり判定のボックス</param>
 	/// <returns>当たっているかどうか</returns>
-	bool HitObjectANDObject(Transform _trans1,VECTOR _size1, Transform _trans2, VECTOR _size2);
+	bool HitObjectANDObject(XMFLOAT3 _trans1,VECTOR _size1, XMFLOAT3 _trans2, VECTOR _size2);
 
 	/// <summary>
 	/// ヒットボックスを出力する

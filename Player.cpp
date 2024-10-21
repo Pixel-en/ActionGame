@@ -460,6 +460,11 @@ Transform Player::GetHitTrans()
 	return trans;
 }
 
+VECTOR Player::GetHitBox()
+{
+	return HITBOXSIZE;
+}
+
 void Player::DeadState()
 {
 	if (anim_.animtype_ == Animation::RESET)

@@ -149,5 +149,11 @@ public:
 	/// </summary>
 	/// <returns>当たり判定時のTransform</returns>
 	Transform GetHitTrans();
+
+	/// <summary>
+	/// 当たり判定のボックスを返す
+	/// </summary>
+	/// <returns>当たり判定のボックス</returns>
+	VECTOR GetHitBox();
 };
 

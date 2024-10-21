@@ -175,16 +175,6 @@ void Enemy::Release()
 {
 }
 
-bool Enemy::IsHitting()
-{
-	Player* p = GetParent()->FindGameObject<Player>();
-	if (p->HitCheck(transform_.position_.x, transform_.position_.y, ENEMY_HITBOXSIZE)) {
-		return true;
-	}
-
-	return false;
-}
-
 void Enemy::AnimationCheck()
 {
 	//前フレームと違うアニメーションならカウントをゼロにする
