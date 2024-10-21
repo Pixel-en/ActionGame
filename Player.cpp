@@ -7,6 +7,7 @@ namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
 	const VECTOR IMAGESIZE{ 48 * 1.5,48 * 1.5 };			//画像サイズ
+	//反転あり
 	const VECTOR LUPOINT{ 11.0f * 1.5f,14.0f * 1.5f };		//左上の座標
 	const VECTOR RUPOINT{ 37.0f * 1.5f,14.0f * 1.5f };	//右上の座標
 	const VECTOR LDPOINT{ 11.0f * 1.5f,46.0f * 1.5f };		//左下の座標
@@ -125,9 +126,11 @@ void Player::Draw()
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);/*
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
-	
 
-	DrawRectGraph(xpos , ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+
+	DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+
+	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
 
 	//DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 	/*	DrawRectGraph(xpos-HITBOXSIZE.cx/2.0 , ypos-HITBOXSIZE.cy, anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);

@@ -10,23 +10,12 @@
 //攻撃してくる
 //
 namespace {
-	//const SIZE ENEMY_IMAGESIZE{ 48,48 };
-	//const SIZE ENEMY_HITBOXSIZE{ 48 / 2,48 / 2 };
-	//const float ENEMY_JUMPHEIGHT{ ENEMY_IMAGESIZE.cx * 1.5f };	//ジャンプの高さ
-	//const float ENEMY_LOOKRANGE{ 150 };
+
 	const float ENEMY_ATTACKRANGE{ 101.5f };
 	const float ENEMY_GRAVITY{ 9.8f / 60.0f };	//重力
-	//const VECTOR ENEMY_LUPOINT{ 34.0f,90.0f };	//左上の座標
-	//const VECTOR ENEMY_RUPOINT{ 94.0f,90.0f };	//右上の座標
-	//const VECTOR ENEMY_LDPOINT{ 34.0f,127.0f };	//左下の座標
-	//const VECTOR ENEMY_RDPOINT{ 94.0f,127.0f };	//右下の座標
-	
-	//const float ENEMY_MOVESPEED{ 85 };
-	//const float ENEMY_RUNSPEED{ 170 };	//ダッシュスピード
+
 	const float ENEMY_ATTACKSPEED{ 1500 };
 	const float ENEMY_SPEEDDOWN{ 50 };
-	/*const float ENEMY_MOVETIME{ 1.0f };
-	const int ENEMY_HP{ 10 };*/
 }
 
 enum ENEMY_TYPE
@@ -106,6 +95,8 @@ protected:
 
 	HitObject* hitobj_;
 
+	Transform hittransform_;
+
 public:
 
 	//コンストラクタ
@@ -142,5 +133,7 @@ public:
 	void StatusReader(int _enemyNumber);
 
 	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_IMAGESIZE.cx / 2, transform_.position_.y + ENEMY_IMAGESIZE.cy / 2 }; };
+
+	Transform GetHitTransform() { return hittransform_; };
 };
 

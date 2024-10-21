@@ -16,6 +16,9 @@ BlueSlime::BlueSlime(GameObject* parent)
 	hp_ = baseHp;
 
 	hitobj_ = new HitObject(ENEMY_HITBOXSIZE, this);
+
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y + ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
 }
 
 BlueSlime::~BlueSlime()
@@ -30,6 +33,10 @@ void BlueSlime::Initialize()
 
 void BlueSlime::Update()
 {
+
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y + ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
+
 	Player* p = GetParent()->FindGameObject<Player>();
 
 	Field* field = GetParent()->FindGameObject<Field>();
