@@ -28,10 +28,38 @@ HitObject::HitObject(SIZE _size, GameObject* _obj)
 	}
 }
 
+HitObject::HitObject(VECTOR _size, GameObject* _obj)
+	:obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
+{
+	trans_.position_ = { -1,-1,-1 };
+	size_.x = _size.x;
+	size_.y = _size.y;
+	obj_ = _obj;
+	field = obj_->GetParent()->FindGameObject<Field>();
+	if (field == nullptr) {
+		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
+		assert(false);
+	}
+}
+
 HitObject::HitObject(Transform trans,VECTOR _size, GameObject* _obj)
 	:size_(_size), obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
 	obj_ = _obj;
+	trans_ = trans;
+	field = obj_->GetParent()->FindGameObject<Field>();
+	if (field == nullptr) {
+		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
+		assert(false);
+	}
+}
+
+HitObject::HitObject(Transform trans, SIZE _size, GameObject* _obj)
+	: obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
+{
+	obj_ = _obj;
+	size_.x = _size.cx;
+	size_.y = _size.cy;
 	trans_ = trans;
 	field = obj_->GetParent()->FindGameObject<Field>();
 	if (field == nullptr) {

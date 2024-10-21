@@ -34,10 +34,25 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">オブジェクト</param>
+	HitObject(VECTOR _size, GameObject* _obj);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	/// <param name="trans">当たり判定のヒットボックス</param>
 	/// <param name="_size">当たり判定のサイズ</param>
 	/// <param name="_obj">オブジェクト</param>
 	HitObject(Transform trans,VECTOR _size, GameObject* _obj);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="trans">当たり判定のヒットボックス</param>
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">オブジェクト</param>
+	HitObject(Transform trans, SIZE _size, GameObject* _obj);
 
 	//デストラクタ
 	~HitObject();
@@ -46,7 +61,7 @@ public:
 	/// 当たり判定のヒットボックスのセット
 	/// </summary>
 	/// <param name="trans">当たり判定のTransform</param>
-	void SetTransform(Transform trans) { trans_ = trans; };
+	void SetHitTransform(Transform trans) { trans_ = trans; };
 
 	/// <summary>
 	/// 右側の当たり判定と押し出し
