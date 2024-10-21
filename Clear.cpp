@@ -62,10 +62,8 @@ void Clear::Update()
 			}
 		}
 		for (Material* M : m) {
-			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),M->GetPosition(),M->GetHitBox() ) ) {
-				Playsound* ps = GetParent()->FindGameObject<Playsound>();
-				ps->SoundON("Mine");
-				M->KillMe();
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),M->GetPosition(),M->GetHitBox() )) {
+				M->Mining(p->GetMiningTime());
 			}
 		}
 		for (Enemy* E : e) {
