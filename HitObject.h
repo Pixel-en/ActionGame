@@ -10,6 +10,8 @@ class HitObject
 	VECTOR size_;
 	GameObject* obj_;
 	Field* field;
+
+	Transform trans_;
 public:
 
 	/// <summary>
@@ -32,9 +34,10 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="trans">当たり判定のヒットボックス</param>
 	/// <param name="_size">当たり判定のサイズ</param>
 	/// <param name="_obj">オブジェクト</param>
-	HitObject(VECTOR _size, GameObject* _obj);
+	HitObject(Transform trans,VECTOR _size, GameObject* _obj);
 
 	//デストラクタ
 	~HitObject();
