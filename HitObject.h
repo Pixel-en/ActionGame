@@ -10,6 +10,8 @@ class HitObject
 	VECTOR size_;
 	GameObject* obj_;
 	Field* field;
+
+	Transform trans_;
 public:
 
 	/// <summary>
@@ -36,8 +38,30 @@ public:
 	/// <param name="_obj">オブジェクト</param>
 	HitObject(VECTOR _size, GameObject* _obj);
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="trans">当たり判定のヒットボックス</param>
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">オブジェクト</param>
+	HitObject(Transform trans,VECTOR _size, GameObject* _obj);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="trans">当たり判定のヒットボックス</param>
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">オブジェクト</param>
+	HitObject(Transform trans, SIZE _size, GameObject* _obj);
+
 	//デストラクタ
 	~HitObject();
+
+	/// <summary>
+	/// 当たり判定のヒットボックスのセット
+	/// </summary>
+	/// <param name="trans">当たり判定のTransform</param>
+	void SetHitTransform(Transform trans) { trans_ = trans; };
 
 	/// <summary>
 	/// 右側の当たり判定と押し出し
@@ -84,7 +108,7 @@ public:
 	/// <param name="_trans2">対象2のTransform</param>
 	/// <param name="_size2">対象2の当たり判定のボックス</param>
 	/// <returns>当たっているかどうか</returns>
-	bool HitObjectANDObject(Transform _trans1,VECTOR _size1, Transform _trans2, VECTOR _size2);
+	bool HitObjectANDObject(XMFLOAT3 _trans1,VECTOR _size1, XMFLOAT3 _trans2, VECTOR _size2);
 
 	/// <summary>
 	/// ヒットボックスを出力する

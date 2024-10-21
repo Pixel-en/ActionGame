@@ -75,6 +75,9 @@ Enemy::Enemy(GameObject* parent)
 	animframe_ = 0;
 	AFmax_ = 0;
 
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y + ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
+
 	//hitobj_ = new HitObject(ENEMY_LUPOINT, ENEMY_RUPOINT, ENEMY_LDPOINT, ENEMY_RDPOINT, this);
 	hitobj_ = new HitObject(ENEMY_IMAGESIZE, this);
 }
@@ -101,6 +104,9 @@ void Enemy::Update()
 
 	if (clear->GetFlag() || p == nullptr)
 		return;
+
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y + ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
 
 	onGround_ = false;
 	Ppos = p->GetPosition();
@@ -167,16 +173,6 @@ void Enemy::Draw()
 
 void Enemy::Release()
 {
-}
-
-bool Enemy::IsHitting()
-{
-	Player* p = GetParent()->FindGameObject<Player>();
-	if (p->HitCheck(transform_.position_.x, transform_.position_.y, ENEMY_HITBOXSIZE)) {
-		return true;
-	}
-
-	return false;
 }
 
 void Enemy::AnimationCheck()

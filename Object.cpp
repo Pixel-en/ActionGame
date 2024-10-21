@@ -70,16 +70,15 @@ void Object::Release()
 {
 }
 
-bool Object::IsHitting()
-{
-	Player* p = GetParent()->FindGameObject<Player>();
-	if (p->HitCheck(transform_.position_.x, transform_.position_.y, hitsize_))
-		return true;
-
-	return false;
-}
-
 SIZE Object::GetSize()
 {
 	return IMAGESIZE;
+}
+
+VECTOR Object::GetHitBox()
+{
+	VECTOR temp;
+	temp.x = hitsize_.cx;
+	temp.y = hitsize_.cy;
+	return temp;
 }

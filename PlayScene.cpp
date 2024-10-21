@@ -33,13 +33,13 @@ void PlayScene::Initialize()
 	Filename_ = "Test.csv";
 
 	//おそらくマップリストの読み込み
-	CsvReader* csv = new CsvReader("Assets\\Map\\Test.csv");
+	CsvReader* csv = new CsvReader("Assets\\Map\\MapList.csv");
 	for (int i = 0; i < csv->GetLines(); i++) {
 		for (int j = 0; j < csv->GetColumns(0); j++) {
 			maplist.push_back(csv->GetString(i, j));
 		}
 	}
-	//Filename_ = maplist[listnum];
+	Filename_ = maplist[listnum];
 
 	Reset();
 

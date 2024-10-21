@@ -4,6 +4,7 @@
 HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject* _obj)
 	:Lu_(_Lu), Ru_(_Ru), Ld_(_Ld), Rd_(_Rd), obj_(nullptr)
 {
+	trans_.position_ = { -1,-1,-1 };
 	obj_ = _obj;
 	field = obj_->GetParent()->FindGameObject<Field>();
 	size_ = { -1,-1 };
@@ -16,6 +17,7 @@ HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject*
 HitObject::HitObject(SIZE _size, GameObject* _obj)
 	:obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
+	trans_.position_ = {-1,-1,-1};
 	size_.x = _size.cx;
 	size_.y = _size.cy;
 	obj_ = _obj;
@@ -27,8 +29,11 @@ HitObject::HitObject(SIZE _size, GameObject* _obj)
 }
 
 HitObject::HitObject(VECTOR _size, GameObject* _obj)
-	:size_(_size), obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
+	:obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
+	trans_.position_ = { -1,-1,-1 };
+	size_.x = _size.x;
+	size_.y = _size.y;
 	obj_ = _obj;
 	field = obj_->GetParent()->FindGameObject<Field>();
 	if (field == nullptr) {
@@ -36,6 +41,33 @@ HitObject::HitObject(VECTOR _size, GameObject* _obj)
 		assert(false);
 	}
 }
+
+HitObject::HitObject(Transform trans,VECTOR _size, GameObject* _obj)
+	:size_(_size), obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
+{
+	obj_ = _obj;
+	trans_ = trans;
+	field = obj_->GetParent()->FindGameObject<Field>();
+	if (field == nullptr) {
+		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
+		assert(false);
+	}
+}
+
+HitObject::HitObject(Transform trans, SIZE _size, GameObject* _obj)
+	: obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
+{
+	obj_ = _obj;
+	size_.x = _size.cx;
+	size_.y = _size.cy;
+	trans_ = trans;
+	field = obj_->GetParent()->FindGameObject<Field>();
+	if (field == nullptr) {
+		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
+		assert(false);
+	}
+}
+
 
 HitObject::~HitObject()
 {
@@ -45,7 +77,11 @@ bool HitObject::RightCollisionCheck()
 {
 
 	Transform trns;
-	trns.position_ = obj_->GetPosition();
+
+	if (trans_.position_.x < 0)
+		trns.position_ = obj_->GetPosition();
+	else
+		trns = trans_;
 	int push;
 	if (size_.x > 0)
 		push = field->CollisionRightCheck(trns.position_.x + size_.x, trns.position_.y + size_.y);
@@ -65,7 +101,11 @@ bool HitObject::LeftCollisionCheck()
 {
 
 	Transform trns;
-	trns.position_ = obj_->GetPosition();
+	if (trans_.position_.x < 0)
+		trns.position_ = obj_->GetPosition();
+	else
+		trns = trans_;
+
 	int push;
 	if (size_.x > 0)
 		push = field->CollisionLeftCheck(trns.position_.x - size_.x, trns.position_.y + size_.y);
@@ -83,7 +123,11 @@ bool HitObject::LeftCollisionCheck()
 bool HitObject::UpCollisionCheck()
 {
 	Transform trns;
-	trns.position_ = obj_->GetPosition();
+	if (trans_.position_.x < 0)
+		trns.position_ = obj_->GetPosition();
+	else
+		trns = trans_;
+
 	int push;
 
 	if (size_.x > 0) {
@@ -113,7 +157,10 @@ bool HitObject::UpCollisionCheck()
 bool HitObject::DownCollisionCheck()
 {
 	Transform trns;
-	trns.position_ = obj_->GetPosition();
+	if (trans_.position_.x < 0)
+		trns.position_ = obj_->GetPosition();
+	else
+		trns = trans_;
 
 	int push;
 	if (size_.x > 0) {
@@ -171,12 +218,12 @@ short HitObject::SelectCollisionCheck(short _bit)
 	return bit;
 }
 
-bool HitObject::HitObjectANDObject(Transform _trans1, VECTOR _size1, Transform _trans2, VECTOR _size2)
+bool HitObject::HitObjectANDObject(XMFLOAT3 _trans1, VECTOR _size1, XMFLOAT3 _trans2, VECTOR _size2)
 {
 
 	Transform trans1, trans2;
-	trans1.position_ = { _trans1.position_.x + _size1.x / 2.0f,_trans1.position_.y + _size1.y / 2.0f,_trans1.position_.z };
-	trans2.position_ = { _trans2.position_.x + _size2.x / 2.0f,_trans2.position_.y + _size2.y / 2.0f,_trans2.position_.z };
+	trans1.position_ = { _trans1.x + _size1.x / 2.0f,_trans1.y + _size1.y / 2.0f,_trans1.z };
+	trans2.position_ = { _trans2.x + _size2.x / 2.0f,_trans2.y + _size2.y / 2.0f,_trans2.z };
 
 	if (fabs(trans1.position_.x - trans2.position_.x) < _size1.x / 2.0f + _size2.x / 2.0f &&
 		fabs(trans1.position_.y - trans2.position_.y) < _size1.y / 2.0f + _size2.y / 2.0f)
@@ -193,5 +240,8 @@ void HitObject::DrawHitBox(XMFLOAT3 trans)
 
 void HitObject::DrawHitBox(XMFLOAT3 trans,int Red, int Green, int Blue)
 {
-	DrawBox(obj_->GetPosition().x, obj_->GetPosition().y, obj_->GetPosition().x + size_.x, obj_->GetPosition().y + size_.y, GetColor(Red, Green, Blue), false);
+	if (size_.x > 0)
+		DrawBox(trans.x, trans.y, trans.x + size_.x, trans.y + size_.y, GetColor(Red, Green, Blue), false);
+	else
+		DrawBox(trans.x + Lu_.x, trans.y + Lu_.y, trans.x + Rd_.x, trans.y + Rd_.y, GetColor(Red, Green, Blue), false);
 }

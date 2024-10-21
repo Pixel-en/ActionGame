@@ -8,6 +8,7 @@ namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
 	const VECTOR IMAGESIZE{ 48 * 1.5,48 * 1.5 };			//画像サイズ
+	//反転あり
 	const VECTOR LUPOINT{ 11.0f * 1.5f,14.0f * 1.5f };		//左上の座標
 	const VECTOR RUPOINT{ 37.0f * 1.5f,14.0f * 1.5f };	//右上の座標
 	const VECTOR LDPOINT{ 11.0f * 1.5f,46.0f * 1.5f };		//左下の座標
@@ -62,6 +63,7 @@ Player::Player(GameObject* parent)
 	anim_.animloop_ = false;
 
 	transform_.position_ = { 0,0,0 };
+	miningtime_ = 0.0f;
 
 	//当たり判定の初期化
 	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
@@ -98,11 +100,20 @@ void Player::Update()
 
 		MoveControl();
 	}
-	int temp = anim_.animtype_;
+	float time = Time::DeltaTime();
+	float temp;
 	ImGui::Begin("debug");
-	ImGui::InputFloat("hp", &Gaccel_);
-	ImGui::InputInt("anim", &temp);
-	ImGui::InputInt("animframe", &anim_.animframe_);
+	ImGui::InputFloat("time", &time);
+	//temp = time*ParamCorre_[0].technic_;
+	//ImGui::InputFloat("0", &temp);
+	//temp = time*ParamCorre_[1].technic_;
+	//ImGui::InputFloat("1", &temp);
+	//temp = time*ParamCorre_[2].technic_;
+	//ImGui::InputFloat("2", &temp);
+	//temp = time*ParamCorre_[3].technic_;
+	//ImGui::InputFloat("3", &temp);
+	//temp = time*ParamCorre_[4].technic_;
+	//ImGui::InputFloat("4", &temp);
 	ImGui::End();
 
 	AnimStatus();
@@ -126,9 +137,11 @@ void Player::Draw()
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, false);/*
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
-	
 
-	DrawRectGraph(xpos , ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+
+	DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+
+	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
 
 	//DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 	/*	DrawRectGraph(xpos-HITBOXSIZE.cx/2.0 , ypos-HITBOXSIZE.cy, anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
@@ -204,6 +217,7 @@ void Player::MoveControl()
 {
 
 	float Dash = 1.0f;
+	miningtime_ = 0.0f;
 
 	//左移動
 	if (CheckHitKey(KEY_INPUT_A)) {
@@ -253,6 +267,7 @@ void Player::MoveControl()
 	//採取
 	if (CheckHitKey(KEY_INPUT_I)) {
 		anim_.animtype_ = Animation::COLLECTION;
+		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
 	hitobject_->AllCollisionCheck();
@@ -324,7 +339,7 @@ void Player::AnimStatus()
 		break;
 	case Player::COLLECTION:
 		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 0;
+		anim_.AFCmax_ = 17;
 		break;
 	case Player::MAGIC:
 		anim_.AFmax_ = 6;
@@ -390,27 +405,6 @@ void Player::AnimStatus()
 	anim_.BEanimtype_ = anim_.animtype_;
 }
 
-
-bool Player::HitCheck(int _x, int _y, SIZE _size)
-{
-	int x = _x + _size.cx / 2;
-	int y = _y + _size.cy / 2;
-
-
-	int px = transform_.position_.x + LUPOINT.x+ HITBOXSIZE.x / 2;
-	int py = transform_.position_.y + LUPOINT.y+ HITBOXSIZE.y / 2;
-
-	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心
-
-	if (abs(x - px) < _size.cx / 2 + HITBOXSIZE.x / 2 &&
-		abs(y - py) < _size.cy / 2 + HITBOXSIZE.y / 2)
-		return true;
-
-	DrawBox(px, py, px + HITBOXSIZE.x / 2, py + HITBOXSIZE.y / 2, GetColor(0, 0, 255), false);
-
-	return false;
-}
-
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
 	//ベクトルの挙動が意味わからんかった
@@ -456,6 +450,11 @@ Transform Player::GetHitTrans()
 	Transform trans = transform_;
 	trans.position_ = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
 	return trans;
+}
+
+VECTOR Player::GetHitBox()
+{
+	return HITBOXSIZE;
 }
 
 void Player::DeadState()

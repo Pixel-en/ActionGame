@@ -17,6 +17,8 @@ class Player :public GameObject
 
 	bool isjamp_;
 
+	float miningtime_;
+
 public:
 
 	//アニメーションの番号
@@ -66,7 +68,7 @@ private:
 		float strength_;
 		int speed_;		//スピード
 		int hp_;		//体力
-		int technic_;	//採取
+		float technic_;	//採取
 	};
 
 	AnimParts anim_;
@@ -90,10 +92,18 @@ private:
 	/// </summary>
 	void LoadParameter();
 
+	/// <summary>
+	/// アニメーションの状態やセットの処理
+	/// </summary>
 	void AnimStatus();
 
+	/// <summary>
+	/// ステートをDeathに
+	/// </summary>
 	void DeadState();
 	
+
+
 public:
 
 	//当たり判定
@@ -119,8 +129,6 @@ public:
 	void Release() override;
 
 	/*基本外部から参照する用*/
-
-	bool HitCheck(int _x, int _y, SIZE _size);
 
 	/// <summary>
 	/// ノックバックの方向を計算する
@@ -149,5 +157,13 @@ public:
 	/// </summary>
 	/// <returns>当たり判定時のTransform</returns>
 	Transform GetHitTrans();
+
+	/// <summary>
+	/// 当たり判定のボックスを返す
+	/// </summary>
+	/// <returns>当たり判定のボックス</returns>
+	VECTOR GetHitBox();
+
+	float GetMiningTime() { return miningtime_; };
 };
 
