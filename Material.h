@@ -12,6 +12,14 @@ class Material :public Object
 	float Gaccel;
 
 	float durability_;	//耐久(秒)
+
+	float VecX;
+	float VecY;
+	float VecZ;
+	float VecSize;
+
+	float SeeUiLength;
+	bool posNear;
 public:
 
 	//コンストラクタ

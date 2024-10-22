@@ -7,9 +7,6 @@
 #include "MoveObject.h"
 #include "PlayGUI.h"
 
-#include"CrystalBlack.h"
-#include"Item.h"
-
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
 #include "Engine/CsvReader.h"
