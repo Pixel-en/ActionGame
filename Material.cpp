@@ -5,10 +5,11 @@
 
 namespace {
 	const float GRAVITY{ 9.8f / 60.0f };
+	const float MAXDURABILITY{ 5.0f };
 }
 
 Material::Material(GameObject* parent)
-	:Object(parent,"Material")
+	:Object(parent, "Material")
 {
 	sizeX_ = 0;
 	sizeY_ = 0;
@@ -35,6 +36,8 @@ Material::Material(GameObject* parent)
 	hitsize_ = { sizeX_,sizeY_ };
 
 	hitobj_ = new HitObject(hitsize_, this);
+
+	durability_ = MAXDURABILITY;
 }
 
 Material::~Material()
@@ -52,6 +55,7 @@ void Material::Update()
 		transform_.position_.y += Gaccel;
 	}
 	Gaccel = 0.0f;
+
 }
 
 void Material::Draw()
@@ -66,10 +70,22 @@ void Material::Draw()
 	}
 
 	DrawRectGraph(xpos, ypos, 0, 0, sizeX_, sizeY_, hImage_, true);
-	//DrawBox(xpos, ypos, xpos + sizeX_, ypos + sizeY_, GetColor(255, 0, 255), false);
+
+	DrawBox(xpos, ypos, xpos + sizeX_, ypos + sizeY_, GetColor(255, 0, 255), false);
+	DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, (MAXDURABILITY - durability_) / MAXDURABILITY * 10.0f, GetColor(255, 255, 255), true);
+	DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, 10, GetColor(255, 255, 255), false);
+	//DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), false);
 }
 
 void Material::Release()
 {
+}
+
+void Material::Mining(float _mintime)
+{
+
+	durability_ -= _mintime;
+	if (durability_ < 0)
+		KillMe();
 }
 

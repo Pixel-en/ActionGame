@@ -16,6 +16,7 @@ using namespace DirectX;
 //-----------------------------------------------------------
 class GameObject
 {
+
 protected:
 	//位置や向きなどを管理するオブジェクト
 	Transform				transform_;

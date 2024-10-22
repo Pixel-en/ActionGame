@@ -17,6 +17,8 @@ class Player :public GameObject
 
 	bool isjamp_;
 
+	float miningtime_;
+
 public:
 
 	//アニメーションの番号
@@ -49,7 +51,7 @@ private:
 		int AFCmax_;			//アニメーションが変わるまでのフレーム数
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 		bool animloop_;			//アニメーションをループするか
-
+		bool canmove_;
 	};
 	//プレイヤーのパラメータ
 	struct Parameter
@@ -66,7 +68,7 @@ private:
 		float strength_;
 		int speed_;		//スピード
 		int hp_;		//体力
-		int technic_;	//採取
+		float technic_;	//採取
 	};
 
 	AnimParts anim_;
@@ -86,14 +88,28 @@ private:
 	void MoveControl();
 
 	/// <summary>
+	/// プレイヤーのアクション
+	/// </summary>
+	/// <returns>アクション中かどうか</returns>
+	bool ActionControl();
+
+	/// <summary>
 	/// パラメータを読み込む
 	/// </summary>
 	void LoadParameter();
 
+	/// <summary>
+	/// アニメーションの状態やセットの処理
+	/// </summary>
 	void AnimStatus();
 
+	/// <summary>
+	/// ステートをDeathに
+	/// </summary>
 	void DeadState();
 	
+
+
 public:
 
 	//当たり判定
@@ -120,8 +136,6 @@ public:
 
 	/*基本外部から参照する用*/
 
-	bool HitCheck(int _x, int _y, SIZE _size);
-
 	/// <summary>
 	/// ノックバックの方向を計算する
 	/// </summary>
@@ -143,5 +157,19 @@ public:
 			return true;
 		return false;
 	}
+
+	/// <summary>
+	/// 当たり判定の時のTransformを取得する
+	/// </summary>
+	/// <returns>当たり判定時のTransform</returns>
+	Transform GetHitTrans();
+
+	/// <summary>
+	/// 当たり判定のボックスを返す
+	/// </summary>
+	/// <returns>当たり判定のボックス</returns>
+	VECTOR GetHitBox();
+
+	float GetMiningTime() { return miningtime_; };
 };
 

@@ -281,6 +281,8 @@ std::string Field::WhatBlock(int x, int y)
 		case 62:
 			return "Ladder";
 			break;
+		case 106:
+			return "Item";
 		default:
 			break;
 		}

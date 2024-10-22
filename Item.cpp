@@ -1,11 +1,12 @@
 #include "Item.h"
 
-Item::Item(GameObject* parent)
+Item::Item(GameObject* parent) :GameObject(parent,"Item")
 {
 }
 
 Item::~Item()
 {
+	
 }
 
 void Item::Initialize()

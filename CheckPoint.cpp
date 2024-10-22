@@ -2,7 +2,7 @@
 #include "Camera.h"
 
 namespace {
-	const int IMAGESIZE{ 16 };
+	const SIZE IMAGESIZE{ 16,16 };
 }
 
 CheckPoint::CheckPoint(GameObject* parent)
@@ -19,7 +19,7 @@ void CheckPoint::Initialize()
 	hImage_ = LoadGraph("Assets\\Image\\Objects\\Rune.png");
 	assert(hImage_ > 0);
 
-	hitobj_ = new HitObject({IMAGESIZE}, this);
+	hitobj_ = new HitObject(IMAGESIZE, this);
 }
 
 void CheckPoint::Update()
@@ -42,7 +42,7 @@ void CheckPoint::Draw()
 		ypos -= cam->GetValueY();
 	}
 
-	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE, 0, IMAGESIZE, IMAGESIZE, hImage_, true);
+	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE.cx, 0, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 }
 
 void CheckPoint::Release()

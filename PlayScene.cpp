@@ -7,6 +7,9 @@
 #include "MoveObject.h"
 #include "PlayGUI.h"
 
+#include"CrystalBlack.h"
+#include"Item.h"
+
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
 #include "Engine/CsvReader.h"
@@ -30,17 +33,17 @@ void PlayScene::Initialize()
 	Filename_ = "Test.csv";
 
 	//おそらくマップリストの読み込み
-	CsvReader* csv = new CsvReader("Assets\\Map\\Test.csv");
+	CsvReader* csv = new CsvReader("Assets\\Map\\MapList.csv");
 	for (int i = 0; i < csv->GetLines(); i++) {
 		for (int j = 0; j < csv->GetColumns(0); j++) {
 			maplist.push_back(csv->GetString(i, j));
 		}
 	}
-	//Filename_ = maplist[listnum];
+	Filename_ = maplist[listnum];
 
 	Reset();
 
-
+	
 }
 
 void PlayScene::Reset()
@@ -72,7 +75,6 @@ void PlayScene::Reset()
 	state = PlayScene::STAY;
 
 	Instantiate<PlayGUI>(this);
-
 }
 
 void PlayScene::Update()

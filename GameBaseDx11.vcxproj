@@ -154,7 +154,7 @@
     <ClCompile Include="Clear.cpp" />
     <ClCompile Include="ClearPlayer.cpp" />
     <ClCompile Include="CleraLogo.cpp" />
-    <ClCompile Include="Crystal_Black.cpp" />
+    <ClCompile Include="CrystalBlack.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Engine\CsvReader.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
@@ -187,6 +187,7 @@
     <ClCompile Include="RankingsScene.cpp" />
     <ClCompile Include="RankingsSystem.cpp" />
     <ClCompile Include="RedSlime.cpp" />
+    <ClCompile Include="TestOpenObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TitleText.cpp" />
@@ -201,7 +202,7 @@
     <ClInclude Include="Clear.h" />
     <ClInclude Include="ClearPlayer.h" />
     <ClInclude Include="CleraLogo.h" />
-    <ClInclude Include="Crystal_Black.h" />
+    <ClInclude Include="CrystalBlack.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Engine\CsvReader.h" />
     <ClInclude Include="Engine\GameObject.h" />
@@ -238,6 +239,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="BlueSlime.h" />
     <ClInclude Include="TestObject.h" />
+    <ClInclude Include="TestOpenObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="TitleText.h" />

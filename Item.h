@@ -4,9 +4,13 @@ class Item :
     public GameObject
 {
 protected:
-	int GraphSizeX;
-	int GraphSizeY_;
-	int hGraph_;
+    int graphSizeX_;
+    int graphSizeY_;
+
+	float fGraphSizeX_;
+	float fGraphSizeY_;
+
+	int hImage_;
 public:
 	Item(GameObject* parent);
 	~Item();
@@ -15,7 +19,10 @@ public:
 	virtual void Initialize() override;
 	virtual void Update() override;
 	virtual void Draw() override;
-	virtual void Release() override;
+
+	float GetfGraphSizeX() { return fGraphSizeX_; }
+	float GetfGraphSizeY() { return fGraphSizeY_; }
+
 private:
 };
 
