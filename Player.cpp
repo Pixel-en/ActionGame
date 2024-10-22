@@ -402,7 +402,7 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
 	//ƒxƒNƒgƒ‹‚Ì‹““®‚ªˆÓ–¡‚í‚©‚ç‚ñ‚©‚Á‚½
-#if 1
+#if 0
 	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
 
 	VECTOR dir = VSub(_vec, Pcenter);

@@ -154,6 +154,7 @@
     <ClCompile Include="Clear.cpp" />
     <ClCompile Include="ClearPlayer.cpp" />
     <ClCompile Include="CleraLogo.cpp" />
+    <ClCompile Include="Crystal_Black.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Engine\CsvReader.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="ImGui\imgui_ja_gryph_ranges.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MoveObject.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -199,6 +201,7 @@
     <ClInclude Include="Clear.h" />
     <ClInclude Include="ClearPlayer.h" />
     <ClInclude Include="CleraLogo.h" />
+    <ClInclude Include="Crystal_Black.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Engine\CsvReader.h" />
     <ClInclude Include="Engine\GameObject.h" />
@@ -221,6 +224,7 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MoveObject.h" />
     <ClInclude Include="Object.h" />

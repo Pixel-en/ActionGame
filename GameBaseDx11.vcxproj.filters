@@ -131,6 +131,8 @@
     <ClCompile Include="BardA.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="Crystal_Black.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -250,6 +252,8 @@
     <ClInclude Include="BardA.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="Crystal_Black.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">
