@@ -2,7 +2,6 @@
 #include "Camera.h"
 #include "Engine/CsvReader.h"
 #include "ImGui/imgui.h"
-#include"Item.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -61,7 +60,7 @@ Player::Player(GameObject* parent)
 	anim_.AFCmax_ = 0;
 	anim_.animframecount_ = 0;
 	anim_.animloop_ = false;
-	anim_.canmove_ = true;
+	anim_.Rdir_ = true;
 
 	transform_.position_ = { 0,0,0 };
 	miningtime_ = 0.0f;
@@ -138,29 +137,13 @@ void Player::Draw()
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
-
-	DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
-
+	if(anim_.Rdir_)
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+	else {
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
+	}
 	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
-
-	//DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
-	/*	DrawRectGraph(xpos-HITBOXSIZE.cx/2.0 , ypos-HITBOXSIZE.cy, anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
-
-	DrawBox(xpos, ypos, xpos + IMAGESIZE.cx, ypos + IMAGESIZE.cy, GetColor(255, 0, 0), false);
-	DrawBox(xpos, ypos, xpos + HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, GetColor(0, 255, 0), false);
-	DrawBox(xpos - HITBOXSIZE.cx / 2, ypos - HITBOXSIZE.cx / 2, xpos + HITBOXSIZE.cx / 2, ypos + HITBOXSIZE.cy / 2, GetColor(0, 0, 255), false);
-
-	DrawCircle(xpos, ypos, 5, GetColor(255, 0, 0), true);
-	DrawCircle(xpos + HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, 5, GetColor(255, 0, 0), true);
-	DrawCircle(xpos - HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, 5, GetColor(0, 255, 0), true);
-	DrawCircle(xpos + HITBOXSIZE.cx, ypos - HITBOXSIZE.cy, 5, GetColor(0, 0, 255), true);
-	DrawCircle(xpos - HITBOXSIZE.cx, ypos - HITBOXSIZE.cy, 5, GetColor(255, 255, 255), true);
-
-	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	*/
+	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
 }
 
 void Player::Release()
@@ -233,6 +216,8 @@ void Player::MoveControl()
 			}
 
 			transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
+			anim_.Rdir_ = false;
+			hitobject_->LeftCollisionCheck();
 		}
 
 		//右移動
@@ -247,7 +232,8 @@ void Player::MoveControl()
 			}
 
 			transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
-
+			anim_.Rdir_ = true;
+			hitobject_->RightCollisionCheck();
 		}
 
 		//ジャンプ
@@ -267,7 +253,8 @@ void Player::MoveControl()
 		//}
 	}
 
-	hitobject_->AllCollisionCheck();
+	//hitobject_->AllCollisionCheck();
+	//hitobject_->SelectCollisionCheck(1100);
 
 }
 
@@ -278,6 +265,27 @@ bool Player::ActionControl()
 	if (CheckHitKey(KEY_INPUT_I)) {
 		anim_.animtype_ = Animation::COLLECTION;
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
+	}
+
+	if (CheckHitKey(KEY_INPUT_J)) {
+		anim_.animtype_ = Animation::ATTACK;
+	}
+
+	if (CheckHitKey(KEY_INPUT_K)) {
+		anim_.animtype_ = Animation::ATTACK2;
+	}
+	
+	if (CheckHitKey(KEY_INPUT_L)) {
+		anim_.animtype_ = Animation::ATTACK3;
+	}
+	if (CheckHitKey(KEY_INPUT_M)) {
+		anim_.animtype_ = Animation::MAGIC;
+
+		if (CheckHitKey(KEY_INPUT_K)) {
+		}
+
+		if (CheckHitKey(KEY_INPUT_L)) {
+		}
 	}
 
 	if (anim_.animtype_ == Animation::IDOL)
@@ -292,7 +300,6 @@ void Player::AnimStatus()
 	static float timecnt = 0;
 
 	anim_.animloop_ = true;
-	anim_.canmove_ = true;
 
 	switch (anim_.animtype_)
 	{
@@ -300,7 +307,6 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 1;
 		anim_.AFCmax_ = 1;
 		anim_.animloop_ = false;
-		anim_.canmove_ = false;
 		break;
 	case Player::IDOL:
 		anim_.AFmax_ = 4;
@@ -351,27 +357,24 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
 		break;
-	case Player::COLLECTION:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 17;
-		anim_.canmove_ = false;
-		break;
 	case Player::MAGIC:
 		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 0;
+		anim_.AFCmax_ = 15;
+		break;
+	case Player::COLLECTION:
+		anim_.AFmax_ = 5;
+		anim_.AFCmax_ = 17;
 		break;
 	case Player::DAMAGE:
 		anim_.AFmax_ = 3;
 		anim_.AFCmax_ = 10;
 		anim_.animloop_ = false;
 		invincible_ = true;
-		anim_.canmove_ = false;
 		break;
 	case Player::DEATH:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 20;
 		anim_.animloop_ = false;
-		anim_.canmove_ = false;
 		if (anim_.animframe_ >= 5) {
 			anim_.animframecount_ = 0;
 		}
@@ -387,7 +390,6 @@ void Player::AnimStatus()
 		anim_.animframe_ = 0;
 		anim_.animframecount_ = 0;
 		anim_.animloop_ = false;
-		anim_.canmove_ = false;
 		break;
 	}
 

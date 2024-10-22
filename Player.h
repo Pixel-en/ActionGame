@@ -32,8 +32,8 @@ public:
 		ATTACK2,
 		ATTACK3,
 		CLIMB,
-		COLLECTION,
 		MAGIC,
+		COLLECTION,
 		DAMAGE,
 		DEATH,
 		RESET = 20,
@@ -51,7 +51,7 @@ private:
 		int AFCmax_;			//アニメーションが変わるまでのフレーム数
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 		bool animloop_;			//アニメーションをループするか
-		bool canmove_;
+		bool Rdir_;				//右を向いているかどうか
 	};
 	//プレイヤーのパラメータ
 	struct Parameter

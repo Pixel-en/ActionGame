@@ -157,6 +157,7 @@ void Field::Draw()
 		for (int j = 0; j < width; j++) {
 			int chipNum = Map[i * width + j];
 			DrawRectGraph(j * IMAGESIZE - scroll, i * IMAGESIZE-scrollY, IMAGESIZE * (chipNum % 10), IMAGESIZE * (chipNum / 10), IMAGESIZE, IMAGESIZE, hImage_, true);
+		
 		}
 	}
 }

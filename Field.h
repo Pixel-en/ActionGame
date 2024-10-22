@@ -88,7 +88,6 @@ public:
 	/// <returns></returns>
 	int CollisionLeftCheck(int x, int y);
 
-
 	/// <summary>
 	/// 右方向の当たり判定チェック
 	/// </summary>
