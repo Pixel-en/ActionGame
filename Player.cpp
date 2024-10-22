@@ -217,7 +217,7 @@ void Player::MoveControl()
 
 			transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
 			anim_.Rdir_ = false;
-			hitobject_->LeftCollisionCheck();
+			//hitobject_->LeftCollisionCheck();
 		}
 
 		//‰EˆÚ“®
@@ -233,8 +233,11 @@ void Player::MoveControl()
 
 			transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
 			anim_.Rdir_ = true;
-			hitobject_->RightCollisionCheck();
+			//hitobject_->RightCollisionCheck();
 		}
+
+		hitobject_->LeftCollisionCheck();
+		hitobject_->RightCollisionCheck();
 
 		//ƒWƒƒƒ“ƒv
 		if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {

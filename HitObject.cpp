@@ -42,7 +42,7 @@ HitObject::HitObject(VECTOR _size, GameObject* _obj)
 	}
 }
 
-HitObject::HitObject(Transform trans,VECTOR _size, GameObject* _obj)
+HitObject::HitObject(Transform& trans,VECTOR _size, GameObject* _obj)
 	:size_(_size), obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
 	obj_ = _obj;
@@ -54,7 +54,7 @@ HitObject::HitObject(Transform trans,VECTOR _size, GameObject* _obj)
 	}
 }
 
-HitObject::HitObject(Transform trans, SIZE _size, GameObject* _obj)
+HitObject::HitObject(Transform& trans, SIZE _size, GameObject* _obj)
 	: obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
 	obj_ = _obj;
@@ -91,7 +91,10 @@ bool HitObject::RightCollisionCheck()
 	if (push >= 1) {
 
 		trns.position_.x -= push;
-		obj_->SetPosition(trns.position_);
+		if (trans_.position_.x < 0)
+			obj_->SetPosition(trns.position_);
+		else
+			trans_ = trns;
 		return true;
 	}
 	return false;
@@ -114,7 +117,10 @@ bool HitObject::LeftCollisionCheck()
 
 	if (push >= 1) {
 		trns.position_.x += push;
-		obj_->SetPosition(trns.position_);
+		if (trans_.position_.x < 0)
+			obj_->SetPosition(trns.position_);
+		else
+			trans_ = trns;
 		return true;
 	}
 	return false;
@@ -148,7 +154,10 @@ bool HitObject::UpCollisionCheck()
 	if (push >= 1) {
 
 		trns.position_.y += push + 1;
-		obj_->SetPosition(trns.position_);
+		if (trans_.position_.x < 0)
+			obj_->SetPosition(trns.position_);
+		else
+			trans_ = trns;
 		return true;
 	}
 	return false;
@@ -182,7 +191,10 @@ bool HitObject::DownCollisionCheck()
 	if (push >= 1) {
 
 		trns.position_.y -= push - 1;
-		obj_->SetPosition(trns.position_);
+		if (trans_.position_.x < 0)
+			obj_->SetPosition(trns.position_);
+		else
+			trans_ = trns;
 		return true;
 	}
 	return false;

@@ -122,7 +122,7 @@ void BardA::Draw()
 	//DrawBox(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, xpos + ENEMY_IMAGESIZE.cx/2, ypos - ENEMY_IMAGESIZE.cy/ 2 + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255), false);
 	//DrawBox(xpos, ypos, xpos + ENEMY_IMAGESIZE.cx, ypos + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255),false);
 
-	hitobj_->DrawHitBox({ hitxpos, hitypos, 0 },0, 255, 0);
+	//hitobj_->DrawHitBox({ hitxpos, hitypos, 0 },0, 255, 0);
 
 	//hitobj_->DrawHitBox({ (float)xpos,(float)ypos,0 }, 255, 0, 0);
 
@@ -207,6 +207,7 @@ void BardA::UpdateMove()
 		transform_.position_.y = SpawnPoint_.y - 30.0f;
 		startmove_ = false;
 		//state_ = EAnimation::IDOL;
+		
 	}
 	else if (SpawnPoint_.y - transform_.position_.y < -30.0f) {
 		dir_ = -1;
@@ -236,6 +237,8 @@ void BardA::UpdateRun()
 		}
 		else {
 			transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
+			hitobj_->RightCollisionCheck();
+			hitobj_->LeftCollisionCheck();
 		}
 	}
 	else {
@@ -259,6 +262,8 @@ void BardA::UpdateAttack()
 	//transform_.position_.x += 200.0/*speed_*/ * Time::DeltaTime() * dir_;
 	transform_.position_.x -= attackVector.x;
 	transform_.position_.y -= attackVector.y;
+	hitobj_->RightCollisionCheck();
+	hitobj_->LeftCollisionCheck();
 
 	if (attackfrm_ == frm[i] && i < 4) {
 		i++;
