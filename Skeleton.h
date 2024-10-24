@@ -1,10 +1,13 @@
 #pragma once
 #include "Enemy.h"
+#include "Explosion.h"
 
 class Skeleton 
 	: public Enemy
 {
 	float baseHurtTime_{ 0.5 };
+
+	bool isAttack;
 
 	enum  SkeletonAnimation
 	{
@@ -20,6 +23,8 @@ class Skeleton
 
 	SIZE ENEMY_IMAGESIZE{ 64,64 };
 	SIZE ENEMY_HITBOXSIZE{ 48,48 };
+
+	Explosion* explosion_ = nullptr;
 
 	void UpdateIdol() override;
 	void UpdateMove() override;

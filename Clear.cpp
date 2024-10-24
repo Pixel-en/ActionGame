@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "Enemy.h"
 #include "Bullet.h"
+#include "Explosion.h"
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
@@ -42,6 +43,7 @@ void Clear::Update()
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
+	std::list<Explosion*> ex = GetParent()->FindGameObjects<Explosion>();
 
 	if (!isgoal_&&!isGetM_ && !isKillE_&&p!=nullptr) {
 		if (ch != nullptr) {
@@ -81,7 +83,12 @@ void Clear::Update()
 
 				p->HitDamage(B->GetCenter());
 			}
+		}
 
+		for (Explosion* EX : ex) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), EX->GetPosition(), EX->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
+				p->HitDamage(EX->GetCenter());
+			}
 		}
 
 		if (m.empty() && Mcount_!=0)
