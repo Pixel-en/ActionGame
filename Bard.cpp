@@ -35,12 +35,12 @@ void Bard::Initialize()
 
 void Bard::Update()
 {
-	hittransform_ = transform_;
-	hittransform_.position_ = { transform_.position_.x -ENEMY_HITBOXSIZE.cx / 2
-								,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2
-								,transform_.position_.z };
+	//hittransform_ = transform_;
+	//hittransform_.position_ = { transform_.position_.x -ENEMY_HITBOXSIZE.cx / 2
+	//							,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2
+	//							,transform_.position_.z };
 
-	hitobj_->SetHitTransform(hittransform_);
+	//hitobj_->SetHitTransform(hittransform_);
 
 	Player* p = GetParent()->FindGameObject<Player>();
 
@@ -64,10 +64,12 @@ void Bard::Update()
 	//	onGround_ = true;
 	//}
 
-	//hitobj_->DownCollisionCheck();
-	//hitobj_->UpCollisionCheck();
-	//hitobj_->LeftCollisionCheck();
-	//hitobj_->RightCollisionCheck();
+	hitobj_->DownCollisionCheck();
+	hitobj_->UpCollisionCheck();
+	hitobj_->LeftCollisionCheck();
+	hitobj_->RightCollisionCheck();
+
+	//ConvertHitTransformtoTransform();
 
 	if (p == nullptr)
 		return;
@@ -114,7 +116,8 @@ void Bard::Update()
 
 	int temp = state_;
 	ImGui::Begin("Enemy");
-	ImGui::InputInt("state", &temp);
+	ImGui::InputFloat("state", &attackVector.x);
+	ImGui::InputFloat("state", &attackVector.y);
 	ImGui::End();
 
 	AnimationCheck();
@@ -259,13 +262,12 @@ void Bard::UpdateAttack()
 	//transform_.position_.x += 200.0/*speed_*/ * Time::DeltaTime() * dir_;
 
 	transform_.position_.x -= attackVector.x;
-	hitobj_->RightCollisionCheck();
-	hitobj_->LeftCollisionCheck();
+	//hitobj_->RightCollisionCheck();
+	//hitobj_->LeftCollisionCheck();
 
-	ConvertHitTransformtoTransform();
 	transform_.position_.y -= attackVector.y;
-	hitobj_->UpCollisionCheck();
-	hitobj_->DownCollisionCheck();
+	//hitobj_->UpCollisionCheck();
+	//hitobj_->DownCollisionCheck();
 
 	if (attackfrm_ == frm[i] && i < 4) {
 		i++;
