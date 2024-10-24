@@ -43,8 +43,6 @@ public:
 	//ŠJ•ú
 	void Release() override;
 
-	bool IsHitting() override;
-
 	SIZE GetSize() override;
 
 	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + bulletSize_.cx / 2, transform_.position_.y + bulletSize_.cy / 2 }; };

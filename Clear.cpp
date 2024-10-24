@@ -77,7 +77,7 @@ void Clear::Update()
 		}
 		for (Bullet* B : b) {
 			//‚±‚±‚ ‚Æ‚Å’¼‚·
-			if (B->IsHitting() && !p->IsAnimState(p->DEATH)) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), B->GetPosition(), B->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
 
 				p->HitDamage(B->GetCenter());
 			}
