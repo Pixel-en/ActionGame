@@ -75,11 +75,6 @@ void Bard::Update()
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
 
-	if (CheckHitKey(KEY_INPUT_L))
-	{
-		state_ = HURT;
-	}
-
 	switch (state_)
 	{
 	case IDOL:
@@ -130,7 +125,7 @@ void Bard::Draw()
 		hitypos -= cam->GetValueY();
 	}
 	
-	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
+	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, (dir_ * -1) - 1);
 	//DrawRectGraph(xpos , ypos, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
 
 	DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), true);

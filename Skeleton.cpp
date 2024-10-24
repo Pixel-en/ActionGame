@@ -1,4 +1,5 @@
 #include "Skeleton.h"
+#include "Explosion.h"
 
 Skeleton::Skeleton(GameObject* parent)
 	: Enemy(parent)
@@ -15,7 +16,10 @@ Skeleton::Skeleton(GameObject* parent)
 	hp_ = baseHp;
 	hurtTime_ = baseHurtTime_;
 
-	hitobj_ = new HitObject(ENEMY_HITBOXSIZE, this);
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
+
+	hitobj_ = new HitObject(hittransform_, ENEMY_HITBOXSIZE, this);
 }
 
 Skeleton::~Skeleton()
@@ -57,11 +61,6 @@ void Skeleton::Update()
 
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
-
-	if (CheckHitKey(KEY_INPUT_L))
-	{
-		state_ = HURT;
-	}
 
 	switch (state_)
 	{
@@ -166,9 +165,9 @@ void Skeleton::UpdateRun()
 		dir_ = 1;
 	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
 
-	if (!IsExistPlayer(range_)) {
+	/*if (!IsExistPlayer(range_)) {
 		state_ = IDOL;
-	}
+	}*/
 	if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
 		speed_ = baseRunSpeed;
 		state_ = ATTACK;
@@ -178,15 +177,21 @@ void Skeleton::UpdateRun()
 
 void Skeleton::UpdateAttack()
 {
-
 	if (NowAnimFrame() == 3)
 	{
-		ENEMY_HITBOXSIZE.cx = ENEMY_HITBOXSIZE.cx * 2;
-		ENEMY_HITBOXSIZE.cy = ENEMY_HITBOXSIZE.cy * 2;
+		if (!isAttack)
+		{
+			explosion_ = Instantiate<Explosion>(GetParent());
+			explosion_->Initialize(Explosion::FIRE, { 120,120 });
+			//XMFLOAT3 explosionTrans = { transform_.position_.x,transform_.position_.y ,0 };
+			explosion_->SetPosition(transform_.position_);
+			isAttack = true;
+		}
 	}
-	if (AnimationEnd()) 
+	if (isAttack && explosion_->AnimationEnd())
 	{
-		KillMe();
+		//explosion_->KillMe();
+		state_ = DEATH;
 	}
 }
 

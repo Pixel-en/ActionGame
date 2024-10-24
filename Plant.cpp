@@ -17,7 +17,10 @@ Plant::Plant(GameObject* parent)
 	hp_ = baseHp;
 	hurtTime_ = baseHurtTime_;
 
-	hitobj_ = new HitObject(ENEMY_HITBOXSIZE, this);
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
+
+	hitobj_ = new HitObject(hittransform_, ENEMY_HITBOXSIZE, this);
 }
 
 Plant::~Plant()
@@ -62,11 +65,6 @@ void Plant::Update()
 
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
-
-	if (CheckHitKey(KEY_INPUT_L))
-	{
-		state_ = HURT;
-	}
 
 	switch (state_)
 	{

@@ -102,16 +102,6 @@ void Bullet::Release()
 {
 }
 
-bool Bullet::IsHitting()
-{
-	Player* p = GetParent()->FindGameObject<Player>();
-	if (p->HitCheck(transform_.position_.x, transform_.position_.y, bulletHitBoxSize_)) {
-		return true;
-	}
-
-	return false;
-}
-
 SIZE Bullet::GetSize()
 {
 	return bulletSize_;

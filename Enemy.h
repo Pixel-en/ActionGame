@@ -68,6 +68,8 @@ protected:
 	float baseHurtTime_;
 	float hurtTime_;
 
+	Transform hittransform_;
+
 	enum  EAnimation
 	{
 		IDOL,
