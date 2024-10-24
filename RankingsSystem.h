@@ -39,6 +39,8 @@ public:
 
 	void DrawWriteUI();
 
+	void DrawWriteUICn();
+
 private:
 	std::string output_csv_file_path_ScoreData;
 	std::string output_csv_file_path_SortData;
@@ -69,5 +71,10 @@ private:
 	int a;
 	int count;
 	int MaxWord;
+
+	int r1, l1, r2, l2;
+	bool prevKey;
+
+	int NameIn[6][5];
 };
 
