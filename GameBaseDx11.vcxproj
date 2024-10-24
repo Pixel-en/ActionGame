@@ -186,6 +186,8 @@
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="RankingsScene.cpp" />
     <ClCompile Include="RankingsSystem.cpp" />
+    <ClCompile Include="RedSlime.cpp" />
+    <ClCompile Include="TestOpenObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TitleText.cpp" />
@@ -237,6 +239,7 @@
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Slime.h" />
     <ClInclude Include="TestObject.h" />
+    <ClInclude Include="TestOpenObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="TitleText.h" />

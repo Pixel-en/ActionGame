@@ -75,7 +75,7 @@ short MoveObject::CollisionCheck(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd,
 	VECTOR LDPOINT{ left->GetPosition().x,left->GetPosition().y + IMAGESIZE.cy / 2 };
 	VECTOR RDPOINT{ right->GetPosition().x + IMAGESIZE.cx,right->GetPosition().y + IMAGESIZE.cy / 2 };
 	SIZE BOXSIZE{ fabs(LUPOINT.x - RUPOINT.x),fabs(LUPOINT.y - LDPOINT.y) };
-	
+	/*
 	if (_obj->HitCheck(LUPOINT.x, LUPOINT.y, BOXSIZE)) {
 		//down
 		if (max(abs(trans_.position_.y+ _Ld.y + 1 - LUPOINT.y),
@@ -113,7 +113,7 @@ short MoveObject::CollisionCheck(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd,
 		}
 
 		_obj->SetPosition(trans_.position_);
-	}
+	}*/
 
 	return temp;
 }

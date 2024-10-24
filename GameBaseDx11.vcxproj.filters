@@ -75,9 +75,6 @@
     <ClCompile Include="Clear.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>PlayScene</Filter>
-    </ClCompile>
     <ClCompile Include="Field.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
@@ -125,10 +122,18 @@
     <ClCompile Include="Bard.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Plant.cpp" />
-    <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Zombie.cpp" />
-    <ClCompile Include="Skeleton.cpp" />
+    <ClCompile Include="BlueSlime.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BardA.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="TestOpenObject.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -191,9 +196,6 @@
     <ClInclude Include="Clear.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
     <ClInclude Include="Field.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
@@ -242,10 +244,12 @@
     <ClInclude Include="Bard.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Plant.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="Zombie.h" />
-    <ClInclude Include="Skeleton.h" />
+    <ClInclude Include="Enemy.h">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="TestOpenObject.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">

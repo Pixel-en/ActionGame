@@ -17,7 +17,11 @@ Bard::Bard(GameObject* parent)
 	hp_ = baseHp;
 	hurtTime_ = baseHurtTime_;
 
-	hitobj_ = new HitObject(ENEMY_HITBOXSIZE, this);
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
+
+	hitobj_ = new HitObject(hittransform_,ENEMY_HITBOXSIZE, this);
+
 }
 
 Bard::~Bard()
@@ -30,6 +34,13 @@ void Bard::Initialize()
 
 void Bard::Update()
 {
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x -ENEMY_HITBOXSIZE.cx / 2
+								,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2
+								,transform_.position_.z };
+
+	hitobj_->SetHitTransform(hittransform_);
+
 	Player* p = GetParent()->FindGameObject<Player>();
 
 	Field* field = GetParent()->FindGameObject<Field>();
@@ -108,19 +119,34 @@ void Bard::Draw()
 	int xpos = transform_.position_.x;
 	int ypos = transform_.position_.y;
 
+	float hitxpos = hittransform_.position_.x;
+	float hitypos = hittransform_.position_.y;
+
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	if (cam != nullptr) {
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
+		hitxpos -= cam->GetValue();
+		hitypos -= cam->GetValueY();
 	}
 	
-	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy) / 2, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, (dir_ * -1) - 1);
+	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
+	//DrawRectGraph(xpos , ypos, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
+
+	DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), true);
+	//DrawBox(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, xpos + ENEMY_IMAGESIZE.cx/2, ypos - ENEMY_IMAGESIZE.cy/ 2 + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255), false);
+	//DrawBox(xpos, ypos, xpos + ENEMY_IMAGESIZE.cx, ypos + ENEMY_IMAGESIZE.cy, GetColor(255, 255, 255),false);
+
+	//hitobj_->DrawHitBox({ hitxpos, hitypos, 0 },0, 255, 0);
+
+	//hitobj_->DrawHitBox({ (float)xpos,(float)ypos,0 }, 255, 0, 0);
 
 
-	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+
+	//DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	//DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	//DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+	//DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
 }
 
 void Bard::Release()
@@ -180,6 +206,7 @@ void Bard::UpdateMove()
 		dir_y = 1;
 		transform_.position_.y = SpawnPoint_.y - 30.0f;
 		startmove_ = false;
+		//state_ = EAnimation::IDOL;
 	}
 	else if (SpawnPoint_.y - transform_.position_.y < -30.0f) {
 		dir_y = -1;
@@ -190,6 +217,31 @@ void Bard::UpdateMove()
 
 void Bard::UpdateRun()
 {
+	AFmax_ = 7;
+	FCmax_ = 11;
+
+	if (Ppos.x - transform_.position_.x < 0)
+		dir_ = -1;
+	else
+		dir_ = 1;
+
+	if (IsExistPlayer(range_)) {
+		if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
+			speed_ = ENEMY_ATTACKSPEED;
+			attackVector = EPVector();
+			state_ = EAnimation::ATTACK;
+			attackfrm_ = 0;
+			startmove_ = false;
+		}
+		else {
+			transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
+		}
+	}
+	else {
+		speed_ = baseSpeed;
+		range_ = ENEMY_LOOKRANGE;
+		state_ = EAnimation::MOVE;
+	}
 }
 
 void Bard::UpdateAttack()
@@ -202,6 +254,8 @@ void Bard::UpdateAttack()
 
 	transform_.position_.x -= attackVector.x;
 	transform_.position_.y -= attackVector.y;
+	hitobj_->RightCollisionCheck();
+	hitobj_->LeftCollisionCheck();
 
 	if (attackfrm_ == frm[i] && i < 4) {
 		i++;

@@ -182,6 +182,7 @@ void Field::Draw()
 		for (int j = 0; j < width; j++) {
 			int chipNum = Map[i * width + j];
 			DrawRectGraph(j * IMAGESIZE - scroll, i * IMAGESIZE-scrollY, IMAGESIZE * (chipNum % 10), IMAGESIZE * (chipNum / 10), IMAGESIZE, IMAGESIZE, hImage_, true);
+		
 		}
 	}
 }
@@ -306,6 +307,8 @@ std::string Field::WhatBlock(int x, int y)
 		case 62:
 			return "Ladder";
 			break;
+		case 106:
+			return "Item";
 		default:
 			break;
 		}

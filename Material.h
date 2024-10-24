@@ -10,6 +10,16 @@ class Material :public Object
 
 	std::vector<std::string> Mlist;
 	float Gaccel;
+
+	float durability_;	//耐久(秒)
+
+	float VecX;
+	float VecY;
+	float VecZ;
+	float VecSize;
+
+	float SeeUiLength;
+	bool posNear;
 public:
 
 	//コンストラクタ
@@ -31,6 +41,7 @@ public:
 	//開放
 	void Release() override;
 
+	void Mining(float _mintime);
 
 };
 

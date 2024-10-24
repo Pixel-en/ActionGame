@@ -6,16 +6,17 @@
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
 	const float GRAVITY{ 9.8f / 60.0f };	//重力
-	const SIZE IMAGESIZE{ 48 * 1.5,48 * 1.5 };			//画像サイズ
-	//const VECTOR LUPOINT{ 11.0f * 1.5f,14.0f * 1.5f };		//左上の座標
-	//const VECTOR RUPOINT{ 37.0f * 1.5f,14.0f * 1.5f };	//右上の座標
-	//const VECTOR LDPOINT{ 11.0f * 1.5f,46.0f * 1.5f };		//左下の座標
-	//const VECTOR RDPOINT{ 37.0f * 1.5f,46.0f * 1.5f };	//右下の座標
-	const SIZE HITBOXSIZE{ 26 * 1.5f,32 * 1.5f };			//当たり判定のボックスのサイズ
+	const VECTOR IMAGESIZE{ 48 * 1.5,48 * 1.5 };			//画像サイズ
+	//反転あり
+	const VECTOR LUPOINT{ 11.0f * 1.5f,14.0f * 1.5f };		//左上の座標
+	const VECTOR RUPOINT{ 37.0f * 1.5f,14.0f * 1.5f };	//右上の座標
+	const VECTOR LDPOINT{ 11.0f * 1.5f,46.0f * 1.5f };		//左下の座標
+	const VECTOR RDPOINT{ 37.0f * 1.5f,46.0f * 1.5f };	//右下の座標
+	const VECTOR HITBOXSIZE{ 26 * 1.5f,32 * 1.5f };			//当たり判定のボックスのサイズ
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
-	const float JUMPHEIGHT{ (float)(IMAGESIZE.cy * 4.0) };
+	const float JUMPHEIGHT{ (float)(IMAGESIZE.y * 4.0) };
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
-	
+
 }
 
 void Player::LoadParameter()
@@ -29,10 +30,10 @@ void Player::LoadParameter()
 	};
 
 	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerParameter.csv");
-	param_.strength_ = csv->GetInt(1, CSVPARAM::STRENGTH);
-	param_.technic_ = csv->GetInt(1, CSVPARAM::TECHNIC);
-	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED);
-	param_.hp_ = csv->GetInt(1, CSVPARAM::HP);
+	param_.strength_ = csv->GetInt(1, CSVPARAM::STRENGTH) - 1;
+	param_.technic_ = csv->GetInt(1, CSVPARAM::TECHNIC) - 1;
+	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED) - 1;
+	param_.hp_ = csv->GetInt(1, CSVPARAM::HP) - 1;
 
 	for (int i = 4; i < csv->GetLines(); i++) {
 		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
@@ -41,15 +42,15 @@ void Player::LoadParameter()
 		ParamCorre_[i - 4].hp_ = csv->GetInt(i, CSVPARAM::HP);
 	}
 
-	param_.strength_ = Clamp(param_.strength_, 1, 5);
-	param_.technic_ = Clamp(param_.technic_, 1, 5);
-	param_.speed_ = Clamp(param_.speed_, 1, 5);
-	param_.hp_ = Clamp(param_.hp_, 1, 5);
+	param_.strength_ = Clamp(param_.strength_, 0, 4);
+	param_.technic_ = Clamp(param_.technic_, 0, 4);
+	param_.speed_ = Clamp(param_.speed_, 0, 4);
+	param_.hp_ = Clamp(param_.hp_, 0, 4);
 
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false),isjamp_(true)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjamp_(true)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -59,12 +60,13 @@ Player::Player(GameObject* parent)
 	anim_.AFCmax_ = 0;
 	anim_.animframecount_ = 0;
 	anim_.animloop_ = false;
+	anim_.Rdir_ = true;
 
 	transform_.position_ = { 0,0,0 };
-	//std::string str = GetParent()->GetParent()->GetObjectName();
+	miningtime_ = 0.0f;
 
 	//当たり判定の初期化
-	hitobject_ = new HitObject(HITBOXSIZE, this);
+	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 
 	LoadParameter();
 }
@@ -95,14 +97,22 @@ void Player::Update()
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
 		anim_.animtype_ = Animation::IDOL;
-
 		MoveControl();
 	}
-	int temp = anim_.animtype_;
+	float time = Time::DeltaTime();
+	float temp;
 	ImGui::Begin("debug");
-	ImGui::InputFloat("hp", &Gaccel_);
-	ImGui::InputInt("anim", &temp);
-	ImGui::InputInt("animframe", &anim_.animframe_);
+	//ImGui::InputFloat("time", &time);
+	//temp = time*ParamCorre_[0].technic_;
+	//ImGui::InputFloat("0", &temp);
+	//temp = time*ParamCorre_[1].technic_;
+	//ImGui::InputFloat("1", &temp);
+	//temp = time*ParamCorre_[2].technic_;
+	//ImGui::InputFloat("2", &temp);
+	//temp = time*ParamCorre_[3].technic_;
+	//ImGui::InputFloat("3", &temp);
+	//temp = time*ParamCorre_[4].technic_;
+	//ImGui::InputFloat("4", &temp);
 	ImGui::End();
 
 	AnimStatus();
@@ -127,17 +137,13 @@ void Player::Draw()
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
-	DrawRectGraph(xpos - IMAGESIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
-
-	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-
-	/*DrawLine(transform_.position_.x - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));*/
+	if(anim_.Rdir_)
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+	else {
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
+	}
+	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
+	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
 }
 
 void Player::Release()
@@ -194,59 +200,101 @@ void Player::MoveControl()
 {
 
 	float Dash = 1.0f;
+	miningtime_ = 0.0f;
 
-	//左移動
-	if (CheckHitKey(KEY_INPUT_A)) {
+	if(!ActionControl()){
 
-		anim_.animtype_ = Animation::WALK;
+		//左移動
+		if (CheckHitKey(KEY_INPUT_A)) {
 
-		//ダッシュ
-		if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
-			Dash = 2.0f;
-			anim_.animtype_ = Animation::RUN;
+			anim_.animtype_ = Animation::WALK;
+
+			//ダッシュ
+			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+				Dash = 2.0f;
+				anim_.animtype_ = Animation::RUN;
+			}
+
+			transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
+			anim_.Rdir_ = false;
+			//hitobject_->LeftCollisionCheck();
 		}
 
-		transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
-	}
+		//右移動
+		if (CheckHitKey(KEY_INPUT_D)) {
 
-	//右移動
-	if (CheckHitKey(KEY_INPUT_D)) {
+			anim_.animtype_ = Animation::WALK;
 
-		anim_.animtype_ = Animation::WALK;
+			//ダッシュ
+			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+				Dash = 2.0f;
+				anim_.animtype_ = Animation::RUN;
+			}
 
-		//ダッシュ
-		if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
-			Dash = 2.0f;
-			anim_.animtype_ = Animation::RUN;
+			transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
+			anim_.Rdir_ = true;
+			//hitobject_->RightCollisionCheck();
 		}
 
-		transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
+		hitobject_->LeftCollisionCheck();
+		hitobject_->RightCollisionCheck();
 
+		//ジャンプ
+		if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
+			isjamp_ = true;
+			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+		}
+
+		if (isjamp_) {
+			anim_.animtype_ = Animation::JUMP;
+			//WaitKey();
+		}
+		////上移動
+		//if (CheckHitKey(KEY_INPUT_W)) {
+
+		//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
+		//}
 	}
 
-	//ジャンプ
-	if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
-		isjamp_ = true;
-		Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
-	}
+	//hitobject_->AllCollisionCheck();
+	//hitobject_->SelectCollisionCheck(1100);
 
-	if (isjamp_) {
-		anim_.animtype_ = Animation::JUMP;
-		//WaitKey();
-	}
-	////上移動
-	//if (CheckHitKey(KEY_INPUT_W)) {
+}
 
-	//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
-	//}
+bool Player::ActionControl()
+{
 
 	//採取
 	if (CheckHitKey(KEY_INPUT_I)) {
 		anim_.animtype_ = Animation::COLLECTION;
+		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	hitobject_->AllCollisionCheck();
+	if (CheckHitKey(KEY_INPUT_J)) {
+		anim_.animtype_ = Animation::ATTACK;
+	}
 
+	if (CheckHitKey(KEY_INPUT_K)) {
+		anim_.animtype_ = Animation::ATTACK2;
+	}
+	
+	if (CheckHitKey(KEY_INPUT_L)) {
+		anim_.animtype_ = Animation::ATTACK3;
+	}
+	if (CheckHitKey(KEY_INPUT_M)) {
+		anim_.animtype_ = Animation::MAGIC;
+
+		if (CheckHitKey(KEY_INPUT_K)) {
+		}
+
+		if (CheckHitKey(KEY_INPUT_L)) {
+		}
+	}
+
+	if (anim_.animtype_ == Animation::IDOL)
+		return false;
+	else
+		return true;
 }
 
 void Player::AnimStatus()
@@ -279,7 +327,7 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 120;
 		anim_.animloop_ = false;
-		if (Gaccel_<= -sqrtf(2 * GRAVITY * JUMPHEIGHT)*0.5) {
+		if (Gaccel_ <= -sqrtf(2 * GRAVITY * JUMPHEIGHT) * 0.5) {
 			anim_.animframe_ = 1;
 		}
 		else if (Gaccel_ <= -1.0) {
@@ -312,13 +360,13 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
 		break;
-	case Player::COLLECTION:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 0;
-		break;
 	case Player::MAGIC:
 		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 0;
+		anim_.AFCmax_ = 15;
+		break;
+	case Player::COLLECTION:
+		anim_.AFmax_ = 5;
+		anim_.AFCmax_ = 17;
 		break;
 	case Player::DAMAGE:
 		anim_.AFmax_ = 3;
@@ -380,57 +428,30 @@ void Player::AnimStatus()
 	anim_.BEanimtype_ = anim_.animtype_;
 }
 
-
-bool Player::HitCheck(int _x, int _y, SIZE _size)
-{
-	int x = _x /*+ _size.cx / 2*/;
-	int y = _y /*+ _size.cy / 2*/;
-
-
-	int px = transform_.position_.x /*+ LUPOINT.x*/ /*+ HITBOXSIZE.cx / 2*/;
-	int py = transform_.position_.y /*+ LUPOINT.y*/ /*+ HITBOXSIZE.cy / 2*/;
-
-	DrawCircle(x, y, 3, GetColor(0, 255, 255), false);	//中心
-
-	if (abs(x - px) < _size.cx / 2 + HITBOXSIZE.cx / 2 &&
-		abs(y - py) < _size.cy / 2 + HITBOXSIZE.cy / 2)
-		return true;
-
-	return false;
-}
-
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
 	//ベクトルの挙動が意味わからんかった
-//#if 1
-//	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
-//
-//	VECTOR dir = VSub(_vec, Pcenter);
-//	dir = VNorm(dir);
-//#endif
-	VECTOR Pcenter = { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.cx / 2,transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.cy / 2 };
-	VECTOR dir = { PCENTER.x - _vec.x };
+	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.x / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.y / 2 };
+	VECTOR dir = VSub(_vec, Pcenter);
 	dir = VNorm(dir);
-	//VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
-	//VECTOR dir = { PCENTER.x - _vec.x };
-	//dir = VNorm(dir);
+
 
 	return dir;
 }
 
 XMFLOAT3 Player::GetHitBoxPosition()
 {
-	return { transform_.position_.x /*+ LUPOINT.x*/+HITBOXSIZE.cx / 2, transform_.position_.y /*+ LUPOINT.y*/+HITBOXSIZE.cy / 2, 0 };
+	return { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.x / 2, transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.y / 2, 0 };
 }
 
 void Player::HitDamage(VECTOR _dir)
 {
 
-	static int HP = ParamCorre_[param_.hp_ - 1].hp_;
+	static int HP = ParamCorre_[param_.hp_].hp_;
 	//ダメージを受けていたり死んでいないとき
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
 		HP--;
-		if (HP < 1) {
+		if (HP < 0) {
 			anim_.animtype_ = Animation::DEATH;
 			HP = ParamCorre_[param_.hp_].hp_;
 		}
@@ -445,6 +466,18 @@ void Player::HitDamage(VECTOR _dir)
 		}
 	}
 
+}
+
+Transform Player::GetHitTrans()
+{
+	Transform trans = transform_;
+	trans.position_ = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+	return trans;
+}
+
+VECTOR Player::GetHitBox()
+{
+	return HITBOXSIZE;
 }
 
 void Player::DeadState()

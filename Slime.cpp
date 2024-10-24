@@ -18,6 +18,9 @@ Slime::Slime(GameObject* parent)
 	hurtTime_ = baseHurtTime_;
 
 	hitobj_ = new HitObject(ENEMY_HITBOXSIZE, this);
+
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y + ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
 }
 
 Slime::~Slime()
@@ -30,6 +33,10 @@ void Slime::Initialize()
 
 void Slime::Update()
 {
+
+	hittransform_ = transform_;
+	hittransform_.position_ = { transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y + ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
+
 	Player* p = GetParent()->FindGameObject<Player>();
 
 	Field* field = GetParent()->FindGameObject<Field>();
