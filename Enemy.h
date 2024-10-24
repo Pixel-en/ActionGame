@@ -97,6 +97,11 @@ protected:
 
 	Transform hittransform_;
 
+	void ConvertHitTransformtoTransform() {
+		Transform trans = hitobj_->GetTransform();
+		transform_.position_ = { trans.position_.x + ENEMY_HITBOXSIZE.cx / 2,trans.position_.y + ENEMY_HITBOXSIZE.cy / 2, trans.position_.z };
+	};
+
 public:
 
 	//コンストラクタ

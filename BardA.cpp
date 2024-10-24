@@ -1,5 +1,6 @@
 #include "BardA.h"
 #include "Enemy.h"
+#include "ImGui/imgui.h"
 
 BardA::BardA(GameObject* parent)
 	:Enemy(parent)
@@ -57,11 +58,16 @@ void BardA::Update()
 	//transform_.position_.y += Gaccel;
 
 
-	short cflag = hitobj_->AllCollisionCheck();
-	if (cflag & 0b1000 || cflag & 0b0100) {
-		Gaccel = 0;
-		onGround_ = true;
-	}
+	//short cflag = hitobj_->AllCollisionCheck();
+	//if (cflag & 0b1000 || cflag & 0b0100) {
+	//	Gaccel = 0;
+	//	onGround_ = true;
+	//}
+
+	//hitobj_->DownCollisionCheck();
+	//hitobj_->UpCollisionCheck();
+	//hitobj_->LeftCollisionCheck();
+	//hitobj_->RightCollisionCheck();
 
 	if (p == nullptr)
 		return;
@@ -95,6 +101,11 @@ void BardA::Update()
 	default:
 		break;
 	}
+
+	int temp = state_;
+	ImGui::Begin("Enemy");
+	ImGui::InputInt("state", &temp);
+	ImGui::End();
 
 	AnimationCheck();
 }
@@ -250,7 +261,7 @@ void BardA::UpdateRun()
 
 void BardA::UpdateAttack()
 {
-	if (attackfrm_ < 5)
+ 	if (attackfrm_ < 5)
 		animframe_ = 3;
 	else if (attackfrm_ < 40)
 		animframe_ = 4;
@@ -261,9 +272,13 @@ void BardA::UpdateAttack()
 	//96f	48f
 	//transform_.position_.x += 200.0/*speed_*/ * Time::DeltaTime() * dir_;
 	transform_.position_.x -= attackVector.x;
-	transform_.position_.y -= attackVector.y;
 	hitobj_->RightCollisionCheck();
 	hitobj_->LeftCollisionCheck();
+
+	ConvertHitTransformtoTransform();
+	transform_.position_.y -= attackVector.y;
+	hitobj_->UpCollisionCheck();
+	hitobj_->DownCollisionCheck();
 
 	if (attackfrm_ == frm[i] && i < 4) {
 		i++;
