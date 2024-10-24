@@ -119,18 +119,16 @@
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="RankingsScene.cpp" />
     <ClCompile Include="RankingsSystem.cpp" />
-    <ClCompile Include="GreenSlime.cpp">
+    <ClCompile Include="Slime.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="RedSlime.cpp">
+    <ClCompile Include="Bard.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="BlueSlime.cpp">
-      <Filter>PlayScene\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="BardA.cpp">
-      <Filter>PlayScene\Enemy</Filter>
-    </ClCompile>
+    <ClCompile Include="Plant.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Zombie.cpp" />
+    <ClCompile Include="Skeleton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -238,18 +236,16 @@
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="RankingsScene.h" />
     <ClInclude Include="RankingsSystem.h" />
-    <ClInclude Include="GreenSlime.h">
+    <ClInclude Include="Slime.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="RedSlime.h">
+    <ClInclude Include="Bard.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="BlueSlime.h">
-      <Filter>PlayScene\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="BardA.h">
-      <Filter>PlayScene\Enemy</Filter>
-    </ClInclude>
+    <ClInclude Include="Plant.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Zombie.h" />
+    <ClInclude Include="Skeleton.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">

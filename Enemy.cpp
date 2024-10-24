@@ -59,6 +59,10 @@ void Enemy::StatusReader(int _enemyNumber)
 			speed_ = baseSpeed;
 			hp_ = baseHp;
 			movetimer_ = baseMovetimer;
+			filename = csv->GetString(i, 5);
+			filename = "Assets\\Image\\Enemy\\" + filename + "_sprite.png";
+			hImage_ = LoadGraph(filename.c_str());
+			assert(hImage_ > 0);
 		}
 	}
 
@@ -140,6 +144,9 @@ void Enemy::Update()
 	case ATTACK:
 		UpdateAttack();
 		break;
+	case HURT:
+		UpdateHurt();
+		break;
 	case DEATH:
 		UpdateDeath();
 		break;
@@ -186,14 +193,31 @@ void Enemy::AnimationCheck()
 		framecnt_ = 0;
 		animframe_ = 0;
 	}
-	if (state_ != EAnimation::ATTACK) {
+	/*if (state_ != EAnimation::ATTACK) {
 		framecnt_++;
 		if (framecnt_ > FCmax_) {
 			framecnt_ = 0;
 			animframe_ = (animframe_ + 1) % AFmax_;
 		}
+	}*/
+	framecnt_++;
+	if (framecnt_ > FCmax_) {
+		framecnt_ = 0;
+		animframe_ = (animframe_ + 1) % AFmax_;
 	}
 	BEanimtype_ = state_;
+}
+
+bool Enemy::AnimationEnd()
+{
+	if(animframe_ == AFmax_-1 && framecnt_ == FCmax_)
+		return true;
+	return false;
+}
+
+int Enemy::NowAnimFrame()
+{
+	return animframe_;
 }
 
 void Enemy::DeadState()
@@ -235,6 +259,10 @@ void Enemy::UpdateRun()
 }
 
 void Enemy::UpdateAttack()
+{
+}
+
+void Enemy::UpdateHurt()
 {
 }
 

@@ -3,10 +3,11 @@
 #include "Camera.h"
 #include "Goal.h"
 #include "Material.h"
-#include "BlueSlime.h"
-#include "GreenSlime.h"
-#include "RedSlime.h"
-#include "BardA.h"
+#include "Slime.h"
+#include "Bard.h"
+#include "Plant.h"
+#include "Zombie.h"
+#include "Skeleton.h"
 #include "Player.h"
 #include "Clear.h"
 #include "CheckPoint.h"
@@ -101,7 +102,7 @@ void Field::Reset()
 			}
 			case SLIME_A + 201: {
 				c->AddEcount();
-				BlueSlime* e = Instantiate<BlueSlime>(GetParent());
+				Slime* e = Instantiate<Slime>(GetParent());
 				e->StatusReader(SLIME_A + 201);
 				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				e->Reset();
@@ -109,7 +110,7 @@ void Field::Reset()
 					break;
 			case SLIME_B + 201: {
 				c->AddEcount();
-				GreenSlime* e = Instantiate<GreenSlime>(GetParent());
+				Slime* e = Instantiate<Slime>(GetParent());
 				e->StatusReader(SLIME_B + 201);
 				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				e->Reset();
@@ -117,7 +118,7 @@ void Field::Reset()
 					break;
 			case SLIME_C + 201: {
 				c->AddEcount();
-				RedSlime* e = Instantiate<RedSlime>(GetParent());
+				Slime* e = Instantiate<Slime>(GetParent());
 				e->StatusReader(SLIME_C + 201);
 				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				e->Reset();
@@ -125,12 +126,36 @@ void Field::Reset()
 					break;
 			case BARD_A + 201: {
 				c->AddEcount();
-				BardA* e = Instantiate<BardA>(GetParent());
+				Bard* e = Instantiate<Bard>(GetParent());
 				e->StatusReader(BARD_A + 201);
 				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				e->Reset();
 			}
 						break;
+			case PLANT_A + 201: {
+				c->AddEcount();
+				Plant* e = Instantiate<Plant>(GetParent());
+				e->StatusReader(PLANT_A + 201);
+				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
+				e->Reset();
+			}
+							 break;
+			case ZOMBIE_A + 201: {
+				c->AddEcount();
+				Zombie* e = Instantiate<Zombie>(GetParent());
+				e->StatusReader(ZOMBIE_A + 201);
+				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
+				e->Reset();
+			}
+							  break;
+			case SKELETON_A + 201: {
+				c->AddEcount();
+				Skeleton* e = Instantiate<Skeleton>(GetParent());
+				e->StatusReader(SKELETON_A + 201);
+				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
+				e->Reset();
+			}
+							   break;
 			default:
 				break;
 			}
@@ -182,7 +207,7 @@ int Field::CollisionUpCheck(int x, int y)
 int Field::CollisionLeftCheck(int x, int y)
 {
 	if (WhatBlock(x, y) == "Wall")
-		return IMAGESIZE - (x % IMAGESIZE);
+		return IMAGESIZE - (x % IMAGESIZE) - 1;
 	return 0;
 }
 

@@ -127,7 +127,7 @@ void Player::Draw()
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
-	DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
+	DrawRectGraph(xpos - IMAGESIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
 
 	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
 	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
@@ -402,12 +402,12 @@ bool Player::HitCheck(int _x, int _y, SIZE _size)
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
 	//ƒxƒNƒgƒ‹‚Ì‹““®‚ªˆÓ–¡‚í‚©‚ç‚ñ‚©‚Á‚½
-#if 1
-	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
-
-	VECTOR dir = VSub(_vec, Pcenter);
-	dir = VNorm(dir);
-#endif
+//#if 1
+//	VECTOR Pcenter = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.cx / 2,transform_.position_.y + LUPOINT.y + HITBOXSIZE.cy / 2 };
+//
+//	VECTOR dir = VSub(_vec, Pcenter);
+//	dir = VNorm(dir);
+//#endif
 	VECTOR Pcenter = { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.cx / 2,transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.cy / 2 };
 	VECTOR dir = { PCENTER.x - _vec.x };
 	dir = VNorm(dir);

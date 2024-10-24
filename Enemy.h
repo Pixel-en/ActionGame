@@ -14,7 +14,7 @@ namespace {
 	//const SIZE ENEMY_HITBOXSIZE{ 48 / 2,48 / 2 };
 	//const float ENEMY_JUMPHEIGHT{ ENEMY_IMAGESIZE.cx * 1.5f };	//ジャンプの高さ
 	//const float ENEMY_LOOKRANGE{ 150 };
-	const float ENEMY_ATTACKRANGE{ 101.5f };
+	//const float ENEMY_ATTACKRANGE{ 101.5f };
 	const float ENEMY_GRAVITY{ 9.8f / 60.0f };	//重力
 	//const VECTOR ENEMY_LUPOINT{ 34.0f,90.0f };	//左上の座標
 	//const VECTOR ENEMY_RUPOINT{ 94.0f,90.0f };	//右上の座標
@@ -31,7 +31,7 @@ namespace {
 
 enum ENEMY_TYPE
 {
-	SLIME_A, SLIME_B, SLIME_C, BARD_A, ENEMY_TYPE_END
+	SLIME_A, SLIME_B, SLIME_C, BARD_A, PLANT_A, ZOMBIE_A, SKELETON_A, ENEMY_TYPE_END
 };
 const int Status_Size{ 4 };
 
@@ -43,6 +43,8 @@ protected:
 	const SIZE ENEMY_HITBOXSIZE{ 48 / 2,48 / 2 };
 	const float ENEMY_JUMPHEIGHT{ ENEMY_IMAGESIZE.cx * 1.5f };	//ジャンプの高さ
 	const float ENEMY_LOOKRANGE{ 150 };
+
+	std::string filename;
 	//次に動くまでのタイマー
 	float movetimer_;
 	float baseMovetimer;
@@ -62,6 +64,7 @@ protected:
 	bool onGround_;
 	//向き
 	int dir_;
+	int dir_y;//飛ぶ敵用
 	//
 	XMFLOAT3 Ppos;
 	//体力
@@ -73,20 +76,25 @@ protected:
 	XMFLOAT3 SpawnPoint_;	//初期値
 	XMFLOAT3 TargetPoint_;
 
+	float baseHurtTime_;
+	float hurtTime_;
+
 	enum  EAnimation
 	{
-		MOVE,
-		ATTACK,
 		IDOL,
+		MOVE,
 		RUN,
+		ATTACK,
 		HURT,
 		DEATH
 	};
 
-	EAnimation state_;
-	EAnimation BEanimtype_;
+	int state_;
+	int BEanimtype_;
 
 	void AnimationCheck();
+	bool AnimationEnd();
+	int NowAnimFrame();
 
 	/// <summary>
 	/// 敵とプレイヤーの距離
@@ -99,13 +107,13 @@ protected:
 	virtual void UpdateMove();
 	virtual void UpdateRun();
 	virtual void UpdateAttack();
+	virtual void UpdateHurt();
 	virtual void UpdateDeath();
 
 	//プレイヤーが検知エリアに入ったかどうか
 	bool IsExistPlayer(float _range);
 
 	HitObject* hitobj_;
-
 public:
 
 	//コンストラクタ

@@ -3,6 +3,7 @@
 #include "Goal.h"
 #include "Material.h"
 #include "Enemy.h"
+#include "Bullet.h"
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
@@ -40,6 +41,7 @@ void Clear::Update()
 	CheckPoint* ch = GetParent()->FindGameObject<CheckPoint>();
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
+	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
 
 	if (!isgoal_&&!isGetM_ && !isKillE_&&p!=nullptr) {
 		if (ch != nullptr) {
@@ -73,6 +75,14 @@ void Clear::Update()
 			if (E->IsHitting() && !p->IsAnimState(p->DEATH)) {
 
 				p->HitDamage(E->GetCenter());
+			}
+
+		}
+		for (Bullet* B : b) {
+			//‚±‚±‚ ‚Æ‚Å’¼‚·
+			if (B->IsHitting() && !p->IsAnimState(p->DEATH)) {
+
+				p->HitDamage(B->GetCenter());
 			}
 
 		}

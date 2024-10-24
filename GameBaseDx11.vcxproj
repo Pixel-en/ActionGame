@@ -148,7 +148,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BackGround.cpp" />
-    <ClCompile Include="BardA.cpp" />
+    <ClCompile Include="Bard.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CheckPoint.cpp" />
     <ClCompile Include="ClaerScene.cpp" />
     <ClCompile Include="Clear.cpp" />
@@ -164,7 +165,6 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="Goal.cpp" />
-    <ClCompile Include="GreenSlime.cpp" />
     <ClCompile Include="HitObject.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -177,22 +177,25 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MoveObject.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayGUI.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="PlaySound.cpp" />
-    <ClCompile Include="BlueSlime.cpp" />
+    <ClCompile Include="Skeleton.cpp" />
+    <ClCompile Include="Slime.cpp" />
     <ClCompile Include="RankingsScene.cpp" />
     <ClCompile Include="RankingsSystem.cpp" />
-    <ClCompile Include="RedSlime.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="Zombie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BackGround.h" />
-    <ClInclude Include="BardA.h" />
+    <ClInclude Include="Bard.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CheckPoint.h" />
     <ClInclude Include="ClaerScene.h" />
@@ -209,7 +212,6 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="Goal.h" />
-    <ClInclude Include="GreenSlime.h" />
     <ClInclude Include="HitObject.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -224,20 +226,22 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="MoveObject.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Plant.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayGUI.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="PlaySound.h" />
     <ClInclude Include="RankingsScene.h" />
     <ClInclude Include="RankingsSystem.h" />
-    <ClInclude Include="RedSlime.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="BlueSlime.h" />
+    <ClInclude Include="Skeleton.h" />
+    <ClInclude Include="Slime.h" />
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="TitleText.h" />
     <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc" />
