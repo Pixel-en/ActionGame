@@ -5,16 +5,27 @@
 
 namespace
 {
+	int AsciiCodeEN = 65;
 	struct NData
 	{
-		float posX1;
-		float posY1;
-		float posX2;
-		float posY2;
+		int posX1;
+		int posY1;
+		int posX2;
+		int posY2;
 		int Ascii;
 	};
 
-	NData N[5][5];
+	int dR1 = 485;
+	int dL1 = 400;
+	int dR2 = 520;
+	int dL2 = 435;
+
+	int nowMojiCount = 0;
+	bool InCnPrevKey = false;
+
+	const int Y = 6;
+	const int X = 5;
+	NData N[Y][X];
 
 }
 
@@ -66,6 +77,13 @@ void RankingsSystem::Initialize()
 
 	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
 	InputHandle = MakeKeyInput(MaxWord,FALSE,TRUE,FALSE);
+
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,AsciiCodeEN };
+			AsciiCodeEN++;
+		}
+	}
 }
 
 void RankingsSystem::Update()
@@ -180,25 +198,11 @@ void RankingsSystem::DrawWriteUI()
 
 void RankingsSystem::DrawWriteUICn()
 {
-	static int i = 65;
-	for (int y = 0; y < 5; y++) {
-		for (int x = 0; x < 6; x++) {
-			if (x > 4) {
-				NameIn[y][x] = NULL;
-			}
-			else {
-				NameIn[y][x] = i;
-				i++;
-			}
-		}
-	}
-	int count = 0;
-	int l = 0;
-	for (int y = 0; y < 5; y++) {
-		for (int x = 0; x < 6; x++) {
-			char b = static_cast<char>(NameIn[y][x]);
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			char b = static_cast<char>(N[y][x].Ascii);
 			std::string str(1, b);
-			tText->DrawString(str, (450, +35 * x), 400 + (35 * y));
+			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
 		}
 	}
 	/*for (int i = 65; i < 91; i++) {
@@ -242,6 +246,23 @@ void RankingsSystem::DrawWriteUICn()
 		prevKey = false;
 	}
 	DrawBoxAA(r1, l1, r2,l2, GetColor(255, 255, 255), FALSE);
-
 	
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (r1 == N[y][x].posX1 && l1 == N[y][x].posY1 && r2 == N[y][x].posX2 && l2 == N[y][x].posY2) {
+				if (CheckHitKey(KEY_INPUT_RETURN)) {
+					if (InCnPrevKey == false) {
+						char b = static_cast<char>(N[y][x].Ascii);
+						cName[nowMojiCount] = b;
+						nowMojiCount++;
+					}
+					InCnPrevKey = true;
+				}
+				else {
+					InCnPrevKey = false;
+				}
+			}
+		}
+	}
+	tText->DrawString(cName, 450, 370);
 }

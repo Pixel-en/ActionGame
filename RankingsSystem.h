@@ -55,6 +55,7 @@ private:
 
 	int InputHandle;
 	char Name[256];
+	char cName[256];
 
 	bool SetEnd;
 
@@ -75,6 +76,6 @@ private:
 	int r1, l1, r2, l2;
 	bool prevKey;
 
-	int NameIn[6][5];
+	
 };
 
