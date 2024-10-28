@@ -2,7 +2,6 @@
 #include "Camera.h"
 #include "Engine/CsvReader.h"
 #include "ImGui/imgui.h"
-#include"Item.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
