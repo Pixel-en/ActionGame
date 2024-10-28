@@ -3,13 +3,38 @@
 #include"CleraLogo.h"
 #include"TitleText.h"
 
+namespace
+{
+	int AsciiCodeEN = 65;
+	struct NData
+	{
+		int posX1;
+		int posY1;
+		int posX2;
+		int posY2;
+		int Ascii;
+	};
+
+	int dR1 = 485;
+	int dL1 = 400;
+	int dR2 = 520;
+	int dL2 = 435;
+
+	int nowMojiCount = 0;
+	bool InCnPrevKey = false;
+
+	const int Y = 6;
+	const int X = 5;
+	NData N[Y][X];
+
+}
+
 
 
 RankingsSystem::RankingsSystem(GameObject* parent)
 	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name()
 	,eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
 {
-	
 }
 
 RankingsSystem::~RankingsSystem()
@@ -39,6 +64,12 @@ void RankingsSystem::Initialize()
 	x2 = 455;
 	y2 = 445;
 
+	r1 = 485;
+	l1 = 400; 
+	r2 = 520;
+	l2 = 435;
+	prevKey = false;
+
 	space = 9;
 	word = 23;
 	count = 0;
@@ -46,6 +77,13 @@ void RankingsSystem::Initialize()
 
 	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
 	InputHandle = MakeKeyInput(MaxWord,FALSE,TRUE,FALSE);
+
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,AsciiCodeEN };
+			AsciiCodeEN++;
+		}
+	}
 }
 
 void RankingsSystem::Update()
@@ -78,7 +116,7 @@ void RankingsSystem::Update()
 void RankingsSystem::Draw()
 {
 	if (cLogo->GetOutput()) {
-		DrawWriteUI();
+		DrawWriteUICn();
 	}
 }
 
@@ -156,4 +194,75 @@ void RankingsSystem::DrawWriteUI()
 
 	DrawBoxAA(430, 380,(x1+25) + MaxWord*word +( MaxWord-1 )* space, 450, GetColor(255, 255, 255), FALSE); //入力枠線
 	tText->DrawString(Name, 450, 400);
+}
+
+void RankingsSystem::DrawWriteUICn()
+{
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			char b = static_cast<char>(N[y][x].Ascii);
+			std::string str(1, b);
+			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
+		}
+	}
+	/*for (int i = 65; i < 91; i++) {
+		count++;
+		char b = static_cast<char>(i);
+		std::string str(1, b);
+		if (count > 5) {
+			l++;
+			count = 1;
+		}
+		tText->DrawString(str,(450 + 35 * count), 400 +(35 * l));
+	}*/
+	if (CheckHitKey(KEY_INPUT_UP)) {
+		if (prevKey == false) {
+			l1 -= 35;
+			l2 -= 35;
+		}
+		prevKey = true;
+	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
+		if(prevKey == false) {
+			r1 += 35;
+			r2 += 35;
+		}
+		prevKey = true;
+	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
+		
+		if (prevKey == false) {
+			l1 += 35;
+			l2 += 35;
+		}
+		prevKey = true;
+	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
+		
+		if (prevKey == false) {
+		    r1 -= 35;
+			r2 -= 35;
+		}
+		prevKey = true;
+	}
+	else {
+		prevKey = false;
+	}
+	DrawBoxAA(r1, l1, r2,l2, GetColor(255, 255, 255), FALSE);
+	
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (r1 == N[y][x].posX1 && l1 == N[y][x].posY1 && r2 == N[y][x].posX2 && l2 == N[y][x].posY2) {
+				if (CheckHitKey(KEY_INPUT_RETURN)) {
+					if (InCnPrevKey == false) {
+						char b = static_cast<char>(N[y][x].Ascii);
+						cName[nowMojiCount] = b;
+						nowMojiCount++;
+					}
+					InCnPrevKey = true;
+				}
+				else {
+					InCnPrevKey = false;
+				}
+			}
+		}
+	}
+	tText->DrawString(cName, 450, 370);
 }

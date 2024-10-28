@@ -1,11 +1,12 @@
 #include "Material.h"
 #include "Camera.h"
 #include "ImGui/imgui.h"
+#include"Player.h"
 
 
 namespace {
 	const float GRAVITY{ 9.8f / 60.0f };
-	const float MAXDURABILITY{ 2.0f };
+	const float MAXDURABILITY{ 5.0f };
 }
 
 Material::Material(GameObject* parent)
@@ -38,6 +39,10 @@ Material::Material(GameObject* parent)
 	hitobj_ = new HitObject(hitsize_, this);
 
 	durability_ = MAXDURABILITY;
+
+	posNear = false;
+
+	SeeUiLength = 150.0f;
 }
 
 Material::~Material()
@@ -46,25 +51,35 @@ Material::~Material()
 
 void Material::Initialize()
 {
+	
 }
 
 void Material::Update()
 {
+	Player* pPlayer = GetParent()->FindGameObject<Player>();
+	VecX = pPlayer->GetPosition().x - transform_.position_.x;
+	VecY = pPlayer->GetPosition().y - transform_.position_.y;
+	VecZ = pPlayer->GetPosition().z - transform_.position_.z;
+
+	VecSize = VSize(VGet(VecX, VecY, VecZ));
+
+	if (VecSize < SeeUiLength) {
+		posNear = true;
+	}
+	else {
+		posNear = false;
+	}
 	while (!hitobj_->DownCollisionCheck()) {
 		Gaccel += GRAVITY;
 		transform_.position_.y += Gaccel;
 	}
 	Gaccel = 0.0f;
 
-	float temp = (MAXDURABILITY - durability_ / MAXDURABILITY);
-	ImGui::Begin("a");
-	ImGui::InputFloat("durability", &durability_);
-	ImGui::InputFloat("gauge", &temp);
-	ImGui::End();
 }
 
 void Material::Draw()
 {
+	
 	int xpos = transform_.position_.x;
 	int ypos = transform_.position_.y;
 
@@ -76,9 +91,12 @@ void Material::Draw()
 
 	DrawRectGraph(xpos, ypos, 0, 0, sizeX_, sizeY_, hImage_, true);
 
-	//DrawBox(xpos, ypos, xpos + sizeX_, ypos + sizeY_, GetColor(255, 0, 255), false);
-	DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, (MAXDURABILITY - durability_) / MAXDURABILITY * 10.0f, GetColor(255, 255, 255), true);
-	DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, 10, GetColor(255, 255, 255), false);
+	DrawBox(xpos, ypos, xpos + sizeX_, ypos + sizeY_, GetColor(255, 0, 255), false);
+	if (posNear) {
+		DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, (MAXDURABILITY - durability_) / MAXDURABILITY * 10.0f, GetColor(255, 255, 255), true);
+		DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, 10, GetColor(255, 255, 255), false);
+	}
+	
 	//DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), false);
 }
 
@@ -88,6 +106,7 @@ void Material::Release()
 
 void Material::Mining(float _mintime)
 {
+
 	durability_ -= _mintime;
 	if (durability_ < 0)
 		KillMe();

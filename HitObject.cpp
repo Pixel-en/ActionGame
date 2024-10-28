@@ -91,7 +91,10 @@ bool HitObject::RightCollisionCheck()
 	if (push >= 1) {
 
 		trns.position_.x -= push;
-		obj_->SetPosition(trns.position_);
+		if (trans_.position_.x < 0)
+			obj_->SetPosition(trns.position_);
+		else
+			trans_ = trns;
 		return true;
 	}
 	return false;
@@ -114,7 +117,10 @@ bool HitObject::LeftCollisionCheck()
 
 	if (push >= 1) {
 		trns.position_.x += push;
-		obj_->SetPosition(trns.position_);
+		if (trans_.position_.x < 0)
+			obj_->SetPosition(trns.position_);
+		else
+			trans_ = trns;
 		return true;
 	}
 	return false;
@@ -148,7 +154,10 @@ bool HitObject::UpCollisionCheck()
 	if (push >= 1) {
 
 		trns.position_.y += push + 1;
-		obj_->SetPosition(trns.position_);
+		if (trans_.position_.x < 0)
+			obj_->SetPosition(trns.position_);
+		else
+			trans_ = trns;
 		return true;
 	}
 	return false;
@@ -182,7 +191,10 @@ bool HitObject::DownCollisionCheck()
 	if (push >= 1) {
 
 		trns.position_.y -= push - 1;
-		obj_->SetPosition(trns.position_);
+		if (trans_.position_.x < 0)
+			obj_->SetPosition(trns.position_);
+		else
+			trans_ = trns;
 		return true;
 	}
 	return false;

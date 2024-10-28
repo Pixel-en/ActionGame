@@ -64,6 +64,12 @@ public:
 	void SetHitTransform(Transform trans) { trans_ = trans; };
 
 	/// <summary>
+	/// Transform‚ğæ“¾(å‚ÉTransform‚ğˆø”‚É“ü‚ê‚½‚Æ‚«‚Ég‚¤)
+	/// </summary>
+	/// <returns>Transform</returns>
+	Transform GetTransform() { return trans_; };
+
+	/// <summary>
 	/// ‰E‘¤‚Ì“–‚½‚è”»’è‚Æ‰Ÿ‚µo‚µ
 	/// </summary>
 	/// <returns>“–‚½‚Á‚Ä‚¢‚é‚©</returns>

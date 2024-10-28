@@ -12,9 +12,10 @@ enum ObjectNumber
 	RIFT_R = 109,//リフト左
 
 	//201 青スライム
-	//202 緑スライム
-	//203 赤スライム
+	//202 赤スライム
+	//203 黄スライム
 	//204 鳥A
+	//207 植物A
 };
 
 class Field :public GameObject
@@ -87,7 +88,6 @@ public:
 	/// <param name="y">y座標</param>
 	/// <returns></returns>
 	int CollisionLeftCheck(int x, int y);
-
 
 	/// <summary>
 	/// 右方向の当たり判定チェック

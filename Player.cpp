@@ -16,7 +16,7 @@ namespace {
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ (float)(IMAGESIZE.y * 4.0) };
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
-	
+
 }
 
 void Player::LoadParameter()
@@ -30,10 +30,10 @@ void Player::LoadParameter()
 	};
 
 	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerParameter.csv");
-	param_.strength_ = csv->GetInt(1, CSVPARAM::STRENGTH);
-	param_.technic_ = csv->GetInt(1, CSVPARAM::TECHNIC);
-	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED);
-	param_.hp_ = csv->GetInt(1, CSVPARAM::HP);
+	param_.strength_ = csv->GetInt(1, CSVPARAM::STRENGTH) - 1;
+	param_.technic_ = csv->GetInt(1, CSVPARAM::TECHNIC) - 1;
+	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED) - 1;
+	param_.hp_ = csv->GetInt(1, CSVPARAM::HP) - 1;
 
 	for (int i = 4; i < csv->GetLines(); i++) {
 		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
@@ -42,15 +42,15 @@ void Player::LoadParameter()
 		ParamCorre_[i - 4].hp_ = csv->GetInt(i, CSVPARAM::HP);
 	}
 
-	param_.strength_ = Clamp(param_.strength_, 1, 5);
-	param_.technic_ = Clamp(param_.technic_, 1, 5);
-	param_.speed_ = Clamp(param_.speed_, 1, 5);
-	param_.hp_ = Clamp(param_.hp_, 1, 5);
+	param_.strength_ = Clamp(param_.strength_, 0, 4);
+	param_.technic_ = Clamp(param_.technic_, 0, 4);
+	param_.speed_ = Clamp(param_.speed_, 0, 4);
+	param_.hp_ = Clamp(param_.hp_, 0, 4);
 
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false),isjamp_(true)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjamp_(true)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -60,6 +60,7 @@ Player::Player(GameObject* parent)
 	anim_.AFCmax_ = 0;
 	anim_.animframecount_ = 0;
 	anim_.animloop_ = false;
+	anim_.Rdir_ = true;
 
 	transform_.position_ = { 0,0,0 };
 	miningtime_ = 0.0f;
@@ -96,13 +97,12 @@ void Player::Update()
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
 		anim_.animtype_ = Animation::IDOL;
-
 		MoveControl();
 	}
 	float time = Time::DeltaTime();
 	float temp;
 	ImGui::Begin("debug");
-	ImGui::InputFloat("time", &time);
+	//ImGui::InputFloat("time", &time);
 	//temp = time*ParamCorre_[0].technic_;
 	//ImGui::InputFloat("0", &temp);
 	//temp = time*ParamCorre_[1].technic_;
@@ -137,29 +137,13 @@ void Player::Draw()
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
-
-	DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
-
+	if(anim_.Rdir_)
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, false);
+	else {
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, false, true);
+	}
 	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
-
-	//DrawRectGraph(xpos - HITBOXSIZE.cx / 2, ypos - (IMAGESIZE.cy - HITBOXSIZE.cy), anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
-	/*	DrawRectGraph(xpos-HITBOXSIZE.cx/2.0 , ypos-HITBOXSIZE.cy, anim_.animframe_ * IMAGESIZE.cx, anim_.animtype_ * IMAGESIZE.cy, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
-
-	DrawBox(xpos, ypos, xpos + IMAGESIZE.cx, ypos + IMAGESIZE.cy, GetColor(255, 0, 0), false);
-	DrawBox(xpos, ypos, xpos + HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, GetColor(0, 255, 0), false);
-	DrawBox(xpos - HITBOXSIZE.cx / 2, ypos - HITBOXSIZE.cx / 2, xpos + HITBOXSIZE.cx / 2, ypos + HITBOXSIZE.cy / 2, GetColor(0, 0, 255), false);
-
-	DrawCircle(xpos, ypos, 5, GetColor(255, 0, 0), true);
-	DrawCircle(xpos + HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, 5, GetColor(255, 0, 0), true);
-	DrawCircle(xpos - HITBOXSIZE.cx, ypos + HITBOXSIZE.cy, 5, GetColor(0, 255, 0), true);
-	DrawCircle(xpos + HITBOXSIZE.cx, ypos - HITBOXSIZE.cy, 5, GetColor(0, 0, 255), true);
-	DrawCircle(xpos - HITBOXSIZE.cx, ypos - HITBOXSIZE.cy, 5, GetColor(255, 255, 255), true);
-
-	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	*/
+	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
 }
 
 void Player::Release()
@@ -218,50 +202,67 @@ void Player::MoveControl()
 	float Dash = 1.0f;
 	miningtime_ = 0.0f;
 
-	//左移動
-	if (CheckHitKey(KEY_INPUT_A)) {
+	if(!ActionControl()){
 
-		anim_.animtype_ = Animation::WALK;
+		//左移動
+		if (CheckHitKey(KEY_INPUT_A)) {
 
-		//ダッシュ
-		if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
-			Dash = 2.0f;
-			anim_.animtype_ = Animation::RUN;
+			anim_.animtype_ = Animation::WALK;
+
+			//ダッシュ
+			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+				Dash = 2.0f;
+				anim_.animtype_ = Animation::RUN;
+			}
+
+			transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
+			anim_.Rdir_ = false;
+			//hitobject_->LeftCollisionCheck();
 		}
 
-		transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
-	}
+		//右移動
+		if (CheckHitKey(KEY_INPUT_D)) {
 
-	//右移動
-	if (CheckHitKey(KEY_INPUT_D)) {
+			anim_.animtype_ = Animation::WALK;
 
-		anim_.animtype_ = Animation::WALK;
+			//ダッシュ
+			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+				Dash = 2.0f;
+				anim_.animtype_ = Animation::RUN;
+			}
 
-		//ダッシュ
-		if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
-			Dash = 2.0f;
-			anim_.animtype_ = Animation::RUN;
+			transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Dash * Time::DeltaTime();
+			anim_.Rdir_ = true;
+			//hitobject_->RightCollisionCheck();
 		}
 
-		transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_ - 1].speed_ * Dash * Time::DeltaTime();
+		hitobject_->LeftCollisionCheck();
+		hitobject_->RightCollisionCheck();
 
+		//ジャンプ
+		if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
+			isjamp_ = true;
+			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+		}
+
+		if (isjamp_) {
+			anim_.animtype_ = Animation::JUMP;
+			//WaitKey();
+		}
+		////上移動
+		//if (CheckHitKey(KEY_INPUT_W)) {
+
+		//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
+		//}
 	}
 
-	//ジャンプ
-	if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
-		isjamp_ = true;
-		Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
-	}
+	//hitobject_->AllCollisionCheck();
+	//hitobject_->SelectCollisionCheck(1100);
 
-	if (isjamp_) {
-		anim_.animtype_ = Animation::JUMP;
-		//WaitKey();
-	}
-	////上移動
-	//if (CheckHitKey(KEY_INPUT_W)) {
+}
 
-	//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
-	//}
+bool Player::ActionControl()
+{
 
 	//採取
 	if (CheckHitKey(KEY_INPUT_I)) {
@@ -269,8 +270,31 @@ void Player::MoveControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	hitobject_->AllCollisionCheck();
+	if (CheckHitKey(KEY_INPUT_J)) {
+		anim_.animtype_ = Animation::ATTACK;
+	}
 
+	if (CheckHitKey(KEY_INPUT_K)) {
+		anim_.animtype_ = Animation::ATTACK2;
+	}
+	
+	if (CheckHitKey(KEY_INPUT_L)) {
+		anim_.animtype_ = Animation::ATTACK3;
+	}
+	if (CheckHitKey(KEY_INPUT_M)) {
+		anim_.animtype_ = Animation::MAGIC;
+
+		if (CheckHitKey(KEY_INPUT_K)) {
+		}
+
+		if (CheckHitKey(KEY_INPUT_L)) {
+		}
+	}
+
+	if (anim_.animtype_ == Animation::IDOL)
+		return false;
+	else
+		return true;
 }
 
 void Player::AnimStatus()
@@ -303,7 +327,7 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 120;
 		anim_.animloop_ = false;
-		if (Gaccel_<= -sqrtf(2 * GRAVITY * JUMPHEIGHT)*0.5) {
+		if (Gaccel_ <= -sqrtf(2 * GRAVITY * JUMPHEIGHT) * 0.5) {
 			anim_.animframe_ = 1;
 		}
 		else if (Gaccel_ <= -1.0) {
@@ -336,13 +360,13 @@ void Player::AnimStatus()
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
 		break;
-	case Player::COLLECTION:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 17;
-		break;
 	case Player::MAGIC:
 		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 0;
+		anim_.AFCmax_ = 15;
+		break;
+	case Player::COLLECTION:
+		anim_.AFmax_ = 5;
+		anim_.AFCmax_ = 17;
 		break;
 	case Player::DAMAGE:
 		anim_.AFmax_ = 3;
@@ -417,17 +441,17 @@ VECTOR Player::KnockBackDir(VECTOR _vec)
 
 XMFLOAT3 Player::GetHitBoxPosition()
 {
-	return { transform_.position_.x /*+ LUPOINT.x*/+HITBOXSIZE.x / 2, transform_.position_.y /*+ LUPOINT.y*/+HITBOXSIZE.y / 2, 0 };
+	return { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.x / 2, transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.y / 2, 0 };
 }
 
 void Player::HitDamage(VECTOR _dir)
 {
 
-	static int HP = ParamCorre_[param_.hp_ - 1].hp_;
+	static int HP = ParamCorre_[param_.hp_].hp_;
 	//ダメージを受けていたり死んでいないとき
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
 		HP--;
-		if (HP < 1) {
+		if (HP < 0) {
 			anim_.animtype_ = Animation::DEATH;
 			HP = ParamCorre_[param_.hp_].hp_;
 		}
