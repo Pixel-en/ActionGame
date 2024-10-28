@@ -62,6 +62,7 @@ void Player::LoadParameter()
 		attack_[i - 10].attackframe_ = csv->GetInt(i, CSVPARAM::FRAME);
 		attack_[i - 10].recharge_ = csv->GetInt(i, CSVPARAM::RECHARGE);
 	}
+	int a = 0;
 
 }
 
@@ -515,7 +516,7 @@ void Player::DeadState()
 
 bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 {
-	if (Atype_ < 0)
+	if (Atype_ < 1)
 		return false;
 
 	int xpos = transform_.position_.x;
@@ -528,11 +529,11 @@ bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 	}
 
 	XMFLOAT3 attacktrans_ = { transform_.position_.x+RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
-	VECTOR attackhitbox_ = { attacktrans_.x + attack_[Atype_].range_,attacktrans_.y };
+	VECTOR attackhitbox_ = VGet(attacktrans_.x + attack_[Atype_].range_, transform_.position_.y + RDPOINT.y, attacktrans_.z);
 	//UŒ‚—p“–‚½‚è”»’è
-	DrawBox(xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x + attack_[Atype_].range_, ypos + LDPOINT.y, GetColor(0, 0, 255), false);
+	DrawBox(xpos + RUPOINT.x, ypos + RUPOINT.y, xpos + RUPOINT.x+attack_[Atype_].range_, ypos + RDPOINT.y, GetColor(0, 0, 255), false);
 
+	bool set= hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
 
-
-	return hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
+	return set;
 }

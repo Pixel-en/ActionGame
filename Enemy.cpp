@@ -84,6 +84,7 @@ Enemy::Enemy(GameObject* parent)
 
 	//hitobj_ = new HitObject(ENEMY_LUPOINT, ENEMY_RUPOINT, ENEMY_LDPOINT, ENEMY_RDPOINT, this);
 	hitobj_ = new HitObject(ENEMY_IMAGESIZE, this);
+
 }
 
 Enemy::~Enemy()
