@@ -76,6 +76,12 @@ private:
 	int r1, l1, r2, l2;
 	bool prevKey;
 
-	
+	enum DEVICE
+	{
+		KEY_AND_MOUSE = 0,
+		PAD
+	};
+
+	int nowDevice;
 };
 

@@ -24,7 +24,7 @@ class Bard
 
 	void UpdateIdol() override;
 	void UpdateMove() override;
-	void UpdateRun() override;
+	/*void UpdateRun() override;*/
 	void UpdateAttack() override;
 	void UpdateHurt() override;
 	void UpdateDeath() override;
