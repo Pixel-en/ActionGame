@@ -56,6 +56,7 @@ private:
 	int InputHandle;
 	char Name[256];
 	char cName[256];
+	std::string str;
 
 	bool SetEnd;
 
