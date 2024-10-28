@@ -24,7 +24,7 @@ namespace
 	bool InCnPrevKey = false;
 
 	
-
+	char cName[];
 
 	const int Y = 6;
 	const int X = 7;
@@ -36,7 +36,7 @@ namespace
 
 
 RankingsSystem::RankingsSystem(GameObject* parent)
-	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name(),cName(),
+	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name(),
 	eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
 {
 }
@@ -295,19 +295,35 @@ void RankingsSystem::DrawWriteUICn()
 						char b = static_cast<char>(N[y][x].Ascii);
 						if (b == 48) {
 							b = 127;
-							str.erase(nowMojiCount-1);
-							nowMojiCount = nowMojiCount - 1;
+							if (nowMojiCount <= 0) {
+								nowMojiCount = nowMojiCount;
+							}
+							else {
+								str.erase(nowMojiCount - 1);
+								nowMojiCount = nowMojiCount - 1;
+							}
 						}else if (b == 49) {
-							b == 32;
-							str.insert(nowMojiCount,&b);
-							nowMojiCount++;
+							b &= 32;
+							if (nowMojiCount >= MaxWord -1 ) {
+								str.erase(nowMojiCount);
+								str.insert(nowMojiCount, &b);
+							}
+							else {
+								str.insert(nowMojiCount, &b);
+								nowMojiCount++;
+							}
 						}else if (b == 50) {
-							/*str.insert(nowMojiCount, &b);
-							nowMojiCount++;*/
+
 						}
 						else {
-							str.insert(nowMojiCount, &b);
-							nowMojiCount++;
+							if (nowMojiCount >= MaxWord -1){
+								str.erase(nowMojiCount);
+								str.insert(nowMojiCount, &b);
+							}
+							else {
+								str.insert(nowMojiCount, &b);
+								nowMojiCount++;
+							}
 						}
 						
 						
