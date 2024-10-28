@@ -71,9 +71,13 @@ void Clear::Update()
 			}
 		}
 		for (Enemy* E : e) {
-			//‚±‚±‚ ‚Æ‚Å’¼‚·
+			//“G‚ÌUŒ‚
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetPosition(),E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
 				p->HitDamage(E->GetCenter());
+			}
+			//ƒvƒŒƒCƒ„[‚ÌUŒ‚
+			if (p->PlayerAttackHitCheck(E->GetPosition(),E->GetHitBox())) {
+				E->KillMe();
 			}
 
 		}

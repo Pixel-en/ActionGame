@@ -27,6 +27,10 @@ void Player::LoadParameter()
 		TECHNIC,
 		SPEED,
 		HP,
+		POWER = 1,
+		RANGE,
+		FRAME,
+		RECHARGE,
 	};
 
 	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerParameter.csv");
@@ -35,7 +39,7 @@ void Player::LoadParameter()
 	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED) - 1;
 	param_.hp_ = csv->GetInt(1, CSVPARAM::HP) - 1;
 
-	for (int i = 4; i < csv->GetLines(); i++) {
+	for (int i = 4; i < 9; i++) {
 		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
 		ParamCorre_[i - 4].technic_ = csv->GetInt(i, CSVPARAM::TECHNIC);
 		ParamCorre_[i - 4].speed_ = csv->GetInt(i, CSVPARAM::SPEED);
@@ -46,6 +50,18 @@ void Player::LoadParameter()
 	param_.technic_ = Clamp(param_.technic_, 0, 4);
 	param_.speed_ = Clamp(param_.speed_, 0, 4);
 	param_.hp_ = Clamp(param_.hp_, 0, 4);
+
+	attack_[0].power_ = -1;
+	attack_[0].range_ = -1;
+	attack_[0].attackframe_ = -1;
+	attack_[0].recharge_ = -1;
+
+	for (int i = 11; i <16; i++) {
+		attack_[i - 10].power_ = csv->GetInt(i, CSVPARAM::POWER);
+		attack_[i - 10].range_ = csv->GetInt(i, CSVPARAM::RANGE);
+		attack_[i - 10].attackframe_ = csv->GetInt(i, CSVPARAM::FRAME);
+		attack_[i - 10].recharge_ = csv->GetInt(i, CSVPARAM::RECHARGE);
+	}
 
 }
 
@@ -69,6 +85,8 @@ Player::Player(GameObject* parent)
 	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 
 	LoadParameter();
+
+	Atype_ = AttackType::TNONE;
 }
 
 Player::~Player()
@@ -138,12 +156,14 @@ void Player::Draw()
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
 	if(anim_.Rdir_)
-		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, false);
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
 	else {
-		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, false, true);
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
 	}
 	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
 	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
+
+	PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
 }
 
 void Player::Release()
@@ -272,22 +292,27 @@ bool Player::ActionControl()
 
 	if (CheckHitKey(KEY_INPUT_J)) {
 		anim_.animtype_ = Animation::ATTACK;
+		Atype_ = ATTACKT;
 	}
 
 	if (CheckHitKey(KEY_INPUT_K)) {
 		anim_.animtype_ = Animation::ATTACK2;
+		Atype_ = ATTACK2T;
 	}
 	
 	if (CheckHitKey(KEY_INPUT_L)) {
 		anim_.animtype_ = Animation::ATTACK3;
+		Atype_ = ATTACK3T;
 	}
 	if (CheckHitKey(KEY_INPUT_M)) {
 		anim_.animtype_ = Animation::MAGIC;
 
 		if (CheckHitKey(KEY_INPUT_K)) {
+			Atype_ = MAGIC1T;
 		}
 
 		if (CheckHitKey(KEY_INPUT_L)) {
+			Atype_ = MAGIC2T;
 		}
 	}
 
@@ -488,3 +513,26 @@ void Player::DeadState()
 	anim_.animtype_ = Animation::DEATH;
 }
 
+bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
+{
+	if (Atype_ < 0)
+		return false;
+
+	int xpos = transform_.position_.x;
+	int ypos = transform_.position_.y;
+
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
+
+	XMFLOAT3 attacktrans_ = { transform_.position_.x+RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
+	VECTOR attackhitbox_ = { attacktrans_.x + attack_[Atype_].range_,attacktrans_.y };
+	//UŒ‚—p“–‚½‚è”»’è
+	DrawBox(xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x + attack_[Atype_].range_, ypos + LDPOINT.y, GetColor(0, 0, 255), false);
+
+
+
+	return hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
+}

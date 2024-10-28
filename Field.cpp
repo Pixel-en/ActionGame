@@ -189,6 +189,8 @@ void Field::Draw()
 
 void Field::Release()
 {
+	if (Map != nullptr)
+		delete Map;
 }
 
 int Field::CollisionDownCheck(int x, int y)
