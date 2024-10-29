@@ -117,6 +117,7 @@ void RankingsSystem::Draw()
 {
 	if (cLogo->GetOutput()) {
 		DrawWriteUICn();
+		/*DrawWriteUI();*/
 	}
 }
 
