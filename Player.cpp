@@ -56,7 +56,7 @@ void Player::LoadParameter()
 	attack_[0].attackframe_ = 0;
 	attack_[0].recharge_ = 0;
 
-	for (int i = 11; i <16; i++) {
+	for (int i = 11; i < 16; i++) {
 		attack_[i - 10].power_ = csv->GetInt(i, CSVPARAM::POWER);
 		attack_[i - 10].range_ = csv->GetInt(i, CSVPARAM::RANGE);
 		attack_[i - 10].attackframe_ = csv->GetInt(i, CSVPARAM::FRAME);
@@ -156,7 +156,7 @@ void Player::Draw()
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
-	if(anim_.Rdir_)
+	if (anim_.Rdir_)
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
 	else {
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
@@ -223,7 +223,7 @@ void Player::MoveControl()
 	float Dash = 1.0f;
 	miningtime_ = 0.0f;
 
-	if(!ActionControl()){
+	if (!ActionControl()) {
 
 		//¶ˆÚ“®
 		if (CheckHitKey(KEY_INPUT_A)) {
@@ -291,28 +291,28 @@ bool Player::ActionControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if (CheckHitKey(KEY_INPUT_J)) {
+	if (CheckHitKey(KEY_INPUT_J)&&Atype_==AttackType::ATTACKT) {
 		anim_.animtype_ = Animation::ATTACK;
 		Atype_ = ATTACKT;
 	}
 
-	if (CheckHitKey(KEY_INPUT_K)) {
+	else if (CheckHitKey(KEY_INPUT_K) && Atype_ == AttackType::ATTACK2T) {
 		anim_.animtype_ = Animation::ATTACK2;
 		Atype_ = ATTACK2T;
 	}
-	
-	if (CheckHitKey(KEY_INPUT_L)) {
+
+	else if (CheckHitKey(KEY_INPUT_L) && Atype_ == AttackType::ATTACK3T) {
 		anim_.animtype_ = Animation::ATTACK3;
 		Atype_ = ATTACK3T;
 	}
-	if (CheckHitKey(KEY_INPUT_M)) {
+	else if (CheckHitKey(KEY_INPUT_M)) {
 		anim_.animtype_ = Animation::MAGIC;
 
-		if (CheckHitKey(KEY_INPUT_K)) {
+		if (CheckHitKey(KEY_INPUT_K) && Atype_ == AttackType::MAGIC1T) {
 			Atype_ = MAGIC1T;
 		}
 
-		if (CheckHitKey(KEY_INPUT_L)) {
+		else if (CheckHitKey(KEY_INPUT_L) && Atype_ == AttackType::MAGIC2T) {
 			Atype_ = MAGIC2T;
 		}
 	}
@@ -370,25 +370,23 @@ void Player::AnimStatus()
 		}
 		anim_.animframecount_ = 0;
 		break;
-	case Player::ATTACK:
+	case Player::ATTACK:	//AttackAnim‚ÉˆÚA
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 8;
-		break;
 	case Player::ATTACK2:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 8;
-		break;
 	case Player::ATTACK3:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 8;
+	case Player::MAGIC:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 15;
+		AttackAnim();
 		break;
 	case Player::CLIMB:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
-		break;
-	case Player::MAGIC:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 15;
 		break;
 	case Player::COLLECTION:
 		anim_.AFmax_ = 5;
@@ -528,12 +526,12 @@ bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 		ypos -= cam->GetValueY();
 	}
 
-	XMFLOAT3 attacktrans_ = { transform_.position_.x+RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
+	XMFLOAT3 attacktrans_ = { transform_.position_.x + RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
 	VECTOR attackhitbox_ = VGet(attack_[Atype_].range_, HITBOXSIZE.y, 0);
 	//UŒ‚—p“–‚½‚è”»’è
-	DrawBox(xpos + RUPOINT.x, ypos + RUPOINT.y, xpos + RUPOINT.x+attack_[Atype_].range_, ypos + RDPOINT.y, GetColor(0, 0, 255), false);
+	DrawBox(xpos + RUPOINT.x, ypos + RUPOINT.y, xpos + RUPOINT.x + attack_[Atype_].range_, ypos + RDPOINT.y, GetColor(0, 0, 255), false);
 
-	bool set= hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
+	bool set = hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
 
 	return set;
 }

@@ -94,7 +94,7 @@ private:
 
 	PlayerAttackParts attack_[6];
 	AttackType Atype_;
-
+	
 
 	/*----------関数----------*/
 
@@ -128,6 +128,11 @@ private:
 	/// ステートをDeathに
 	/// </summary>
 	void DeadState();
+
+	/// <summary>
+	/// 攻撃時のアニメーション
+	/// </summary>
+	void AttackAnim();
 	
 
 
