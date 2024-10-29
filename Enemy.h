@@ -25,7 +25,7 @@ enum ENEMY_TYPE
 const int Status_Size{ 4 };
 
 //“G‚ÌƒNƒ‰ƒX
-class Enemy:public Object
+class Enemy :public Object
 {
 protected:
 	const SIZE ENEMY_IMAGESIZE{ 48,48 };
@@ -141,11 +141,10 @@ public:
 	SIZE GetSize() override;
 
 	bool isdeath() { return (state_ == EAnimation::DEATH); }
-	
+
 	void StatusReader(int _enemyNumber);
 
 	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_IMAGESIZE.cx / 2, transform_.position_.y + ENEMY_IMAGESIZE.cy / 2 }; };
 
 	Transform GetHitTransform() { return hittransform_; };
 };
-

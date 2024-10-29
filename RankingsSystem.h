@@ -53,10 +53,6 @@ private:
 	ClearLogo* cLogo;
 	TitleText* tText;
 
-	int InputHandle;
-	char Name[256];
-	char cName[256];
-
 	bool SetEnd;
 
 	float eraseTime;
@@ -64,7 +60,7 @@ private:
 	float flame;
 	float eraseAlpha;
 
-	int x1,y1,x2,y2;
+	int x1, y1, x2, y2;
 
 	int space;
 	int word;
@@ -76,6 +72,19 @@ private:
 	int r1, l1, r2, l2;
 	bool prevKey;
 
+	int InputHandle;
+	char Name[256];
+	char cName[256];
+	std::string str;
+
 	
+
+	enum DEVICE
+	{
+		KEY_AND_MOUSE = 0,
+		PAD
+	};
+
+	int nowDevice;
 };
 

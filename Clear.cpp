@@ -69,11 +69,18 @@ void Clear::Update()
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),M->GetPosition(),M->GetHitBox() )) {
 				M->Mining(p->GetMiningTime());
 			}
+			if (p->PlayerAttackHitCheck(M->GetPosition(), M->GetHitBox()))
+				M->KillMe();
 		}
 		for (Enemy* E : e) {
-			//‚±‚±‚ ‚Æ‚Å’¼‚·
+			//“G‚ÌUŒ‚
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetPosition(),E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
 				p->HitDamage(E->GetCenter());
+			}
+			//ƒvƒŒƒCƒ„[‚ÌUŒ‚
+			if (p->PlayerAttackHitCheck(E->GetPosition(),E->GetHitBox())) {
+				//E->KillMe();
+				
 			}
 
 		}

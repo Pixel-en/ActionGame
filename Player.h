@@ -75,6 +75,27 @@ private:
 	Parameter param_;
 	ParameterCorrection ParamCorre_[PARAMMEMORY];
 
+	enum AttackType
+	{
+		TNONE,
+		ATTACKT,
+		ATTACK2T,
+		ATTACK3T,
+		MAGIC1T,
+		MAGIC2T,
+	};
+
+	struct PlayerAttackParts {
+		int power_;
+		int range_;
+		int attackframe_;
+		int recharge_;
+	};
+
+	PlayerAttackParts attack_[6];
+	AttackType Atype_;
+
+
 	/*----------ä÷êî----------*/
 
 	/// <summary>
@@ -171,5 +192,7 @@ public:
 	VECTOR GetHitBox();
 
 	float GetMiningTime() { return miningtime_; };
+
+	bool PlayerAttackHitCheck(XMFLOAT3 _trans,VECTOR _hitbox);
 };
 

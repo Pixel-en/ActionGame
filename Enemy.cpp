@@ -42,14 +42,14 @@ XMFLOAT3 Enemy::TargetPos()
 	if (p == nullptr) {
 		return{ 0,0,0 };
 	}
-	v = {p->GetPosition()};
+	v = { p->GetPosition() };
 	return v;
 }
 
 void Enemy::StatusReader(int _enemyNumber)
 {
 	CsvReader* csv = new CsvReader("Assets\\Status\\EnemyStatus.csv");
-	for (int i = 1; i < ENEMY_TYPE_END+1; i++) {
+	for (int i = 1; i < ENEMY_TYPE_END + 1; i++) {
 		if (_enemyNumber == csv->GetInt(i, 0))
 		{
 			baseSpeed = csv->GetInt(i, 1);
@@ -70,7 +70,7 @@ void Enemy::StatusReader(int _enemyNumber)
 
 Enemy::Enemy(GameObject* parent)
 	:Object(parent, "Enemy"), movetimer_(1.0f), startmove_(false), speed_(0), onGround_(false), range_(ENEMY_LOOKRANGE)
-	,state_(EAnimation::IDOL),SpawnPoint_(transform_.position_),dir_(1),attackfrm_(0)
+	, state_(EAnimation::IDOL), SpawnPoint_(transform_.position_), dir_(1), attackfrm_(0)
 {
 
 	/*アニメーション*/
@@ -84,6 +84,7 @@ Enemy::Enemy(GameObject* parent)
 
 	//hitobj_ = new HitObject(ENEMY_LUPOINT, ENEMY_RUPOINT, ENEMY_LDPOINT, ENEMY_RDPOINT, this);
 	hitobj_ = new HitObject(ENEMY_IMAGESIZE, this);
+
 }
 
 Enemy::~Enemy()
@@ -206,7 +207,7 @@ void Enemy::AnimationCheck()
 
 bool Enemy::AnimationEnd()
 {
-	if(animframe_ == AFmax_-1 && framecnt_ == FCmax_)
+	if (animframe_ == AFmax_ - 1 && framecnt_ == FCmax_)
 		return true;
 	return false;
 }

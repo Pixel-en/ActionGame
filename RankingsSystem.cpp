@@ -23,8 +23,12 @@ namespace
 	int nowMojiCount = 0;
 	bool InCnPrevKey = false;
 
+	
+	char cName[];
+
 	const int Y = 6;
-	const int X = 5;
+	const int X = 7;
+	int del_space_enter = 48;
 	NData N[Y][X];
 
 }
@@ -32,8 +36,8 @@ namespace
 
 
 RankingsSystem::RankingsSystem(GameObject* parent)
-	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name()
-	,eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
+	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name(),
+	eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
 {
 }
 
@@ -75,49 +79,94 @@ void RankingsSystem::Initialize()
 	count = 0;
 	MaxWord = 10;
 
+	nowDevice = PAD;
+
+	
 	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
 	InputHandle = MakeKeyInput(MaxWord,FALSE,TRUE,FALSE);
 
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
-			N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,AsciiCodeEN };
-			AsciiCodeEN++;
+			if (y == 0 && x == 6) {
+				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,del_space_enter };
+				del_space_enter++;
+			}
+			else if (y == 1 && x ==6) {
+				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,del_space_enter };
+				del_space_enter++;
+			}
+			else if (y == 2 && x == 6) {
+				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,del_space_enter };
+			}
+			else if(x < 5){
+				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,AsciiCodeEN };
+				AsciiCodeEN++;
+			}
+			else {
+				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,0};
+			}
 		}
 	}
+	str = cName;
 }
 
 void RankingsSystem::Update()
 {
 	if (cLogo->GetOutput()) {
-		// 入力が終了している場合は終了
-		if (CheckKeyInput(InputHandle) != 0) {
-			if (!SetEnd) {
-				SetRankings(Name, 500);
+		switch (nowDevice)
+		{
+		case KEY_AND_MOUSE:
+		{
+			// 入力が終了している場合は終了
+			if (CheckKeyInput(InputHandle) != 0) {
+				if (!SetEnd) {
+					SetRankings(Name, 500);
 
-				SetEnd = true;
-				SortScore();
+					SetEnd = true;
+					SortScore();
+				}
 			}
+			// 作成したキー入力ハンドルをアクティブにする
+			SetActiveKeyInput(InputHandle);
+
+			//入力モードを描画
+			DrawKeyInputModeString(640, 480);
+
+			// 入力途中の文字列を描画
+			DrawKeyInputString(0, 0, InputHandle);
+
+			// 入力された文字列を取得
+			GetKeyInputString(Name, InputHandle);
+			break;
 		}
-		// 作成したキー入力ハンドルをアクティブにする
-		SetActiveKeyInput(InputHandle);
-
-		//入力モードを描画
-		DrawKeyInputModeString(640, 480);
-
-		// 入力途中の文字列を描画
-		DrawKeyInputString(0, 0, InputHandle);
-
-		// 入力された文字列を取得
-		GetKeyInputString(Name, InputHandle);
-
+		case PAD:
+		{
+			break;
+		}
+		default: break;
+		}
 	}
 }
 
 void RankingsSystem::Draw()
 {
 	if (cLogo->GetOutput()) {
-		DrawWriteUICn();
-		/*DrawWriteUI();*/
+		switch (nowDevice)
+		{
+		case KEY_AND_MOUSE:
+		{
+			DrawWriteUI();
+			break;
+		}
+		case PAD:
+		{
+			DrawWriteUICn();
+			break;
+		}
+		default:
+			break;
+		}
+		
 	}
 }
 
@@ -206,16 +255,6 @@ void RankingsSystem::DrawWriteUICn()
 			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
 		}
 	}
-	/*for (int i = 65; i < 91; i++) {
-		count++;
-		char b = static_cast<char>(i);
-		std::string str(1, b);
-		if (count > 5) {
-			l++;
-			count = 1;
-		}
-		tText->DrawString(str,(450 + 35 * count), 400 +(35 * l));
-	}*/
 	if (CheckHitKey(KEY_INPUT_UP)) {
 		if (prevKey == false) {
 			l1 -= 35;
@@ -254,8 +293,40 @@ void RankingsSystem::DrawWriteUICn()
 				if (CheckHitKey(KEY_INPUT_RETURN)) {
 					if (InCnPrevKey == false) {
 						char b = static_cast<char>(N[y][x].Ascii);
-						cName[nowMojiCount] = b;
-						nowMojiCount++;
+						if (b == 48) {
+							b = 127;
+							if (nowMojiCount <= 0) {
+								nowMojiCount = nowMojiCount;
+							}
+							else {
+								str.erase(nowMojiCount - 1);
+								nowMojiCount = nowMojiCount - 1;
+							}
+						}else if (b == 49) {
+							b &= 32;
+							if (nowMojiCount >= MaxWord -1 ) {
+								str.erase(nowMojiCount);
+								str.insert(nowMojiCount, &b);
+							}
+							else {
+								str.insert(nowMojiCount, &b);
+								nowMojiCount++;
+							}
+						}else if (b == 50) {
+
+						}
+						else {
+							if (nowMojiCount >= MaxWord -1){
+								str.erase(nowMojiCount);
+								str.insert(nowMojiCount, &b);
+							}
+							else {
+								str.insert(nowMojiCount, &b);
+								nowMojiCount++;
+							}
+						}
+						
+						
 					}
 					InCnPrevKey = true;
 				}
@@ -265,5 +336,5 @@ void RankingsSystem::DrawWriteUICn()
 			}
 		}
 	}
-	tText->DrawString(cName, 450, 370);
+	tText->DrawString(str, 450, 370);
 }

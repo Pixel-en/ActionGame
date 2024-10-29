@@ -53,6 +53,8 @@ void Zombie::Update()
 		onGround_ = true;
 	}
 
+	this->ConvertHitTransformtoTransform();
+
 	if (p == nullptr)
 		return;
 	//ƒvƒŒƒCƒ„[‚ª€‚ñ‚Å‚Ä‚à‚±‚±‚Ü‚Å‚Í‚·‚é
