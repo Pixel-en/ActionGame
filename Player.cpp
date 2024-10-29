@@ -51,10 +51,10 @@ void Player::LoadParameter()
 	param_.speed_ = Clamp(param_.speed_, 0, 4);
 	param_.hp_ = Clamp(param_.hp_, 0, 4);
 
-	attack_[0].power_ = -1;
-	attack_[0].range_ = -1;
-	attack_[0].attackframe_ = -1;
-	attack_[0].recharge_ = -1;
+	attack_[0].power_ = 0;
+	attack_[0].range_ = 0;
+	attack_[0].attackframe_ = 0;
+	attack_[0].recharge_ = 0;
 
 	for (int i = 11; i <16; i++) {
 		attack_[i - 10].power_ = csv->GetInt(i, CSVPARAM::POWER);
@@ -529,7 +529,7 @@ bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 	}
 
 	XMFLOAT3 attacktrans_ = { transform_.position_.x+RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
-	VECTOR attackhitbox_ = VGet(attacktrans_.x + attack_[Atype_].range_, transform_.position_.y + RDPOINT.y, attacktrans_.z);
+	VECTOR attackhitbox_ = VGet(attack_[Atype_].range_, HITBOXSIZE.y, 0);
 	//çUåÇópìñÇΩÇËîªíË
 	DrawBox(xpos + RUPOINT.x, ypos + RUPOINT.y, xpos + RUPOINT.x+attack_[Atype_].range_, ypos + RDPOINT.y, GetColor(0, 0, 255), false);
 
