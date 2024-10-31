@@ -20,7 +20,7 @@ namespace
 	int dR2 = 520;
 	int dL2 = 435;
 
-	int nowMojiCount = 0;
+	int nowMojiCount = -1;
 	bool InCnPrevKey = false;
 
 	
@@ -295,34 +295,39 @@ void RankingsSystem::DrawWriteUICn()
 						char b = static_cast<char>(N[y][x].Ascii);
 						if (b == 48) {
 							b = 127;
-							if (nowMojiCount <= 0) {
-								nowMojiCount = nowMojiCount;
-							}
-							else {
-								str.erase(nowMojiCount - 1);
-								nowMojiCount = nowMojiCount - 1;
+							if (nowMojiCount >= 0) {
+								if (nowMojiCount == MaxWord -1) {
+									str.erase(nowMojiCount);
+									nowMojiCount = nowMojiCount -1;
+								}
+								else {
+									str.erase(nowMojiCount);
+									nowMojiCount = nowMojiCount - 1;
+								}
 							}
 						}else if (b == 49) {
-							b &= 32;
-							if (nowMojiCount >= MaxWord -1 ) {
+							b = 32;
+							if (nowMojiCount == MaxWord -1 ) {
 								str.erase(nowMojiCount);
 								str.insert(nowMojiCount, &b);
 							}
 							else {
-								str.insert(nowMojiCount, &b);
 								nowMojiCount++;
+								str.insert(nowMojiCount, &b);
+								
 							}
 						}else if (b == 50) {
 
 						}
 						else {
-							if (nowMojiCount >= MaxWord -1){
+							if (nowMojiCount == MaxWord -1){
 								str.erase(nowMojiCount);
 								str.insert(nowMojiCount, &b);
 							}
 							else {
-								str.insert(nowMojiCount, &b);
 								nowMojiCount++;
+								str.insert(nowMojiCount, &b);
+								
 							}
 						}
 						
