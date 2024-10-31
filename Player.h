@@ -52,6 +52,7 @@ private:
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 		bool animloop_;			//アニメーションをループするか
 		bool Rdir_;				//右を向いているかどうか
+		bool animSkip_;			//アニメーションをする場所をスキップするか
 	};
 	//プレイヤーのパラメータ
 	struct Parameter

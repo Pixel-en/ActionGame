@@ -78,6 +78,7 @@ Player::Player(GameObject* parent)
 	anim_.animframecount_ = 0;
 	anim_.animloop_ = false;
 	anim_.Rdir_ = true;
+	anim_.animSkip_ = false;
 
 	transform_.position_ = { 0,0,0 };
 	miningtime_ = 0.0f;
@@ -371,16 +372,10 @@ void Player::AnimStatus()
 		anim_.animframecount_ = 0;
 		break;
 	case Player::ATTACK:	//AttackAnimに移植
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
 	case Player::ATTACK2:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
 	case Player::ATTACK3:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
 	case Player::MAGIC:
-		anim_.AFmax_ = 6;
+		anim_.AFmax_ = 5;
 		anim_.AFCmax_ = 15;
 		AttackAnim();
 		break;
@@ -433,20 +428,22 @@ void Player::AnimStatus()
 	/*----アニメーションの切り替えなど-----*/
 
 	//フレームのカウント
-	if (anim_.BEanimtype_ != anim_.animtype_) {
-		anim_.animframe_ = 0;
-		anim_.animframecount_ = 0;
-	}
+	if (!anim_.animSkip_) {
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
 
-	anim_.animframecount_++;
-	if (anim_.animframecount_ > anim_.AFCmax_) {
-		anim_.animframecount_ = 0;
-		if (anim_.animloop_)
-			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
-		else {
-			anim_.animframe_ = anim_.animframe_ + 1;
-			if (anim_.animframe_ == anim_.AFmax_)
-				anim_.animtype_ = Animation::IDOL;
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animloop_)
+				anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+			else {
+				anim_.animframe_ = anim_.animframe_ + 1;
+				if (anim_.animframe_ == anim_.AFmax_)
+					anim_.animtype_ = Animation::IDOL;
+			}
 		}
 	}
 	anim_.BEanimtype_ = anim_.animtype_;
@@ -510,6 +507,36 @@ void Player::DeadState()
 		return;
 
 	anim_.animtype_ = Animation::DEATH;
+}
+
+void Player::AttackAnim()
+{
+	switch (Atype_)
+	{
+	case Player::TNONE:
+
+		break;
+	case Player::ATTACKT:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 8;
+		break;
+	case Player::ATTACK2T:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 8;
+		break;
+	case Player::ATTACK3T:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 8;
+		break;
+	case Player::MAGIC1T:
+		break;
+	case Player::MAGIC2T:
+		break;
+	default:
+		break;
+	}
+
+	
 }
 
 bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
