@@ -134,7 +134,7 @@ void Player::Update()
 	//ImGui::InputFloat("4", &temp);
 	ImGui::End();
 
-	AnimStatus();
+	/*AnimStatus();*/
 
 	CameraScroll();
 }
@@ -323,134 +323,134 @@ bool Player::ActionControl()
 		return true;
 }
 
-void Player::AnimStatus()
-{
-
-	static float timecnt = 0;
-
-	anim_.animloop_ = true;
-
-	switch (anim_.animtype_)
-	{
-	case Player::NONE:
-		anim_.AFmax_ = 1;
-		anim_.AFCmax_ = 1;
-		anim_.animloop_ = false;
-		break;
-	case Player::IDOL:
-		anim_.AFmax_ = 4;
-		anim_.AFCmax_ = 20;
-		break;
-	case Player::WALK:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 17;
-		break;
-	case Player::RUN:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 11;
-		break;
-	case Player::JUMP:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 120;
-		anim_.animloop_ = false;
-		if (Gaccel_ <= -sqrtf(2 * GRAVITY * JUMPHEIGHT) * 0.5) {
-			anim_.animframe_ = 1;
-		}
-		else if (Gaccel_ <= -1.0) {
-			anim_.animframe_ = 2;
-		}
-		else if (Gaccel_ <= 1.0) {
-			anim_.animframe_ = 3;
-		}
-		else if (Gaccel_ <= sqrtf(2 * GRAVITY * JUMPHEIGHT) * 0.7) {
-			anim_.animframe_ = 4;
-		}
-		else {
-			anim_.animframe_ = 5;
-		}
-		anim_.animframecount_ = 0;
-		break;
-	case Player::ATTACK:	//AttackAnimに移植
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-	case Player::ATTACK2:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-	case Player::ATTACK3:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-	case Player::MAGIC:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 15;
-		AttackAnim();
-		break;
-	case Player::CLIMB:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 17;
-		break;
-	case Player::COLLECTION:
-		anim_.AFmax_ = 5;
-		anim_.AFCmax_ = 17;
-		break;
-	case Player::DAMAGE:
-		anim_.AFmax_ = 3;
-		anim_.AFCmax_ = 10;
-		anim_.animloop_ = false;
-		invincible_ = true;
-		break;
-	case Player::DEATH:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 20;
-		anim_.animloop_ = false;
-		if (anim_.animframe_ >= 5) {
-			anim_.animframecount_ = 0;
-		}
-		timecnt += Time::DeltaTime();
-		if (timecnt >= 2.0) {
-			timecnt = 0.0f;
-			anim_.animtype_ = Animation::RESET;
-		}
-		break;
-	case Player::RESET:
-		anim_.AFmax_ = 1;
-		anim_.AFCmax_ = 100;
-		anim_.animframe_ = 0;
-		anim_.animframecount_ = 0;
-		anim_.animloop_ = false;
-		break;
-	}
-
-	//無敵時間
-	if (invincible_) {
-		timecnt += Time::DeltaTime();
-		if (timecnt >= 1.0) {
-			timecnt = 0.0f;
-			invincible_ = false;
-		}
-	}
-
-
-	/*----アニメーションの切り替えなど-----*/
-
-	//フレームのカウント
-	if (anim_.BEanimtype_ != anim_.animtype_) {
-		anim_.animframe_ = 0;
-		anim_.animframecount_ = 0;
-	}
-
-	anim_.animframecount_++;
-	if (anim_.animframecount_ > anim_.AFCmax_) {
-		anim_.animframecount_ = 0;
-		if (anim_.animloop_)
-			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
-		else {
-			anim_.animframe_ = anim_.animframe_ + 1;
-			if (anim_.animframe_ == anim_.AFmax_)
-				anim_.animtype_ = Animation::IDOL;
-		}
-	}
-	anim_.BEanimtype_ = anim_.animtype_;
-}
+//void Player::AnimStatus()
+//{
+//
+//	static float timecnt = 0;
+//
+//	anim_.animloop_ = true;
+//
+//	switch (anim_.animtype_)
+//	{
+//	case Player::NONE:
+//		anim_.AFmax_ = 1;
+//		anim_.AFCmax_ = 1;
+//		anim_.animloop_ = false;
+//		break;
+//	case Player::IDOL:
+//		anim_.AFmax_ = 4;
+//		anim_.AFCmax_ = 20;
+//		break;
+//	case Player::WALK:
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 17;
+//		break;
+//	case Player::RUN:
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 11;
+//		break;
+//	case Player::JUMP:
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 120;
+//		anim_.animloop_ = false;
+//		if (Gaccel_ <= -sqrtf(2 * GRAVITY * JUMPHEIGHT) * 0.5) {
+//			anim_.animframe_ = 1;
+//		}
+//		else if (Gaccel_ <= -1.0) {
+//			anim_.animframe_ = 2;
+//		}
+//		else if (Gaccel_ <= 1.0) {
+//			anim_.animframe_ = 3;
+//		}
+//		else if (Gaccel_ <= sqrtf(2 * GRAVITY * JUMPHEIGHT) * 0.7) {
+//			anim_.animframe_ = 4;
+//		}
+//		else {
+//			anim_.animframe_ = 5;
+//		}
+//		anim_.animframecount_ = 0;
+//		break;
+//	case Player::ATTACK:	//AttackAnimに移植
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 8;
+//	case Player::ATTACK2:
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 8;
+//	case Player::ATTACK3:
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 8;
+//	case Player::MAGIC:
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 15;
+//		AttackAnim();
+//		break;
+//	case Player::CLIMB:
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 17;
+//		break;
+//	case Player::COLLECTION:
+//		anim_.AFmax_ = 5;
+//		anim_.AFCmax_ = 17;
+//		break;
+//	case Player::DAMAGE:
+//		anim_.AFmax_ = 3;
+//		anim_.AFCmax_ = 10;
+//		anim_.animloop_ = false;
+//		invincible_ = true;
+//		break;
+//	case Player::DEATH:
+//		anim_.AFmax_ = 6;
+//		anim_.AFCmax_ = 20;
+//		anim_.animloop_ = false;
+//		if (anim_.animframe_ >= 5) {
+//			anim_.animframecount_ = 0;
+//		}
+//		timecnt += Time::DeltaTime();
+//		if (timecnt >= 2.0) {
+//			timecnt = 0.0f;
+//			anim_.animtype_ = Animation::RESET;
+//		}
+//		break;
+//	case Player::RESET:
+//		anim_.AFmax_ = 1;
+//		anim_.AFCmax_ = 100;
+//		anim_.animframe_ = 0;
+//		anim_.animframecount_ = 0;
+//		anim_.animloop_ = false;
+//		break;
+//	}
+//
+//	//無敵時間
+//	if (invincible_) {
+//		timecnt += Time::DeltaTime();
+//		if (timecnt >= 1.0) {
+//			timecnt = 0.0f;
+//			invincible_ = false;
+//		}
+//	}
+//
+//
+//	/*----アニメーションの切り替えなど-----*/
+//
+//	//フレームのカウント
+//	if (anim_.BEanimtype_ != anim_.animtype_) {
+//		anim_.animframe_ = 0;
+//		anim_.animframecount_ = 0;
+//	}
+//
+//	anim_.animframecount_++;
+//	if (anim_.animframecount_ > anim_.AFCmax_) {
+//		anim_.animframecount_ = 0;
+//		if (anim_.animloop_)
+//			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+//		else {
+//			anim_.animframe_ = anim_.animframe_ + 1;
+//			if (anim_.animframe_ == anim_.AFmax_)
+//				anim_.animtype_ = Animation::IDOL;
+//		}
+//	}
+//	anim_.BEanimtype_ = anim_.animtype_;
+//}
 
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {

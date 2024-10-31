@@ -122,7 +122,7 @@ private:
 	/// <summary>
 	/// アニメーションの状態やセットの処理
 	/// </summary>
-	void AnimStatus();
+	/*void AnimStatus();*/
 
 	/// <summary>
 	/// ステートをDeathに
