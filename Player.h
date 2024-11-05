@@ -96,6 +96,7 @@ private:
 	PlayerAttackParts attack_[6];
 	AttackType Atype_;
 	
+	int Damege;
 
 	/*----------ä÷êî----------*/
 
@@ -200,5 +201,7 @@ public:
 	float GetMiningTime() { return miningtime_; };
 
 	bool PlayerAttackHitCheck(XMFLOAT3 _trans,VECTOR _hitbox);
+
+	int GetDamege() { return Damege; };
 };
 

@@ -119,21 +119,6 @@ void Player::Update()
 		anim_.animtype_ = Animation::IDOL;
 		MoveControl();
 	}
-	float time = Time::DeltaTime();
-	float temp;
-	ImGui::Begin("debug");
-	//ImGui::InputFloat("time", &time);
-	//temp = time*ParamCorre_[0].technic_;
-	//ImGui::InputFloat("0", &temp);
-	//temp = time*ParamCorre_[1].technic_;
-	//ImGui::InputFloat("1", &temp);
-	//temp = time*ParamCorre_[2].technic_;
-	//ImGui::InputFloat("2", &temp);
-	//temp = time*ParamCorre_[3].technic_;
-	//ImGui::InputFloat("3", &temp);
-	//temp = time*ParamCorre_[4].technic_;
-	//ImGui::InputFloat("4", &temp);
-	ImGui::End();
 
 	AnimStatus();
 
@@ -292,17 +277,17 @@ bool Player::ActionControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if (CheckHitKey(KEY_INPUT_J)&&Atype_==AttackType::ATTACKT) {
+	if (CheckHitKey(KEY_INPUT_J)||Atype_==AttackType::ATTACKT) {
 		anim_.animtype_ = Animation::ATTACK;
 		Atype_ = ATTACKT;
 	}
 
-	else if (CheckHitKey(KEY_INPUT_K) && Atype_ == AttackType::ATTACK2T) {
+	else if (CheckHitKey(KEY_INPUT_K) || Atype_ == AttackType::ATTACK2T) {
 		anim_.animtype_ = Animation::ATTACK2;
 		Atype_ = ATTACK2T;
 	}
 
-	else if (CheckHitKey(KEY_INPUT_L) && Atype_ == AttackType::ATTACK3T) {
+	else if (CheckHitKey(KEY_INPUT_L) || Atype_ == AttackType::ATTACK3T) {
 		anim_.animtype_ = Animation::ATTACK3;
 		Atype_ = ATTACK3T;
 	}
@@ -330,6 +315,8 @@ void Player::AnimStatus()
 	static float timecnt = 0;
 
 	anim_.animloop_ = true;
+
+	anim_.animSkip_ = false;
 
 	switch (anim_.animtype_)
 	{
@@ -511,6 +498,8 @@ void Player::DeadState()
 
 void Player::AttackAnim()
 {
+	Damege = 0;
+
 	switch (Atype_)
 	{
 	case Player::TNONE:
@@ -519,14 +508,27 @@ void Player::AttackAnim()
 	case Player::ATTACKT:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 8;
-		break;
 	case Player::ATTACK2T:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 8;
-		break;
 	case Player::ATTACK3T:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 8;
+
+		anim_.animSkip_ = true;
+		anim_.animframecount_++;
+		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4)
+			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
+		if (anim_.animframecount_ >= anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animframe_+1 >= anim_.AFmax_) {
+				Atype_ = AttackType::TNONE;
+				anim_.animtype_ = IDOL;
+			}
+			else
+				anim_.animframe_ = anim_.animframe_ + 1;
+		}
+
 		break;
 	case Player::MAGIC1T:
 		break;
@@ -536,7 +538,24 @@ void Player::AttackAnim()
 		break;
 	}
 
-	
+	if (!anim_.animSkip_) {
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
+
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animloop_)
+				anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+			else {
+				anim_.animframe_ = anim_.animframe_ + 1;
+				if (anim_.animframe_ == anim_.AFmax_)
+					anim_.animtype_ = Animation::IDOL;
+			}
+		}
+	}
 }
 
 bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
