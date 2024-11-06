@@ -1,7 +1,6 @@
 ﻿#include "Enemy.h"
 #include "Field.h"
 #include "ImGui/imgui.h"
-#include "PlaySound.h"
 #include "Engine/CsvReader.h"
 
 
@@ -240,8 +239,6 @@ int Enemy::NowAnimFrame()
 void Enemy::DeadState()
 {
 	if (state_ != EAnimation::DEATH) {
-		Playsound* ps = GetParent()->FindGameObject<Playsound>();
-		ps->SoundON("EDeath");
 	}
 	state_ = EAnimation::DEATH;
 	FCmax_ = 20;

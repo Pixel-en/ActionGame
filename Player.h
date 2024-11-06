@@ -98,6 +98,8 @@ private:
 	
 	int Damege;
 
+	bool attackbuttondown;
+
 	/*----------ä÷êî----------*/
 
 	/// <summary>

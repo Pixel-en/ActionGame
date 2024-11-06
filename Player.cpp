@@ -89,6 +89,8 @@ Player::Player(GameObject* parent)
 	LoadParameter();
 
 	Atype_ = AttackType::TNONE;
+
+	attackbuttondown = false;
 }
 
 Player::~Player()
@@ -114,6 +116,10 @@ void Player::Update()
 		Gaccel_ = 0;
 		isjamp_ = false;
 	}
+
+	ImGui::Begin("test");
+	ImGui::InputInt("x", &anim_.animframe_);
+	ImGui::End();
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
 		anim_.animtype_ = Animation::IDOL;
@@ -277,19 +283,22 @@ bool Player::ActionControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if (CheckHitKey(KEY_INPUT_J)||Atype_==AttackType::ATTACKT) {
+	if ((CheckHitKey(KEY_INPUT_J)&&!attackbuttondown)||Atype_==AttackType::ATTACKT) {
 		anim_.animtype_ = Animation::ATTACK;
 		Atype_ = ATTACKT;
+		attackbuttondown = true;
 	}
 
-	else if (CheckHitKey(KEY_INPUT_K) || Atype_ == AttackType::ATTACK2T) {
+	else if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
 		anim_.animtype_ = Animation::ATTACK2;
 		Atype_ = ATTACK2T;
+		attackbuttondown = true;
 	}
 
-	else if (CheckHitKey(KEY_INPUT_L) || Atype_ == AttackType::ATTACK3T) {
+	else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::ATTACK3T) {
 		anim_.animtype_ = Animation::ATTACK3;
 		Atype_ = ATTACK3T;
+		attackbuttondown = true;
 	}
 	else if (CheckHitKey(KEY_INPUT_M)) {
 		anim_.animtype_ = Animation::MAGIC;
@@ -302,6 +311,9 @@ bool Player::ActionControl()
 			Atype_ = MAGIC2T;
 		}
 	}
+
+	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L))
+		attackbuttondown = false;
 
 	if (anim_.animtype_ == Animation::IDOL)
 		return false;
@@ -363,7 +375,7 @@ void Player::AnimStatus()
 	case Player::ATTACK3:
 	case Player::MAGIC:
 		anim_.AFmax_ = 5;
-		anim_.AFCmax_ = 15;
+		anim_.AFCmax_ = 20;
 		AttackAnim();
 		break;
 	case Player::CLIMB:
@@ -436,6 +448,84 @@ void Player::AnimStatus()
 	anim_.BEanimtype_ = anim_.animtype_;
 }
 
+void Player::AttackAnim()
+{
+	Damege = 0;
+
+	switch (Atype_)
+	{
+	case Player::TNONE:
+
+		break;
+
+	case Player::ATTACK3T:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+		if (anim_.animframe_ < 2) {
+			if (anim_.Rdir_)
+				transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime() * 3.0;
+			else
+				transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime() * 3.0;
+		}
+
+
+	case Player::ATTACKT:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+	case Player::ATTACK2T:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+
+
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
+		anim_.animSkip_ = true;
+		anim_.animframecount_++;
+		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4)
+			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animframe_ + 1 >= anim_.AFmax_) {
+				Atype_ = AttackType::TNONE;
+				anim_.animtype_ = IDOL;
+				anim_.animframe_ = 0;
+				anim_.animframecount_ = 0;
+			}
+			else
+				anim_.animframe_ = anim_.animframe_ + 1;
+		}
+
+		break;
+	case Player::MAGIC1T:
+		break;
+	case Player::MAGIC2T:
+		break;
+	default:
+		break;
+	}
+
+	if (!anim_.animSkip_) {
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
+
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animloop_)
+				anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+			else {
+				anim_.animframe_ = anim_.animframe_ + 1;
+				if (anim_.animframe_ == anim_.AFmax_)
+					anim_.animtype_ = Animation::IDOL;
+			}
+		}
+	}
+}
+
 VECTOR Player::KnockBackDir(VECTOR _vec)
 {
 	//ƒxƒNƒgƒ‹‚Ì‹““®‚ªˆÓ–¡‚í‚©‚ç‚ñ‚©‚Á‚½
@@ -494,68 +584,6 @@ void Player::DeadState()
 		return;
 
 	anim_.animtype_ = Animation::DEATH;
-}
-
-void Player::AttackAnim()
-{
-	Damege = 0;
-
-	switch (Atype_)
-	{
-	case Player::TNONE:
-
-		break;
-	case Player::ATTACKT:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-	case Player::ATTACK2T:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-	case Player::ATTACK3T:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-
-		anim_.animSkip_ = true;
-		anim_.animframecount_++;
-		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4)
-			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
-		if (anim_.animframecount_ >= anim_.AFCmax_) {
-			anim_.animframecount_ = 0;
-			if (anim_.animframe_+1 >= anim_.AFmax_) {
-				Atype_ = AttackType::TNONE;
-				anim_.animtype_ = IDOL;
-			}
-			else
-				anim_.animframe_ = anim_.animframe_ + 1;
-		}
-
-		break;
-	case Player::MAGIC1T:
-		break;
-	case Player::MAGIC2T:
-		break;
-	default:
-		break;
-	}
-
-	if (!anim_.animSkip_) {
-		if (anim_.BEanimtype_ != anim_.animtype_) {
-			anim_.animframe_ = 0;
-			anim_.animframecount_ = 0;
-		}
-
-		anim_.animframecount_++;
-		if (anim_.animframecount_ > anim_.AFCmax_) {
-			anim_.animframecount_ = 0;
-			if (anim_.animloop_)
-				anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
-			else {
-				anim_.animframe_ = anim_.animframe_ + 1;
-				if (anim_.animframe_ == anim_.AFmax_)
-					anim_.animtype_ = Animation::IDOL;
-			}
-		}
-	}
 }
 
 bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
