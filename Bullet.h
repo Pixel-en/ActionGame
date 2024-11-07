@@ -18,7 +18,9 @@ class Bullet
 	int dir_;
 	float speed_;
 	int bulletType_;
-	
+	XMFLOAT3 originpos_;
+	float range_;
+
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
@@ -30,7 +32,7 @@ public:
 
 	//初期化
 	void Initialize() override;
-	void Initialize(int _dir, int _type);
+	void Initialize(int _dir, int _type, XMFLOAT3 pos, float range);
 
 	void Reset() override;
 
@@ -46,6 +48,8 @@ public:
 	SIZE GetSize() override;
 
 	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + bulletSize_.cx / 2, transform_.position_.y + bulletSize_.cy / 2 }; };
+
+
 
 };
 
