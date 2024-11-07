@@ -79,7 +79,7 @@ void Clear::Update()
 			}
 			//ƒvƒŒƒCƒ„[‚ÌUŒ‚
 			if (p->PlayerAttackHitCheck(E->GetPosition(),E->GetHitBox())) {
-				//E->KillMe();
+				E->HitDamege(p->GetDamege());
 				
 			}
 

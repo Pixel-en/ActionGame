@@ -8,6 +8,8 @@ Bullet::Bullet(GameObject* parent)
 	dir_ = 1;
 	speed_ = 200.0f;
 	bulletType_ = FIRE;
+	originpos_ = { 0,0,0 };
+	range_ = -1;
 
 	framecnt_ = 0;
 	animframe_ = 0;
@@ -33,10 +35,14 @@ void Bullet::Initialize()
 	assert(hImage_ > 0);
 }
 
-void Bullet::Initialize(int _dir, int _type)
+void Bullet::Initialize(int _dir, int _type, XMFLOAT3 pos,float range)
 {
 	dir_ = _dir;
 	bulletType_ = _type;
+
+	originpos_ = pos;
+	range_ = range;
+	transform_.position_ = pos;
 
 	std::string fileName_;
 	switch (bulletType_)
@@ -58,19 +64,25 @@ void Bullet::Reset()
 
 void Bullet::Update()
 {
-	int xpos = transform_.position_.x;
+	//int xpos = transform_.position_.x;
 
-	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr) {
-		xpos -= cam->GetValue();
-	}
+	//Camera* cam = GetParent()->FindGameObject<Camera>();
+	//if (cam != nullptr) {
+	//	xpos -= cam->GetValue();
+	//}
 
-	if (xpos > 800 || 0 > xpos)
-	{
-		KillMe();
-	}
+	//if (xpos > 800 || 0 > xpos)
+	//{
+	//	KillMe();
+	//}
+
+	//transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
+
+
 
 	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
+	if (fabs(originpos_.x - transform_.position_.x) >= range_)
+		KillMe();
 
 	if (framecnt_ >= 20)
 	{
@@ -82,6 +94,7 @@ void Bullet::Update()
 		}
 	}
 	framecnt_++;
+
 }
 
 void Bullet::Draw()

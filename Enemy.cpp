@@ -1,7 +1,6 @@
 ﻿#include "Enemy.h"
 #include "Field.h"
 #include "ImGui/imgui.h"
-#include "PlaySound.h"
 #include "Engine/CsvReader.h"
 
 
@@ -68,9 +67,21 @@ void Enemy::StatusReader(int _enemyNumber)
 
 }
 
+void Enemy::HitDamege(int _damege)
+{
+	if (!invincible_) {
+
+		hp_ -= _damege;
+		if (hp_ <= 0)
+			DeadState();
+		timecnt_ = 0.5f;
+		invincible_ = true;
+	}
+}
+
 Enemy::Enemy(GameObject* parent)
 	:Object(parent, "Enemy"), movetimer_(1.0f), startmove_(false), speed_(0), onGround_(false), range_(ENEMY_LOOKRANGE)
-	, state_(EAnimation::IDOL), SpawnPoint_(transform_.position_), dir_(1), attackfrm_(0)
+	, state_(EAnimation::IDOL), SpawnPoint_(transform_.position_), dir_(1), attackfrm_(0),invincible_(false),timecnt_(0)
 {
 
 	/*アニメーション*/
@@ -185,6 +196,14 @@ void Enemy::Release()
 
 void Enemy::AnimationCheck()
 {
+
+	if (invincible_) {
+		timecnt_ -= Time::DeltaTime();
+		if (timecnt_ < 0.0f) {
+			invincible_ = false;
+		}
+	}
+
 	//前フレームと違うアニメーションならカウントをゼロにする
 	if (BEanimtype_ != state_) {
 		framecnt_ = 0;
@@ -220,8 +239,6 @@ int Enemy::NowAnimFrame()
 void Enemy::DeadState()
 {
 	if (state_ != EAnimation::DEATH) {
-		Playsound* ps = GetParent()->FindGameObject<Playsound>();
-		ps->SoundON("EDeath");
 	}
 	state_ = EAnimation::DEATH;
 	FCmax_ = 20;

@@ -70,6 +70,10 @@ protected:
 
 	Transform hittransform_;
 
+	//–³“GŽžŠÔ
+	float timecnt_;
+	bool invincible_;
+
 	enum  EAnimation
 	{
 		IDOL,
@@ -147,4 +151,6 @@ public:
 	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_IMAGESIZE.cx / 2, transform_.position_.y + ENEMY_IMAGESIZE.cy / 2 }; };
 
 	Transform GetHitTransform() { return hittransform_; };
+
+	void HitDamege(int _damege);
 };

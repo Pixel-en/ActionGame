@@ -52,6 +52,7 @@ private:
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 		bool animloop_;			//アニメーションをループするか
 		bool Rdir_;				//右を向いているかどうか
+		bool animSkip_;			//アニメーションをする場所をスキップするか
 	};
 	//プレイヤーのパラメータ
 	struct Parameter
@@ -95,6 +96,11 @@ private:
 	PlayerAttackParts attack_[6];
 	AttackType Atype_;
 	
+	int Damege;
+
+	bool attackbuttondown;
+
+	float rechargetimer_[ATTACKTYPENUM];
 
 	/*----------関数----------*/
 
@@ -199,5 +205,7 @@ public:
 	float GetMiningTime() { return miningtime_; };
 
 	bool PlayerAttackHitCheck(XMFLOAT3 _trans,VECTOR _hitbox);
+
+	int GetDamege() { return Damege; };
 };
 
