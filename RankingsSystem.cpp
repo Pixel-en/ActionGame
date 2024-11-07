@@ -251,10 +251,12 @@ void RankingsSystem::DrawWriteUI()
 
 void RankingsSystem::DrawWriteUICn()
 {
+	char b;
+
 	//‘I‘ð•¶Žš‚Ì•\Ž¦
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
-			char b = static_cast<char>(N[y][x].Ascii);
+			b = static_cast<char>(N[y][x].Ascii);
 			std::string str(1, b);
 			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
 		}

@@ -39,6 +39,7 @@ public:
 	virtual void Release() override;
 
 	virtual int GetImageHandle() { return hImage_; }
+	virtual Transform GetHitTrans();
 	virtual SIZE GetSize();
 
 	virtual VECTOR GetHitBox();

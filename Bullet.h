@@ -12,8 +12,8 @@ class Bullet
 	const int BULLET_ANIMATION{ 4 };
 	//int framecnt_{ 0 };
 
-	SIZE bulletSize_{ 48,48 };
-	SIZE bulletHitBoxSize_{ 32,32 };
+	VECTOR bulletSize_{ 48,48 };
+	VECTOR bulletHitBoxSize_{ 32,32 };
 
 	int dir_;
 	float speed_;
@@ -51,12 +51,13 @@ public:
 
 	SIZE GetSize() override;
 
-	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + bulletSize_.cx / 2, transform_.position_.y + bulletSize_.cy / 2 }; };
+	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + bulletSize_.x / 2, transform_.position_.y + bulletSize_.y / 2 }; };
 
 	std::string GetTargetName() { return targetName_; };
-
+	Transform GetHitTrans() override;
 	void SetDamege(int _damege) { damege_ = _damege; };
 	int GetDamege() { return damege_; };
+	VECTOR GetHitBox() override;
 
 };
 
