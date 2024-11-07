@@ -21,6 +21,10 @@ class Bullet
 	XMFLOAT3 originpos_;
 	float range_;
 
+	std::string targetName_;
+
+	int damege_;
+
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
@@ -32,7 +36,7 @@ public:
 
 	//初期化
 	void Initialize() override;
-	void Initialize(int _dir, int _type, XMFLOAT3 pos, float range);
+	void Set(int _dir, int _type, XMFLOAT3 pos, float range,std::string Name);
 
 	void Reset() override;
 
@@ -49,7 +53,10 @@ public:
 
 	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + bulletSize_.cx / 2, transform_.position_.y + bulletSize_.cy / 2 }; };
 
+	std::string GetTargetName() { return targetName_; };
 
+	void SetDamege(int _damege) { damege_ = _damege; };
+	int GetDamege() { return damege_; };
 
 };
 

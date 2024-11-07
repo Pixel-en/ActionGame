@@ -108,7 +108,6 @@ protected:
 	//プレイヤーが検知エリアに入ったかどうか
 	bool IsExistPlayer(float _range);
 
-	HitObject* hitobj_;
 
 	void ConvertHitTransformtoTransform() {
 		Transform trans = hitobj_->GetTransform();
@@ -116,6 +115,8 @@ protected:
 	};
 
 public:
+
+	HitObject* hitobj_;
 
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）

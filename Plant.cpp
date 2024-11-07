@@ -1,5 +1,6 @@
 #include "Plant.h"
 #include "Enemy.h"
+#include "ImGui/imgui.h"
 
 Plant::Plant(GameObject* parent)
 	:Enemy(parent)
@@ -65,6 +66,10 @@ void Plant::Update()
 
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
+
+	ImGui::Begin("test");
+	ImGui::InputInt("hp", &hp_);
+	ImGui::End();
 
 	switch (state_)
 	{
@@ -146,7 +151,7 @@ void Plant::UpdateIdol()
 		TargetPoint_ = TargetPos();
 		startmove_ = false;
 		bullet_ = Instantiate<Bullet>(GetParent());
-		bullet_->Initialize(dir_, FIRE,transform_.position_,200);
+		bullet_->Set(dir_, FIRE,transform_.position_,200,"Player");
 		state_ = ATTACK;
 		return;
 	}
