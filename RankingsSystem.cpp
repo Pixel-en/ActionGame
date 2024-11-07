@@ -15,10 +15,10 @@ namespace
 		int Ascii;
 	};
 
-	int dR1 = 485;
-	int dL1 = 400;
-	int dR2 = 520;
-	int dL2 = 435;
+	int dcx1 = 485;
+	int dcy1 = 400;
+	int dcx2 = 520;
+	int dcy2 = 435;
 
 	int nowMojiCount = -1;
 	bool InCnPrevKey = false;
@@ -68,10 +68,10 @@ void RankingsSystem::Initialize()
 	x2 = 455;
 	y2 = 445;
 
-	r1 = 485;
-	l1 = 400; 
-	r2 = 520;
-	l2 = 435;
+	cx1 = 485;
+	cy1 = 400; 
+	cx2 = 520;
+	cy2 = 435;
 	prevKey = false;
 
 	space = 9;
@@ -81,6 +81,8 @@ void RankingsSystem::Initialize()
 
 	nowDevice = PAD;
 
+	str = "";
+
 	
 	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
 	InputHandle = MakeKeyInput(MaxWord,FALSE,TRUE,FALSE);
@@ -88,22 +90,22 @@ void RankingsSystem::Initialize()
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (y == 0 && x == 6) {
-				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
 				del_space_enter++;
 			}
 			else if (y == 1 && x ==6) {
-				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
 				del_space_enter++;
 			}
 			else if (y == 2 && x == 6) {
-				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
 			}
 			else if(x < 5){
-				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,AsciiCodeEN };
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,AsciiCodeEN };
 				AsciiCodeEN++;
 			}
 			else {
-				N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,0};
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,0};
 			}
 		}
 	}
@@ -255,41 +257,67 @@ void RankingsSystem::DrawWriteUICn()
 			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
 		}
 	}
+
+	
+
 	if (CheckHitKey(KEY_INPUT_UP)) {
 		if (prevKey == false) {
-			l1 -= 35;
-			l2 -= 35;
+			cy1 -= 35;
+			cy2 -= 35;
 		}
 		prevKey = true;
 	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
 		if(prevKey == false) {
-			r1 += 35;
-			r2 += 35;
+			cx1 += 35;
+			cx2 += 35;
 		}
 		prevKey = true;
 	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
 		
 		if (prevKey == false) {
-			l1 += 35;
-			l2 += 35;
+			cy1 += 35;
+			cy2 += 35;
 		}
 		prevKey = true;
 	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
 		
 		if (prevKey == false) {
-		    r1 -= 35;
-			r2 -= 35;
+		    cx1 -= 35;
+			cx2 -= 35;
 		}
 		prevKey = true;
 	}
 	else {
 		prevKey = false;
 	}
-	DrawBoxAA(r1, l1, r2,l2, GetColor(255, 255, 255), FALSE);
+
+	if (cx1 < N[0][0].posX1) {
+		cx1 = N[0][0].posX1;
+		cx2 = N[0][0].posX2;
+	}
+
+	if (cy1 < N[0][0].posY1) {
+		cy1 = N[0][0].posY1;
+		cy2 = N[0][0].posY2;
+	}
+
+	if (cx2 > N[Y - 1][X - 1].posX2) {
+		cx2 = N[Y - 1][X - 1].posX2;
+		cx1 = N[Y - 1][X - 1].posX1;
+	}
+
+	if (cy2 > N[Y - 1][X - 1].posY2) {
+		cy2 = N[Y - 1][X - 1].posY2;
+		cy1 = N[Y - 1][X - 1].posY1;
+	}
+
+	DrawBoxAA(cx1, cy1, cx2,cy2, GetColor(255, 255, 255), FALSE);
+
 	
+
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
-			if (r1 == N[y][x].posX1 && l1 == N[y][x].posY1 && r2 == N[y][x].posX2 && l2 == N[y][x].posY2) {
+			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2) {
 				if (CheckHitKey(KEY_INPUT_RETURN)) {
 					if (InCnPrevKey == false) {
 						char b = static_cast<char>(N[y][x].Ascii);
@@ -307,26 +335,29 @@ void RankingsSystem::DrawWriteUICn()
 							}
 						}else if (b == 49) {
 							b = 32;
+							std::string sr{ b };
 							if (nowMojiCount == MaxWord -1 ) {
 								str.erase(nowMojiCount);
-								str.insert(nowMojiCount, &b);
+								str.insert(nowMojiCount, sr);
 							}
 							else {
+								std::string sr{ b };
 								nowMojiCount++;
-								str.insert(nowMojiCount, &b);
+								str.insert(nowMojiCount, sr);
 								
 							}
 						}else if (b == 50) {
 
 						}
 						else {
+							std::string sr{ b };
 							if (nowMojiCount == MaxWord -1){
 								str.erase(nowMojiCount);
-								str.insert(nowMojiCount, &b);
+								str.insert(nowMojiCount, sr);
 							}
 							else {
 								nowMojiCount++;
-								str.insert(nowMojiCount, &b);
+								str.insert(nowMojiCount, sr);
 								
 							}
 						}
@@ -341,5 +372,38 @@ void RankingsSystem::DrawWriteUICn()
 			}
 		}
 	}
+
+	//文字入力バー表示
+	if (eraseTimer > eraseTime) {
+		eraseTimer = 0.0f;
+		eraseAlpha = 0;
+	}
+	eraseTimer += flame;
+	eraseAlpha = 255 - 255 * eraseTimer / eraseTime;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
+	str.size();
+	if (str.size() > 0) {
+		DrawBoxAA(450 + (word + space) * str.size(), 405, 455 + (word + space) * str.size(), 435, GetColor(255, 255, 255), TRUE);//入力バー
+	}
+	else {
+		DrawBoxAA(450, 405, 455, 435, GetColor(255, 255, 255), TRUE);//入力バー
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	//入力可能文字数がわかるボックス表示
+	for (int i = 0; i < MaxWord; i++) {
+		if (i > 0) {
+			n = a + space;
+			DrawBoxAA(n, y1, n + word, y2, GetColor(255, 255, 255), TRUE); //した棒
+			a = n + word;
+		}
+		else
+		{
+			DrawBoxAA(x1, y1, x2 + word, y2, GetColor(255, 255, 255), TRUE); //した棒
+			a = x2 + word;
+		}
+	}
+
+	DrawBoxAA(430, 380, (x1 + 25) + MaxWord * word + (MaxWord - 1) * space, 450, GetColor(255, 255, 255), FALSE); //入力枠線
 	tText->DrawString(str, 450, 370);
 }

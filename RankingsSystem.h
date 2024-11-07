@@ -37,11 +37,20 @@ public:
 	/// </summary>
 	void SortScore();
 
-	void DrawWriteUI();
-
-	void DrawWriteUICn();
+	
 
 private:
+
+	/// <summary>
+	/// 名前入力用UI表示(キーマウ用)
+	/// </summary>
+	void DrawWriteUI();
+
+	/// <summary>
+	/// 名前入力用UI表示(パッド用)
+	/// </summary>
+	void DrawWriteUICn();
+
 	std::string output_csv_file_path_ScoreData;
 	std::string output_csv_file_path_SortData;
 	CsvReader* csv;
@@ -69,7 +78,7 @@ private:
 	int count;
 	int MaxWord;
 
-	int r1, l1, r2, l2;
+	int cx1, cy1, cx2, cy2;
 	bool prevKey;
 
 	int InputHandle;
