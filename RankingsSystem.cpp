@@ -24,7 +24,7 @@ namespace
 	bool InCnPrevKey = false;
 
 	
-	char cName[];
+	char cName[256];
 
 	const int Y = 6;
 	const int X = 7;
@@ -87,6 +87,7 @@ void RankingsSystem::Initialize()
 	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
 	InputHandle = MakeKeyInput(MaxWord,FALSE,TRUE,FALSE);
 
+	//N[y][x]に位置情報posX1,X2,Y1,Y2を挿入
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (y == 0 && x == 6) {
@@ -250,6 +251,7 @@ void RankingsSystem::DrawWriteUI()
 
 void RankingsSystem::DrawWriteUICn()
 {
+	//選択文字の表示
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			char b = static_cast<char>(N[y][x].Ascii);
@@ -257,9 +259,6 @@ void RankingsSystem::DrawWriteUICn()
 			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
 		}
 	}
-
-	
-
 	if (CheckHitKey(KEY_INPUT_UP)) {
 		if (prevKey == false) {
 			cy1 -= 35;
@@ -320,9 +319,10 @@ void RankingsSystem::DrawWriteUICn()
 			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2) {
 				if (CheckHitKey(KEY_INPUT_RETURN)) {
 					if (InCnPrevKey == false) {
-						char b = static_cast<char>(N[y][x].Ascii);
-						if (b == 48) {
-							b = 127;
+						char cAscii = static_cast<char>(N[y][x].Ascii);
+						std::string cAscii_ToString(1, cAscii);
+						if (cAscii == 48) {
+							cAscii = 127;
 							if (nowMojiCount >= 0) {
 								if (nowMojiCount == MaxWord -1) {
 									str.erase(nowMojiCount);
@@ -333,31 +333,31 @@ void RankingsSystem::DrawWriteUICn()
 									nowMojiCount = nowMojiCount - 1;
 								}
 							}
-						}else if (b == 49) {
-							b = 32;
-							std::string sr{ b };
+						}else if (cAscii == 49) {
+							cAscii = 32;
 							if (nowMojiCount == MaxWord -1 ) {
 								str.erase(nowMojiCount);
-								str.insert(nowMojiCount, sr);
+								str.insert(nowMojiCount,cAscii_ToString);
 							}
 							else {
 								std::string sr{ b };
 								nowMojiCount++;
-								str.insert(nowMojiCount, sr);
+								str.insert(nowMojiCount,cAscii_ToString);
 								
 							}
-						}else if (b == 50) {
-
+						}else if (cAscii == 50) {
+							const std::string strl(str);
+							SetRankings(strl, 2345);
 						}
 						else {
 							std::string sr{ b };
 							if (nowMojiCount == MaxWord -1){
 								str.erase(nowMojiCount);
-								str.insert(nowMojiCount, sr);
+								str.insert(nowMojiCount,cAscii_ToString);
 							}
 							else {
 								nowMojiCount++;
-								str.insert(nowMojiCount, sr);
+								str.insert(nowMojiCount,cAscii_ToString);
 								
 							}
 						}

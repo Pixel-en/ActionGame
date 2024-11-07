@@ -129,7 +129,7 @@ void Player::Update()
 		MoveControl();
 	}
 
-	AnimStatus();
+	/*AnimStatus();*/
 
 	CameraScroll();
 }
