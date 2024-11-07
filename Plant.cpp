@@ -146,8 +146,7 @@ void Plant::UpdateIdol()
 		TargetPoint_ = TargetPos();
 		startmove_ = false;
 		bullet_ = Instantiate<Bullet>(GetParent());
-		bullet_->Initialize(dir_, FIRE);
-		bullet_->SetPosition(transform_.position_);
+		bullet_->Initialize(dir_, FIRE,transform_.position_,200);
 		state_ = ATTACK;
 		return;
 	}

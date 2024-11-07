@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Engine/CsvReader.h"
 #include "ImGui/imgui.h"
+#include "Bullet.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -63,6 +64,8 @@ void Player::LoadParameter()
 		attack_[i - 10].recharge_ = csv->GetInt(i, CSVPARAM::RECHARGE);
 	}
 	int a = 0;
+	for (int i = 0; i < 5; i++)
+		rechargetimer_[i] = -1.0f;
 
 }
 
@@ -283,36 +286,44 @@ bool Player::ActionControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if ((CheckHitKey(KEY_INPUT_J)&&!attackbuttondown)||Atype_==AttackType::ATTACKT) {
-		anim_.animtype_ = Animation::ATTACK;
-		Atype_ = ATTACKT;
-		attackbuttondown = true;
+	if ((CheckHitKey(KEY_INPUT_J) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
+		if (rechargetimer_[0] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK;
+			Atype_ = ATTACKT;
+			attackbuttondown = true;
+		}
 	}
 
 	else if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
-		anim_.animtype_ = Animation::ATTACK2;
-		Atype_ = ATTACK2T;
-		attackbuttondown = true;
+		if (rechargetimer_[1] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK2;
+			Atype_ = ATTACK2T;
+			attackbuttondown = true;
+		}
 	}
 
 	else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::ATTACK3T) {
-		anim_.animtype_ = Animation::ATTACK3;
-		Atype_ = ATTACK3T;
-		attackbuttondown = true;
+		if (rechargetimer_[2] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK3;
+			Atype_ = ATTACK3T;
+			attackbuttondown = true;
+		}
 	}
-	else if (CheckHitKey(KEY_INPUT_M)) {
+	else if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown)) {
 		anim_.animtype_ = Animation::MAGIC;
 
-		if (CheckHitKey(KEY_INPUT_K) && Atype_ == AttackType::MAGIC1T) {
-			Atype_ = MAGIC1T;
+		if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
+			if (rechargetimer_[3] < 0.0)
+				Atype_ = MAGIC1T;
 		}
 
-		else if (CheckHitKey(KEY_INPUT_L) && Atype_ == AttackType::MAGIC2T) {
-			Atype_ = MAGIC2T;
+		else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
+			if (rechargetimer_[4] < 0.0)
+				Atype_ = MAGIC2T;
 		}
 	}
 
-	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L))
+	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M))
 		attackbuttondown = false;
 
 	if (anim_.animtype_ == Animation::IDOL)
@@ -514,14 +525,8 @@ void Player::AttackAnim()
 
 		anim_.animframecount_++;
 		if (anim_.animframecount_ > anim_.AFCmax_) {
-			anim_.animframecount_ = 0;
-			if (anim_.animloop_)
-				anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
-			else {
-				anim_.animframe_ = anim_.animframe_ + 1;
-				if (anim_.animframe_ == anim_.AFmax_)
-					anim_.animtype_ = Animation::IDOL;
-			}
+			anim_.animframecount_ = 0;	
+			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
 		}
 	}
 }

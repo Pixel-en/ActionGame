@@ -100,6 +100,8 @@ private:
 
 	bool attackbuttondown;
 
+	float rechargetimer_[ATTACKTYPENUM];
+
 	/*----------ä÷êî----------*/
 
 	/// <summary>
