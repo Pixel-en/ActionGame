@@ -121,7 +121,7 @@ void Player::Update()
 	}
 
 	ImGui::Begin("test");
-	ImGui::InputInt("x", &rechargetimer_[3]);
+	ImGui::InputInt("x", &anim_.animframe_);
 	ImGui::End();
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
@@ -286,42 +286,7 @@ bool Player::ActionControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown)|| Atype_ == AttackType::MAGIC1T|| Atype_ == AttackType::MAGIC2T) {
-		anim_.animtype_ = Animation::MAGIC;
-		XMFLOAT3 bpos = { transform_.position_.x + RUPOINT.x,transform_.position_.y +RUPOINT.y,transform_.position_.z };
-
-		if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
-			if (rechargetimer_[3] < 0.0) {
-				Atype_ = MAGIC1T;
-				if (!attackbuttondown) {
-					Bullet* b = Instantiate<Bullet>(GetParent());
-					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
-					if (anim_.Rdir_)
-						b->Set(1, BULLET_TYPE::FIRE, transform_.position_, attack_[Atype_].range_,"Enemy");
-					else
-						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_,"Enemy");
-				}
-				attackbuttondown = true;
-			}
-		}
-
-		else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
-			if (rechargetimer_[4] < 0.0) {
-				Atype_ = MAGIC2T;
-				if (!attackbuttondown) {
-					Bullet* b = Instantiate<Bullet>(GetParent());
-					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
-					if (anim_.Rdir_)
-						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
-					else
-						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
-				}
-				attackbuttondown = true;
-			}
-		}
-	}
-	
-	else if ((CheckHitKey(KEY_INPUT_J) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
+	if ((CheckHitKey(KEY_INPUT_J) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
 		if (rechargetimer_[0] < 0.0) {
 			anim_.animtype_ = Animation::ATTACK;
 			Atype_ = ATTACKT;
@@ -344,16 +309,22 @@ bool Player::ActionControl()
 			attackbuttondown = true;
 		}
 	}
-	
+	else if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown)) {
+		anim_.animtype_ = Animation::MAGIC;
+
+		if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
+			if (rechargetimer_[3] < 0.0)
+				Atype_ = MAGIC1T;
+		}
+
+		else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
+			if (rechargetimer_[4] < 0.0)
+				Atype_ = MAGIC2T;
+		}
+	}
+
 	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M))
 		attackbuttondown = false;
-
-	for (int i = 0; i < 5; i++) {
-		if (rechargetimer_[i] < 0.0)
-			rechargetimer_[i] = -1.0;
-		else
-			rechargetimer_[i] -= Time::DeltaTime();
-	}
 
 	if (anim_.animtype_ == Animation::IDOL)
 		return false;
@@ -528,7 +499,6 @@ void Player::AttackAnim()
 		if (anim_.animframecount_ > anim_.AFCmax_) {
 			anim_.animframecount_ = 0;
 			if (anim_.animframe_ + 1 >= anim_.AFmax_) {
-				rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
 				Atype_ = AttackType::TNONE;
 				anim_.animtype_ = IDOL;
 				anim_.animframe_ = 0;
@@ -540,38 +510,25 @@ void Player::AttackAnim()
 
 		break;
 	case Player::MAGIC1T:
-		anim_.AFmax_ = 6;
-		anim_.animframe_ = 5;
-		anim_.AFCmax_ = 20;
-		anim_.animSkip_ = false;
+		break;
 	case Player::MAGIC2T:
-		anim_.AFmax_ = 6;
-		anim_.animframe_ = 5;
-		anim_.AFCmax_ = 20;
-		anim_.animSkip_ = false;
-
-		if (!anim_.animSkip_) {
-			if (anim_.BEanimtype_ != anim_.animtype_) {
-				anim_.animframe_ = 0;
-				anim_.animframecount_ = 0;
-			}
-
-			anim_.animframecount_++;
-			if (anim_.animframecount_ > anim_.AFCmax_) {
-				anim_.animframe_ = 0;
-				anim_.animframecount_ = 0;
-				rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
-				Atype_ = AttackType::TNONE;
-				anim_.animtype_ = IDOL;
-
-			}
-		}
 		break;
 	default:
 		break;
 	}
 
+	if (!anim_.animSkip_) {
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
 
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;	
+			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+		}
+	}
 }
 
 VECTOR Player::KnockBackDir(VECTOR _vec)

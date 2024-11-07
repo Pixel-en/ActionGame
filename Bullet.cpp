@@ -13,8 +13,6 @@ Bullet::Bullet(GameObject* parent)
 
 	framecnt_ = 0;
 	animframe_ = 0;
-	targetName_ = "";
-	damege_ = 0;
 }
 
 Bullet::~Bullet()
@@ -37,7 +35,7 @@ void Bullet::Initialize()
 	assert(hImage_ > 0);
 }
 
-void Bullet::Set(int _dir, int _type, XMFLOAT3 pos,float range, std::string Name)
+void Bullet::Initialize(int _dir, int _type, XMFLOAT3 pos,float range)
 {
 	dir_ = _dir;
 	bulletType_ = _type;
@@ -45,8 +43,6 @@ void Bullet::Set(int _dir, int _type, XMFLOAT3 pos,float range, std::string Name
 	originpos_ = pos;
 	range_ = range;
 	transform_.position_ = pos;
-
-	targetName_ = Name;
 
 	std::string fileName_;
 	switch (bulletType_)
@@ -112,7 +108,7 @@ void Bullet::Draw()
 		ypos -= cam->GetValueY();
 	}
 
-	DrawRectGraph(xpos , ypos , animframe_ * bulletSize_.cx, 0, bulletSize_.cx, bulletSize_.cy, hImage_, true, (dir_ * -1) - 1);
+	DrawRectGraph(xpos - (bulletSize_.cx - bulletHitBoxSize_.cx) , ypos - (bulletSize_.cy - bulletHitBoxSize_.cy) / 2, animframe_ * bulletSize_.cx, 0, bulletSize_.cx, bulletSize_.cy, hImage_, true, (dir_ * -1) - 1);
 }
 
 void Bullet::Release()
