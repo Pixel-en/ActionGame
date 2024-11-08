@@ -33,6 +33,7 @@ namespace
 	int del_space_enter = 48;
 	NData N[Y][X];
 
+	bool inPrev = false;
 }
 
 
@@ -249,15 +250,15 @@ void RankingsSystem::DrawWriteUICn()
 			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
 		}
 	}
-
 	
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
-			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2) {
-				prevX1 = cx1;
-				prevY1 = cy1;
-				prevX2 = cx2;
-				prevY2 = cy2;
+			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2
+				&& !(prevX1 == cx1 && prevY1 == cy1 && prevX2 == cx2 && prevY2 == cy2)) {
+					prevX1 = cx1;
+					prevY1 = cy1;
+					prevX2 = cx2;
+					prevY2 = cy2;
 			}
 		}
 	}
@@ -316,19 +317,20 @@ void RankingsSystem::DrawWriteUICn()
 	
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
-			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy1 && N[y][x].Ascii == 0 ) {
+			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 ) {
+				if (CheckHitKey(KEY_INPUT_RETURN))
 				if (cy2 > prevY2) {
 					cy2 = prevY2;
 					cy1 = prevY1;
 				}
-				else if (cx2 < prevX2) {
+				/*else if (cx2 < prevX2) {
 					cx2 = prevX2 - 35;
 					cx1 = prevX1 - 35;
 				}
 				else if (cx2 > prevX2) {
 					cx2 = prevX2 + 35;
 					cx1 = prevX1 + 35;
-				}
+				}*/
 			}
 		}
 	}
