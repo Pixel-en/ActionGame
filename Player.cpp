@@ -70,7 +70,7 @@ void Player::LoadParameter()
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjamp_(true)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjump_(true), jumpEffect(nullptr), attackEffect(nullptr)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -94,6 +94,9 @@ Player::Player(GameObject* parent)
 	Atype_ = AttackType::TNONE;
 
 	attackbuttondown = false;
+
+	jumpEffect.Initialize(transform_, EffectType::JUMP);
+	attackEffect.Initialize(transform_, EffectType::SLASH);
 }
 
 Player::~Player()
@@ -117,7 +120,7 @@ void Player::Update()
 	//地面との当たり判定
 	if (hitobject_->DownCollisionCheck()) {
 		Gaccel_ = 0;
-		isjamp_ = false;
+		isjump_ = false;
 	}
 
 	ImGui::Begin("test");
@@ -133,6 +136,11 @@ void Player::Update()
 	AnimStatus();
 
 	CameraScroll();
+
+	if (!jumpEffect.isEnd && jumpEffect.isStart)
+		jumpEffect.Update();
+	if (!attackEffect.isEnd && attackEffect.isStart)
+		attackEffect.Update();
 }
 
 void Player::Draw()
@@ -162,6 +170,12 @@ void Player::Draw()
 	DrawCircle(xpos+RUPOINT.x/2.0f, ypos + RUPOINT.y, 5, GetColor(255, 0, 255), true);
 
 	PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
+	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
+
+	if (!jumpEffect.isEnd && jumpEffect.isStart)
+		jumpEffect.Draw(cam->GetValue(), cam->GetValueY());
+	if (!attackEffect.isEnd && attackEffect.isStart)
+		attackEffect.Draw(cam->GetValue(), cam->GetValueY());
 }
 
 void Player::Release()
@@ -258,12 +272,16 @@ void Player::MoveControl()
 		hitobject_->RightCollisionCheck();
 
 		//ジャンプ
-		if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
-			isjamp_ = true;
+		if (CheckHitKey(KEY_INPUT_SPACE) && !isjump_) {
+			isjump_ = true;
 			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+			jumpEffect.Reset();
+
+			jumpEffect.SetPosition(transform_.position_/*{ (float)xpos,(float)ypos, 0 }*/);
+			jumpEffect.isStart = true;
 		}
 
-		if (isjamp_) {
+		if (isjump_) {
 			anim_.animtype_ = Animation::JUMP;
 			//WaitKey();
 		}
@@ -273,7 +291,7 @@ void Player::MoveControl()
 			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
 				anim_.animtype_ = Animation::CLIMB;
 				transform_.position_.y = -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
-				isjamp_ = true;
+				//isjamp_ = true;
 				Gaccel_ = 0;
 			}
 		}
@@ -293,9 +311,9 @@ bool Player::ActionControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown)|| Atype_ == AttackType::MAGIC1T|| Atype_ == AttackType::MAGIC2T) {
+	if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T || Atype_ == AttackType::MAGIC2T) {
 		anim_.animtype_ = Animation::MAGIC;
-		XMFLOAT3 bpos = { transform_.position_.x+RUPOINT.x/2.0f,transform_.position_.y + RUPOINT.y,transform_.position_.z };
+		XMFLOAT3 bpos = { transform_.position_.x + RUPOINT.x / 2.0f,transform_.position_.y + RUPOINT.y,transform_.position_.z };
 
 		if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
 			if (rechargetimer_[3] < 0.0) {
@@ -305,9 +323,9 @@ bool Player::ActionControl()
 					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
 					anim_.animframecount_ = 0;
 					if (anim_.Rdir_)
-						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_,"Enemy");
+						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
 					else
-						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_,"Enemy");
+						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
 				}
 				attackbuttondown = true;
 			}
@@ -329,12 +347,24 @@ bool Player::ActionControl()
 			}
 		}
 	}
-	
+
 	else if ((CheckHitKey(KEY_INPUT_J) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
 		if (rechargetimer_[0] < 0.0) {
 			anim_.animtype_ = Animation::ATTACK;
 			Atype_ = ATTACKT;
 			attackbuttondown = true;
+
+			if (anim_.animframe_ == 3)
+			{
+				if (attackEffect.isEnd)
+					attackEffect.Reset();
+
+				if (anim_.Rdir_)
+					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
+				else
+					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
+				attackEffect.isStart = true;
+			}
 		}
 	}
 
@@ -343,6 +373,18 @@ bool Player::ActionControl()
 			anim_.animtype_ = Animation::ATTACK2;
 			Atype_ = ATTACK2T;
 			attackbuttondown = true;
+
+			/*if (anim_.animframe_ == 3)
+			{
+				if (attackEffect.isEnd)
+					attackEffect.Reset();
+
+				if (anim_.Rdir_)
+					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
+				else
+					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
+				attackEffect.isStart = true;
+			}*/
 		}
 	}
 
@@ -351,9 +393,21 @@ bool Player::ActionControl()
 			anim_.animtype_ = Animation::ATTACK3;
 			Atype_ = ATTACK3T;
 			attackbuttondown = true;
+
+			/*if (anim_.animframe_ == 3)
+			{
+				if (attackEffect.isEnd)
+					attackEffect.Reset();
+
+				if (anim_.Rdir_)
+					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
+				else
+					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
+				attackEffect.isStart = true;
+			}*/
 		}
 	}
-	
+
 	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M))
 		attackbuttondown = false;
 
@@ -362,12 +416,52 @@ bool Player::ActionControl()
 			rechargetimer_[i] = -1.0;
 		else
 			rechargetimer_[i] -= Time::DeltaTime();
-	}
+		if (CheckHitKey(KEY_INPUT_K)) {
+			anim_.animtype_ = Animation::ATTACK2;
 
-	if (anim_.animtype_ == Animation::IDOL)
-		return false;
-	else
-		return true;
+			if (anim_.animframe_ == 3)
+			{
+				if (attackEffect.isEnd)
+					attackEffect.Reset();
+
+				if (anim_.Rdir_)
+					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
+				else
+					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
+				attackEffect.isStart = true;
+			}
+		}
+
+		if (CheckHitKey(KEY_INPUT_L)) {
+			anim_.animtype_ = Animation::ATTACK3;
+
+			if (anim_.animframe_ == 3)
+			{
+				if (attackEffect.isEnd)
+					attackEffect.Reset();
+
+				if (anim_.Rdir_)
+					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
+				else
+					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
+				attackEffect.isStart = true;
+			}
+		}
+		if (CheckHitKey(KEY_INPUT_M)) {
+			anim_.animtype_ = Animation::MAGIC;
+
+			if (CheckHitKey(KEY_INPUT_K)) {
+			}
+
+			if (CheckHitKey(KEY_INPUT_L)) {
+			}
+		}
+
+		if (anim_.animtype_ == Animation::IDOL)
+			return false;
+		else
+			return true;
+	}
 }
 
 void Player::AnimStatus()
@@ -399,6 +493,7 @@ void Player::AnimStatus()
 		anim_.AFCmax_ = 11;
 		break;
 	case Player::JUMP:
+		
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 120;
 		anim_.animloop_ = false;

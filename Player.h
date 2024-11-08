@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "HitObject.h"
+#include "Effect.h"
 
 const int ATTACKTYPENUM{ 5 };
 const int PARAMMEMORY{ 5 };	//ステータスの最大割り振り
@@ -15,10 +16,12 @@ class Player :public GameObject
 	//無敵
 	bool invincible_;
 
-	bool isjamp_;
+	bool isjump_;
 
 	float miningtime_;
 
+	Effect jumpEffect;
+	Effect attackEffect;
 public:
 
 	//アニメーションの番号

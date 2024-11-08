@@ -1,4 +1,5 @@
 #include "Effect.h"
+#include "Camera.h"
 
 Effect::Effect(GameObject* parent)
 	:Object(parent)
@@ -11,44 +12,88 @@ Effect::~Effect()
 
 void Effect::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\Kill_Obj.png");
-	assert(hImage_ > 0);
-	transform_.position_ = { 650,500,0 };
-	effectSize = { 64,64 };
-	animframe_ = 0;
-	FCmax_ = 6;
-	canLoop_ = false;
+	fileName = "Assets\\Image\\Effect\\Kill.png";
+	imageSize = { 64,64 };
+	animFrame = 3;
+	maxFrame = 3;
+	canLoop = false;
+	isStart = false;
+	isEnd = false;
 }
 
-void Effect::Initialize(Transform pos,std::string _filename, SIZE _size, int _animframe, int _maxframe, bool _canLoop)
+void Effect::Initialize(Transform pos,int _effectNumber)
 {
-	/*char filename[30];
-	for (int i = 0; i < _filename.length(); i++)
+	switch (_effectNumber)
 	{
-		filename[i] = _filename[i];
-	}*/
-	hImage_ = LoadGraph("Assets\\Image\\Kill_Obj.png");
+	case KILL:
+		fileName = "Assets\\Image\\Effect\\Kill.png";
+		canLoop = false;
+		imageSize = { 64,64 };
+		animFrame = 2;
+		maxFrame = 7;
+		break;
+	case GRASS:
+		fileName = "Assets\\Image\\Effect\\Grass.png";
+		canLoop = true;
+		imageSize = { 64,64 };
+		animFrame = 20;
+		maxFrame = 5;
+		break;
+	case JUMP:
+		fileName = "Assets\\Image\\Effect\\Jump.png";
+		canLoop = false;
+		imageSize = { 64,64 };
+		animFrame = 5;
+		maxFrame = 4;
+		break;
+	case SLASH:
+		fileName = "Assets\\Image\\Effect\\Slash.png";
+		canLoop = false;
+		imageSize = { 64,64 };
+		animFrame = 7;
+		maxFrame = 4;
+		break;
+	case MINE:
+		fileName = "Assets\\Image\\Effect\\Mine.png";
+		canLoop = true;
+		imageSize = { 64,64 };
+		animFrame = 25;
+		maxFrame = 4;
+		break;
+	default:
+		break;
+	}
+
+	transform_ = pos;
+
+	hImage_ = LoadGraph(fileName.c_str());
 	assert(hImage_ > 0);
-	effectSize = _size;
-	animframe_ = _animframe;
-	FCmax_ = 6;
-	canLoop_ = _canLoop;
 }
 
 void Effect::Reset()
 {
+	frame = 0;
+	animframe_ = 0;
+	isStart = false;
+	isEnd = false;
 }
 
 void Effect::Update()
 {
-	static int frame = 0;
-	if (frame % 10 == 1)
+	if (frame % animFrame == 1)
 	{
 		animframe_++;
 	}
-	else if (canLoop_)
+	if (animframe_ >= maxFrame)
 	{
-		animframe_ = 0;
+		if (canLoop)
+		{
+			animframe_ = 0;
+		}
+		else
+		{
+			isEnd = true;
+		}
 	}
 	frame++;
 }
@@ -58,12 +103,47 @@ void Effect::Draw()
 	int xpos = transform_.position_.x;
 	int ypos = transform_.position_.y;
 
+	//Camera* cam = GetParent()->FindGameObject<Camera>();
+	//if (cam != nullptr) {
+	//	xpos -= cam->GetValue();
+	//	ypos -= cam->GetValueY();
+	//}
+	// 
+	xpos -= cameraPos_.x;
+	ypos -= cameraPos_.y;
 	//DrawRectGraph(xpos, ypos, 0, 0, 128, 128, hImage_, true);
 	//DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, animtype_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
 
-	DrawRectGraph(xpos,ypos, effectSize.cx * animframe_, 0, effectSize.cx, effectSize.cy, hImage_, true, false);
+	DrawRectGraph(xpos, ypos, imageSize.cx * animframe_, 0, imageSize.cx, imageSize.cy, hImage_, true, false);
+}
+
+void Effect::Draw(XMFLOAT3 _cameraPos)
+{
+	int xpos = transform_.position_.x;
+	int ypos = transform_.position_.y;
+
+	xpos -= _cameraPos.x;
+	ypos -= _cameraPos.y;
+
+	DrawRectGraph(xpos, ypos, imageSize.cx * animframe_, 0, imageSize.cx, imageSize.cy, hImage_, true, false);
+}
+
+void Effect::Draw(int _camX, int _camY)
+{
+	int xpos = transform_.position_.x;
+	int ypos = transform_.position_.y;
+
+	xpos -= _camX;
+	ypos -= _camY;
+
+	DrawRectGraph(xpos, ypos, imageSize.cx * animframe_, 0, imageSize.cx, imageSize.cy, hImage_, true, false);
 }
 
 void Effect::Release()
 {
+}
+
+void Effect::SetCameraPos(XMFLOAT3 _cameraPos)
+{
+	cameraPos_ = _cameraPos;
 }

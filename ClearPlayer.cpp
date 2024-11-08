@@ -17,7 +17,7 @@ Clearplayer::~Clearplayer()
 void Clearplayer::Initialize()
 {
 	hImage_ = LoadGraph("Assets\\Image\\Player1.5.png");
-	assert(hImage_ > 0);
+	/*assert(hImage_ > 0);*/
 
 	framecnt_ = 0;
 	animframe_ = 0;

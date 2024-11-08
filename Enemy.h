@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Clear.h"
 #include <vector>
+#include "Effect.h"
 
 //プレイヤーが当たったらプレイヤーの負け
 //攻撃してくる
@@ -69,6 +70,7 @@ protected:
 	float hurtTime_;
 
 	Transform hittransform_;
+	//Effect hitEffect;
 
 	//無敵時間
 	float timecnt_;
