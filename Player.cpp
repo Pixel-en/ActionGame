@@ -1,4 +1,4 @@
-#include"Player.h"
+#include "Player.h"
 #include "Camera.h"
 #include "Engine/CsvReader.h"
 #include "ImGui/imgui.h"
@@ -104,7 +104,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\Player1.5.png");
+	hImage_ = LoadGraph("Assets\\Image\\new-Player1.5.png");
 	assert(hImage_ > 0);
 }
 
@@ -122,6 +122,7 @@ void Player::Update()
 
 	ImGui::Begin("test");
 	ImGui::InputInt("x", &anim_.animframe_);
+
 	ImGui::End();
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
@@ -129,7 +130,7 @@ void Player::Update()
 		MoveControl();
 	}
 
-	/*AnimStatus();*/
+	AnimStatus();
 
 	CameraScroll();
 }
@@ -157,7 +158,8 @@ void Player::Draw()
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
 	}
 	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
-	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
+	DrawCircle(xpos, ypos, 5, GetColor(255, 255, 255), true);
+	DrawCircle(xpos+RUPOINT.x/2.0f, ypos + RUPOINT.y, 5, GetColor(255, 0, 255), true);
 
 	PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
 }
@@ -266,10 +268,15 @@ void Player::MoveControl()
 			//WaitKey();
 		}
 		////è„à⁄ìÆ
-		//if (CheckHitKey(KEY_INPUT_W)) {
-
-		//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
-		//}
+		if (CheckHitKey(KEY_INPUT_W)) {
+			Field* f = FindGameObject<Field>();
+			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
+				anim_.animtype_ = Animation::CLIMB;
+				transform_.position_.y = -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
+				isjamp_ = true;
+				Gaccel_ = 0;
+			}
+		}
 	}
 
 	//hitobject_->AllCollisionCheck();
@@ -286,7 +293,44 @@ bool Player::ActionControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if ((CheckHitKey(KEY_INPUT_J) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
+	if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown)|| Atype_ == AttackType::MAGIC1T|| Atype_ == AttackType::MAGIC2T) {
+		anim_.animtype_ = Animation::MAGIC;
+		XMFLOAT3 bpos = { transform_.position_.x+RUPOINT.x/2.0f,transform_.position_.y + RUPOINT.y,transform_.position_.z };
+
+		if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
+			if (rechargetimer_[3] < 0.0) {
+				Atype_ = MAGIC1T;
+				if (!attackbuttondown) {
+					Bullet* b = Instantiate<Bullet>(GetParent());
+					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
+					anim_.animframecount_ = 0;
+					if (anim_.Rdir_)
+						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_,"Enemy");
+					else
+						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_,"Enemy");
+				}
+				attackbuttondown = true;
+			}
+		}
+
+		else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
+			if (rechargetimer_[4] < 0.0) {
+				Atype_ = MAGIC2T;
+				if (!attackbuttondown) {
+					Bullet* b = Instantiate<Bullet>(GetParent());
+					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
+					anim_.animframecount_ = 0;
+					if (anim_.Rdir_)
+						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+					else
+						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+				}
+				attackbuttondown = true;
+			}
+		}
+	}
+	
+	else if ((CheckHitKey(KEY_INPUT_J) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
 		if (rechargetimer_[0] < 0.0) {
 			anim_.animtype_ = Animation::ATTACK;
 			Atype_ = ATTACKT;
@@ -309,22 +353,16 @@ bool Player::ActionControl()
 			attackbuttondown = true;
 		}
 	}
-	else if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown)) {
-		anim_.animtype_ = Animation::MAGIC;
-
-		if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
-			if (rechargetimer_[3] < 0.0)
-				Atype_ = MAGIC1T;
-		}
-
-		else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
-			if (rechargetimer_[4] < 0.0)
-				Atype_ = MAGIC2T;
-		}
-	}
-
+	
 	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M))
 		attackbuttondown = false;
+
+	for (int i = 0; i < 5; i++) {
+		if (rechargetimer_[i] < 0.0)
+			rechargetimer_[i] = -1.0;
+		else
+			rechargetimer_[i] -= Time::DeltaTime();
+	}
 
 	if (anim_.animtype_ == Animation::IDOL)
 		return false;
@@ -499,6 +537,7 @@ void Player::AttackAnim()
 		if (anim_.animframecount_ > anim_.AFCmax_) {
 			anim_.animframecount_ = 0;
 			if (anim_.animframe_ + 1 >= anim_.AFmax_) {
+				rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
 				Atype_ = AttackType::TNONE;
 				anim_.animtype_ = IDOL;
 				anim_.animframe_ = 0;
@@ -510,14 +549,16 @@ void Player::AttackAnim()
 
 		break;
 	case Player::MAGIC1T:
-		break;
+		anim_.AFmax_ = 6;
+		anim_.animframe_ = 5;
+		anim_.AFCmax_ = 30;
+		anim_.animSkip_ = true;
 	case Player::MAGIC2T:
-		break;
-	default:
-		break;
-	}
+		anim_.AFmax_ = 6;
+		anim_.animframe_ = 5;
+		anim_.AFCmax_ = 30;
+		anim_.animSkip_ = true;
 
-	if (!anim_.animSkip_) {
 		if (anim_.BEanimtype_ != anim_.animtype_) {
 			anim_.animframe_ = 0;
 			anim_.animframecount_ = 0;
@@ -525,10 +566,19 @@ void Player::AttackAnim()
 
 		anim_.animframecount_++;
 		if (anim_.animframecount_ > anim_.AFCmax_) {
-			anim_.animframecount_ = 0;	
-			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+			rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
+			Atype_ = AttackType::TNONE;
+			anim_.animtype_ = IDOL;
+
 		}
+		break;
+	default:
+		break;
 	}
+
+
 }
 
 VECTOR Player::KnockBackDir(VECTOR _vec)
@@ -604,11 +654,23 @@ bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
+	XMFLOAT3 attacktrans_;
+	VECTOR attackhitbox_;
 
-	XMFLOAT3 attacktrans_ = { transform_.position_.x + RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
-	VECTOR attackhitbox_ = VGet(attack_[Atype_].range_, HITBOXSIZE.y, 0);
-	//çUåÇópìñÇΩÇËîªíË
-	DrawBox(xpos + RUPOINT.x, ypos + RUPOINT.y, xpos + RUPOINT.x + attack_[Atype_].range_, ypos + RDPOINT.y, GetColor(0, 0, 255), false);
+	if (anim_.Rdir_) {
+
+		attacktrans_ = { transform_.position_.x + RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
+		attackhitbox_ = VGet(attack_[Atype_].range_, HITBOXSIZE.y, 0);
+		//çUåÇópìñÇΩÇËîªíË
+		DrawBox(xpos + RUPOINT.x, ypos + RUPOINT.y, xpos + RUPOINT.x + attack_[Atype_].range_, ypos + RDPOINT.y, GetColor(0, 0, 255), false);
+	}
+	else
+	{
+		attacktrans_ = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+		attackhitbox_ = VGet(-attack_[Atype_].range_, HITBOXSIZE.y, 0);
+		//çUåÇópìñÇΩÇËîªíË
+		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + attackhitbox_.x, ypos + LUPOINT.y+attackhitbox_.y, GetColor(0, 0, 255), false);
+	}
 
 	bool set = hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
 

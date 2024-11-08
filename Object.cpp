@@ -70,6 +70,11 @@ void Object::Release()
 {
 }
 
+Transform Object::GetHitTrans()
+{
+	return Transform();
+}
+
 SIZE Object::GetSize()
 {
 	return IMAGESIZE;

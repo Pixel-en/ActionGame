@@ -122,17 +122,22 @@
     <ClCompile Include="Bard.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="BlueSlime.cpp">
-      <Filter>PlayScene\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="BardA.cpp">
-      <Filter>PlayScene\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="TestOpenObject.cpp">
       <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Explosion.cpp" />
+    <ClCompile Include="Zombie.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Skeleton.cpp">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Plant.cpp">
+      <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +254,17 @@
     </ClInclude>
     <ClInclude Include="TestOpenObject.h">
       <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Explosion.h" />
+    <ClInclude Include="Zombie.h">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Skeleton.h">
+      <Filter>PlayScene\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant.h">
+      <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
