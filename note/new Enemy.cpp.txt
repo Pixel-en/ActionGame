@@ -1,0 +1,31 @@
+#include "Enemy.h"
+
+namespace {
+	const float GRAVITY{ 9.8f / 60.0f };
+}
+
+Enemy::Enemy(GameObject* parent)
+	:Object(parent,"Enemy")
+{
+	hitobj_ = new HitObject();
+}
+
+Enemy::~Enemy()
+{
+}
+
+void Enemy::Initialize()
+{
+}
+
+void Enemy::Update()
+{
+}
+
+void Enemy::Draw()
+{
+}
+
+void Enemy::Release()
+{
+}

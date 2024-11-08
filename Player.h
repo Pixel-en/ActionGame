@@ -139,8 +139,6 @@ private:
 	/// 攻撃時のアニメーション
 	/// </summary>
 	void AttackAnim();
-	
-
 
 public:
 

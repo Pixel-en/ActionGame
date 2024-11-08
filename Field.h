@@ -11,6 +11,13 @@ enum ObjectNumber
 	RIFT_C = 108,//リフト中
 	RIFT_R = 109,//リフト左
 
+	SLIMEA=201,
+	SLIMEB,
+	SLIMEC,
+	BARDA,
+	PLANTA,
+	ZOMBIEA,
+	SKELETONA
 	//201 青スライム
 	//202 赤スライム
 	//203 黄スライム
