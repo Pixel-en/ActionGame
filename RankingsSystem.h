@@ -51,6 +51,8 @@ private:
 	/// </summary>
 	void DrawWriteUICn();
 
+	void NameBar(std::string _str, float _fSize, float _space, float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime);
+
 	std::string output_csv_file_path_ScoreData;
 	std::string output_csv_file_path_SortData;
 	CsvReader* csv;
