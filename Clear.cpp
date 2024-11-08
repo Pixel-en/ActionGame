@@ -33,6 +33,8 @@ void Clear::Reset()
 	Mcount_ = 0;
 	Ecount_ = 0;
 	isFlag_ = false;
+
+	
 }
 
 void Clear::Update()

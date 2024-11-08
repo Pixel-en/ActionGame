@@ -50,7 +50,7 @@ void Player::LoadParameter()
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjamp_(true)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjump_(true), jumpEffect(nullptr), attackEffect(nullptr)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -69,6 +69,9 @@ Player::Player(GameObject* parent)
 	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 
 	LoadParameter();
+
+	jumpEffect.Initialize(transform_, EffectType::JUMP);
+	attackEffect.Initialize(transform_, EffectType::SLASH);
 }
 
 Player::~Player()
@@ -92,7 +95,7 @@ void Player::Update()
 	//地面との当たり判定
 	if (hitobject_->DownCollisionCheck()) {
 		Gaccel_ = 0;
-		isjamp_ = false;
+		isjump_ = false;
 	}
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
@@ -118,6 +121,11 @@ void Player::Update()
 	AnimStatus();
 
 	CameraScroll();
+
+	if (!jumpEffect.isEnd && jumpEffect.isStart)
+		jumpEffect.Update();
+	if (!attackEffect.isEnd && attackEffect.isStart)
+		attackEffect.Update();
 }
 
 void Player::Draw()
@@ -137,13 +145,18 @@ void Player::Draw()
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
-	if(anim_.Rdir_)
+	if (anim_.Rdir_)
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, false);
 	else {
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, false, true);
 	}
 	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
 	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
+
+	if (!jumpEffect.isEnd && jumpEffect.isStart)
+		jumpEffect.Draw(cam->GetValue(), cam->GetValueY());
+	if (!attackEffect.isEnd && attackEffect.isStart)
+		attackEffect.Draw(cam->GetValue(), cam->GetValueY());
 }
 
 void Player::Release()
@@ -240,12 +253,16 @@ void Player::MoveControl()
 		hitobject_->RightCollisionCheck();
 
 		//ジャンプ
-		if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
-			isjamp_ = true;
+		if (CheckHitKey(KEY_INPUT_SPACE) && !isjump_) {
+			isjump_ = true;
 			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+			jumpEffect.Reset();
+
+			jumpEffect.SetPosition(transform_.position_/*{ (float)xpos,(float)ypos, 0 }*/);
+			jumpEffect.isStart = true;
 		}
 
-		if (isjamp_) {
+		if (isjump_) {
 			anim_.animtype_ = Animation::JUMP;
 			//WaitKey();
 		}
@@ -272,14 +289,50 @@ bool Player::ActionControl()
 
 	if (CheckHitKey(KEY_INPUT_J)) {
 		anim_.animtype_ = Animation::ATTACK;
+
+		if (anim_.animframe_ == 3)
+		{
+			if (attackEffect.isEnd)
+				attackEffect.Reset();
+
+			if (anim_.Rdir_)
+				attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
+			else
+				attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
+			attackEffect.isStart = true;
+		}
 	}
 
 	if (CheckHitKey(KEY_INPUT_K)) {
 		anim_.animtype_ = Animation::ATTACK2;
+
+		if (anim_.animframe_ == 3)
+		{
+			if (attackEffect.isEnd)
+				attackEffect.Reset();
+
+			if (anim_.Rdir_)
+				attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
+			else
+				attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
+			attackEffect.isStart = true;
+		}
 	}
 	
 	if (CheckHitKey(KEY_INPUT_L)) {
 		anim_.animtype_ = Animation::ATTACK3;
+
+		if (anim_.animframe_ == 3)
+		{
+			if (attackEffect.isEnd)
+				attackEffect.Reset();
+
+			if (anim_.Rdir_)
+				attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
+			else
+				attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
+			attackEffect.isStart = true;
+		}
 	}
 	if (CheckHitKey(KEY_INPUT_M)) {
 		anim_.animtype_ = Animation::MAGIC;
@@ -324,6 +377,7 @@ void Player::AnimStatus()
 		anim_.AFCmax_ = 11;
 		break;
 	case Player::JUMP:
+		
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 120;
 		anim_.animloop_ = false;
