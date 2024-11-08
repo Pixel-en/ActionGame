@@ -21,7 +21,7 @@ Bard::Bard(GameObject* parent)
 	hittransform_ = transform_;
 	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
 
-	hitobj_ = new HitObject(hittransform_, ENEMY_HITBOXSIZE, this);
+	hitobj_ = new HitObject(hittransform_,ENEMY_HITBOXSIZE, this);
 
 }
 
@@ -73,7 +73,7 @@ void Bard::Update()
 
 	if (p == nullptr)
 		return;
-	//プレイヤーが死んでてもここまではする
+	//繝励Ξ繧､繝､繝ｼ縺梧ｭｻ繧薙〒縺ｦ繧ゅ％縺薙∪縺ｧ縺ｯ縺吶ｋ
 
 	if (transform_.position_.y > 1000.0f) {
 		transform_.position_.y = 1000.0f;
@@ -138,7 +138,7 @@ void Bard::Draw()
 		hitxpos -= cam->GetValue();
 		hitypos -= cam->GetValueY();
 	}
-
+	
 	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - ENEMY_IMAGESIZE.cy / 2, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, (dir_ * -1) - 1);
 	//DrawRectGraph(xpos , ypos, animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true);
 
@@ -177,7 +177,7 @@ void Bard::UpdateIdol()
 		dir_ = -1;
 	else
 		dir_ = 1;
-	//攻撃バッファ
+	//謾ｻ謦�繝舌ャ繝輔ぃ
 	if (!startmove_) {
 		movetimer_ -= Time::DeltaTime();
 		if (movetimer_ < 0) {
@@ -203,7 +203,7 @@ void Bard::UpdateMove()
 		attackVector = { attackVector.x / 150 ,attackVector.y / 150 ,0 };
 		TargetPoint_ = TargetPos();
 		state_ = ATTACK;
-
+		
 		return;
 	}
 	else

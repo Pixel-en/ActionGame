@@ -81,7 +81,7 @@ void Enemy::HitDamege(int _damege)
 
 Enemy::Enemy(GameObject* parent)
 	:Object(parent, "Enemy"), movetimer_(1.0f), startmove_(false), speed_(0), onGround_(false), range_(ENEMY_LOOKRANGE)
-	, state_(EAnimation::IDOL), SpawnPoint_(transform_.position_), dir_(1), attackfrm_(0),invincible_(false),timecnt_(0)
+	, state_(EAnimation::IDOL), SpawnPoint_(transform_.position_), dir_(1), attackfrm_(0), invincible_(false), timecnt_(0)
 {
 
 	/*アニメーション*/

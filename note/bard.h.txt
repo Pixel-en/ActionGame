@@ -1,7 +1,7 @@
 #pragma once
 #include "Enemy.h"
 
-class Bard
+class Bard 
 	: public Enemy
 {
 	float baseHurtTime_{ 0.5 };
@@ -26,22 +26,22 @@ class Bard
 	void UpdateMove() override;
 	/*void UpdateRun() override;*/
 	void UpdateAttack() override;
-	void UpdateHurt() ;
+	void UpdateHurt() override;
 	void UpdateDeath() override;
 public:
 	Bard(GameObject* parent);
 
 	~Bard();
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void Initialize() override;
 
-	//XV
+	//æ›´æ–°
 	void Update() override;
 
-	//•`‰æ
+	//æç”»
 	void Draw() override;
 
-	//ŠJ•ú
+	//é–‹æ”¾
 	void Release() override;
 
 	SIZE GetImageSize();

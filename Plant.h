@@ -15,6 +15,8 @@ class Plant
 		DEATH
 	};
 
+	
+
 	SIZE ENEMY_IMAGESIZE{ 80,80 };
 	SIZE ENEMY_HITBOXSIZE{ 32,64 };
 
