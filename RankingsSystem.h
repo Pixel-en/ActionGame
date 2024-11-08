@@ -37,11 +37,22 @@ public:
 	/// </summary>
 	void SortScore();
 
-	void DrawWriteUI();
-
-	void DrawWriteUICn();
+	
 
 private:
+
+	/// <summary>
+	/// 名前入力用UI表示(キーマウ用)
+	/// </summary>
+	void DrawWriteUI();
+
+	/// <summary>
+	/// 名前入力用UI表示(パッド用)
+	/// </summary>
+	void DrawWriteUICn();
+
+	void NameBar(std::string _str, float _fSize, float _space, float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime);
+
 	std::string output_csv_file_path_ScoreData;
 	std::string output_csv_file_path_SortData;
 	CsvReader* csv;
@@ -53,10 +64,6 @@ private:
 	ClearLogo* cLogo;
 	TitleText* tText;
 
-	int InputHandle;
-	char Name[256];
-	char cName[256];
-
 	bool SetEnd;
 
 	float eraseTime;
@@ -64,7 +71,7 @@ private:
 	float flame;
 	float eraseAlpha;
 
-	int x1,y1,x2,y2;
+	int x1, y1, x2, y2;
 
 	int space;
 	int word;
@@ -73,9 +80,22 @@ private:
 	int count;
 	int MaxWord;
 
-	int r1, l1, r2, l2;
+	int cx1, cy1, cx2, cy2;
 	bool prevKey;
 
+	int InputHandle;
+	char Name[256];
+	char cName[256];
+	std::string str;
+
 	
+
+	enum DEVICE
+	{
+		KEY_AND_MOUSE = 0,
+		PAD
+	};
+
+	int nowDevice;
 };
 

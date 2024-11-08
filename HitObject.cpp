@@ -14,6 +14,23 @@ HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject*
 	}
 }
 
+HitObject::HitObject(VECTOR _Lu, VECTOR _size, GameObject* _obj)
+	:obj_(nullptr),Lu_(_Lu),size_(_size)
+{
+	Ru_ = { Lu_.x + size_.x,Lu_.y };
+	Ld_ = { Lu_.x,Lu_.y + size_.y };
+	Rd_ = { Lu_.x + size_.x,Lu_.y + size_.y };
+	size_={ -1,-1 };
+
+	trans_.position_ = { -1,-1,-1 };
+	obj_ = _obj;
+	field = obj_->GetParent()->FindGameObject<Field>();
+	if (field == nullptr) {
+		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
+		assert(false);
+	}
+}
+
 HitObject::HitObject(SIZE _size, GameObject* _obj)
 	:obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
@@ -83,6 +100,7 @@ bool HitObject::RightCollisionCheck()
 	else
 		trns = trans_;
 	int push;
+
 	if (size_.x > 0)
 		push = field->CollisionRightCheck(trns.position_.x + size_.x, trns.position_.y + size_.y);
 	else
@@ -237,8 +255,8 @@ bool HitObject::HitObjectANDObject(XMFLOAT3 _trans1, VECTOR _size1, XMFLOAT3 _tr
 	trans1.position_ = { _trans1.x + _size1.x / 2.0f,_trans1.y + _size1.y / 2.0f,_trans1.z };
 	trans2.position_ = { _trans2.x + _size2.x / 2.0f,_trans2.y + _size2.y / 2.0f,_trans2.z };
 
-	if (fabs(trans1.position_.x - trans2.position_.x) < _size1.x / 2.0f + _size2.x / 2.0f &&
-		fabs(trans1.position_.y - trans2.position_.y) < _size1.y / 2.0f + _size2.y / 2.0f)
+	if (fabs(trans1.position_.x - trans2.position_.x) < fabs(_size1.x) / 2.0f + fabs(_size2.x) / 2.0f &&
+		fabs(trans1.position_.y - trans2.position_.y) < fabs(_size1.y) / 2.0f + fabs(_size1.y) / 2.0f)
 		return true;
 
 	return false;

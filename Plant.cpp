@@ -1,5 +1,6 @@
 #include "Plant.h"
 #include "Enemy.h"
+#include "ImGui/imgui.h"
 
 Plant::Plant(GameObject* parent)
 	:Enemy(parent)
@@ -66,6 +67,10 @@ void Plant::Update()
 	if (transform_.position_.y < 0)
 		transform_.position_.y = 0;
 
+	ImGui::Begin("test");
+	ImGui::InputInt("hp", &hp_);
+	ImGui::End();
+
 	switch (state_)
 	{
 	case IDOL:
@@ -106,8 +111,9 @@ void Plant::Draw()
 		ypos -= cam->GetValueY();
 	}
 
-	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, (dir_ * -1) - 1);
-
+	SetTransColor(255 / 2, 255 / 2, 255 / 2);
+	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, !invincible_, (dir_ * -1) - 1);
+	SetTransColor(0,0,0);
 
 }
 
@@ -146,8 +152,7 @@ void Plant::UpdateIdol()
 		TargetPoint_ = TargetPos();
 		startmove_ = false;
 		bullet_ = Instantiate<Bullet>(GetParent());
-		bullet_->Initialize(dir_, FIRE);
-		bullet_->SetPosition(transform_.position_);
+		bullet_->Set(dir_, FIRE,transform_.position_,200,"Player");
 		state_ = ATTACK;
 		return;
 	}

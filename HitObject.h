@@ -27,6 +27,14 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="_Lu">左上の点</param>
+	/// <param name="_size">当たり判定のサイズ</param>
+	/// <param name="_obj">チェック対象のオブジェクト</param>
+	HitObject(VECTOR _Lu, VECTOR _size, GameObject* _obj);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	/// <param name="_size">当たり判定のサイズ</param>
 	/// <param name="_obj">オブジェクト</param>
 	HitObject(SIZE _size, GameObject* _obj);

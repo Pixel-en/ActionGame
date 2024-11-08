@@ -224,34 +224,34 @@ void Bard::UpdateMove()
 	}
 }
 
-void Bard::UpdateRun()
-{
-	AFmax_ = 7;
-	FCmax_ = 11;
-
-	if (Ppos.x - transform_.position_.x < 0)
-		dir_ = -1;
-	else
-		dir_ = 1;
-
-	if (IsExistPlayer(range_)) {
-		if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
-			speed_ = ENEMY_ATTACKSPEED;
-			attackVector = EPVector();
-			state_ = EAnimation::ATTACK;
-			attackfrm_ = 0;
-			startmove_ = false;
-		}
-		else {
-			transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
-		}
-	}
-	else {
-		speed_ = baseSpeed;
-		range_ = ENEMY_LOOKRANGE;
-		state_ = EAnimation::MOVE;
-	}
-}
+//void Bard::UpdateRun()
+//{
+//	AFmax_ = 7;
+//	FCmax_ = 11;
+//
+//	if (Ppos.x - transform_.position_.x < 0)
+//		dir_ = -1;
+//	else
+//		dir_ = 1;
+//
+//	if (IsExistPlayer(range_)) {
+//		if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
+//			speed_ = ENEMY_ATTACKSPEED;
+//			attackVector = EPVector();
+//			state_ = EAnimation::ATTACK;
+//			attackfrm_ = 0;
+//			startmove_ = false;
+//		}
+//		else {
+//			transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
+//		}
+//	}
+//	else {
+//		speed_ = baseSpeed;
+//		range_ = ENEMY_LOOKRANGE;
+//		state_ = EAnimation::MOVE;
+//	}
+//}
 
 void Bard::UpdateAttack()
 {

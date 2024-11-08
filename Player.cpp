@@ -1,7 +1,8 @@
-#include"Player.h"
+#include "Player.h"
 #include "Camera.h"
 #include "Engine/CsvReader.h"
 #include "ImGui/imgui.h"
+#include "Bullet.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -27,6 +28,10 @@ void Player::LoadParameter()
 		TECHNIC,
 		SPEED,
 		HP,
+		POWER = 1,
+		RANGE,
+		FRAME,
+		RECHARGE,
 	};
 
 	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerParameter.csv");
@@ -35,7 +40,7 @@ void Player::LoadParameter()
 	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED) - 1;
 	param_.hp_ = csv->GetInt(1, CSVPARAM::HP) - 1;
 
-	for (int i = 4; i < csv->GetLines(); i++) {
+	for (int i = 4; i < 9; i++) {
 		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
 		ParamCorre_[i - 4].technic_ = csv->GetInt(i, CSVPARAM::TECHNIC);
 		ParamCorre_[i - 4].speed_ = csv->GetInt(i, CSVPARAM::SPEED);
@@ -46,6 +51,21 @@ void Player::LoadParameter()
 	param_.technic_ = Clamp(param_.technic_, 0, 4);
 	param_.speed_ = Clamp(param_.speed_, 0, 4);
 	param_.hp_ = Clamp(param_.hp_, 0, 4);
+
+	attack_[0].power_ = 0;
+	attack_[0].range_ = 0;
+	attack_[0].attackframe_ = 0;
+	attack_[0].recharge_ = 0;
+
+	for (int i = 11; i < 16; i++) {
+		attack_[i - 10].power_ = csv->GetInt(i, CSVPARAM::POWER);
+		attack_[i - 10].range_ = csv->GetInt(i, CSVPARAM::RANGE);
+		attack_[i - 10].attackframe_ = csv->GetInt(i, CSVPARAM::FRAME);
+		attack_[i - 10].recharge_ = csv->GetInt(i, CSVPARAM::RECHARGE);
+	}
+	int a = 0;
+	for (int i = 0; i < 5; i++)
+		rechargetimer_[i] = -1.0f;
 
 }
 
@@ -61,6 +81,7 @@ Player::Player(GameObject* parent)
 	anim_.animframecount_ = 0;
 	anim_.animloop_ = false;
 	anim_.Rdir_ = true;
+	anim_.animSkip_ = false;
 
 	transform_.position_ = { 0,0,0 };
 	miningtime_ = 0.0f;
@@ -69,6 +90,10 @@ Player::Player(GameObject* parent)
 	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 
 	LoadParameter();
+
+	Atype_ = AttackType::TNONE;
+
+	attackbuttondown = false;
 
 	jumpEffect.Initialize(transform_, EffectType::JUMP);
 	attackEffect.Initialize(transform_, EffectType::SLASH);
@@ -82,7 +107,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\Player1.5.png");
+	hImage_ = LoadGraph("Assets\\Image\\new-Player1.5.png");
 	assert(hImage_ > 0);
 }
 
@@ -98,25 +123,15 @@ void Player::Update()
 		isjump_ = false;
 	}
 
+	ImGui::Begin("test");
+	ImGui::InputInt("x", &anim_.animframe_);
+
+	ImGui::End();
+
 	if (anim_.animtype_ < Animation::DAMAGE) {
 		anim_.animtype_ = Animation::IDOL;
 		MoveControl();
 	}
-	float time = Time::DeltaTime();
-	float temp;
-	ImGui::Begin("debug");
-	//ImGui::InputFloat("time", &time);
-	//temp = time*ParamCorre_[0].technic_;
-	//ImGui::InputFloat("0", &temp);
-	//temp = time*ParamCorre_[1].technic_;
-	//ImGui::InputFloat("1", &temp);
-	//temp = time*ParamCorre_[2].technic_;
-	//ImGui::InputFloat("2", &temp);
-	//temp = time*ParamCorre_[3].technic_;
-	//ImGui::InputFloat("3", &temp);
-	//temp = time*ParamCorre_[4].technic_;
-	//ImGui::InputFloat("4", &temp);
-	ImGui::End();
 
 	AnimStatus();
 
@@ -146,11 +161,15 @@ void Player::Draw()
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
 	if (anim_.Rdir_)
-		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, false);
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
 	else {
-		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, false, true);
+		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
 	}
 	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
+	DrawCircle(xpos, ypos, 5, GetColor(255, 255, 255), true);
+	DrawCircle(xpos+RUPOINT.x/2.0f, ypos + RUPOINT.y, 5, GetColor(255, 0, 255), true);
+
+	PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
 	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
 
 	if (!jumpEffect.isEnd && jumpEffect.isStart)
@@ -215,7 +234,7 @@ void Player::MoveControl()
 	float Dash = 1.0f;
 	miningtime_ = 0.0f;
 
-	if(!ActionControl()){
+	if (!ActionControl()) {
 
 		//左移動
 		if (CheckHitKey(KEY_INPUT_A)) {
@@ -267,10 +286,15 @@ void Player::MoveControl()
 			//WaitKey();
 		}
 		////上移動
-		//if (CheckHitKey(KEY_INPUT_W)) {
-
-		//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
-		//}
+		if (CheckHitKey(KEY_INPUT_W)) {
+			Field* f = FindGameObject<Field>();
+			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
+				anim_.animtype_ = Animation::CLIMB;
+				transform_.position_.y = -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
+				isjamp_ = true;
+				Gaccel_ = 0;
+			}
+		}
 	}
 
 	//hitobject_->AllCollisionCheck();
@@ -287,6 +311,50 @@ bool Player::ActionControl()
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
+	if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown)|| Atype_ == AttackType::MAGIC1T|| Atype_ == AttackType::MAGIC2T) {
+		anim_.animtype_ = Animation::MAGIC;
+		XMFLOAT3 bpos = { transform_.position_.x+RUPOINT.x/2.0f,transform_.position_.y + RUPOINT.y,transform_.position_.z };
+
+		if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
+			if (rechargetimer_[3] < 0.0) {
+				Atype_ = MAGIC1T;
+				if (!attackbuttondown) {
+					Bullet* b = Instantiate<Bullet>(GetParent());
+					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
+					anim_.animframecount_ = 0;
+					if (anim_.Rdir_)
+						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_,"Enemy");
+					else
+						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_,"Enemy");
+				}
+				attackbuttondown = true;
+			}
+		}
+
+		else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
+			if (rechargetimer_[4] < 0.0) {
+				Atype_ = MAGIC2T;
+				if (!attackbuttondown) {
+					Bullet* b = Instantiate<Bullet>(GetParent());
+					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
+					anim_.animframecount_ = 0;
+					if (anim_.Rdir_)
+						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+					else
+						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+				}
+				attackbuttondown = true;
+			}
+		}
+	}
+	
+	else if ((CheckHitKey(KEY_INPUT_J) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
+		if (rechargetimer_[0] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK;
+			Atype_ = ATTACKT;
+			attackbuttondown = true;
+		}
+	}
 	if (CheckHitKey(KEY_INPUT_J)) {
 		anim_.animtype_ = Animation::ATTACK;
 
@@ -303,6 +371,30 @@ bool Player::ActionControl()
 		}
 	}
 
+	else if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
+		if (rechargetimer_[1] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK2;
+			Atype_ = ATTACK2T;
+			attackbuttondown = true;
+		}
+	}
+
+	else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::ATTACK3T) {
+		if (rechargetimer_[2] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK3;
+			Atype_ = ATTACK3T;
+			attackbuttondown = true;
+		}
+	}
+	
+	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M))
+		attackbuttondown = false;
+
+	for (int i = 0; i < 5; i++) {
+		if (rechargetimer_[i] < 0.0)
+			rechargetimer_[i] = -1.0;
+		else
+			rechargetimer_[i] -= Time::DeltaTime();
 	if (CheckHitKey(KEY_INPUT_K)) {
 		anim_.animtype_ = Animation::ATTACK2;
 
@@ -357,6 +449,8 @@ void Player::AnimStatus()
 
 	anim_.animloop_ = true;
 
+	anim_.animSkip_ = false;
+
 	switch (anim_.animtype_)
 	{
 	case Player::NONE:
@@ -398,25 +492,17 @@ void Player::AnimStatus()
 		}
 		anim_.animframecount_ = 0;
 		break;
-	case Player::ATTACK:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-		break;
+	case Player::ATTACK:	//AttackAnimに移植
 	case Player::ATTACK2:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-		break;
 	case Player::ATTACK3:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
+	case Player::MAGIC:
+		anim_.AFmax_ = 5;
+		anim_.AFCmax_ = 20;
+		AttackAnim();
 		break;
 	case Player::CLIMB:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
-		break;
-	case Player::MAGIC:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 15;
 		break;
 	case Player::COLLECTION:
 		anim_.AFmax_ = 5;
@@ -463,23 +549,109 @@ void Player::AnimStatus()
 	/*----アニメーションの切り替えなど-----*/
 
 	//フレームのカウント
-	if (anim_.BEanimtype_ != anim_.animtype_) {
-		anim_.animframe_ = 0;
-		anim_.animframecount_ = 0;
-	}
+	if (!anim_.animSkip_) {
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
 
-	anim_.animframecount_++;
-	if (anim_.animframecount_ > anim_.AFCmax_) {
-		anim_.animframecount_ = 0;
-		if (anim_.animloop_)
-			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
-		else {
-			anim_.animframe_ = anim_.animframe_ + 1;
-			if (anim_.animframe_ == anim_.AFmax_)
-				anim_.animtype_ = Animation::IDOL;
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animloop_)
+				anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+			else {
+				anim_.animframe_ = anim_.animframe_ + 1;
+				if (anim_.animframe_ == anim_.AFmax_)
+					anim_.animtype_ = Animation::IDOL;
+			}
 		}
 	}
 	anim_.BEanimtype_ = anim_.animtype_;
+}
+
+void Player::AttackAnim()
+{
+	Damege = 0;
+
+	switch (Atype_)
+	{
+	case Player::TNONE:
+
+		break;
+
+	case Player::ATTACK3T:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+		if (anim_.animframe_ < 2) {
+			if (anim_.Rdir_)
+				transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime() * 3.0;
+			else
+				transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime() * 3.0;
+		}
+
+
+	case Player::ATTACKT:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+	case Player::ATTACK2T:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+
+
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
+		anim_.animSkip_ = true;
+		anim_.animframecount_++;
+		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4)
+			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animframe_ + 1 >= anim_.AFmax_) {
+				rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
+				Atype_ = AttackType::TNONE;
+				anim_.animtype_ = IDOL;
+				anim_.animframe_ = 0;
+				anim_.animframecount_ = 0;
+			}
+			else
+				anim_.animframe_ = anim_.animframe_ + 1;
+		}
+
+		break;
+	case Player::MAGIC1T:
+		anim_.AFmax_ = 6;
+		anim_.animframe_ = 5;
+		anim_.AFCmax_ = 30;
+		anim_.animSkip_ = true;
+	case Player::MAGIC2T:
+		anim_.AFmax_ = 6;
+		anim_.animframe_ = 5;
+		anim_.AFCmax_ = 30;
+		anim_.animSkip_ = true;
+
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
+
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+			rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
+			Atype_ = AttackType::TNONE;
+			anim_.animtype_ = IDOL;
+
+		}
+		break;
+	default:
+		break;
+	}
+
+
 }
 
 VECTOR Player::KnockBackDir(VECTOR _vec)
@@ -542,3 +714,38 @@ void Player::DeadState()
 	anim_.animtype_ = Animation::DEATH;
 }
 
+bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
+{
+	if (Atype_ < 1)
+		return false;
+
+	int xpos = transform_.position_.x;
+	int ypos = transform_.position_.y;
+
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
+	XMFLOAT3 attacktrans_;
+	VECTOR attackhitbox_;
+
+	if (anim_.Rdir_) {
+
+		attacktrans_ = { transform_.position_.x + RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
+		attackhitbox_ = VGet(attack_[Atype_].range_, HITBOXSIZE.y, 0);
+		//攻撃用当たり判定
+		DrawBox(xpos + RUPOINT.x, ypos + RUPOINT.y, xpos + RUPOINT.x + attack_[Atype_].range_, ypos + RDPOINT.y, GetColor(0, 0, 255), false);
+	}
+	else
+	{
+		attacktrans_ = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+		attackhitbox_ = VGet(-attack_[Atype_].range_, HITBOXSIZE.y, 0);
+		//攻撃用当たり判定
+		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + attackhitbox_.x, ypos + LUPOINT.y+attackhitbox_.y, GetColor(0, 0, 255), false);
+	}
+
+	bool set = hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
+
+	return set;
+}

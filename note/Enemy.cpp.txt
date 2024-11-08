@@ -1,7 +1,6 @@
 #include "Enemy.h"
 #include "Field.h"
 #include "ImGui/imgui.h"
-#include "PlaySound.h"
 #include "Engine/CsvReader.h"
 
 
@@ -42,14 +41,14 @@ XMFLOAT3 Enemy::TargetPos()
 	if (p == nullptr) {
 		return{ 0,0,0 };
 	}
-	v = {p->GetPosition()};
+	v = { p->GetPosition() };
 	return v;
 }
 
 void Enemy::StatusReader(int _enemyNumber)
 {
 	CsvReader* csv = new CsvReader("Assets\\Status\\EnemyStatus.csv");
-	for (int i = 1; i < ENEMY_TYPE_END+1; i++) {
+	for (int i = 1; i < ENEMY_TYPE_END + 1; i++) {
 		if (_enemyNumber == csv->GetInt(i, 0))
 		{
 			baseSpeed = csv->GetInt(i, 1);
@@ -68,9 +67,21 @@ void Enemy::StatusReader(int _enemyNumber)
 
 }
 
+void Enemy::HitDamege(int _damege)
+{
+	if (!invincible_) {
+
+		hp_ -= _damege;
+		if (hp_ <= 0)
+			DeadState();
+		timecnt_ = 0.5f;
+		invincible_ = true;
+	}
+}
+
 Enemy::Enemy(GameObject* parent)
 	:Object(parent, "Enemy"), movetimer_(1.0f), startmove_(false), speed_(0), onGround_(false), range_(ENEMY_LOOKRANGE)
-	,state_(EAnimation::IDOL),SpawnPoint_(transform_.position_),dir_(1),attackfrm_(0)
+	, state_(EAnimation::IDOL), SpawnPoint_(transform_.position_), dir_(1), attackfrm_(0),invincible_(false),timecnt_(0)
 {
 
 	/*アニメーション*/
@@ -84,6 +95,7 @@ Enemy::Enemy(GameObject* parent)
 
 	//hitobj_ = new HitObject(ENEMY_LUPOINT, ENEMY_RUPOINT, ENEMY_LDPOINT, ENEMY_RDPOINT, this);
 	hitobj_ = new HitObject(ENEMY_IMAGESIZE, this);
+
 }
 
 Enemy::~Enemy()
@@ -175,7 +187,9 @@ void Enemy::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-	DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
+	SetTransColor(255 / 2, 255 / 2, 255 / 2);
+	DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, invincible_, dir_ - 1);
+	SetTransColor(0, 0, 0);
 }
 
 void Enemy::Release()
@@ -184,6 +198,14 @@ void Enemy::Release()
 
 void Enemy::AnimationCheck()
 {
+
+	if (invincible_) {
+		timecnt_ -= Time::DeltaTime();
+		if (timecnt_ < 0.0f) {
+			invincible_ = false;
+		}
+	}
+
 	//前フレームと違うアニメーションならカウントをゼロにする
 	if (BEanimtype_ != state_) {
 		framecnt_ = 0;
@@ -206,7 +228,7 @@ void Enemy::AnimationCheck()
 
 bool Enemy::AnimationEnd()
 {
-	if(animframe_ == AFmax_-1 && framecnt_ == FCmax_)
+	if (animframe_ == AFmax_ - 1 && framecnt_ == FCmax_)
 		return true;
 	return false;
 }
@@ -219,8 +241,6 @@ int Enemy::NowAnimFrame()
 void Enemy::DeadState()
 {
 	if (state_ != EAnimation::DEATH) {
-		Playsound* ps = GetParent()->FindGameObject<Playsound>();
-		ps->SoundON("EDeath");
 	}
 	state_ = EAnimation::DEATH;
 	FCmax_ = 20;

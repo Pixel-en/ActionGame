@@ -72,6 +72,10 @@ protected:
 	Transform hittransform_;
 	//Effect hitEffect;
 
+	//無敵時間
+	float timecnt_;
+	bool invincible_;
+
 	enum  EAnimation
 	{
 		IDOL,
@@ -106,7 +110,6 @@ protected:
 	//プレイヤーが検知エリアに入ったかどうか
 	bool IsExistPlayer(float _range);
 
-	HitObject* hitobj_;
 
 	void ConvertHitTransformtoTransform() {
 		Transform trans = hitobj_->GetTransform();
@@ -114,6 +117,8 @@ protected:
 	};
 
 public:
+
+	HitObject* hitobj_;
 
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
@@ -149,4 +154,6 @@ public:
 	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_IMAGESIZE.cx / 2, transform_.position_.y + ENEMY_IMAGESIZE.cy / 2 }; };
 
 	Transform GetHitTransform() { return hittransform_; };
+
+	void HitDamege(int _damege);
 };

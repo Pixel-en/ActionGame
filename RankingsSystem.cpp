@@ -15,25 +15,32 @@ namespace
 		int Ascii;
 	};
 
-	int dR1 = 485;
-	int dL1 = 400;
-	int dR2 = 520;
-	int dL2 = 435;
+	int dcx1 = 900;
+	int dcy1 = 400;
+	int dcx2 = dcx1 +35;
+	int dcy2 = dcy1 +35;
 
-	int nowMojiCount = 0;
+	int nowMojiCount = -1;
 	bool InCnPrevKey = false;
 
+	int prevX1, prevY1, prevX2, prevY2;
+
+	
+	char cName[256];
+
 	const int Y = 6;
-	const int X = 5;
+	const int X = 7;
+	int del_space_enter = 48;
 	NData N[Y][X];
 
+	bool inPrev = false;
 }
 
 
 
 RankingsSystem::RankingsSystem(GameObject* parent)
-	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name()
-	,eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
+	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name(),
+	eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
 {
 }
 
@@ -64,10 +71,11 @@ void RankingsSystem::Initialize()
 	x2 = 455;
 	y2 = 445;
 
-	r1 = 485;
-	l1 = 400; 
-	r2 = 520;
-	l2 = 435;
+
+	cx1 = dcx1;
+	cy1 = dcy1; 
+	cx2 = dcx2;
+	cy2 = dcy2;
 	prevKey = false;
 
 	space = 9;
@@ -75,48 +83,97 @@ void RankingsSystem::Initialize()
 	count = 0;
 	MaxWord = 10;
 
+	nowDevice = PAD;
+
+	str = "";
+
+	
 	// キー入力ハンドルを作る(キャンセルなし全角文字有り数値入力じゃなし)
 	InputHandle = MakeKeyInput(MaxWord,FALSE,TRUE,FALSE);
 
+	//N[y][x]に位置情報posX1,X2,Y1,Y2を挿入
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
-			N[y][x] = { dR1 + 35 * x,dL1 + 35 * y,dR2 + 35 * x,dL2 + 35 * y,AsciiCodeEN };
-			AsciiCodeEN++;
+			if (y == 0 && x == 6) {
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+				del_space_enter++;
+			}
+			else if (y == 1 && x ==6) {
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+				del_space_enter++;
+			}
+			else if (y == 2 && x == 6) {
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+			}
+			else if(x < 5){
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,AsciiCodeEN };
+				AsciiCodeEN++;
+			}
+			else {
+				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,0};
+			}
 		}
 	}
+	str = cName;
 }
 
 void RankingsSystem::Update()
 {
 	if (cLogo->GetOutput()) {
-		// 入力が終了している場合は終了
-		if (CheckKeyInput(InputHandle) != 0) {
-			if (!SetEnd) {
-				SetRankings(Name, 500);
+		switch (nowDevice)
+		{
+		case KEY_AND_MOUSE:
+		{
+			// 入力が終了している場合は終了
+			if (CheckKeyInput(InputHandle) != 0) {
+				if (!SetEnd) {
+					SetRankings(Name, 500);
 
-				SetEnd = true;
-				SortScore();
+					SetEnd = true;
+					SortScore();
+				}
 			}
+			// 作成したキー入力ハンドルをアクティブにする
+			SetActiveKeyInput(InputHandle);
+
+			//入力モードを描画
+			DrawKeyInputModeString(640, 480);
+
+			// 入力途中の文字列を描画
+			DrawKeyInputString(0, 0, InputHandle);
+
+			// 入力された文字列を取得
+			GetKeyInputString(Name, InputHandle);
+			break;
 		}
-		// 作成したキー入力ハンドルをアクティブにする
-		SetActiveKeyInput(InputHandle);
-
-		//入力モードを描画
-		DrawKeyInputModeString(640, 480);
-
-		// 入力途中の文字列を描画
-		DrawKeyInputString(0, 0, InputHandle);
-
-		// 入力された文字列を取得
-		GetKeyInputString(Name, InputHandle);
-
+		case PAD:
+		{
+			break;
+		}
+		default: break;
+		}
 	}
 }
 
 void RankingsSystem::Draw()
 {
 	if (cLogo->GetOutput()) {
-		DrawWriteUICn();
+		switch (nowDevice)
+		{
+		case KEY_AND_MOUSE:
+		{
+			DrawWriteUI();
+			break;
+		}
+		case PAD:
+		{
+			DrawWriteUICn();
+			break;
+		}
+		default:
+			break;
+		}
+		
 	}
 }
 
@@ -160,23 +217,186 @@ void RankingsSystem::SortScore()
 
 void RankingsSystem::DrawWriteUI()
 {
-	//文字入力バー表示
-	if (eraseTimer > eraseTime) {
-		eraseTimer = 0.0f;
-		eraseAlpha = 0;
-	}
-	eraseTimer += flame;
-	eraseAlpha = 255 - 255 * eraseTimer / eraseTime;
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
 	std::string str = Name;
-	str.size();
-	if (str.size() > 0) {
-		DrawBoxAA(450 + (word + space) * str.size(), 405, 455 + (word + space) * str.size(), 435, GetColor(255, 255, 255), TRUE);//入力バー
+	
+	NameBar(str, word, space, 450, 405, 455, 435, eraseTimer, eraseTime);
+
+	//入力可能文字数がわかるボックス表示
+	for (int i = 0; i < MaxWord; i++) {
+		if (i > 0) {
+			n = a + space;
+			DrawBoxAA(n, y1, n + word, y2, GetColor(255, 255, 255), TRUE); //した棒
+			a = n + word;
+		}
+		else
+		{
+			DrawBoxAA(x1, y1, x2 + word, y2, GetColor(255, 255, 255), TRUE); //した棒
+			a = x2 + word;
+		}
+	}
+	DrawBoxAA(430, 380,(x1+25) + MaxWord*word +( MaxWord-1 )* space, 450, GetColor(255, 255, 255), FALSE); //入力枠線
+	tText->DrawString(Name, 450, 400);
+}
+
+void RankingsSystem::DrawWriteUICn()
+{
+	char b;
+
+	//選択文字の表示
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			b = static_cast<char>(N[y][x].Ascii);
+			std::string str(1, b);
+			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
+		}
+	}
+	
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2
+				&& !(prevX1 == cx1 && prevY1 == cy1 && prevX2 == cx2 && prevY2 == cy2)) {
+					prevX1 = cx1;
+					prevY1 = cy1;
+					prevX2 = cx2;
+					prevY2 = cy2;
+			}
+		}
+	}
+
+	if (CheckHitKey(KEY_INPUT_UP)) {
+		if (prevKey == false) {
+			cy1 -= 35;
+			cy2 -= 35;
+		}
+		prevKey = true;
+	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
+		if(prevKey == false) {
+			cx1 += 35;
+			cx2 += 35;
+		}
+		prevKey = true;
+	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
+		
+		if (prevKey == false) {
+			cy1 += 35;
+			cy2 += 35;
+		}
+		prevKey = true;
+	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
+		
+		if (prevKey == false) {
+		    cx1 -= 35;
+			cx2 -= 35;
+		}
+		prevKey = true;
 	}
 	else {
-		DrawBoxAA(450, 405, 455, 435, GetColor(255, 255, 255), TRUE);//入力バー
+		prevKey = false;
 	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	//枠線外にはみ出さない用の処理
+	if (cx1 < N[0][0].posX1) { //←
+		cx1 = N[0][0].posX1;
+		cx2 = N[0][0].posX2;
+	}
+
+	if (cy1 < N[0][0].posY1) { //↑
+		cy1 = N[0][0].posY1;
+		cy2 = N[0][0].posY2;
+	}
+
+	if (cx2 > N[Y - 1][X - 1].posX2) { //→
+		cx2 = N[Y - 1][X - 1].posX2;
+		cx1 = N[Y - 1][X - 1].posX1;
+	}
+
+	if (cy2 > N[Y - 1][X - 1].posY2) { //↓
+		cy2 = N[Y - 1][X - 1].posY2;
+		cy1 = N[Y - 1][X - 1].posY1;
+	}
+	
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 ) {
+				if (CheckHitKey(KEY_INPUT_RETURN))
+				if (cy2 > prevY2) {
+					cy2 = prevY2;
+					cy1 = prevY1;
+				}
+				/*else if (cx2 < prevX2) {
+					cx2 = prevX2 - 35;
+					cx1 = prevX1 - 35;
+				}
+				else if (cx2 > prevX2) {
+					cx2 = prevX2 + 35;
+					cx1 = prevX1 + 35;
+				}*/
+			}
+		}
+	}
+
+	DrawBoxAA(cx1, cy1, cx2,cy2, GetColor(255, 255, 255), FALSE);
+
+	
+
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2) {
+				if (CheckHitKey(KEY_INPUT_RETURN)) {
+					if (InCnPrevKey == false) {
+						char cAscii = static_cast<char>(N[y][x].Ascii);
+						std::string cAscii_ToString(1, cAscii);
+						if (cAscii == 48) {
+							cAscii = 127;
+							if (nowMojiCount >= 0) {
+								if (nowMojiCount == MaxWord -1) {
+									str.erase(nowMojiCount);
+									nowMojiCount = nowMojiCount -1;
+								}
+								else {
+									str.erase(nowMojiCount);
+									nowMojiCount = nowMojiCount - 1;
+								}
+							}
+						}else if (cAscii == 49) {
+							cAscii = 32;
+							if (nowMojiCount == MaxWord -1 ) {
+								str.erase(nowMojiCount);
+								str.insert(nowMojiCount,cAscii_ToString);
+							}
+							else {
+								nowMojiCount++;
+								str.insert(nowMojiCount,cAscii_ToString);
+								
+							}
+						}else if (cAscii == 50) {
+							const std::string strl(str);
+							SetRankings(strl, 2345);
+						}
+						else {
+							if (nowMojiCount == MaxWord -1){
+								str.erase(nowMojiCount);
+								str.insert(nowMojiCount,cAscii_ToString);
+							}
+							else {
+								nowMojiCount++;
+								str.insert(nowMojiCount,cAscii_ToString);
+								
+							}
+						}
+						
+						
+					}
+					InCnPrevKey = true;
+				}
+				else {
+					InCnPrevKey = false;
+				}
+			}
+		}
+	}
+
+	NameBar(str, word, space, 450, 405, 455, 435, eraseTimer, eraseTime);
 
 	//入力可能文字数がわかるボックス表示
 	for (int i = 0; i < MaxWord; i++) {
@@ -192,77 +412,29 @@ void RankingsSystem::DrawWriteUI()
 		}
 	}
 
-	DrawBoxAA(430, 380,(x1+25) + MaxWord*word +( MaxWord-1 )* space, 450, GetColor(255, 255, 255), FALSE); //入力枠線
-	tText->DrawString(Name, 450, 400);
+	DrawBoxAA(430, 380, (x1 + 25) + MaxWord * word + (MaxWord - 1) * space, 450, GetColor(255, 255, 255), FALSE); //入力枠線
+	tText->DrawString(str, 450, 370);
 }
 
-void RankingsSystem::DrawWriteUICn()
+
+
+void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float _x1, float _y1, float _x2, float _y2,float _eraseTimer,float _eraseTime)
 {
-	for (int y = 0; y < Y; y++) {
-		for (int x = 0; x < X; x++) {
-			char b = static_cast<char>(N[y][x].Ascii);
-			std::string str(1, b);
-			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
-		}
+	float eraseAlpha;
+	//文字入力バー表示
+	if (_eraseTimer > _eraseTime) {
+		_eraseTimer = 0.0f;
+		eraseAlpha = 0;
 	}
-	/*for (int i = 65; i < 91; i++) {
-		count++;
-		char b = static_cast<char>(i);
-		std::string str(1, b);
-		if (count > 5) {
-			l++;
-			count = 1;
-		}
-		tText->DrawString(str,(450 + 35 * count), 400 +(35 * l));
-	}*/
-	if (CheckHitKey(KEY_INPUT_UP)) {
-		if (prevKey == false) {
-			l1 -= 35;
-			l2 -= 35;
-		}
-		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
-		if(prevKey == false) {
-			r1 += 35;
-			r2 += 35;
-		}
-		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
-		
-		if (prevKey == false) {
-			l1 += 35;
-			l2 += 35;
-		}
-		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
-		
-		if (prevKey == false) {
-		    r1 -= 35;
-			r2 -= 35;
-		}
-		prevKey = true;
+	_eraseTimer += 1.0f/60.0f;
+	eraseAlpha = 255 - 255 * _eraseTimer / _eraseTime;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
+	_str.size();
+	if (_str.size() > 0) {
+		DrawBoxAA(_x1 + (_fSize + _space) * _str.size(), _y1, _x2 + (_fSize + _space) * _str.size(), _y2, GetColor(255, 255, 255), TRUE);//入力バー
 	}
 	else {
-		prevKey = false;
+		DrawBoxAA(_x1, _y1, _x2, _y2, GetColor(255, 255, 255), TRUE);//入力バー
 	}
-	DrawBoxAA(r1, l1, r2,l2, GetColor(255, 255, 255), FALSE);
-	
-	for (int y = 0; y < Y; y++) {
-		for (int x = 0; x < X; x++) {
-			if (r1 == N[y][x].posX1 && l1 == N[y][x].posY1 && r2 == N[y][x].posX2 && l2 == N[y][x].posY2) {
-				if (CheckHitKey(KEY_INPUT_RETURN)) {
-					if (InCnPrevKey == false) {
-						char b = static_cast<char>(N[y][x].Ascii);
-						cName[nowMojiCount] = b;
-						nowMojiCount++;
-					}
-					InCnPrevKey = true;
-				}
-				else {
-					InCnPrevKey = false;
-				}
-			}
-		}
-	}
-	tText->DrawString(cName, 450, 370);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }

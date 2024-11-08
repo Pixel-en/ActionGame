@@ -55,6 +55,7 @@ private:
 		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
 		bool animloop_;			//アニメーションをループするか
 		bool Rdir_;				//右を向いているかどうか
+		bool animSkip_;			//アニメーションをする場所をスキップするか
 	};
 	//プレイヤーのパラメータ
 	struct Parameter
@@ -77,6 +78,32 @@ private:
 	AnimParts anim_;
 	Parameter param_;
 	ParameterCorrection ParamCorre_[PARAMMEMORY];
+
+	enum AttackType
+	{
+		TNONE,
+		ATTACKT,
+		ATTACK2T,
+		ATTACK3T,
+		MAGIC1T,
+		MAGIC2T,
+	};
+
+	struct PlayerAttackParts {
+		int power_;
+		int range_;
+		int attackframe_;
+		int recharge_;
+	};
+
+	PlayerAttackParts attack_[6];
+	AttackType Atype_;
+	
+	int Damege;
+
+	bool attackbuttondown;
+
+	float rechargetimer_[ATTACKTYPENUM];
 
 	/*----------関数----------*/
 
@@ -110,8 +137,11 @@ private:
 	/// ステートをDeathに
 	/// </summary>
 	void DeadState();
-	
 
+	/// <summary>
+	/// 攻撃時のアニメーション
+	/// </summary>
+	void AttackAnim();
 
 public:
 
@@ -174,5 +204,9 @@ public:
 	VECTOR GetHitBox();
 
 	float GetMiningTime() { return miningtime_; };
+
+	bool PlayerAttackHitCheck(XMFLOAT3 _trans,VECTOR _hitbox);
+
+	int GetDamege() { return Damege; };
 };
 

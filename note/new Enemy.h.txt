@@ -1,0 +1,27 @@
+#pragma once
+#include "Object.h"
+
+class Enemy :public Object
+{
+public:
+
+	//コンストラクタ
+	//引数：parent  親オブジェクト（ObjectManager）
+	Enemy(GameObject* parent);
+
+	//デストラクタ
+	virtual ~Enemy();
+
+	//初期化
+	virtual void Initialize() override;
+
+	//更新
+	virtual void Update() override;
+
+	//描画
+	virtual void Draw() override;
+
+	//開放
+	virtual void Release() override;
+};
+

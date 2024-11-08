@@ -189,6 +189,8 @@ void Field::Draw()
 
 void Field::Release()
 {
+	if (Map != nullptr)
+		delete Map;
 }
 
 int Field::CollisionDownCheck(int x, int y)
@@ -208,7 +210,7 @@ int Field::CollisionUpCheck(int x, int y)
 int Field::CollisionLeftCheck(int x, int y)
 {
 	if (WhatBlock(x, y) == "Wall")
-		return IMAGESIZE - (x % IMAGESIZE) - 1;
+		return IMAGESIZE - (x % IMAGESIZE);
 	return 0;
 }
 

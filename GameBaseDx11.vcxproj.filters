@@ -130,14 +130,13 @@
     </ClCompile>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Explosion.cpp" />
-    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Zombie.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Plant.cpp">
+    <ClCompile Include="Skeleton.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Skeleton.cpp">
+    <ClCompile Include="Plant.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
@@ -258,14 +257,13 @@
     </ClInclude>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Explosion.h" />
-    <ClInclude Include="Effect.h" />
     <ClInclude Include="Zombie.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Plant.h">
+    <ClInclude Include="Skeleton.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Skeleton.h">
+    <ClInclude Include="Plant.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
