@@ -187,7 +187,9 @@ void Enemy::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-	DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
+	SetTransColor(255 / 2, 255 / 2, 255 / 2);
+	DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, invincible_, dir_ - 1);
+	SetTransColor(0, 0, 0);
 }
 
 void Enemy::Release()

@@ -69,8 +69,8 @@ void Clear::Update()
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),M->GetPosition(),M->GetHitBox() )) {
 				M->Mining(p->GetMiningTime());
 			}
-			if (p->PlayerAttackHitCheck(M->GetPosition(), M->GetHitBox()))
-				M->KillMe();
+			//if (p->PlayerAttackHitCheck(M->GetPosition(), M->GetHitBox()))
+				//M->KillMe();
 		}
 		for (Enemy* E : e) {
 			//“G‚ÌUŒ‚

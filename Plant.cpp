@@ -111,8 +111,9 @@ void Plant::Draw()
 		ypos -= cam->GetValueY();
 	}
 
-	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, (dir_ * -1) - 1);
-
+	SetTransColor(255 / 2, 255 / 2, 255 / 2);
+	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, !invincible_, (dir_ * -1) - 1);
+	SetTransColor(0,0,0);
 
 }
 

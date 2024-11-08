@@ -104,7 +104,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\Player1.5.png");
+	hImage_ = LoadGraph("Assets\\Image\\new-Player1.5.png");
 	assert(hImage_ > 0);
 }
 
@@ -121,7 +121,8 @@ void Player::Update()
 	}
 
 	ImGui::Begin("test");
-	ImGui::InputFloat("x", &rechargetimer_[3]);
+	ImGui::InputInt("x", &anim_.animframe_);
+
 	ImGui::End();
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
@@ -267,10 +268,15 @@ void Player::MoveControl()
 			//WaitKey();
 		}
 		////ãˆÚ“®
-		//if (CheckHitKey(KEY_INPUT_W)) {
-
-		//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
-		//}
+		if (CheckHitKey(KEY_INPUT_W)) {
+			Field* f = FindGameObject<Field>();
+			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
+				anim_.animtype_ = Animation::CLIMB;
+				transform_.position_.y = -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
+				isjamp_ = true;
+				Gaccel_ = 0;
+			}
+		}
 	}
 
 	//hitobject_->AllCollisionCheck();
@@ -297,6 +303,7 @@ bool Player::ActionControl()
 				if (!attackbuttondown) {
 					Bullet* b = Instantiate<Bullet>(GetParent());
 					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
+					anim_.animframecount_ = 0;
 					if (anim_.Rdir_)
 						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_,"Enemy");
 					else
@@ -312,6 +319,7 @@ bool Player::ActionControl()
 				if (!attackbuttondown) {
 					Bullet* b = Instantiate<Bullet>(GetParent());
 					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
+					anim_.animframecount_ = 0;
 					if (anim_.Rdir_)
 						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
 					else
@@ -543,29 +551,27 @@ void Player::AttackAnim()
 	case Player::MAGIC1T:
 		anim_.AFmax_ = 6;
 		anim_.animframe_ = 5;
-		anim_.AFCmax_ = 20;
-		anim_.animSkip_ = false;
+		anim_.AFCmax_ = 30;
+		anim_.animSkip_ = true;
 	case Player::MAGIC2T:
 		anim_.AFmax_ = 6;
 		anim_.animframe_ = 5;
-		anim_.AFCmax_ = 20;
-		anim_.animSkip_ = false;
+		anim_.AFCmax_ = 30;
+		anim_.animSkip_ = true;
 
-		if (!anim_.animSkip_) {
-			if (anim_.BEanimtype_ != anim_.animtype_) {
-				anim_.animframe_ = 0;
-				anim_.animframecount_ = 0;
-			}
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
 
-			anim_.animframecount_++;
-			if (anim_.animframecount_ > anim_.AFCmax_) {
-				anim_.animframe_ = 0;
-				anim_.animframecount_ = 0;
-				rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
-				Atype_ = AttackType::TNONE;
-				anim_.animtype_ = IDOL;
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+			rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
+			Atype_ = AttackType::TNONE;
+			anim_.animtype_ = IDOL;
 
-			}
 		}
 		break;
 	default:
