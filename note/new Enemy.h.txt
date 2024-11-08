@@ -1,10 +1,7 @@
 #pragma once
 #include "Object.h"
 
-
-//オブジェクトを作るときのコピー用テンプレート
-//注意：このオブジェクトを継承しないこと
-class Enemy final :public Object
+class Enemy :public Object
 {
 public:
 

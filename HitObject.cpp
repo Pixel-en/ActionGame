@@ -14,6 +14,23 @@ HitObject::HitObject(VECTOR _Lu, VECTOR _Ru, VECTOR _Ld, VECTOR _Rd, GameObject*
 	}
 }
 
+HitObject::HitObject(VECTOR _Lu, VECTOR _size, GameObject* _obj)
+	:obj_(nullptr),Lu_(_Lu),size_(_size)
+{
+	Ru_ = { Lu_.x + size_.x,Lu_.y };
+	Ld_ = { Lu_.x,Lu_.y + size_.y };
+	Rd_ = { Lu_.x + size_.x,Lu_.y + size_.y };
+	size_={ -1,-1 };
+
+	trans_.position_ = { -1,-1,-1 };
+	obj_ = _obj;
+	field = obj_->GetParent()->FindGameObject<Field>();
+	if (field == nullptr) {
+		MessageBox(NULL, "Fieldオブジェクトが見つかりません", "HitObjectより", MB_OK);
+		assert(false);
+	}
+}
+
 HitObject::HitObject(SIZE _size, GameObject* _obj)
 	:obj_(nullptr), Lu_({ -1,-1 }), Ru_({ -1,-1 }), Ld_({ -1,-1 }), Rd_({ -1,-1 })
 {
@@ -83,6 +100,7 @@ bool HitObject::RightCollisionCheck()
 	else
 		trns = trans_;
 	int push;
+
 	if (size_.x > 0)
 		push = field->CollisionRightCheck(trns.position_.x + size_.x, trns.position_.y + size_.y);
 	else
