@@ -1,50 +1,46 @@
 #pragma once
-#include "Object.h"
-
-enum EffectType
-{
-	KILL, GRASS, JUMP,SLASH,MINE, END
-};
+#include "Engine/GameObject.h"
 
 class Effect
-	: public Object
+	: public GameObject
 {
-	int frame;
 
-	int Image;
-	std::string fileName;
-	SIZE imageSize;
-	int animFrame;
-	int maxFrame;
-	bool canLoop;
-
-	XMFLOAT3 cameraPos_;
 public:
-	bool isStart;
-	bool isEnd;
+	enum EffectType
+	{
+		KILL, GRASS, JUMP, SLASH, MINE, END
+	};
+private:
+
+	int hImage_;
+
+	int framecnt_;	//フレームのカウント
+	int FCmax_;	//フレームカウントの最大値
+	int animframe_;	//アニメーションのフレームカウント
+	int AFmax_;		//アニメーションのフレーム数
+	std::string fileName_;
+	XMFLOAT3 cameraPos_;
+	bool canLoop_;
+	bool isRight_;	//右を向いているか
+
+public:
 
 	Effect(GameObject* parent);
+
 	~Effect();
 	//初期化
 	void Initialize() override;
-	//ファイル名は30文字以内
-	void Initialize(Transform pos, int _effectNumber);
 
-	void Reset() override;
+	void Reset(Transform pos, EffectType _effecttype,bool _isRight);
+	void Reset(Transform pos, EffectType _effecttype);
 
 	//更新
 	void Update() override;
 
 	//描画
 	void Draw() override;
-	void Draw(XMFLOAT3 _cameraPos);
-	void Draw(int _camX, int _camY);
 
 	//開放
 	void Release() override;
-
-	void SetPosition(XMFLOAT3 pos) { transform_.position_ = pos; }
-
-	void SetCameraPos(XMFLOAT3 _cameraPos);
 };
 

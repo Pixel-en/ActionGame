@@ -10,7 +10,7 @@ namespace {
 }
 
 Material::Material(GameObject* parent)
-	:Object(parent, "Material"), collectEffect(nullptr)
+	:Object(parent, "Material")
 {
 	sizeX_ = 0;
 	sizeY_ = 0;
@@ -43,8 +43,6 @@ Material::Material(GameObject* parent)
 	posNear = false;
 
 	SeeUiLength = 150.0f;
-
-	collectEffect.Initialize(transform_, EffectType::MINE);
 }
 
 Material::~Material()
@@ -98,8 +96,6 @@ void Material::Draw()
 		DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, 10, GetColor(255, 255, 255), false);
 	}
 	
-	if (collectEffect.isStart)
-		collectEffect.Draw();
 	//DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), false);
 }
 
@@ -109,26 +105,7 @@ void Material::Release()
 
 void Material::Mining(float _mintime)
 {
-	if (_mintime > 0)
-	{
-		int xpos = transform_.position_.x;
-		int ypos = transform_.position_.y;
 
-		Camera* cam = GetParent()->FindGameObject<Camera>();
-		if (cam != nullptr) {
-			xpos -= cam->GetValue();
-			ypos -= cam->GetValueY();
-		}
-
-		collectEffect.SetPosition({ (float)xpos,(float)ypos,0 });
-		collectEffect.Update();
-
-		collectEffect.isStart = true;
-	}
-	else
-	{
-		collectEffect.isStart = false;
-	}
 	durability_ -= _mintime;
 	if (durability_ < 0)
 		KillMe();

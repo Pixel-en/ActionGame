@@ -1,7 +1,6 @@
 #pragma once
 #include "Object.h"
 #include <vector>
-#include "Effect.h"
 
 //材料のクラス
 class Material :public Object
@@ -21,8 +20,6 @@ class Material :public Object
 
 	float SeeUiLength;
 	bool posNear;
-
-	Effect collectEffect;
 public:
 
 	//コンストラクタ

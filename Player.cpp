@@ -3,6 +3,7 @@
 #include "Engine/CsvReader.h"
 #include "ImGui/imgui.h"
 #include "Bullet.h"
+#include "Effect.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -17,7 +18,8 @@ namespace {
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ (float)(IMAGESIZE.y * 4.0) };
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
-
+	const XMFLOAT3 EFFECTATTACK{ 20,10,0 };
+	const XMFLOAT3 EFFECTJUMP{ 0,5,0 };
 }
 
 void Player::LoadParameter()
@@ -70,7 +72,7 @@ void Player::LoadParameter()
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjump_(true), jumpEffect(nullptr), attackEffect(nullptr)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjump_(true)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -95,8 +97,6 @@ Player::Player(GameObject* parent)
 
 	attackbuttondown = false;
 
-	jumpEffect.Initialize(transform_, EffectType::JUMP);
-	attackEffect.Initialize(transform_, EffectType::SLASH);
 }
 
 Player::~Player()
@@ -123,10 +123,6 @@ void Player::Update()
 		isjump_ = false;
 	}
 
-	ImGui::Begin("test");
-	ImGui::InputInt("x", &anim_.animframe_);
-
-	ImGui::End();
 
 	if (anim_.animtype_ < Animation::DAMAGE) {
 		anim_.animtype_ = Animation::IDOL;
@@ -137,10 +133,6 @@ void Player::Update()
 
 	CameraScroll();
 
-	if (!jumpEffect.isEnd && jumpEffect.isStart)
-		jumpEffect.Update();
-	if (!attackEffect.isEnd && attackEffect.isStart)
-		attackEffect.Update();
 }
 
 void Player::Draw()
@@ -172,10 +164,6 @@ void Player::Draw()
 	PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
 	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
 
-	if (!jumpEffect.isEnd && jumpEffect.isStart)
-		jumpEffect.Draw(cam->GetValue(), cam->GetValueY());
-	if (!attackEffect.isEnd && attackEffect.isStart)
-		attackEffect.Draw(cam->GetValue(), cam->GetValueY());
 }
 
 void Player::Release()
@@ -275,10 +263,11 @@ void Player::MoveControl()
 		if (CheckHitKey(KEY_INPUT_SPACE) && !isjump_) {
 			isjump_ = true;
 			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
-			jumpEffect.Reset();
+			Transform trans;
+			trans.position_ += EFFECTJUMP;
+			Effect* e = Instantiate<Effect>(GetParent());
+			e->Reset(trans, e->JUMP);
 
-			jumpEffect.SetPosition(transform_.position_/*{ (float)xpos,(float)ypos, 0 }*/);
-			jumpEffect.isStart = true;
 		}
 
 		if (isjump_) {
@@ -287,7 +276,7 @@ void Player::MoveControl()
 		}
 		////上移動
 		if (CheckHitKey(KEY_INPUT_W)) {
-			Field* f = FindGameObject<Field>();
+			Field* f = GetParent()->FindGameObject<Field>();
 			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
 				anim_.animtype_ = Animation::CLIMB;
 				transform_.position_.y = -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
@@ -353,18 +342,6 @@ bool Player::ActionControl()
 			anim_.animtype_ = Animation::ATTACK;
 			Atype_ = ATTACKT;
 			attackbuttondown = true;
-
-			if (anim_.animframe_ == 3)
-			{
-				if (attackEffect.isEnd)
-					attackEffect.Reset();
-
-				if (anim_.Rdir_)
-					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
-				else
-					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
-				attackEffect.isStart = true;
-			}
 		}
 	}
 
@@ -373,18 +350,6 @@ bool Player::ActionControl()
 			anim_.animtype_ = Animation::ATTACK2;
 			Atype_ = ATTACK2T;
 			attackbuttondown = true;
-
-			/*if (anim_.animframe_ == 3)
-			{
-				if (attackEffect.isEnd)
-					attackEffect.Reset();
-
-				if (anim_.Rdir_)
-					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
-				else
-					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
-				attackEffect.isStart = true;
-			}*/
 		}
 	}
 
@@ -393,75 +358,25 @@ bool Player::ActionControl()
 			anim_.animtype_ = Animation::ATTACK3;
 			Atype_ = ATTACK3T;
 			attackbuttondown = true;
-
-			/*if (anim_.animframe_ == 3)
-			{
-				if (attackEffect.isEnd)
-					attackEffect.Reset();
-
-				if (anim_.Rdir_)
-					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
-				else
-					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
-				attackEffect.isStart = true;
-			}*/
 		}
 	}
 
 	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M))
 		attackbuttondown = false;
 
+
+
 	for (int i = 0; i < 5; i++) {
 		if (rechargetimer_[i] < 0.0)
 			rechargetimer_[i] = -1.0;
 		else
 			rechargetimer_[i] -= Time::DeltaTime();
-		if (CheckHitKey(KEY_INPUT_K)) {
-			anim_.animtype_ = Animation::ATTACK2;
-
-			if (anim_.animframe_ == 3)
-			{
-				if (attackEffect.isEnd)
-					attackEffect.Reset();
-
-				if (anim_.Rdir_)
-					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
-				else
-					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
-				attackEffect.isStart = true;
-			}
-		}
-
-		if (CheckHitKey(KEY_INPUT_L)) {
-			anim_.animtype_ = Animation::ATTACK3;
-
-			if (anim_.animframe_ == 3)
-			{
-				if (attackEffect.isEnd)
-					attackEffect.Reset();
-
-				if (anim_.Rdir_)
-					attackEffect.SetPosition({ transform_.position_.x + 32,transform_.position_.y,0 });
-				else
-					attackEffect.SetPosition({ transform_.position_.x - 32,transform_.position_.y,0 });
-				attackEffect.isStart = true;
-			}
-		}
-		if (CheckHitKey(KEY_INPUT_M)) {
-			anim_.animtype_ = Animation::MAGIC;
-
-			if (CheckHitKey(KEY_INPUT_K)) {
-			}
-
-			if (CheckHitKey(KEY_INPUT_L)) {
-			}
-		}
-
-		if (anim_.animtype_ == Animation::IDOL)
-			return false;
-		else
-			return true;
 	}
+
+	if (anim_.animtype_ == Animation::IDOL)
+		return false;
+	else
+		return true;
 }
 
 void Player::AnimStatus()
@@ -577,6 +492,7 @@ void Player::AnimStatus()
 			anim_.animframecount_ = 0;
 		}
 
+
 		anim_.animframecount_++;
 		if (anim_.animframecount_ > anim_.AFCmax_) {
 			anim_.animframecount_ = 0;
@@ -595,7 +511,7 @@ void Player::AnimStatus()
 void Player::AttackAnim()
 {
 	Damege = 0;
-
+	Transform trans;
 	switch (Atype_)
 	{
 	case Player::TNONE:
@@ -620,15 +536,28 @@ void Player::AttackAnim()
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 12;
 
+		trans.position_ = { transform_.position_.x + RUPOINT.x / 2.0f,transform_.position_.y,transform_.position_.z };
 
 		if (anim_.BEanimtype_ != anim_.animtype_) {
 			anim_.animframe_ = 0;
 			anim_.animframecount_ = 0;
 		}
 		anim_.animSkip_ = true;
-		anim_.animframecount_++;
-		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4)
+		
+		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4) {
 			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
+			if (anim_.animframe_ == 2&&anim_.animframecount_==0) {
+				if (anim_.Rdir_)
+					trans.position_ = { trans.position_.x + EFFECTATTACK.x,trans.position_.y + EFFECTATTACK.y ,trans.position_.z + EFFECTATTACK.z };
+				else
+					trans.position_ = { trans.position_.x - EFFECTATTACK.x,trans.position_.y + EFFECTATTACK.y ,trans.position_.z + EFFECTATTACK.z };
+
+				Effect* e = Instantiate<Effect>(GetParent());
+				e->Reset(trans, e->SLASH, anim_.Rdir_);
+			}
+		}
+
+		anim_.animframecount_++;
 		if (anim_.animframecount_ > anim_.AFCmax_) {
 			anim_.animframecount_ = 0;
 			if (anim_.animframe_ + 1 >= anim_.AFmax_) {
@@ -641,7 +570,6 @@ void Player::AttackAnim()
 			else
 				anim_.animframe_ = anim_.animframe_ + 1;
 		}
-
 		break;
 	case Player::MAGIC1T:
 		anim_.AFmax_ = 6;

@@ -1,8 +1,13 @@
 #include "Effect.h"
 #include "Camera.h"
+#include "ImGui/imgui.h"
+
+namespace {
+	const VECTOR IMAGESIZE{ 64,64 };
+}
 
 Effect::Effect(GameObject* parent)
-	:Object(parent)
+	:GameObject(parent,"Effect")
 {
 }
 
@@ -12,90 +17,80 @@ Effect::~Effect()
 
 void Effect::Initialize()
 {
-	fileName = "Assets\\Image\\Effect\\Kill.png";
-	imageSize = { 64,64 };
-	animFrame = 3;
-	maxFrame = 3;
-	canLoop = false;
-	isStart = false;
-	isEnd = false;
 }
 
-void Effect::Initialize(Transform pos,int _effectNumber)
+void Effect::Reset(Transform pos, EffectType _effecttype,bool _isRight)
 {
-	switch (_effectNumber)
+	switch (_effecttype)
 	{
 	case KILL:
-		fileName = "Assets\\Image\\Effect\\Kill.png";
-		canLoop = false;
-		imageSize = { 64,64 };
-		animFrame = 2;
-		maxFrame = 7;
+		fileName_ = "Assets\\Image\\Effect\\Kill.png";
+		canLoop_= false;
+		FCmax_ = 2;
+		AFmax_ = 7;
 		break;
 	case GRASS:
-		fileName = "Assets\\Image\\Effect\\Grass.png";
-		canLoop = true;
-		imageSize = { 64,64 };
-		animFrame = 20;
-		maxFrame = 5;
+		fileName_ = "Assets\\Image\\Effect\\Grass.png";
+		canLoop_ = true;
+		FCmax_ = 20;
+		AFmax_ = 5;
 		break;
 	case JUMP:
-		fileName = "Assets\\Image\\Effect\\Jump.png";
-		canLoop = false;
-		imageSize = { 64,64 };
-		animFrame = 5;
-		maxFrame = 4;
+		fileName_ = "Assets\\Image\\Effect\\Jump.png";
+		canLoop_ = false;
+		FCmax_ = 5;
+		AFmax_ = 4;
 		break;
 	case SLASH:
-		fileName = "Assets\\Image\\Effect\\Slash.png";
-		canLoop = false;
-		imageSize = { 64,64 };
-		animFrame = 7;
-		maxFrame = 4;
+		fileName_ = "Assets\\Image\\Effect\\Slash.png";
+		canLoop_ = false;
+		FCmax_ = 7;
+		AFmax_ = 4;
 		break;
 	case MINE:
-		fileName = "Assets\\Image\\Effect\\Mine.png";
-		canLoop = true;
-		imageSize = { 64,64 };
-		animFrame = 25;
-		maxFrame = 4;
+		fileName_ = "Assets\\Image\\Effect\\Mine.png";
+		canLoop_ = true;
+		FCmax_ = 25;
+		AFmax_ = 4;
 		break;
 	default:
 		break;
 	}
-
+	
+	isRight_ = _isRight;
 	transform_ = pos;
+	if (!isRight_)
+		transform_.position_.x = transform_.position_.x - IMAGESIZE.x;
 
-	hImage_ = LoadGraph(fileName.c_str());
+	
+	hImage_ = LoadGraph(fileName_.c_str());
 	assert(hImage_ > 0);
 }
 
-void Effect::Reset()
+void Effect::Reset(Transform pos, EffectType _effecttype)
 {
-	frame = 0;
-	animframe_ = 0;
-	isStart = false;
-	isEnd = false;
+	Reset(pos, _effecttype, true);
 }
 
 void Effect::Update()
 {
-	if (frame % animFrame == 1)
-	{
+	
+	if (framecnt_ > FCmax_) {
+		framecnt_ = 0;
 		animframe_++;
-	}
-	if (animframe_ >= maxFrame)
-	{
-		if (canLoop)
-		{
-			animframe_ = 0;
+
+		if (canLoop_) {
+			animframe_ = (animframe_ + 1) % AFmax_;
 		}
-		else
-		{
-			isEnd = true;
+		else {
+			if (animframe_ >= AFmax_) {
+				KillMe();
+			}
+			else
+				animframe_++;
 		}
 	}
-	frame++;
+	framecnt_++;
 }
 
 void Effect::Draw()
@@ -103,47 +98,16 @@ void Effect::Draw()
 	int xpos = transform_.position_.x;
 	int ypos = transform_.position_.y;
 
-	//Camera* cam = GetParent()->FindGameObject<Camera>();
-	//if (cam != nullptr) {
-	//	xpos -= cam->GetValue();
-	//	ypos -= cam->GetValueY();
-	//}
-	// 
-	xpos -= cameraPos_.x;
-	ypos -= cameraPos_.y;
-	//DrawRectGraph(xpos, ypos, 0, 0, 128, 128, hImage_, true);
-	//DrawRectGraph(xpos, ypos, 1 * animframe_ * ENEMY_IMAGESIZE.cx, animtype_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, dir_ - 1);
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
 
-	DrawRectGraph(xpos, ypos, imageSize.cx * animframe_, 0, imageSize.cx, imageSize.cy, hImage_, true, false);
-}
-
-void Effect::Draw(XMFLOAT3 _cameraPos)
-{
-	int xpos = transform_.position_.x;
-	int ypos = transform_.position_.y;
-
-	xpos -= _cameraPos.x;
-	ypos -= _cameraPos.y;
-
-	DrawRectGraph(xpos, ypos, imageSize.cx * animframe_, 0, imageSize.cx, imageSize.cy, hImage_, true, false);
-}
-
-void Effect::Draw(int _camX, int _camY)
-{
-	int xpos = transform_.position_.x;
-	int ypos = transform_.position_.y;
-
-	xpos -= _camX;
-	ypos -= _camY;
-
-	DrawRectGraph(xpos, ypos, imageSize.cx * animframe_, 0, imageSize.cx, imageSize.cy, hImage_, true, false);
+	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE.x, 0, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, isRight_);
+	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(0, 255, 255), false);
 }
 
 void Effect::Release()
 {
-}
-
-void Effect::SetCameraPos(XMFLOAT3 _cameraPos)
-{
-	cameraPos_ = _cameraPos;
 }
