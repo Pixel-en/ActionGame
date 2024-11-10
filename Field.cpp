@@ -100,6 +100,13 @@ void Field::Reset()
 				mo->SetRpos(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2);
 				break;
 			}
+			case BARDA: {
+				c->AddEcount();
+				Bard* bard = Instantiate<Bard>(GetParent());
+				bard->StatusReader(BARDA);
+				bard->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
+			}
+					   /*
 			case SLIME_A + 201: {
 				c->AddEcount();
 				Slime* e = Instantiate<Slime>(GetParent());
@@ -156,6 +163,7 @@ void Field::Reset()
 				e->Reset();
 			}
 							   break;
+							   */
 			default:
 				break;
 			}

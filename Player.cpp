@@ -20,6 +20,7 @@ namespace {
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
 	const XMFLOAT3 EFFECTATTACK{ 20,10,0 };
 	const XMFLOAT3 EFFECTJUMP{ 0,5,0 };
+	const XMFLOAT3 EFFECTMOVE{ 30,-5,0 };
 }
 
 void Player::LoadParameter()
@@ -101,8 +102,10 @@ Player::Player(GameObject* parent)
 
 Player::~Player()
 {
-	if (hitobject_ != nullptr)
+	if (hitobject_ != nullptr) {
 		delete hitobject_;
+		hitobject_ = nullptr;
+	}
 }
 
 void Player::Initialize()
@@ -220,7 +223,7 @@ void Player::MoveControl()
 {
 
 	float Dash = 1.0f;
-	miningtime_ = 0.0f;
+	miningtime_ = -1.0f;
 
 	if (!ActionControl()) {
 
@@ -264,7 +267,7 @@ void Player::MoveControl()
 			isjump_ = true;
 			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
 			Transform trans;
-			trans.position_ += EFFECTJUMP;
+			trans.position_ = { transform_.position_.x + EFFECTJUMP.x,transform_.position_.y + EFFECTJUMP.y ,transform_.position_.z + EFFECTJUMP.z };
 			Effect* e = Instantiate<Effect>(GetParent());
 			e->Reset(trans, e->JUMP);
 
@@ -388,6 +391,12 @@ void Player::AnimStatus()
 
 	anim_.animSkip_ = false;
 
+	Transform trans;
+	if (anim_.Rdir_)
+		trans.position_ = { transform_.position_.x + LDPOINT.x + HITBOXSIZE.x / 2.0f - EFFECTMOVE.x,transform_.position_.y + RDPOINT.y + EFFECTMOVE.y ,transform_.position_.z + EFFECTMOVE.z };
+	else
+		trans.position_ = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.x / 2.0f + EFFECTMOVE.x,transform_.position_.y + RDPOINT.y + EFFECTMOVE.y ,transform_.position_.z + EFFECTMOVE.z };
+
 	switch (anim_.animtype_)
 	{
 	case Player::NONE:
@@ -402,10 +411,28 @@ void Player::AnimStatus()
 	case Player::WALK:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
+		{
+			Effect* e = GetParent()->FindGameObject<Effect>("PWalkEffect");
+			if (e == nullptr) {
+				e = Instantiate<Effect>(GetParent());
+				e->Reset(trans, e->RUN, anim_.Rdir_);
+				e->SetEffectObjectName("PWalkEffect");
+			}
+			e->SetBackEffectPos(trans.position_, anim_.Rdir_);
+		}
 		break;
 	case Player::RUN:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 11;
+		{
+			Effect* e = GetParent()->FindGameObject<Effect>("PRunEffect");
+			if (e == nullptr) {
+				e = Instantiate<Effect>(GetParent());
+				e->Reset(trans, e->RUN, anim_.Rdir_);
+				e->SetEffectObjectName("PRunEffect");
+			}
+			e->SetBackEffectPos(trans.position_, anim_.Rdir_);
+		}
 		break;
 	case Player::JUMP:
 		
@@ -472,6 +499,18 @@ void Player::AnimStatus()
 		anim_.animloop_ = false;
 		break;
 	}
+
+	if (anim_.animtype_ != Player::WALK) {
+		Effect* e = GetParent()->FindGameObject<Effect>("PWalkEffect");
+		if (e != nullptr)
+			e->KillMe();
+	}
+	if (anim_.animtype_ != Player::RUN) {
+		Effect* e = GetParent()->FindGameObject<Effect>("PRunEffect");
+		if (e != nullptr)
+			e->KillMe();
+	}
+
 
 	//–³“GŽžŠÔ
 	if (invincible_) {
@@ -546,7 +585,7 @@ void Player::AttackAnim()
 		
 		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4) {
 			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
-			if (anim_.animframe_ == 2&&anim_.animframecount_==0) {
+			if (anim_.animframe_ == 2 && anim_.animframecount_ == 1) {
 				if (anim_.Rdir_)
 					trans.position_ = { trans.position_.x + EFFECTATTACK.x,trans.position_.y + EFFECTATTACK.y ,trans.position_.z + EFFECTATTACK.z };
 				else

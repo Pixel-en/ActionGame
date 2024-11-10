@@ -1,37 +1,28 @@
 #pragma once
 #include "Enemy.h"
 
-class Bard
-	: public Enemy
+
+class Bard :public Enemy
 {
-	float baseHurtTime_{ 0.5 };
-
-	enum  BardAnimation
-	{
-		IDOL,
-		MOVE,
-		ATTACK,
-		HURT,
-		DEATH
-	};
-	SIZE ENEMY_IMAGESIZE{ 80,80 };
-	SIZE ENEMY_HITBOXSIZE{ 30,30 };
-	const float ENEMY_LOOKRANGE{ 300 };
-
-	XMFLOAT3 attackVector;
-
-	bool yUp{ false };
 
 	void UpdateIdol() override;
-	void UpdateMove() override;
-	/*void UpdateRun() override;*/
 	void UpdateAttack() override;
-	void UpdateHurt() ;
+	void UpdateMove() override;
+	void UpdateDamege() override;
 	void UpdateDeath() override;
+
+	float Idoltimer_;
+	float sinangle_;
+
 public:
+
+	//コンストラクタ
+	//引数：parent  親オブジェクト（ObjectManager）
 	Bard(GameObject* parent);
 
+	//デストラクタ
 	~Bard();
+
 	//初期化
 	void Initialize() override;
 
@@ -44,8 +35,5 @@ public:
 	//開放
 	void Release() override;
 
-	SIZE GetImageSize();
-
-	void DeadState();
-
 };
+

@@ -2,11 +2,13 @@
 #include "Camera.h"
 #include "ImGui/imgui.h"
 #include "Player.h"
+#include "Effect.h"
 
 
 namespace {
 	const float GRAVITY{ 9.8f / 60.0f };
 	const float MAXDURABILITY{ 5.0f };
+	const XMFLOAT3 EFFECTMINEPOS{ 32,32,0 };
 }
 
 Material::Material(GameObject* parent)
@@ -43,6 +45,7 @@ Material::Material(GameObject* parent)
 	posNear = false;
 
 	SeeUiLength = 150.0f;
+
 }
 
 Material::~Material()
@@ -96,7 +99,7 @@ void Material::Draw()
 		DrawCircle(xpos + sizeX_ / 2.0, ypos - 10, 10, GetColor(255, 255, 255), false);
 	}
 	
-	//DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), false);
+	DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), false);
 }
 
 void Material::Release()
@@ -105,9 +108,28 @@ void Material::Release()
 
 void Material::Mining(float _mintime)
 {
+	if (_mintime > 0.0) {
 
-	durability_ -= _mintime;
-	if (durability_ < 0)
-		KillMe();
+		Effect* e = GetParent()->FindGameObject<Effect>("MMineEffect");
+		if (e == nullptr) {
+			Transform trans;
+			trans.position_ = { transform_.position_.x + sizeX_ / 2 - EFFECTMINEPOS.x,transform_.position_.y - EFFECTMINEPOS.y  ,transform_.position_.z + EFFECTMINEPOS.z };
+			e = Instantiate<Effect>(GetParent());
+			e->Reset(trans, e->MINE);
+			e->SetEffectObjectName("MMineEffect");
+		}
+		durability_ -= _mintime;
+		if (durability_ < 0) {
+			Effect* e = GetParent()->FindGameObject<Effect>("MMineEffect");
+			if (e != nullptr)
+				e->KillMe();
+			KillMe();
+		}
+	}
+	else {
+		Effect* e = GetParent()->FindGameObject<Effect>("MMineEffect");
+		if (e != nullptr)
+			e->KillMe();
+	}
 }
 

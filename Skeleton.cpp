@@ -1,214 +1,214 @@
-#include "Skeleton.h"
-#include "Explosion.h"
-
-Skeleton::Skeleton(GameObject* parent)
-	: Enemy(parent)
-{
-	movetimer_ = baseMovetimer;
-	startmove_ = false;
-	speed_ = 0;
-	onGround_ = false;
-	range_ = ENEMY_LOOKRANGE * 1.5;
-	state_ = IDOL;
-	SpawnPoint_ = transform_.position_;
-	dir_ = -1;
-
-	hp_ = baseHp;
-	hurtTime_ = baseHurtTime_;
-
-	hittransform_ = transform_;
-	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
-
-	hitobj_ = new HitObject(hittransform_, ENEMY_HITBOXSIZE, this);
-}
-
-Skeleton::~Skeleton()
-{
-}
-
-void Skeleton::Initialize()
-{
-}
-
-void Skeleton::Update()
-{
-	Player* p = GetParent()->FindGameObject<Player>();
-
-	Field* field = GetParent()->FindGameObject<Field>();
-
-	Clear* clear = GetParent()->FindGameObject<Clear>();
-
-	if (clear->GetFlag() || p == nullptr)
-		return;
-
-	onGround_ = false;
-	Ppos = p->GetPosition();
-
-	short cflag = hitobj_->AllCollisionCheck();
-	if (cflag & 0b1000 || cflag & 0b0100) {
-		Gaccel = 0;
-		onGround_ = true;
-	}
-
-	if (p == nullptr)
-		return;
-	//プレイヤーが死んでてもここまではする
-
-	if (transform_.position_.y > 1000.0f) {
-		transform_.position_.y = 1000.0f;
-		KillMe();
-	}
-
-	if (transform_.position_.y < 0)
-		transform_.position_.y = 0;
-
-	switch (state_)
-	{
-	case IDOL:
-		AFmax_ = 4;
-		FCmax_ = 25;
-		UpdateIdol();
-		break;
-	case MOVE:
-		AFmax_ = 4;
-		FCmax_ = 15;
-		UpdateMove();
-		break;
-	case RUN:
-		AFmax_ = 4;
-		FCmax_ = 20;
-		UpdateRun();
-		break;
-	case ATTACK:
-		AFmax_ = 4;
-		FCmax_ = 11;
-		UpdateAttack();
-		break;
-	case HURT:
-		AFmax_ = 1;
-		FCmax_ = 1;
-		UpdateHurt();
-		break;
-	case DEATH:
-		AFmax_ = 4;
-		FCmax_ = 20;
-		UpdateDeath();
-		break;
-	default:
-		break;
-	}
-
-	AnimationCheck();
-}
-
-void Skeleton::Draw()
-{
-	int xpos = transform_.position_.x;
-	int ypos = transform_.position_.y;
-
-	Camera* cam = GetParent()->FindGameObject<Camera>();
-	if (cam != nullptr) {
-		xpos -= cam->GetValue();
-		ypos -= cam->GetValueY();
-	}
-
-	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, (dir_ * -1) - 1);
-
-	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
-}
-
-void Skeleton::Release()
-{
-}
-
-SIZE Skeleton::GetImageSize()
-{
-	return ENEMY_IMAGESIZE;
-}
-
-void Skeleton::DeadState()
-{
-}
-
-void Skeleton::UpdateIdol()
-{
-	if (!startmove_) {
-		movetimer_ -= Time::DeltaTime();
-		if (movetimer_ < 0) {
-			movetimer_ = 0;
-			startmove_ = true;
-		}
-	}
-	else {
-		speed_ = baseRunSpeed;
-		movetimer_ = baseMovetimer;
-		state_ = MOVE;
-	}
-}
-
-void Skeleton::UpdateMove()
-{
-	if (AnimationEnd())
-	{
-		state_ = RUN;
-	}
-}
-
-void Skeleton::UpdateRun()
-{
-	if (Ppos.x - transform_.position_.x < 0)
-		dir_ = -1;
-	else
-		dir_ = 1;
-	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
-
-	/*if (!IsExistPlayer(range_)) {
-		state_ = IDOL;
-	}*/
-	if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
-		speed_ = baseRunSpeed;
-		state_ = ATTACK;
-		startmove_ = false;
-	}
-}
-
-void Skeleton::UpdateAttack()
-{
-	if (NowAnimFrame() == 3)
-	{
-		if (!isAttack)
-		{
-			explosion_ = Instantiate<Explosion>(GetParent());
-			explosion_->Initialize(Explosion::FIRE, { 120,120 });
-			//XMFLOAT3 explosionTrans = { transform_.position_.x,transform_.position_.y ,0 };
-			explosion_->SetPosition(transform_.position_);
-			isAttack = true;
-		}
-	}
-	if (isAttack && explosion_->AnimationEnd())
-	{
-		//explosion_->KillMe();
-		state_ = DEATH;
-	}
-}
-
-void Skeleton::UpdateHurt()
-{
-	hurtTime_ -= Time::DeltaTime();
-	if (hurtTime_ <= 0)
-	{
-		hurtTime_ = baseHurtTime_;
-		state_ = IDOL;
-	}
-}
-
-void Skeleton::UpdateDeath()
-{
-	if (AnimationEnd())
-	{
-		KillMe();
-	}
-}
+//#include "Skeleton.h"
+//#include "Explosion.h"
+//
+//Skeleton::Skeleton(GameObject* parent)
+//	: Enemy(parent)
+//{
+//	movetimer_ = baseMovetimer;
+//	startmove_ = false;
+//	speed_ = 0;
+//	onGround_ = false;
+//	range_ = ENEMY_LOOKRANGE * 1.5;
+//	state_ = IDOL;
+//	SpawnPoint_ = transform_.position_;
+//	dir_ = -1;
+//
+//	hp_ = baseHp;
+//	hurtTime_ = baseHurtTime_;
+//
+//	hittransform_ = transform_;
+//	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
+//
+//	hitobj_ = new HitObject(hittransform_, ENEMY_HITBOXSIZE, this);
+//}
+//
+//Skeleton::~Skeleton()
+//{
+//}
+//
+//void Skeleton::Initialize()
+//{
+//}
+//
+//void Skeleton::Update()
+//{
+//	Player* p = GetParent()->FindGameObject<Player>();
+//
+//	Field* field = GetParent()->FindGameObject<Field>();
+//
+//	Clear* clear = GetParent()->FindGameObject<Clear>();
+//
+//	if (clear->GetFlag() || p == nullptr)
+//		return;
+//
+//	onGround_ = false;
+//	Ppos = p->GetPosition();
+//
+//	short cflag = hitobj_->AllCollisionCheck();
+//	if (cflag & 0b1000 || cflag & 0b0100) {
+//		Gaccel = 0;
+//		onGround_ = true;
+//	}
+//
+//	if (p == nullptr)
+//		return;
+//	//プレイヤーが死んでてもここまではする
+//
+//	if (transform_.position_.y > 1000.0f) {
+//		transform_.position_.y = 1000.0f;
+//		KillMe();
+//	}
+//
+//	if (transform_.position_.y < 0)
+//		transform_.position_.y = 0;
+//
+//	switch (state_)
+//	{
+//	case IDOL:
+//		AFmax_ = 4;
+//		FCmax_ = 25;
+//		UpdateIdol();
+//		break;
+//	case MOVE:
+//		AFmax_ = 4;
+//		FCmax_ = 15;
+//		UpdateMove();
+//		break;
+//	case RUN:
+//		AFmax_ = 4;
+//		FCmax_ = 20;
+//		UpdateRun();
+//		break;
+//	case ATTACK:
+//		AFmax_ = 4;
+//		FCmax_ = 11;
+//		UpdateAttack();
+//		break;
+//	case HURT:
+//		AFmax_ = 1;
+//		FCmax_ = 1;
+//		UpdateHurt();
+//		break;
+//	case DEATH:
+//		AFmax_ = 4;
+//		FCmax_ = 20;
+//		UpdateDeath();
+//		break;
+//	default:
+//		break;
+//	}
+//
+//	AnimationCheck();
+//}
+//
+//void Skeleton::Draw()
+//{
+//	int xpos = transform_.position_.x;
+//	int ypos = transform_.position_.y;
+//
+//	Camera* cam = GetParent()->FindGameObject<Camera>();
+//	if (cam != nullptr) {
+//		xpos -= cam->GetValue();
+//		ypos -= cam->GetValueY();
+//	}
+//
+//	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, (dir_ * -1) - 1);
+//
+//	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+//	DrawLine(transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+//	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+//	DrawLine(transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y + ENEMY_HITBOXSIZE.cy - cam->GetValueY(), transform_.position_.x + ENEMY_HITBOXSIZE.cx / 2 - cam->GetValue(), transform_.position_.y - cam->GetValueY(), GetColor(255 / 255, 0 / 255, 0 / 255));
+//}
+//
+//void Skeleton::Release()
+//{
+//}
+//
+//SIZE Skeleton::GetImageSize()
+//{
+//	return ENEMY_IMAGESIZE;
+//}
+//
+//void Skeleton::DeadState()
+//{
+//}
+//
+//void Skeleton::UpdateIdol()
+//{
+//	if (!startmove_) {
+//		movetimer_ -= Time::DeltaTime();
+//		if (movetimer_ < 0) {
+//			movetimer_ = 0;
+//			startmove_ = true;
+//		}
+//	}
+//	else {
+//		speed_ = baseRunSpeed;
+//		movetimer_ = baseMovetimer;
+//		state_ = MOVE;
+//	}
+//}
+//
+//void Skeleton::UpdateMove()
+//{
+//	if (AnimationEnd())
+//	{
+//		state_ = RUN;
+//	}
+//}
+//
+//void Skeleton::UpdateRun()
+//{
+//	if (Ppos.x - transform_.position_.x < 0)
+//		dir_ = -1;
+//	else
+//		dir_ = 1;
+//	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
+//
+//	/*if (!IsExistPlayer(range_)) {
+//		state_ = IDOL;
+//	}*/
+//	if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
+//		speed_ = baseRunSpeed;
+//		state_ = ATTACK;
+//		startmove_ = false;
+//	}
+//}
+//
+//void Skeleton::UpdateAttack()
+//{
+//	if (NowAnimFrame() == 3)
+//	{
+//		if (!isAttack)
+//		{
+//			explosion_ = Instantiate<Explosion>(GetParent());
+//			explosion_->Initialize(Explosion::FIRE, { 120,120 });
+//			//XMFLOAT3 explosionTrans = { transform_.position_.x,transform_.position_.y ,0 };
+//			explosion_->SetPosition(transform_.position_);
+//			isAttack = true;
+//		}
+//	}
+//	if (isAttack && explosion_->AnimationEnd())
+//	{
+//		//explosion_->KillMe();
+//		state_ = DEATH;
+//	}
+//}
+//
+//void Skeleton::UpdateHurt()
+//{
+//	hurtTime_ -= Time::DeltaTime();
+//	if (hurtTime_ <= 0)
+//	{
+//		hurtTime_ = baseHurtTime_;
+//		state_ = IDOL;
+//	}
+//}
+//
+//void Skeleton::UpdateDeath()
+//{
+//	if (AnimationEnd())
+//	{
+//		KillMe();
+//	}
+//}

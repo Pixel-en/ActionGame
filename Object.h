@@ -12,6 +12,7 @@ protected:
 	int animframe_;	//アニメーションのフレームカウント
 	int AFmax_;		//アニメーションのフレーム数
 
+
 	SIZE hitsize_;
 
 	HitObject* hitobj_;

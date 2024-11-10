@@ -8,7 +8,7 @@ class Effect
 public:
 	enum EffectType
 	{
-		KILL, GRASS, JUMP, SLASH, MINE, END
+		KILL, GRASS, JUMP, SLASH, MINE, WALK, RUN, END
 	};
 private:
 
@@ -22,6 +22,7 @@ private:
 	XMFLOAT3 cameraPos_;
 	bool canLoop_;
 	bool isRight_;	//右を向いているか
+	VECTOR imagesize_;
 
 public:
 
@@ -31,7 +32,7 @@ public:
 	//初期化
 	void Initialize() override;
 
-	void Reset(Transform pos, EffectType _effecttype,bool _isRight);
+	void Reset(Transform pos, EffectType _effecttype, bool _isRight);
 	void Reset(Transform pos, EffectType _effecttype);
 
 	//更新
@@ -42,5 +43,9 @@ public:
 
 	//開放
 	void Release() override;
+
+	void SetEffectObjectName(std::string _name) { objectName_ = _name; };
+	void SetBackEffectPos(XMFLOAT3 pos, bool _dir);
+	void SetFrontEffectPos(XMFLOAT3 pos, bool _dir);
 };
 
