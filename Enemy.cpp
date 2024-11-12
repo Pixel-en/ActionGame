@@ -32,6 +32,20 @@ void Enemy::SetCenterTransPos(XMFLOAT3 _trans, VECTOR _size)
 	CenterTransPos_ = { _trans.x + _size.x / 2.0f,_trans.y + _size.y / 2.0f ,_trans.z };
 }
 
+void Enemy::PlayerDir()
+{
+	Player* p = GetParent()->FindGameObject<Player>();
+	if (p == nullptr) {
+		return;
+	}
+
+	if (p->GetPosition().x - transform_.position_.x < 0)
+		Eanim_.Rdir_ = false;
+	else
+		Eanim_.Rdir_ = true;
+
+}
+
 void Enemy::StatusReader(int _enemyNumber)
 {
 	enum CSVEPARAM
@@ -87,8 +101,9 @@ void Enemy::HitDamege(int _damege)
 	if (!invincible_) {
 
 		Eparam_.hp_ -= _damege;
-		if (Eparam_.hp_ <= 0)
+		if (Eparam_.hp_ <= 0) {
 			Eanim_.animtype_ = EAnimation::DEATH;
+		}
 		else
 			Eanim_.animtype_ = EAnimation::DAMEGE;
 		invincibleTimer_ = 0.5f;
@@ -228,8 +243,6 @@ void Enemy::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-
-
 }
 
 void Enemy::Release()

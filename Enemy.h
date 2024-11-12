@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Camera.h"
+#include "Effect.h"
 
 //åpè≥êÊëSëÃÇ≈égÇ§Ç‡ÇÃÇÃÇ›
 namespace {
@@ -95,6 +96,8 @@ protected:
 	void SetCenterTransPos(XMFLOAT3 _trans, VECTOR _size);
 
 	void SetHitTransPos(XMFLOAT3 _pos);
+
+	void PlayerDir();
 
 public:
 

@@ -58,7 +58,7 @@ void Plant::Update()
 		UpdateDamege();
 		break;
 	case Enemy::DEATH:
-		Eanim_.AFmax_ = 2;
+		Eanim_.AFmax_ = 4;
 		Eanim_.AFCmax_ = 10;
 		UpdateDeath();
 		break;
@@ -78,7 +78,7 @@ void Plant::Draw()
 		ypos -= cam->GetValueY();
 	}
 
-	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true,Eanim_.Rdir_);
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
 	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
@@ -105,6 +105,8 @@ void Plant::UpdateIdol()
 
 void Plant::UpdateAttack()
 {
+	PlayerDir();
+
 	XMFLOAT3 pos = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
 	Eanim_.animloop_ = false;
 	if (Eanim_.animframe_ == 1) {
@@ -135,4 +137,11 @@ void Plant::UpdateDamege()
 
 void Plant::UpdateDeath()
 {
+	Eanim_.animloop_ = true;
+	Effect* e;
+	e = Instantiate<Effect>(GetParent());
+	e->Reset(transform_, e->KILL);
+	e->SetEffectObjectName("EKillEffect");
+	KillMe();
+
 }

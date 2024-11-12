@@ -26,7 +26,7 @@ void Effect::Reset(Transform pos, EffectType _effecttype, bool _isRight)
 	case KILL:
 		fileName_ = "Assets\\Image\\Effect\\Kill.png";
 		canLoop_ = false;
-		FCmax_ = 2;
+		FCmax_ = 10;
 		AFmax_ = 7;
 		imagesize_ = { 64,64 };
 		objectName_ = "KillEffect";
