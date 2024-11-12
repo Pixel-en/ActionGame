@@ -11,7 +11,7 @@ namespace {
 Bard::Bard(GameObject* parent)
 	:Enemy(parent)
 {
-	hitobj_ = nullptr;
+	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
 	Idoltimer_ = 0.0;
 	sinangle_ = 0.0;
 	Eanim_.animtype_ = IDOL;
@@ -19,6 +19,10 @@ Bard::Bard(GameObject* parent)
 
 Bard::~Bard()
 {
+	if (hitobj_ != nullptr) {
+		delete hitobj_;
+		hitobj_ = nullptr;
+	}
 }
 
 void Bard::Initialize()

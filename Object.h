@@ -15,9 +15,10 @@ protected:
 
 	SIZE hitsize_;
 
-	HitObject* hitobj_;
 
 public:
+
+	HitObject* hitobj_;
 
 	Object(GameObject* parent);
 	Object(GameObject* parent, const std::string& name);
@@ -26,7 +27,7 @@ public:
 	virtual ~Object();
 
 	//èâä˙âª
- 	virtual void Initialize() override;
+	virtual void Initialize() override;
 
 	virtual void Reset();
 

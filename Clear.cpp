@@ -74,18 +74,18 @@ void Clear::Update()
 			//if (p->PlayerAttackHitCheck(M->GetPosition(), M->GetHitBox()))
 				//M->KillMe();
 		}
-		//for (Enemy* E : e) {
-		//	//“G‚ÌUŒ‚
-		//	if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetPosition(),E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
-		//		p->HitDamage(E->GetCenter());
-		//	}
-		//	//ƒvƒŒƒCƒ„[‚ÌUŒ‚
-		//	if (p->PlayerAttackHitCheck(E->GetPosition(),E->GetHitBox())) {
-		//		E->HitDamege(p->GetDamege());
-		//		
-		//	}
+		for (Enemy* E : e) {
+			//“G‚ÌUŒ‚
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetHitTransPos(), E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
+				p->HitDamage({ E->GetCenterTransPos().x,E->GetCenterTransPos().y });
+			}
+			//ƒvƒŒƒCƒ„[‚ÌUŒ‚
+			if (p->PlayerAttackHitCheck(E->GetHitTransPos(),E->GetHitBox())) {
+				E->HitDamege(p->GetDamege());
+				
+			}
 
-		//}
+		}
 		for (Bullet* B : b) {
 			//‚±‚±‚ ‚Æ‚Å’¼‚·
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), B->GetHitTrans().position_, B->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
@@ -94,14 +94,14 @@ void Clear::Update()
 					B->KillMe();
 				}
 			}
-			//for (Enemy* E : e) {
-			//	if (E->hitobj_->HitObjectANDObject(E->GetPosition(), E->GetHitBox(), B->GetHitTrans().position_,B->GetHitBox())) {
-			//		if (B->GetTargetName() == "Enemy") {
-			//			E->HitDamege(B->GetDamege());
-			//			B->KillMe();
-			//		}
-			//	}
-			//}
+			for (Enemy* E : e) {
+				if (E->hitobj_->HitObjectANDObject(E->GetHitTransPos(), E->GetHitBox(), B->GetHitTrans().position_, B->GetHitBox())) {
+					if (B->GetTargetName() == "Enemy") {
+						E->HitDamege(B->GetDamege());
+						B->KillMe();
+					}
+				}
+			}
 		}
 
 		for (Explosion* EX : ex) {

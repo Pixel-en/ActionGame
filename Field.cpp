@@ -104,8 +104,17 @@ void Field::Reset()
 				c->AddEcount();
 				Bard* bard = Instantiate<Bard>(GetParent());
 				bard->StatusReader(BARDA);
-				bard->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
+				bard->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
 			}
+			case PLANTA: {
+				c->AddEcount();
+				Plant* plant = Instantiate<Plant>(GetParent());
+				plant->StatusReader(PLANTA);
+				plant->Reset({j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f});
+				break;
+			}
+			
 					   /*
 			case SLIME_A + 201: {
 				c->AddEcount();

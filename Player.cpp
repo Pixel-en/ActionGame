@@ -318,6 +318,7 @@ bool Player::ActionControl()
 						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
 					else
 						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+					Damege = -1;
 				}
 				attackbuttondown = true;
 			}
@@ -334,6 +335,7 @@ bool Player::ActionControl()
 						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
 					else
 						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+					Damege = -1;
 				}
 				attackbuttondown = true;
 			}
@@ -620,6 +622,7 @@ void Player::AttackAnim()
 		anim_.animframe_ = 5;
 		anim_.AFCmax_ = 30;
 		anim_.animSkip_ = true;
+		Damege = -1;
 
 		if (anim_.BEanimtype_ != anim_.animtype_) {
 			anim_.animframe_ = 0;
@@ -654,9 +657,9 @@ VECTOR Player::KnockBackDir(VECTOR _vec)
 	return dir;
 }
 
-XMFLOAT3 Player::GetHitBoxPosition()
+XMFLOAT3 Player::GetHitBoxCenterPosition()
 {
-	return { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.x / 2, transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.y / 2, 0 };
+	return { transform_.position_.x + LUPOINT.x + HITBOXSIZE.x / 2, transform_.position_.y + LUPOINT.y + HITBOXSIZE.y / 2, 0 };
 }
 
 void Player::HitDamage(VECTOR _dir)
