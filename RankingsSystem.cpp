@@ -105,7 +105,7 @@ void RankingsSystem::Initialize()
 			else if (y == 2 && x == 6) {
 				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
 			}
-			else if(x < 5){
+			else if(x < 5 && AsciiCodeEN < 91){
 				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,AsciiCodeEN };
 				AsciiCodeEN++;
 			}
@@ -250,27 +250,19 @@ void RankingsSystem::DrawWriteUICn()
 			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
 		}
 	}
-	
-	for (int y = 0; y < Y; y++) {
-		for (int x = 0; x < X; x++) {
-			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2
-				&& !(prevX1 == cx1 && prevY1 == cy1 && prevX2 == cx2 && prevY2 == cy2)) {
-					prevX1 = cx1;
-					prevY1 = cy1;
-					prevX2 = cx2;
-					prevY2 = cy2;
-			}
-		}
-	}
 
 	if (CheckHitKey(KEY_INPUT_UP)) {
 		if (prevKey == false) {
+			prevY1 = cy1;
+			prevY2 = cy2;
 			cy1 -= 35;
 			cy2 -= 35;
 		}
 		prevKey = true;
 	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
 		if(prevKey == false) {
+			prevX1 = cx1;
+			prevX2 = cx2;
 			cx1 += 35;
 			cx2 += 35;
 		}
@@ -278,6 +270,8 @@ void RankingsSystem::DrawWriteUICn()
 	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
 		
 		if (prevKey == false) {
+			prevY1 = cy1;
+			prevY2 = cy2;
 			cy1 += 35;
 			cy2 += 35;
 		}
@@ -285,6 +279,8 @@ void RankingsSystem::DrawWriteUICn()
 	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
 		
 		if (prevKey == false) {
+			prevX1 = cx1;
+			prevX2 = cx2;
 		    cx1 -= 35;
 			cx2 -= 35;
 		}
@@ -292,6 +288,28 @@ void RankingsSystem::DrawWriteUICn()
 	}
 	else {
 		prevKey = false;
+	}
+	
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 && N[y][x].Ascii == 0) {
+				
+				if (cx2 > prevX2) {
+					cx2 = cx2 + 35;
+					cx1 = cx1 + 35;
+				}
+				else
+				if (cy2 > prevY2) {
+					cy2 = cy2 - 35;
+					cy1 = cy2 - 35;
+				}else
+				if (cx2 < prevX2) {
+					cx2 = cx2 - 35;
+					cx1 = cx2 - 35;
+				}
+				
+			}
+		}
 	}
 
 	//ògê¸äOÇ…ÇÕÇ›èoÇ≥Ç»Ç¢ópÇÃèàóù
@@ -313,26 +331,6 @@ void RankingsSystem::DrawWriteUICn()
 	if (cy2 > N[Y - 1][X - 1].posY2) { //Å´
 		cy2 = N[Y - 1][X - 1].posY2;
 		cy1 = N[Y - 1][X - 1].posY1;
-	}
-	
-	for (int y = 0; y < Y; y++) {
-		for (int x = 0; x < X; x++) {
-			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 ) {
-				if (CheckHitKey(KEY_INPUT_RETURN))
-				if (cy2 > prevY2) {
-					cy2 = prevY2;
-					cy1 = prevY1;
-				}
-				/*else if (cx2 < prevX2) {
-					cx2 = prevX2 - 35;
-					cx1 = prevX1 - 35;
-				}
-				else if (cx2 > prevX2) {
-					cx2 = prevX2 + 35;
-					cx1 = prevX1 + 35;
-				}*/
-			}
-		}
 	}
 
 	DrawBoxAA(cx1, cy1, cx2,cy2, GetColor(255, 255, 255), FALSE);
