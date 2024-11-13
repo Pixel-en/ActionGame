@@ -75,14 +75,16 @@ void Clear::Update()
 				//M->KillMe();
 		}
 		for (Enemy* E : e) {
-			//“G‚ÌUŒ‚
+			//“G‚ÌUŒ‚(ÚG)
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetHitTransPos(), E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
 				p->HitDamage({ E->GetCenterTransPos().x,E->GetCenterTransPos().y });
 			}
 			//ƒvƒŒƒCƒ„[‚ÌUŒ‚
 			if (p->PlayerAttackHitCheck(E->GetHitTransPos(),E->GetHitBox())) {
 				E->HitDamege(p->GetDamege());
-				
+			}
+			if (E->EnemyAttackHitCheck(p->GetHitTrans().position_, p->GetHitBox())) {
+				p->HitDamage({ E->GetCenterTransPos().x,E->GetCenterTransPos().y });
 			}
 
 		}

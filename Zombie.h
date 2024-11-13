@@ -15,6 +15,8 @@ class Zombie :public Enemy
 	float Idoltimer_;
 	float damegetimer_;
 
+	bool isattack_;
+
 public:
 
 	//コンストラクタ
@@ -35,6 +37,8 @@ public:
 
 	//開放
 	void Release() override;
+
+	bool EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox) override;
 
 };
 

@@ -54,6 +54,7 @@ void Enemy::StatusReader(int _enemyNumber)
 		RUNSPEED,
 		HP,
 		MOVETIMER,
+		RANGE,
 		FILENAME
 	};
 
@@ -66,8 +67,8 @@ void Enemy::StatusReader(int _enemyNumber)
 			Eparam_.runspeed_ = csv->GetFloat(i, RUNSPEED);
 			Eparam_.hp_ = csv->GetInt(i, HP);
 			Eparam_.movetimer_ = csv->GetFloat(i, MOVETIMER);
+			Eparam_.range_ = csv->GetInt(i, RANGE);
 			Eparam_.filename_ = csv->GetString(i, FILENAME);
-			Eparam_.range_ = 100.0f;
 			objectName_ = Eparam_.filename_;
 			Eparam_.filename_ = "Assets\\Image\\Enemy\\" + Eparam_.filename_ + "_sprite.png";
 			hImage_ = LoadGraph(Eparam_.filename_.c_str());

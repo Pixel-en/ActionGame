@@ -21,6 +21,7 @@ namespace {
 	const XMFLOAT3 EFFECTATTACK{ 20,10,0 };
 	const XMFLOAT3 EFFECTJUMP{ 0,5,0 };
 	const XMFLOAT3 EFFECTMOVE{ 30,-5,0 };
+	
 }
 
 void Player::LoadParameter()
@@ -226,7 +227,6 @@ void Player::MoveControl()
 	miningtime_ = -1.0f;
 
 	if (!ActionControl()) {
-
 		//ç∂à⁄ìÆ
 		if (CheckHitKey(KEY_INPUT_A)) {
 
@@ -551,8 +551,8 @@ void Player::AnimStatus()
 
 void Player::AttackAnim()
 {
-	Damege = 0;
 	Transform trans;
+	Damege = 0;
 	switch (Atype_)
 	{
 	case Player::TNONE:
@@ -708,7 +708,7 @@ void Player::DeadState()
 
 bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 {
-	if (Atype_ < 1)
+	if (Atype_ < 1 || Damege <= 0)
 		return false;
 
 	int xpos = transform_.position_.x;

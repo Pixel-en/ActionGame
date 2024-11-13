@@ -1,32 +1,33 @@
 #pragma once
 #include "Engine/GameObject.h"
 
-enum ObjectNumber
-{
-	GOAL = 102,//ゴール
-	CHECKPOINT = 103,//チェックポイント
-	PLAYER = 105,//プレイヤー
-	ITEM = 106,//回収アイテム
-	RIFT_L = 107,//リフト右
-	RIFT_C = 108,//リフト中
-	RIFT_R = 109,//リフト左
-
-	SLIMEA=201,
-	SLIMEB,
-	SLIMEC,
-	BARDA,
-	PLANTA,
-	ZOMBIEA,
-	SKELETONA
-	//201 青スライム
-	//202 赤スライム
-	//203 黄スライム
-	//204 鳥A
-	//207 植物A
-};
-
 class Field :public GameObject
 {
+
+	enum ObjectNumber
+	{
+		GOAL = 102,//ゴール
+		CHECKPOINT = 103,//チェックポイント
+		PLAYER = 105,//プレイヤー
+		ITEM = 106,//回収アイテム
+		RIFT_L = 107,//リフト右
+		RIFT_C = 108,//リフト中
+		RIFT_R = 109,//リフト左
+
+		SLIMEA = 201,
+		SLIMEB,
+		SLIMEC,
+		BARDA,
+		PLANTA,
+		ZOMBIEA,
+		SKELETONA
+		//201 青スライム
+		//202 赤スライム
+		//203 黄スライム
+		//204 鳥A
+		//207 植物A
+	};
+
 	int hImage_;
 
 	int* Map;

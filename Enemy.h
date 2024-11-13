@@ -143,5 +143,7 @@ public:
 	XMFLOAT3 GetHitTransPos();
 
 	VECTOR GetHitBox() override;
+
+	virtual bool EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox) { return false; };
 };
 
