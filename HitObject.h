@@ -10,8 +10,6 @@ class HitObject
 	VECTOR size_;
 	GameObject* obj_;
 	Field* field;
-
-	Transform trans_;
 public:
 
 	/// <summary>
@@ -32,50 +30,10 @@ public:
 	/// <param name="_obj">チェック対象のオブジェクト</param>
 	HitObject(VECTOR _Lu, VECTOR _size, GameObject* _obj);
 
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="_size">当たり判定のサイズ</param>
-	/// <param name="_obj">オブジェクト</param>
-	HitObject(SIZE _size, GameObject* _obj);
-
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="_size">当たり判定のサイズ</param>
-	/// <param name="_obj">オブジェクト</param>
 	HitObject(VECTOR _size, GameObject* _obj);
-
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="trans">当たり判定のヒットボックス</param>
-	/// <param name="_size">当たり判定のサイズ</param>
-	/// <param name="_obj">オブジェクト</param>
-	HitObject(Transform trans,VECTOR _size, GameObject* _obj);
-
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="trans">当たり判定のヒットボックス</param>
-	/// <param name="_size">当たり判定のサイズ</param>
-	/// <param name="_obj">オブジェクト</param>
-	HitObject(Transform trans, SIZE _size, GameObject* _obj);
 
 	//デストラクタ
 	~HitObject();
-
-	/// <summary>
-	/// 当たり判定のヒットボックスのセット
-	/// </summary>
-	/// <param name="trans">当たり判定のTransform</param>
-	void SetHitTransform(Transform trans) { trans_ = trans; };
-
-	/// <summary>
-	/// Transformを取得(主にTransformを引数に入れたときに使う)
-	/// </summary>
-	/// <returns>Transform</returns>
-	Transform GetTransform() { return trans_; };
 
 	/// <summary>
 	/// 右側の当たり判定と押し出し

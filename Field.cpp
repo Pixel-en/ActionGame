@@ -114,6 +114,13 @@ void Field::Reset()
 				plant->Reset({j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f});
 				break;
 			}
+			case ZOMBIEA: {
+				c->AddEcount();
+				Zombie* zombie = Instantiate<Zombie>(GetParent());
+				zombie->StatusReader(ZOMBIEA);
+				zombie->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
+			}
 			
 					   /*
 			case SLIME_A + 201: {
@@ -140,29 +147,6 @@ void Field::Reset()
 				e->Reset();
 			}
 					break;
-			case BARD_A + 201: {
-				c->AddEcount();
-				Bard* e = Instantiate<Bard>(GetParent());
-				e->StatusReader(BARD_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
-						break;
-			case PLANT_A + 201: {
-				c->AddEcount();
-				Plant* e = Instantiate<Plant>(GetParent());
-				e->StatusReader(PLANT_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
-							 break;
-			case ZOMBIE_A + 201: {
-				c->AddEcount();
-				Zombie* e = Instantiate<Zombie>(GetParent());
-				e->StatusReader(ZOMBIE_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
 							  break;
 			case SKELETON_A + 201: {
 				c->AddEcount();

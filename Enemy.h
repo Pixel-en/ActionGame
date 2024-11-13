@@ -19,6 +19,7 @@ protected:
 		IDOL,
 		ATTACK,
 		MOVE,
+		RUN,
 		DAMEGE,
 		DEATH,
 	};
@@ -51,6 +52,7 @@ private:
 	virtual void UpdateIdol() {};
 	virtual void UpdateAttack() {};
 	virtual void UpdateMove() {};
+	virtual void UpdateRun() {};
 	virtual void UpdateDamege() {};
 	virtual void UpdateDeath() {};
 
@@ -73,6 +75,13 @@ protected:
 
 	XMFLOAT3 originpos_;
 	float Gaccel = 0;
+
+	float Idoltimer_;
+	float damegetimer_;
+
+	//ç∂âEÇÃï«Ç…ìñÇΩÇ¡ÇƒÇ¢ÇÈ
+	bool moveLmax_;
+	bool moveRmax_;
 
 	void AnimationCalculation();
 

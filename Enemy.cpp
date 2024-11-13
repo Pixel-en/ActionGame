@@ -198,6 +198,10 @@ void Enemy::Reset()
 	Eanim_.animloop_ = true;
 	Eanim_.Rdir_ = true;
 	Eanim_.animSkip_ = true;
+
+	moveLmax_ = false;
+	moveRmax_ = false;
+
 	hitobj_->RightCollisionCheck();
 	hitobj_->LeftCollisionCheck();
 	if(hitobj_->DownCollisionCheck()) {
@@ -222,6 +226,8 @@ void Enemy::Reset(XMFLOAT3 pos)
 	Eanim_.Rdir_ = true;
 	Eanim_.animSkip_ = false;
 
+	moveLmax_ = false;
+	moveRmax_ = false;
 	hitobj_->RightCollisionCheck();
 	hitobj_->LeftCollisionCheck();
 	if (hitobj_->DownCollisionCheck()) {

@@ -4,9 +4,9 @@
 namespace {
 	const VECTOR IMAGESIZE{ 80,80 };
 	const VECTOR LUPOINT{ 10,10 };
-	const VECTOR HITBOXSIZE{ 60,60 };
-	const float IDOLTIME{ 1.0f };
+	const VECTOR HITBOXSIZE{ 60,70 };
 	const float DAMEGETIME{ 1.0f };
+	const int ATTACKRANGE{ 200 };
 }
 
 Plant::Plant(GameObject* parent)
@@ -16,7 +16,7 @@ Plant::Plant(GameObject* parent)
 	Eanim_.animtype_ = IDOL;
 	SetLUPOINT(LUPOINT);
 	SetHitBox(HITBOXSIZE);
-	Idoltimer_ = IDOLTIME;
+	Idoltimer_ = Eparam_.movetimer_;
 	damegetimer_ = DAMEGETIME;
 }
 
@@ -34,7 +34,10 @@ void Plant::Initialize()
 
 void Plant::Update()
 {
-	Eanim_.animloop_=true;
+	Eanim_.animloop_ = true;
+
+	if (hitobj_->DownCollisionCheck())
+		Gaccel = 0.0f;
 
 	switch (Eanim_.animtype_)
 	{
@@ -109,17 +112,17 @@ void Plant::UpdateAttack()
 
 	XMFLOAT3 pos = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
 	Eanim_.animloop_ = false;
-	if (Eanim_.animframe_ == 1) {
+	if (Eanim_.animframe_ == 1 && Eanim_.animframecount_ == 1) {
 		Bullet* b = GetParent()->FindGameObject<Bullet>("PlantBullet");
 		if (b == nullptr) {
 			b = Instantiate<Bullet>(GetParent());
-			if (Eanim_.Rdir_) 
-				b->Set(1, BULLET_TYPE::FIRE, pos, 200, "Player");
+			if (Eanim_.Rdir_)
+				b->Set(1, BULLET_TYPE::FIRE, pos, ATTACKRANGE, "Player");
 			else
-				b->Set(-1, BULLET_TYPE::FIRE, pos, 200, "Player");
+				b->Set(-1, BULLET_TYPE::FIRE, pos, ATTACKRANGE, "Player");
 			b->SetBulletObjectName("PlantBullet");
 		}
-		Idoltimer_ = IDOLTIME;
+		Idoltimer_ = Eparam_.movetimer_;
 	}
 }
 

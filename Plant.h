@@ -10,9 +10,6 @@ class Plant :public Enemy
 	void UpdateDamege() override;
 	void UpdateDeath() override;
 
-	float Idoltimer_;
-	float damegetimer_;
-
 public:
 
 	//コンストラクタ

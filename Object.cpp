@@ -42,7 +42,6 @@ Object::~Object()
 
 void Object::Initialize()
 {
-	hitobj_ = new HitObject(hitsize_, this);
 }
 
 void Object::Reset()
