@@ -100,6 +100,28 @@ void Field::Reset()
 				mo->SetRpos(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2);
 				break;
 			}
+			case SLIMEA: {
+				c->AddEcount();
+				Slime* slime = Instantiate<Slime>(GetParent());
+				slime->StatusReader(SLIMEA);
+				slime->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
+			}
+			case SLIMEB: {
+				c->AddEcount();
+				Slime* slime = Instantiate<Slime>(GetParent());
+				slime->StatusReader(SLIMEB);
+				slime->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
+			}
+			case SLIMEC: {
+				c->AddEcount();
+				Slime* slime = Instantiate<Slime>(GetParent());
+				slime->StatusReader(SLIMEC);
+				slime->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
+			}
+
 			case BARDA: {
 				c->AddEcount();
 				Bard* bard = Instantiate<Bard>(GetParent());
@@ -128,42 +150,6 @@ void Field::Reset()
 				skeleton->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
 				break;
 			}
-			
-					   /*
-			case SLIME_A + 201: {
-				c->AddEcount();
-				Slime* e = Instantiate<Slime>(GetParent());
-				e->StatusReader(SLIME_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
-					break;
-			case SLIME_B + 201: {
-				c->AddEcount();
-				Slime* e = Instantiate<Slime>(GetParent());
-				e->StatusReader(SLIME_B + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
-					break;
-			case SLIME_C + 201: {
-				c->AddEcount();
-				Slime* e = Instantiate<Slime>(GetParent());
-				e->StatusReader(SLIME_C + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
-					break;
-							  break;
-			case SKELETON_A + 201: {
-				c->AddEcount();
-				Skeleton* e = Instantiate<Skeleton>(GetParent());
-				e->StatusReader(SKELETON_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
-							   break;
-							   */
 			default:
 				break;
 			}

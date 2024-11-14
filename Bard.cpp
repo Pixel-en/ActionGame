@@ -6,6 +6,7 @@ namespace {
 	const VECTOR LUPOINT{ 10,10 };
 	const VECTOR HITBOXSIZE{ 60,60 };
 	const float IDOLTIME{ 3.0f };
+	const float DAMEGETIME{ 1.0f };
 }
 
 Bard::Bard(GameObject* parent)
@@ -15,6 +16,8 @@ Bard::Bard(GameObject* parent)
 	Idoltimer_ = 0.0;
 	sinangle_ = 0.0;
 	Eanim_.animtype_ = IDOL;
+	SetLUPOINT(LUPOINT);
+	SetHitBox(HITBOXSIZE);
 }
 
 Bard::~Bard()
@@ -31,8 +34,10 @@ void Bard::Initialize()
 
 void Bard::Update()
 {
-	//Eanim_.animtype_ = IDOL;
+	Eanim_.animloop_ = true;
 
+	XMFLOAT3 pos = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+	SetCenterTransPos(pos, HITBOXSIZE);
 
 	switch (Eanim_.animtype_)
 	{
@@ -55,9 +60,14 @@ void Bard::Update()
 		Eanim_.AFCmax_ = 15;
 		UpdateMove();
 		break;
+	case Enemy::RUN:
+		Eanim_.AFmax_ = 4;
+		Eanim_.AFCmax_ = 15;
+		UpdateRun();
+		break;
 	case Enemy::DAMEGE:
-		AFmax_ = 1;
-		FCmax_ = 1;
+		AFmax_ = 2;
+		FCmax_ = 10;
 		UpdateDamege();
 		break;
 	case Enemy::DEATH:
@@ -68,10 +78,6 @@ void Bard::Update()
 	}
 
 	AnimationCalculation();
-	int a = Eanim_.animtype_;
-	ImGui::Begin("temp");
-	ImGui::InputInt("type", &a);
-	ImGui::End();
 }
 
 void Bard::Draw()
@@ -113,20 +119,34 @@ void Bard::UpdateIdol()
 
 void Bard::UpdateAttack()
 {
-	Eanim_.animSkip_ = false;
 }
 
 void Bard::UpdateMove()
 {
-	Eanim_.animSkip_ = false;
+}
+
+void Bard::UpdateRun()
+{
 }
 
 void Bard::UpdateDamege()
 {
-	Eanim_.animSkip_ = false;
+	Eanim_.animloop_ = true;
+	if (damegetimer_ > 0) {
+		damegetimer_ -= Time::DeltaTime();
+	}
+	else {
+		damegetimer_ = DAMEGETIME;
+		Eanim_.animtype_ = IDOL;
+	}
 }
 
 void Bard::UpdateDeath()
 {
-	Eanim_.animSkip_ = false;
+	Eanim_.animloop_ = true;
+	Effect* e;
+	e = Instantiate<Effect>(GetParent());
+	e->Reset(transform_, e->KILL);
+	e->SetEffectObjectName("EKillEffect");
+	KillMe();
 }

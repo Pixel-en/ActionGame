@@ -8,6 +8,7 @@ class Bard :public Enemy
 	void UpdateIdol() override;
 	void UpdateAttack() override;
 	void UpdateMove() override;
+	void UpdateRun() override;
 	void UpdateDamege() override;
 	void UpdateDeath() override;
 

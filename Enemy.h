@@ -47,6 +47,7 @@ private:
 		float movetimer_;
 		std::string filename_;
 		float range_;
+		float moverange_;
 	};
 
 	virtual void UpdateIdol() {};

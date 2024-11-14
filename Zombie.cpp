@@ -5,7 +5,6 @@ namespace{
 	const VECTOR IMAGESIZE{ 80,80 };
 	const VECTOR LUPOINT{10,10};
 	const VECTOR HITBOXSIZE{ 60,70 };
-	const float MOVEXRANGE{ 200.0f };
 	const float ATTACKRANGE{ 50.0f };
 	const float DAMEGETIME{ 1.0f };
 	 
@@ -107,7 +106,7 @@ void Zombie::Draw()
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
 	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
 	//移動範囲
-	DrawCircle(originpos_.x-cam->GetValue(), originpos_.y-cam->GetValueY(), MOVEXRANGE, GetColor(255, 255, 255), false);
+	DrawCircle(originpos_.x-cam->GetValue(), originpos_.y-cam->GetValueY(), Eparam_.moverange_, GetColor(255, 255, 255), false);
 	//索敵範囲
 	DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, Eparam_.range_, GetColor(0, 255, 0), false);
 	//攻撃範囲
@@ -186,9 +185,9 @@ void Zombie::UpdateMove()
 			moveLmax_ = true;
 	}
 	//左進行
-	if (originpos_.x - transform_.position_.x > MOVEXRANGE||moveLmax_) {
+	if (originpos_.x - transform_.position_.x > Eparam_.moverange_ ||moveLmax_) {
 		if (!moveLmax_)
-			transform_.position_.x = originpos_.x - MOVEXRANGE;
+			transform_.position_.x = originpos_.x - Eparam_.moverange_;
 		Eanim_.Rdir_ = true;
 		Eanim_.animtype_ = IDOL;
 		Idoltimer_ = Eparam_.movetimer_;
@@ -196,9 +195,9 @@ void Zombie::UpdateMove()
 	}
 	
 	//右進行
-	if (originpos_.x - transform_.position_.x < -MOVEXRANGE||moveRmax_) {
+	if (originpos_.x - transform_.position_.x < -Eparam_.moverange_ ||moveRmax_) {
 		if (!moveRmax_)
-			transform_.position_.x = originpos_.x + MOVEXRANGE;
+			transform_.position_.x = originpos_.x + Eparam_.moverange_;
 		Eanim_.Rdir_ = false;
 		Eanim_.animtype_ = IDOL;
 		Idoltimer_ = Eparam_.movetimer_;
