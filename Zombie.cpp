@@ -106,9 +106,13 @@ void Zombie::Draw()
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
 	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
+	//à⁄ìÆîÕàÕ
 	DrawCircle(originpos_.x-cam->GetValue(), originpos_.y-cam->GetValueY(), MOVEXRANGE, GetColor(255, 255, 255), false);
+	//çıìGîÕàÕ
 	DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, Eparam_.range_, GetColor(0, 255, 0), false);
+	//çUåÇîÕàÕ
 	DrawCircle(xpos+LUPOINT.x+HITBOXSIZE.x/2, ypos+LUPOINT.y+HITBOXSIZE.y/2, HITBOXSIZE.x / 2.0f + ATTACKRANGE, GetColor(255, 0, 0), false);
+	//çUåÇîªíËîÕàÕ
 	DrawBox(xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x + ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
 	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x  - ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
 }

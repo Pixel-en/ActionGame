@@ -104,8 +104,6 @@ protected:
 	/// <param name="_size">“–‚½‚è”»’è‚ÌƒTƒCƒY</param>
 	void SetCenterTransPos(XMFLOAT3 _trans, VECTOR _size);
 
-	void SetHitTransPos(XMFLOAT3 _pos);
-
 	void PlayerDir();
 
 public:

@@ -79,6 +79,13 @@ void Effect::Reset(Transform pos, EffectType _effecttype, bool _isRight)
 		imagesize_ = { 38,6 };
 		objectName_ = "RunEffect";
 		break;
+	case EXPLOSION:
+		fileName_ = "Assets\\Image\\Effect\\Explosion.png";
+		canLoop_ = false;
+		FCmax_ = 15;
+		AFmax_ = 4;
+		imagesize_ = { 160,160 };
+		objectName_ = "RunEffect";
 	default:
 		break;
 	}
@@ -130,7 +137,7 @@ void Effect::Draw()
 	}
 
 	DrawRectGraph(xpos, ypos, animframe_ * imagesize_.x, 0, imagesize_.x, imagesize_.y, hImage_, true, isRight_);
-	//DrawBox(xpos, ypos, xpos + imagesize_.x, ypos + imagesize_.y, GetColor(0, 255, 255), false);
+	DrawBox(xpos, ypos, xpos + imagesize_.x, ypos + imagesize_.y, GetColor(0, 255, 255), false);
 	//DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), true);
 }
 

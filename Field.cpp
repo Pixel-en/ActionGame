@@ -126,6 +126,7 @@ void Field::Reset()
 				Skeleton* skeleton = Instantiate<Skeleton>(GetParent());
 				skeleton->StatusReader(SKELETONA);
 				skeleton->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
 			}
 			
 					   /*

@@ -164,7 +164,6 @@
     <ClCompile Include="Engine\SceneManager.cpp" />
     <ClCompile Include="Engine\time.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
-    <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="HitObject.cpp" />
@@ -214,7 +213,6 @@
     <ClInclude Include="Engine\SceneManager.h" />
     <ClInclude Include="Engine\time.h" />
     <ClInclude Include="Engine\Transform.h" />
-    <ClInclude Include="Explosion.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="HitObject.h" />

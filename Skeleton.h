@@ -16,7 +16,7 @@ class Skeleton :public Enemy
 	float damegetimer_;
 
 	bool isattack_;
-
+	float attacktimer_;
 public:
 
 	//コンストラクタ
