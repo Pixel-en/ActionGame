@@ -1,5 +1,5 @@
 #include "Bard.h"
-#include "ImGui/imgui.h"
+#include "Player.h"
 
 namespace {
 	const VECTOR IMAGESIZE{ 80,80 };
@@ -7,6 +7,7 @@ namespace {
 	const VECTOR HITBOXSIZE{ 60,60 };
 	const float IDOLTIME{ 3.0f };
 	const float DAMEGETIME{ 1.0f };
+	const float ATTACKRANGE{ 70.0f };
 }
 
 Bard::Bard(GameObject* parent)
@@ -119,14 +120,80 @@ void Bard::UpdateIdol()
 
 void Bard::UpdateAttack()
 {
+
+	transform_.position_.x -= targetvec_.x * speed * Time::DeltaTime();
+	transform_.position_.y -= targetvec_.y * speed * Time::DeltaTime();
+
 }
 
 void Bard::UpdateMove()
 {
+	if (IsExistPlayer(HITBOXSIZE.x / 2.0f + ATTACKRANGE)) {
+		Eanim_.animtype_ = EAnimation::ATTACK;
+		Player* p = GetParent()->FindGameObject<Player>();
+		targetvec_ = VGet(GetCenterTransPos().x - p->GetHitBoxCenterPosition().x, GetCenterTransPos().y - p->GetHitBoxCenterPosition().y, 0);
+		targetvec_ = VNorm(targetvec_);
+		speed = Eparam_.runspeed_;
+		return;
+	}
+
+	if (Eanim_.Rdir_) {
+		transform_.position_.x += Eparam_.speed_ * Time::DeltaTime();
+		if (hitobj_->RightCollisionCheck())
+			moveRmax_ = true;
+	}
+	else {
+		transform_.position_.x -= Eparam_.speed_ * Time::DeltaTime();
+		if (hitobj_->LeftCollisionCheck())
+			moveLmax_ = true;
+	}
+	//左進行
+	if (originpos_.x - transform_.position_.x > Eparam_.moverange_ || moveLmax_) {
+		if (!moveLmax_)
+			transform_.position_.x = originpos_.x - Eparam_.moverange_;
+		Eanim_.Rdir_ = true;
+		Eanim_.animtype_ = IDOL;
+		Idoltimer_ = Eparam_.movetimer_;
+		moveLmax_ = false;
+	}
+
+	//右進行
+	if (originpos_.x - transform_.position_.x < -Eparam_.moverange_ || moveRmax_) {
+		if (!moveRmax_)
+			transform_.position_.x = originpos_.x + Eparam_.moverange_;
+		Eanim_.Rdir_ = false;
+		Eanim_.animtype_ = IDOL;
+		Idoltimer_ = Eparam_.movetimer_;
+		moveRmax_ = false;
+	}
 }
 
 void Bard::UpdateRun()
 {
+	if (IsExistPlayer(HITBOXSIZE.x / 2.0f + ATTACKRANGE)) {
+		Eanim_.animtype_ = EAnimation::ATTACK;
+		return;
+	}
+
+	if (!IsExistPlayer(Eparam_.range_)) {
+		Eanim_.animtype_ = Enemy::IDOL;
+		Idoltimer_ = Eparam_.movetimer_;
+		originpos_ = transform_.position_;
+		return;
+	}
+
+	PlayerDir();
+
+	if (Eanim_.Rdir_) {
+		transform_.position_.x += Eparam_.runspeed_ * Time::DeltaTime();
+		if (hitobj_->RightCollisionCheck())
+			moveRmax_ = true;
+	}
+	else {
+		transform_.position_.x -= Eparam_.runspeed_ * Time::DeltaTime();
+		if (hitobj_->LeftCollisionCheck())
+			moveLmax_ = true;
+	}
 }
 
 void Bard::UpdateDamege()

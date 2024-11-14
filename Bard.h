@@ -14,6 +14,8 @@ class Bard :public Enemy
 
 	float Idoltimer_;
 	float sinangle_;
+	VECTOR targetvec_;
+	float speed;
 
 public:
 
