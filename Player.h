@@ -173,7 +173,7 @@ public:
 	/// <returns>•ûŒü</returns>
 	VECTOR KnockBackDir(VECTOR _vec);
 
-	XMFLOAT3 GetHitBoxPosition();
+	XMFLOAT3 GetHitBoxCenterPosition();
 
 	/// <summary>
 	/// ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«

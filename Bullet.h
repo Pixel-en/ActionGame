@@ -59,5 +59,7 @@ public:
 	int GetDamege() { return damege_; };
 	VECTOR GetHitBox() override;
 
+	void SetBulletObjectName(std::string Name) { objectName_ = Name; };
+
 };
 

@@ -37,8 +37,7 @@ Material::Material(GameObject* parent)
 	//hitobj_ = new HitObject(, this);
 
 	hitsize_ = { sizeX_,sizeY_ };
-
-	hitobj_ = new HitObject(hitsize_, this);
+	hitobj_ = new HitObject(VECTOR{ (float)sizeX_,(float)sizeY_ }, this);
 
 	durability_ = MAXDURABILITY;
 

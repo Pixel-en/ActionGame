@@ -104,8 +104,30 @@ void Field::Reset()
 				c->AddEcount();
 				Bard* bard = Instantiate<Bard>(GetParent());
 				bard->StatusReader(BARDA);
-				bard->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
+				bard->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
 			}
+			case PLANTA: {
+				c->AddEcount();
+				Plant* plant = Instantiate<Plant>(GetParent());
+				plant->StatusReader(PLANTA);
+				plant->Reset({j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f});
+				break;
+			}
+			case ZOMBIEA: {
+				c->AddEcount();
+				Zombie* zombie = Instantiate<Zombie>(GetParent());
+				zombie->StatusReader(ZOMBIEA);
+				zombie->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
+			}
+			case SKELETONA: {
+				c->AddEcount();
+				Skeleton* skeleton = Instantiate<Skeleton>(GetParent());
+				skeleton->StatusReader(SKELETONA);
+				skeleton->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+			}
+			
 					   /*
 			case SLIME_A + 201: {
 				c->AddEcount();
@@ -131,29 +153,6 @@ void Field::Reset()
 				e->Reset();
 			}
 					break;
-			case BARD_A + 201: {
-				c->AddEcount();
-				Bard* e = Instantiate<Bard>(GetParent());
-				e->StatusReader(BARD_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
-						break;
-			case PLANT_A + 201: {
-				c->AddEcount();
-				Plant* e = Instantiate<Plant>(GetParent());
-				e->StatusReader(PLANT_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
-							 break;
-			case ZOMBIE_A + 201: {
-				c->AddEcount();
-				Zombie* e = Instantiate<Zombie>(GetParent());
-				e->StatusReader(ZOMBIE_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
-			}
 							  break;
 			case SKELETON_A + 201: {
 				c->AddEcount();

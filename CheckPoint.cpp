@@ -2,7 +2,7 @@
 #include "Camera.h"
 
 namespace {
-	const SIZE IMAGESIZE{ 16,16 };
+	const VECTOR IMAGESIZE{ 16,16 };
 }
 
 CheckPoint::CheckPoint(GameObject* parent)
@@ -42,7 +42,7 @@ void CheckPoint::Draw()
 		ypos -= cam->GetValueY();
 	}
 
-	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE.cx, 0, IMAGESIZE.cx, IMAGESIZE.cy, hImage_, true);
+	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE.x, 0, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
 }
 
 void CheckPoint::Release()

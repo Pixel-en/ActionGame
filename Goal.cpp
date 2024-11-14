@@ -2,13 +2,17 @@
 #include "Camera.h"
 
 namespace {
-	const SIZE IMAGESIZE{ 48 };
+	const VECTOR IMAGESIZE{ 48,48 };
 }
 
 Goal::Goal(GameObject* parent)
 	:Object(parent,"Goal")
 {
-	hitsize_ = IMAGESIZE;
+	SIZE temp;
+	temp.cx = IMAGESIZE.x;
+	temp.cy = IMAGESIZE.y;
+	hitsize_ = temp;
+	
 }
 
 Goal::~Goal()
@@ -43,7 +47,7 @@ void Goal::Draw()
 		ypos -= cam->GetValueY();
 	}
 
-	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE.cx, 0, IMAGESIZE.cx, IMAGESIZE.cx, hImage_, true);
+	DrawRectGraph(xpos, ypos, 1 * animframe_ * IMAGESIZE.x, 0, IMAGESIZE.x, IMAGESIZE.x, hImage_, true);
 }
 
 void Goal::Release()

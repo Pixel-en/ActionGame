@@ -19,6 +19,7 @@ Bullet::Bullet(GameObject* parent)
 	animframe_ = 0;
 	targetName_ = "";
 	damege_ = 0;
+
 }
 
 Bullet::~Bullet()
@@ -27,18 +28,6 @@ Bullet::~Bullet()
 
 void Bullet::Initialize()
 {
-	std::string fileName_;
-	switch (bulletType_)
-	{
-	case FIRE:
-		fileName_ = "fire";
-		break;
-	default:
-		break;
-	}
-	fileName_ = "Assets\\Image\\Enemy\\" + fileName_ + ".png";
-	hImage_ = LoadGraph(fileName_.c_str());
-	assert(hImage_ > 0);
 }
 
 void Bullet::Set(int _dir, int _type, XMFLOAT3 pos,float range, std::string Name)
@@ -68,6 +57,7 @@ void Bullet::Set(int _dir, int _type, XMFLOAT3 pos,float range, std::string Name
 	fileName_ = "Assets\\Image\\Enemy\\" + fileName_ + ".png";
 	hImage_ = LoadGraph(fileName_.c_str());
 	assert(hImage_ > 0);
+	hitobj_ = new HitObject(LUPOINT, bulletHitBoxSize_, this);
 }
 
 void Bullet::Reset()
@@ -94,6 +84,11 @@ void Bullet::Update()
 
 	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
 	if (fabs(originpos_.x - transform_.position_.x) >= range_)
+		KillMe();
+
+	if (hitobj_->LeftCollisionCheck())
+		KillMe();
+	if (hitobj_->RightCollisionCheck())
 		KillMe();
 
 	if (framecnt_ >= 20)

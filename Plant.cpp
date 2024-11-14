@@ -1,195 +1,151 @@
-//#include "Plant.h"
-//#include "Enemy.h"
-//#include "ImGui/imgui.h"
-//
-//Plant::Plant(GameObject* parent)
-//	:Enemy(parent)
-//{
-//	movetimer_ = baseMovetimer;
-//	startmove_ = false;
-//	speed_ = 0;
-//	onGround_ = false;
-//	range_ = ENEMY_LOOKRANGE;
-//	state_ = IDOL;
-//	SpawnPoint_ = transform_.position_;
-//	dir_ = 1;
-//
-//	attackfrm_ = 0;
-//	hp_ = baseHp;
-//	hurtTime_ = baseHurtTime_;
-//
-//	hittransform_ = transform_;
-//	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
-//
-//	hitobj_ = new HitObject(hittransform_, ENEMY_HITBOXSIZE, this);
-//}
-//
-//Plant::~Plant()
-//{
-//}
-//
-//void Plant::Initialize()
-//{
-//}
-//
-//void Plant::Update()
-//{
-//	Player* p = GetParent()->FindGameObject<Player>();
-//
-//	Field* field = GetParent()->FindGameObject<Field>();
-//
-//	Clear* clear = GetParent()->FindGameObject<Clear>();
-//
-//	if (clear->GetFlag() || p == nullptr)
-//		return;
-//
-//	onGround_ = false;
-//	Ppos = p->GetPosition();
-//	Gaccel += ENEMY_GRAVITY;
-//	transform_.position_.y += Gaccel;
-//
-//
-//	short cflag = hitobj_->AllCollisionCheck();
-//	if (cflag & 0b1000 || cflag & 0b0100) {
-//		Gaccel = 0;
-//		onGround_ = true;
-//	}
-//
-//	if (p == nullptr)
-//		return;
-//	//ƒvƒŒƒCƒ„[‚ªŽ€‚ñ‚Å‚Ä‚à‚±‚±‚Ü‚Å‚Í‚·‚é
-//
-//	if (transform_.position_.y > 1000.0f) {
-//		transform_.position_.y = 1000.0f;
-//		KillMe();
-//	}
-//
-//	if (transform_.position_.y < 0)
-//		transform_.position_.y = 0;
-//
-//	ImGui::Begin("test");
-//	ImGui::InputInt("hp", &hp_);
-//	ImGui::End();
-//
-//	switch (state_)
-//	{
-//	case IDOL:
-//		AFmax_ = 3;
-//		FCmax_ = 25;
-//		UpdateIdol();
-//		break;
-//	case ATTACK:
-//		AFmax_ = 4;
-//		FCmax_ = 20;
-//		UpdateAttack();
-//		break;
-//	case HURT:
-//		AFmax_ = 1;
-//		FCmax_ = 1;
-//		UpdateHurt();
-//		break;
-//	case DEATH:
-//		AFmax_ = 4;
-//		FCmax_ = 20;
-//		UpdateDeath();
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	AnimationCheck();
-//}
-//
-//void Plant::Draw()
-//{
-//	int xpos = transform_.position_.x;
-//	int ypos = transform_.position_.y;
-//
-//	Camera* cam = GetParent()->FindGameObject<Camera>();
-//	if (cam != nullptr) {
-//		xpos -= cam->GetValue();
-//		ypos -= cam->GetValueY();
-//	}
-//
-//	SetTransColor(255 / 2, 255 / 2, 255 / 2);
-//	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, !invincible_, (dir_ * -1) - 1);
-//	SetTransColor(0,0,0);
-//
-//}
-//
-//void Plant::Release()
-//{
-//}
-//
-//SIZE Plant::GetImageSize()
-//{
-//	return ENEMY_IMAGESIZE;
-//}
-//
-//void Plant::DeadState()
-//{
-//	if (state_ != DEATH) {
-//	}
-//	state_ = DEATH;
-//
-//	framecnt_ = 0;
-//	animframe_ = 0;
-//}
-//
-//void Plant::UpdateIdol()
-//{
-//	if (Ppos.x - transform_.position_.x < 0)
-//		dir_ = -1;
-//	else
-//		dir_ = 1;
-//
-//	
-//
-//	if (startmove_ && IsExistPlayer(range_))
-//	{
-//		movetimer_ = baseMovetimer;
-//		attackfrm_ = 0;
-//		TargetPoint_ = TargetPos();
-//		startmove_ = false;
-//		bullet_ = Instantiate<Bullet>(GetParent());
-//		bullet_->Set(dir_, FIRE,transform_.position_,200,"Player");
-//		state_ = ATTACK;
-//		return;
-//	}
-//	else 
-//	{
-//		movetimer_ -= Time::DeltaTime();
-//		if (movetimer_ < 0) {
-//			movetimer_ = 0;
-//			startmove_ = true;
-//		}
-//	}
-//}
-//
-//void Plant::UpdateAttack()
-//{
-//	if (AnimationEnd()) {
-//		SpawnPoint_ = transform_.position_;
-//		state_ = IDOL;
-//	}
-//}
-//
-//void Plant::UpdateHurt()
-//{
-//	hurtTime_ -= Time::DeltaTime();
-//	if (hurtTime_ <= 0)
-//	{
-//		hurtTime_ = baseHurtTime_;
-//		state_ = IDOL;
-//	}
-//}
-//
-//void Plant::UpdateDeath()
-//{
-//	if (animframe_ == 2) {
-//		FCmax_ = 60;
-//		if (framecnt_ == 60) {
-//			KillMe();
-//		}
-//	}
-//}
+#include "Plant.h"
+#include "Bullet.h"
+#include "ImGui/imgui.h"
+
+namespace {
+	const VECTOR IMAGESIZE{ 80,80 };
+	const VECTOR LUPOINT{ 10,10 };
+	const VECTOR HITBOXSIZE{ 60,70 };
+	const float DAMEGETIME{ 1.0f };
+	const int ATTACKRANGE{ 200 };
+}
+
+Plant::Plant(GameObject* parent)
+	:Enemy(parent)
+{
+	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
+	Eanim_.animtype_ = IDOL;
+	SetLUPOINT(LUPOINT);
+	SetHitBox(HITBOXSIZE);
+	Idoltimer_ = Eparam_.movetimer_;
+	damegetimer_ = DAMEGETIME;
+}
+
+Plant::~Plant()
+{
+	if (hitobj_ != nullptr) {
+		delete hitobj_;
+		hitobj_ = nullptr;
+	}
+}
+
+void Plant::Initialize()
+{
+}
+
+void Plant::Update()
+{
+	Eanim_.animloop_ = true;
+
+	if (hitobj_->DownCollisionCheck())
+		Gaccel = 0.0f;
+
+	switch (Eanim_.animtype_)
+	{
+	case Enemy::NONE:
+		AFmax_ = 0;
+		FCmax_ = 0;
+		break;
+	case Enemy::IDOL:
+		Eanim_.AFmax_ = 3;
+		Eanim_.AFCmax_ = 25;
+		UpdateIdol();
+		break;
+	case Enemy::ATTACK:
+		Eanim_.AFmax_ = 4;
+		Eanim_.AFCmax_ = 20;
+		UpdateAttack();
+		break;
+	case Enemy::DAMEGE:
+		Eanim_.AFmax_ = 2;
+		Eanim_.AFCmax_ = 10;
+		UpdateDamege();
+		break;
+	case Enemy::DEATH:
+		Eanim_.AFmax_ = 4;
+		Eanim_.AFCmax_ = 10;
+		UpdateDeath();
+		break;
+	}
+
+	AnimationCalculation();
+}
+
+void Plant::Draw()
+{
+	int xpos = transform_.position_.x;
+	int ypos = transform_.position_.y;
+
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
+
+	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true,Eanim_.Rdir_);
+
+	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
+	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
+}
+
+void Plant::Release()
+{
+}
+
+
+void Plant::UpdateIdol()
+{
+	if (Idoltimer_ > 0) {
+		Idoltimer_ -= Time::DeltaTime();
+	}
+	else {
+		XMFLOAT3 pos = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+		SetCenterTransPos(pos, HITBOXSIZE);
+		if (IsExistPlayer(Eparam_.range_)) {
+			Eanim_.animtype_ = Enemy::ATTACK;
+		}
+	}
+}
+
+void Plant::UpdateAttack()
+{
+	PlayerDir();
+
+	XMFLOAT3 pos = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+	Eanim_.animloop_ = false;
+	if (Eanim_.animframe_ == 1 && Eanim_.animframecount_ == 1) {
+		Bullet* b = GetParent()->FindGameObject<Bullet>("PlantBullet");
+		if (b == nullptr) {
+			b = Instantiate<Bullet>(GetParent());
+			if (Eanim_.Rdir_)
+				b->Set(1, BULLET_TYPE::FIRE, pos, ATTACKRANGE, "Player");
+			else
+				b->Set(-1, BULLET_TYPE::FIRE, pos, ATTACKRANGE, "Player");
+			b->SetBulletObjectName("PlantBullet");
+		}
+		Idoltimer_ = Eparam_.movetimer_;
+	}
+}
+
+void Plant::UpdateDamege()
+{
+	Eanim_.animloop_ = true;
+	if (damegetimer_ > 0) {
+		damegetimer_ -= Time::DeltaTime();
+	}
+	else {
+		damegetimer_ = DAMEGETIME;
+		Eanim_.animtype_ = IDOL;
+	}
+}
+
+void Plant::UpdateDeath()
+{
+	Eanim_.animloop_ = true;
+	Effect* e;
+	e = Instantiate<Effect>(GetParent());
+	e->Reset(transform_, e->KILL);
+	e->SetEffectObjectName("EKillEffect");
+	KillMe();
+
+}

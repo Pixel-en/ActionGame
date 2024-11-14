@@ -1,197 +1,254 @@
-//#include "zombie.h"
-//
-//Zombie::Zombie(GameObject* parent)
-//	:Enemy(parent)
-//{
-//	movetimer_ = baseMovetimer;
-//	startmove_ = false;
-//	speed_ = 0;
-//	onGround_ = false;
-//	range_ = ENEMY_LOOKRANGE * 5;
-//	state_ = IDOL;
-//	SpawnPoint_ = transform_.position_;
-//	dir_ = -1;
-//
-//	attackfrm_ = 0;
-//	hp_ = baseHp;
-//	hurtTime_ = baseHurtTime_;
-//
-//	hittransform_ = transform_;
-//	hittransform_.position_ = { transform_.position_.x - ENEMY_HITBOXSIZE.cx / 2,transform_.position_.y - ENEMY_HITBOXSIZE.cy / 2,transform_.position_.z };
-//
-//	hitobj_ = new HitObject(hittransform_, ENEMY_HITBOXSIZE, this);
-//}
-//
-//Zombie::~Zombie()
-//{
-//}
-//
-//void Zombie::Initialize()
-//{
-//}
-//
-//void Zombie::Update()
-//{
-//	Player* p = GetParent()->FindGameObject<Player>();
-//
-//	Field* field = GetParent()->FindGameObject<Field>();
-//
-//	Clear* clear = GetParent()->FindGameObject<Clear>();
-//
-//	if (clear->GetFlag() || p == nullptr)
-//		return;
-//
-//	onGround_ = false;
-//	Ppos = p->GetPosition();
-//	Gaccel += ENEMY_GRAVITY;
-//	transform_.position_.y += Gaccel;
-//
-//
-//	short cflag = hitobj_->AllCollisionCheck();
-//	if (cflag & 0b1000 || cflag & 0b0100) {
-//		Gaccel = 0;
-//		onGround_ = true;
-//	}
-//
-//	this->ConvertHitTransformtoTransform();
-//
-//	if (p == nullptr)
-//		return;
-//	//プレイヤーが死んでてもここまではする
-//
-//	if (transform_.position_.y > 1000.0f) {
-//		transform_.position_.y = 1000.0f;
-//		KillMe();
-//	}
-//
-//	if (transform_.position_.y < 0)
-//		transform_.position_.y = 0;
-//
-//	if (CheckHitKey(KEY_INPUT_L))
-//	{
-//		state_ = HURT;
-//	}
-//
-//	switch (state_)
-//	{
-//	case IDOL:
-//		AFmax_ = 3;
-//		FCmax_ = 25;
-//		UpdateIdol();
-//		break;
-//	case RUN:
-//		AFmax_ = 6;
-//		FCmax_ = 20;
-//		UpdateRun();
-//		break;
-//	case ATTACK:
-//		AFmax_ = 5;
-//		FCmax_ = 20;
-//		UpdateAttack();
-//		break;
-//	case HURT:
-//		AFmax_ = 1;
-//		FCmax_ = 1;
-//		UpdateHurt();
-//		break;
-//	case DEATH:
-//		AFmax_ = 4;
-//		FCmax_ = 20;
-//		UpdateDeath();
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	AnimationCheck();
-//}
-//
-//void Zombie::Draw()
-//{
-//	int xpos = transform_.position_.x;
-//	int ypos = transform_.position_.y;
-//
-//	Camera* cam = GetParent()->FindGameObject<Camera>();
-//	if (cam != nullptr) {
-//		xpos -= cam->GetValue();
-//		ypos -= cam->GetValueY();
-//	}
-//
-//	DrawRectGraph(xpos - ENEMY_IMAGESIZE.cx / 2, ypos - (ENEMY_IMAGESIZE.cy - ENEMY_HITBOXSIZE.cy), animframe_ * ENEMY_IMAGESIZE.cx, state_ * ENEMY_IMAGESIZE.cy, ENEMY_IMAGESIZE.cx, ENEMY_IMAGESIZE.cy, hImage_, true, (dir_ * -1) - 1);
-//
-//}
-//
-//void Zombie::Release()
-//{
-//}
-//
-//SIZE Zombie::GetImageSize()
-//{
-//	return ENEMY_IMAGESIZE;
-//}
-//
-//void Zombie::DeadState()
-//{
-//}
-//
-//void Zombie::UpdateIdol()
-//{
-//	if (IsExistPlayer(range_)) {
-//		speed_ = baseSpeed;
-//		attackfrm_ = 0;
-//		startmove_ = false;
-//		TargetPoint_ = TargetPos();
-//		state_ = RUN;
-//	}
-//}
-//
-//void Zombie::UpdateRun()
-//{
-//	if (Ppos.x - transform_.position_.x < 0)
-//		dir_ = -1;
-//	else
-//		dir_ = 1;
-//	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
-//
-//	if (!IsExistPlayer(range_)) {
-//		state_ = IDOL;
-//	}
-//	if (IsExistPlayer(ENEMY_ATTACKRANGE)) {
-//		speed_ = baseRunSpeed;
-//		state_ = ATTACK;
-//		attackfrm_ = 0;
-//		startmove_ = false;
-//	}
-//}
-//
-//void Zombie::UpdateAttack()
-//{
-//	if (NowAnimFrame() == 2)
-//	{
-//		transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
-//	}
-//	if (AnimationEnd()) {
-//		SpawnPoint_ = transform_.position_;
-//		state_ = IDOL;
-//	}
-//}
-//
-//void Zombie::UpdateHurt()
-//{
-//	hurtTime_ -= Time::DeltaTime();
-//	if (hurtTime_ <= 0)
-//	{
-//		hurtTime_ = baseHurtTime_;
-//		state_ = IDOL;
-//	}
-//}
-//
-//void Zombie::UpdateDeath()
-//{
-//	if (animframe_ == 2) {
-//		FCmax_ = 60;
-//		if (framecnt_ == 60) {
-//			KillMe();
-//		}
-//	}
-//}
+#include "Zombie.h"
+#include "ImGui/imgui.h"
+
+namespace{
+	const VECTOR IMAGESIZE{ 80,80 };
+	const VECTOR LUPOINT{10,10};
+	const VECTOR HITBOXSIZE{ 60,70 };
+	const float MOVEXRANGE{ 200.0f };
+	const float ATTACKRANGE{ 50.0f };
+	const float DAMEGETIME{ 1.0f };
+	 
+}
+
+Zombie::Zombie(GameObject* parent)
+	:Enemy(parent)
+{
+	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
+	Eanim_.animtype_ = IDOL;
+	SetLUPOINT(LUPOINT);
+	SetHitBox(HITBOXSIZE);
+	Idoltimer_ = Eparam_.movetimer_;
+
+}
+
+Zombie::~Zombie()
+{
+	if (hitobj_ != nullptr) {
+		delete hitobj_;
+		hitobj_ = nullptr;
+	}
+}
+
+void Zombie::Initialize()
+{
+}
+
+void Zombie::Update()
+{
+
+	Eanim_.animloop_ = true;
+	
+	//重力
+	Gaccel += GRAVITY;
+	transform_.position_.y += Gaccel;
+	
+	if (hitobj_->DownCollisionCheck())
+		Gaccel = 0.0f;
+
+	XMFLOAT3 pos = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+	SetCenterTransPos(pos, HITBOXSIZE);
+
+	switch (Eanim_.animtype_)
+	{
+	case Enemy::NONE:
+		Eanim_.AFmax_ = 0;
+		Eanim_.AFCmax_ = 0;
+		break;
+	case Enemy::IDOL:
+		Eanim_.AFmax_ = 3;
+		Eanim_.AFCmax_ = 25;
+		UpdateIdol();
+		break;
+	case Enemy::ATTACK:
+		Eanim_.AFmax_ = 5;
+		Eanim_.AFCmax_ = 20;
+		UpdateAttack();
+		break;
+	case Enemy::MOVE:
+		Eanim_.AFmax_ = 6;
+		Eanim_.AFCmax_ = 25;
+		UpdateMove();
+		break;
+	case Enemy::RUN:
+		Eanim_.AFmax_ = 6;
+		Eanim_.AFCmax_ = 20;
+		UpdateRun();
+		break;
+	case Enemy::DAMEGE:
+		Eanim_.AFmax_ = 2;
+		Eanim_.AFCmax_ = 10;
+		UpdateDamege();
+		break;
+	case Enemy::DEATH:
+		Eanim_.AFmax_ = 4;
+		Eanim_.AFCmax_ = 20;
+		UpdateDeath();
+		break;
+	}
+
+
+	AnimationCalculation();
+}
+
+void Zombie::Draw()
+{
+	int xpos = transform_.position_.x;
+	int ypos = transform_.position_.y;
+
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
+
+	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+
+	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
+	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
+	DrawCircle(originpos_.x-cam->GetValue(), originpos_.y-cam->GetValueY(), MOVEXRANGE, GetColor(255, 255, 255), false);
+	DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, Eparam_.range_, GetColor(0, 255, 0), false);
+	DrawCircle(xpos+LUPOINT.x+HITBOXSIZE.x/2, ypos+LUPOINT.y+HITBOXSIZE.y/2, HITBOXSIZE.x / 2.0f + ATTACKRANGE, GetColor(255, 0, 0), false);
+	DrawBox(xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x + ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
+	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x  - ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
+}
+
+void Zombie::Release()
+{
+}
+
+bool Zombie::EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
+{
+	if (!isattack_) {
+		return false;
+	}
+
+	XMFLOAT3 attacktrans_;
+	VECTOR attackhitbox_;
+
+	if (Eanim_.Rdir_) {
+		attacktrans_ = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+		attackhitbox_ = VGet(ATTACKRANGE, HITBOXSIZE.y, 0);
+	}
+	else {
+		attacktrans_ = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+		attackhitbox_ = VGet(-ATTACKRANGE, HITBOXSIZE.y, 0);
+	}
+
+	bool set = hitobj_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
+	return set;
+}
+
+void Zombie::UpdateIdol()
+{
+	isattack_ = false;
+
+	if (Idoltimer_ > 0) {
+		Idoltimer_ -= Time::DeltaTime();
+	}
+	else {
+		if (IsExistPlayer(Eparam_.range_)) {
+			Eanim_.animtype_ = Enemy::RUN;
+		}
+		else
+			Eanim_.animtype_ = Enemy::MOVE;
+	}
+}
+
+void Zombie::UpdateAttack()
+{
+
+	Eanim_.animloop_ = false;
+	isattack_ = true;
+	Idoltimer_ = Eparam_.movetimer_;
+	originpos_ = transform_.position_;
+}
+
+void Zombie::UpdateMove()
+{
+	if (IsExistPlayer(Eparam_.range_)) {
+		Eanim_.animtype_ = Enemy::RUN;
+		return;
+	}
+
+	if (Eanim_.Rdir_) {
+		transform_.position_.x += Eparam_.speed_ * Time::DeltaTime();
+		if (hitobj_->RightCollisionCheck())
+			moveRmax_ = true;
+	}
+	else {
+		transform_.position_.x -= Eparam_.speed_ * Time::DeltaTime();
+		if (hitobj_->LeftCollisionCheck())
+			moveLmax_ = true;
+	}
+	//左進行
+	if (originpos_.x - transform_.position_.x > MOVEXRANGE||moveLmax_) {
+		if (!moveLmax_)
+			transform_.position_.x = originpos_.x - MOVEXRANGE;
+		Eanim_.Rdir_ = true;
+		Eanim_.animtype_ = IDOL;
+		Idoltimer_ = Eparam_.movetimer_;
+		moveLmax_ = false;
+	}
+	
+	//右進行
+	if (originpos_.x - transform_.position_.x < -MOVEXRANGE||moveRmax_) {
+		if (!moveRmax_)
+			transform_.position_.x = originpos_.x + MOVEXRANGE;
+		Eanim_.Rdir_ = false;
+		Eanim_.animtype_ = IDOL;
+		Idoltimer_ = Eparam_.movetimer_;
+		moveRmax_ = false;
+	}
+
+}
+
+void Zombie::UpdateRun()
+{
+	if (IsExistPlayer(HITBOXSIZE.x / 2.0f + ATTACKRANGE)) {
+		Eanim_.animtype_ = EAnimation::ATTACK;
+		return;
+	}
+
+	if (!IsExistPlayer(Eparam_.range_)) {
+		Eanim_.animtype_ = Enemy::IDOL;
+		Idoltimer_ = Eparam_.movetimer_;
+		originpos_ = transform_.position_;
+		return;
+	}
+
+	PlayerDir();
+
+	if (Eanim_.Rdir_) {
+		transform_.position_.x += Eparam_.runspeed_ * Time::DeltaTime();
+		if (hitobj_->RightCollisionCheck())
+			moveRmax_ = true;
+	}
+	else {
+		transform_.position_.x -= Eparam_.runspeed_ * Time::DeltaTime();
+		if (hitobj_->LeftCollisionCheck())
+			moveLmax_ = true;
+	}
+}
+
+void Zombie::UpdateDamege()
+{
+	Eanim_.animloop_ = true;
+	if (damegetimer_ > 0) {
+		damegetimer_ -= Time::DeltaTime();
+	}
+	else {
+		damegetimer_ = DAMEGETIME;
+		Eanim_.animtype_ = IDOL;
+	}
+}
+
+void Zombie::UpdateDeath()
+{
+	Eanim_.animloop_ = true;
+	Effect* e;
+	e = Instantiate<Effect>(GetParent());
+	e->Reset(transform_, e->KILL);
+	e->SetEffectObjectName("EKillEffect");
+	KillMe();
+}

@@ -8,6 +8,7 @@
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
+#include "TestOpenObject.h"
 
 Clear::Clear(GameObject* parent)
 	:GameObject(parent,"Clear")
@@ -46,6 +47,7 @@ void Clear::Update()
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
 	std::list<Explosion*> ex = GetParent()->FindGameObjects<Explosion>();
+	std::list<TestOpenObject*> open = GetParent()->FindGameObjects<TestOpenObject>();
 
 	if (!isgoal_&&!isGetM_ && !isKillE_&&p!=nullptr) {
 		if (ch != nullptr) {
@@ -74,18 +76,20 @@ void Clear::Update()
 			//if (p->PlayerAttackHitCheck(M->GetPosition(), M->GetHitBox()))
 				//M->KillMe();
 		}
-		//for (Enemy* E : e) {
-		//	//“G‚ÌUŒ‚
-		//	if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetPosition(),E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
-		//		p->HitDamage(E->GetCenter());
-		//	}
-		//	//ƒvƒŒƒCƒ„[‚ÌUŒ‚
-		//	if (p->PlayerAttackHitCheck(E->GetPosition(),E->GetHitBox())) {
-		//		E->HitDamege(p->GetDamege());
-		//		
-		//	}
+		for (Enemy* E : e) {
+			//“G‚ÌUŒ‚(ÚG)
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetHitTransPos(), E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
+				p->HitDamage({ E->GetCenterTransPos().x,E->GetCenterTransPos().y });
+			}
+			//ƒvƒŒƒCƒ„[‚ÌUŒ‚
+			if (p->PlayerAttackHitCheck(E->GetHitTransPos(),E->GetHitBox())) {
+				E->HitDamege(p->GetDamege());
+			}
+			if (E->EnemyAttackHitCheck(p->GetHitTrans().position_, p->GetHitBox())) {
+				p->HitDamage({ E->GetCenterTransPos().x,E->GetCenterTransPos().y });
+			}
 
-		//}
+		}
 		for (Bullet* B : b) {
 			//‚±‚±‚ ‚Æ‚Å’¼‚·
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), B->GetHitTrans().position_, B->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
@@ -94,14 +98,14 @@ void Clear::Update()
 					B->KillMe();
 				}
 			}
-			//for (Enemy* E : e) {
-			//	if (E->hitobj_->HitObjectANDObject(E->GetPosition(), E->GetHitBox(), B->GetHitTrans().position_,B->GetHitBox())) {
-			//		if (B->GetTargetName() == "Enemy") {
-			//			E->HitDamege(B->GetDamege());
-			//			B->KillMe();
-			//		}
-			//	}
-			//}
+			for (Enemy* E : e) {
+				if (E->hitobj_->HitObjectANDObject(E->GetHitTransPos(), E->GetHitBox(), B->GetHitTrans().position_, B->GetHitBox())) {
+					if (B->GetTargetName() == "Enemy") {
+						E->HitDamege(B->GetDamege());
+						B->KillMe();
+					}
+				}
+			}
 		}
 
 		for (Explosion* EX : ex) {
@@ -110,14 +114,19 @@ void Clear::Update()
 			}
 		}
 
+		for (TestOpenObject* o : open) {
+			if (p->PlayerAttackHitCheck(o->GetHitTransPos(), o->GetHitBox())) {
+				o->Open();
+			}
+		}
+
 		if (m.empty() && Mcount_!=0)
 			isGetM_ = true;
 		if (e.empty() && Ecount_ != 0)
 			isKillE_ = true;
 	}
-
+	
 	isFlag_ = isgoal_ || isGetM_ || isKillE_;
-
 }
 
 void Clear::Draw()
