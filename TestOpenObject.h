@@ -8,7 +8,7 @@ class TestOpenObject :
 {
 	int hImage_;
 	int weight;
-	int hight;
+	int height;
 	int frame;
 	float timer;
 	bool isAnim;
@@ -29,5 +29,11 @@ public:
 
 	//ŠJ•ú
 	void Release() override;
+
+	XMFLOAT3 GetHitTransPos();
+
+	VECTOR GetHitBox();
+
+	void Open();
 };
 
