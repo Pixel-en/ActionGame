@@ -121,6 +121,12 @@ void Field::Reset()
 				zombie->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
 				break;
 			}
+			case SKELETONA: {
+				c->AddEcount();
+				Skeleton* skeleton = Instantiate<Skeleton>(GetParent());
+				skeleton->StatusReader(SKELETONA);
+				skeleton->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+			}
 			
 					   /*
 			case SLIME_A + 201: {
