@@ -8,7 +8,6 @@
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
-#include "TestOpenObject.h"
 
 Clear::Clear(GameObject* parent)
 	:GameObject(parent,"Clear")
@@ -47,7 +46,6 @@ void Clear::Update()
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
 	std::list<Explosion*> ex = GetParent()->FindGameObjects<Explosion>();
-	std::list<TestOpenObject*> open = GetParent()->FindGameObjects<TestOpenObject>();
 
 	if (!isgoal_&&!isGetM_ && !isKillE_&&p!=nullptr) {
 		if (ch != nullptr) {
@@ -114,19 +112,14 @@ void Clear::Update()
 			}
 		}
 
-		for (TestOpenObject* o : open) {
-			if (p->PlayerAttackHitCheck(o->GetHitTransPos(), o->GetHitBox())) {
-				o->Open();
-			}
-		}
-
 		if (m.empty() && Mcount_!=0)
 			isGetM_ = true;
 		if (e.empty() && Ecount_ != 0)
 			isKillE_ = true;
 	}
-	
+
 	isFlag_ = isgoal_ || isGetM_ || isKillE_;
+
 }
 
 void Clear::Draw()
