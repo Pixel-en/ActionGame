@@ -5,6 +5,7 @@
 
 namespace
 {
+	int mojiSize = 32;
 	int AsciiCodeEN = 65;
 	struct NData
 	{
@@ -17,9 +18,10 @@ namespace
 
 	int dcx1 = 900;
 	int dcy1 = 400;
-	int dcx2 = dcx1 +35;
-	int dcy2 = dcy1 +35;
+	int dcx2 = dcx1 + mojiSize;
+	int dcy2 = dcy1 + mojiSize;
 
+	
 	int nowMojiCount = -1;
 	bool InCnPrevKey = false;
 
@@ -88,7 +90,7 @@ void RankingsSystem::Initialize()
 	cy2 = dcy2;
 	prevKey = false;
 
-	space = 9;
+	space = 14;
 	word = 23;
 	count = 0;
 	MaxWord = 10;
@@ -105,22 +107,22 @@ void RankingsSystem::Initialize()
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (y == 0 && x == 6) {
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,del_space_enter };
 				del_space_enter++;
 			}
 			else if (y == 1 && x ==6) {
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,del_space_enter };
 				del_space_enter++;
 			}
 			else if (y == 2 && x == 6) {
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,del_space_enter };
 			}
 			else if(AsciiCodeEN < 91 && x < 5){
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,AsciiCodeEN };
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,AsciiCodeEN };
 				AsciiCodeEN++;
 			}
 			else {
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,0};
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,0};
 			}
 		}
 	}
@@ -257,7 +259,9 @@ void RankingsSystem::DrawWriteUICn()
 		for (int x = 0; x < X; x++) {
 			b = static_cast<char>(N[y][x].Ascii);
 			std::string str(1, b);
-			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
+			/*if (str != "0") {*/
+			tText->DrawString(str, N[y][x].posX1-1, N[y][x].posY1+4);
+			/*}*/
 		}
 	}
 
@@ -266,8 +270,8 @@ void RankingsSystem::DrawWriteUICn()
 			PrevKey = UP;
 			prevY1 = cy1;
 			prevY2 = cy2;
-			cy1 -= 35;
-			cy2 -= 35;
+			cy1 -= mojiSize;
+			cy2 -= mojiSize;
 		}
 		prevKey = true;
 	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
@@ -275,8 +279,8 @@ void RankingsSystem::DrawWriteUICn()
 			PrevKey = RIGHT;
 			prevX1 = cx1;
 			prevX2 = cx2;
-			cx1 += 35;
-			cx2 += 35;
+			cx1 += mojiSize;
+			cx2 += mojiSize;
 		}
 		prevKey = true;
 	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
@@ -285,8 +289,8 @@ void RankingsSystem::DrawWriteUICn()
 			PrevKey = DOWN;
 			prevY1 = cy1;
 			prevY2 = cy2;
-			cy1 += 35;
-			cy2 += 35;
+			cy1 += mojiSize;
+			cy2 += mojiSize;
 		}
 		prevKey = true;
 	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
@@ -295,8 +299,8 @@ void RankingsSystem::DrawWriteUICn()
 			PrevKey = LEFT;
 			prevX1 = cx1;
 			prevX2 = cx2;
-		    cx1 -= 35;
-			cx2 -= 35;
+		    cx1 -= mojiSize;
+			cx2 -= mojiSize;
 		}
 		prevKey = true;
 	}
