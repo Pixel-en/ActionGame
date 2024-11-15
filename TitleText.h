@@ -1,12 +1,15 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+//アルファベットと数字とカタカナと!?が使えるよ
 class TitleText :public GameObject
 {
 	int hImage_;
 	int hImageUI_;
 
-	int CharNum(char c);
+	char CharNum(char c);
+
+	std::string fontarr;
 
 public:
 	/// <summary>
