@@ -131,10 +131,10 @@ void PlayScene::UpdatePlay()
 		}
 	}
 	else {
-		ScoreAndTime::SubTime(Time::DeltaTime());
+		ScoreAndTime::SubTimer(Time::DeltaTime());
 		//playtimer_ -= Time::DeltaTime();
-		if (ScoreAndTime::GetTime() < 0) {
-			ScoreAndTime::SetTime(0.0);
+		if (ScoreAndTime::GetTimer() < 0) {
+			ScoreAndTime::SetTimer(0.0);
 			//playtimer_ = 0;
 			state = PlayScene::DEATH;
 		}

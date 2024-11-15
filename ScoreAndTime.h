@@ -7,9 +7,8 @@ namespace ScoreAndTime {
 	void SubScore(int _score);
 	int GetScore();
 
-
-	void AddTime(float _time);
-	void SubTime(float _time);
-	float GetTime();
-	void SetTime(int _time);
+	void AddTimer(float _timer);
+	void SubTimer(float _timer);
+	float GetTimer();
+	void SetTimer(float _timer);
 }

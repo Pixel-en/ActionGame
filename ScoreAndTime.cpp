@@ -1,4 +1,5 @@
 #include "ScoreAndTime.h"
+
 namespace ScoreAndTime {
 
 	int Score_;
@@ -6,15 +7,15 @@ namespace ScoreAndTime {
 }
 
 
-void ScoreAndTime::Reset(float _time)
+void ScoreAndTime::Reset(float _score)
 {
 	 Score_ = 0;
-	 Time_ = _time;
+	 Timer_ = _score;
 }
 
 void ScoreAndTime::AddScore(int _score)
 {
-	Score_ += _score; 
+	Score_ += _score;
 }
 void ScoreAndTime::SubScore(int _score)
 {
@@ -27,22 +28,22 @@ int ScoreAndTime::GetScore()
 	return Score_;
 }
 
-void ScoreAndTime::AddTime(float _time)
+void ScoreAndTime::AddTimer(float _timer)
 {
-	Time_ += _time;
+	Timer_ += _timer;
 }
 
-void ScoreAndTime::SubTime(float _time)
+void ScoreAndTime::SubTimer(float _timer)
 {
-	Time_ -= _time;
+	Timer_ -= _timer;
 }
 
-float ScoreAndTime::GetTime()
+float ScoreAndTime::GetTimer()
 {
-	return Time_;
+	return Timer_;
 }
 
-void ScoreAndTime::SetTime(int _time)
+void ScoreAndTime::SetTimer(float _timer)
 {
-	Time_ = _time;
+	Timer_ = _timer;
 }

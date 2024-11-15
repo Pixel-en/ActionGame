@@ -2,18 +2,17 @@
 #include "BackGround.h"
 
 ResultScene::ResultScene(GameObject* parent)
-	: GameObject(parent, "ResultScene"), scoreText(nullptr), timeText(nullptr)
+	: GameObject(parent, "ResultScene"), scoreText(nullptr), timeText(nullptr), resultText(nullptr)
 {
 }
 
 void ResultScene::Initialize()
 {
-	Instantiate<BackGround>(this);
-
 	scoreText = Instantiate<TitleText>(this);
 	timeText = Instantiate<TitleText>(this);
-	ScoreAndTime::Reset(60.0);
-	time_ = ScoreAndTime::GetTime() / (60 * 2);//2•b‚ÅƒXƒRƒA‰ÁŽZ‚ª‚¨‚í‚é
+	resultText = Instantiate<TitleText>(this);
+	ScoreAndTime::Reset(123.0);
+	time_ = ScoreAndTime::GetTimer() / (60 * 2);//2•b‚ÅƒXƒRƒA‰ÁŽZ‚ª‚¨‚í‚é
 }
 
 void ResultScene::Update()
@@ -22,31 +21,65 @@ void ResultScene::Update()
 	{
 		TimeToScoreTimer -= Time::DeltaTime();
 	}
-	else
+	else if (ScoreAndTime::GetTimer() > 0)
 	{
-		if (a_ >= 1.0)
+		/*if (ScoreAndTime::GetTimer() - time_ < 0)
+		{
+			time_ = time_ - ScoreAndTime::GetTimer();
+		}*/
+		ScoreAndTime::SubTimer(time_);
+		a_ += time_;
+		while (a_ >= 1.0)
 		{
 			a_ -= 1.0;
-			ScoreAndTime::AddScore(100);
+			ScoreAndTime::AddScore(TimeToScoreValue);
 		}
-		ScoreAndTime::SubTime(time_);
-		a_ += time_;
 	}
 }
 
 void ResultScene::Draw()
 {
-	/*std::wstring scoreStr = L"SCORE : ";
-	std::wstring score;
+	resultText->DrawString("RESULT", 500, 200, false);
+
+	int spaceNum = 0;
+	for (int i = 10000; i >= 10; i /= 10)
+	{
+		if (i > ScoreAndTime::GetScore())
+		{
+			spaceNum++;
+		}
+	}
+
+	std::string scoreStr = "SCORE   ";
+	std::string score;
+	for (int i = 0; i < spaceNum; i++)
+	{
+		scoreStr += " ";
+	}
 	score = std::to_string(ScoreAndTime::GetScore());
 	scoreStr += score;
-	scoreText->DrawString(scoreStr, 400, 300);
+	scoreText->DrawString(scoreStr, 400, 300, false);
 
-	std::string timeStr = "SCORE : ";
+
+	spaceNum = 0;
+	for (int i = 10000; i >= 10; i /= 10)
+	{
+		if (i > ScoreAndTime::GetTimer())
+		{
+			spaceNum++;
+		}
+	}
+
+	std::string timeStr = "TIME    ";
 	std::string time;
-	time = std::to_string(ScoreAndTime::GetTime());
+	for (int i = 0; i < spaceNum; i++)
+	{
+		timeStr += " ";
+	}
+	//int timeInt = ScoreAndTime::GetTimer();
+	time = std::to_string(ScoreAndTime::GetTimer());
 	timeStr += time;
-	timeText->DrawString(timeStr, 400, 400);*/
+	timeText->DrawString(timeStr, 400, 400, false);
 
 }
 

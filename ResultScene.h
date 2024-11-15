@@ -8,8 +8,10 @@ class ResultScene
 {
 	TitleText* scoreText;
 	TitleText* timeText;
+	TitleText* resultText;
 	
 	float TimeToScoreTimer{ 2.0 };
+	const int TimeToScoreValue{ 100 };
 
 	float time_;
 
