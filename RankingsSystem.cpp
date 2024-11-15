@@ -34,6 +34,16 @@ namespace
 	NData N[Y][X];
 
 	bool inPrev = false;
+
+	enum PrevKey {
+		UP,
+		RIGHT,
+		DOWN,
+		LEFT,
+		NONE
+	};
+
+	int PrevKey;
 }
 
 
@@ -105,7 +115,7 @@ void RankingsSystem::Initialize()
 			else if (y == 2 && x == 6) {
 				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
 			}
-			else if(x < 5){
+			else if(AsciiCodeEN < 91 && x < 5){
 				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,AsciiCodeEN };
 				AsciiCodeEN++;
 			}
@@ -250,27 +260,21 @@ void RankingsSystem::DrawWriteUICn()
 			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
 		}
 	}
-	
-	for (int y = 0; y < Y; y++) {
-		for (int x = 0; x < X; x++) {
-			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2
-				&& !(prevX1 == cx1 && prevY1 == cy1 && prevX2 == cx2 && prevY2 == cy2)) {
-					prevX1 = cx1;
-					prevY1 = cy1;
-					prevX2 = cx2;
-					prevY2 = cy2;
-			}
-		}
-	}
 
 	if (CheckHitKey(KEY_INPUT_UP)) {
 		if (prevKey == false) {
+			PrevKey = UP;
+			prevY1 = cy1;
+			prevY2 = cy2;
 			cy1 -= 35;
 			cy2 -= 35;
 		}
 		prevKey = true;
 	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
 		if(prevKey == false) {
+			PrevKey = RIGHT;
+			prevX1 = cx1;
+			prevX2 = cx2;
 			cx1 += 35;
 			cx2 += 35;
 		}
@@ -278,6 +282,9 @@ void RankingsSystem::DrawWriteUICn()
 	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
 		
 		if (prevKey == false) {
+			PrevKey = DOWN;
+			prevY1 = cy1;
+			prevY2 = cy2;
 			cy1 += 35;
 			cy2 += 35;
 		}
@@ -285,6 +292,9 @@ void RankingsSystem::DrawWriteUICn()
 	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
 		
 		if (prevKey == false) {
+			PrevKey = LEFT;
+			prevX1 = cx1;
+			prevX2 = cx2;
 		    cx1 -= 35;
 			cx2 -= 35;
 		}
@@ -317,20 +327,87 @@ void RankingsSystem::DrawWriteUICn()
 	
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
-			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 ) {
-				if (CheckHitKey(KEY_INPUT_RETURN))
-				if (cy2 > prevY2) {
-					cy2 = prevY2;
-					cy1 = prevY1;
+			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 && N[y][x].Ascii == 0) {
+				
+				switch (PrevKey) {
+				case UP:
+				{
+
 				}
-				/*else if (cx2 < prevX2) {
-					cx2 = prevX2 - 35;
-					cx1 = prevX1 - 35;
+				case RIGHT:
+				{
+					
+
+					if (cx2 > prevX2) {
+						bool find = false;
+						for (int y = 0; y < Y; y++) {
+							for (int x = 0; x < X; x++) {
+								if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2) {
+									for (int sarch = x; sarch < X; sarch++) {
+										if (!find) {
+											if (N[y][sarch].Ascii != 0) {
+												cx1 = N[y][sarch].posX1;
+												cx2 = N[y][sarch].posX2;
+												cy1 = N[y][sarch].posY1;
+												cy2 = N[y][sarch].posY2;
+												find = true;
+											}
+											else {
+												cx1 = prevX1;
+												cx2 = prevX2;
+											}
+										}
+
+									}
+
+								}
+							}
+						}
+						find = false;
+					}
+					break;
+				
 				}
-				else if (cx2 > prevX2) {
-					cx2 = prevX2 + 35;
-					cx1 = prevX1 + 35;
-				}*/
+				case DOWN:
+				{
+					if (cy2 > prevY2) {
+						cy2 = prevY2;
+						cy1 = prevY1;
+					}
+					break;
+				}
+				case LEFT:
+				{
+					if (cx1 < prevX1) {
+						bool find = false;
+						for (int y = 0; y < Y; y++) {
+							for (int x = 0; x < X; x++) {
+								if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2) {
+									for (int sarch = x; sarch > 0; sarch--) {
+										if (!find) {
+											if (N[y][sarch].Ascii != 0) {
+												cx1 = N[y][sarch].posX1;
+												cx2 = N[y][sarch].posX2;
+												cy1 = N[y][sarch].posY1;
+												cy2 = N[y][sarch].posY2;
+												find = true;
+											}
+											else {
+												cx1 = prevX1;
+												cx2 = prevX2;
+											}
+										}
+
+									}
+
+								}
+							}
+						}
+					}
+					break;
+				}
+				default: break;
+				}
 			}
 		}
 	}
@@ -360,6 +437,7 @@ void RankingsSystem::DrawWriteUICn()
 							}
 						}else if (cAscii == 49) {
 							cAscii = 32;
+							cAscii_ToString = cAscii;
 							if (nowMojiCount == MaxWord -1 ) {
 								str.erase(nowMojiCount);
 								str.insert(nowMojiCount,cAscii_ToString);
@@ -413,19 +491,23 @@ void RankingsSystem::DrawWriteUICn()
 	}
 
 	DrawBoxAA(430, 380, (x1 + 25) + MaxWord * word + (MaxWord - 1) * space, 450, GetColor(255, 255, 255), FALSE); //“ü—Í˜gü
-	tText->DrawString(str, 450, 370);
+	tText->DrawString(str,450,400);
 }
 
-void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float _x1, float _y1, float _x2, float _y2,float _eraseTimer,float _eraseTime)
+
+
+void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime)
 {
 	float eraseAlpha;
+	static float eTimer = _eraseTimer;
+	static float eTime = _eraseTime;
 	//•¶Žš“ü—Íƒo[•\Ž¦
-	if (_eraseTimer > _eraseTime) {
-		_eraseTimer = 0.0f;
+	if (eTimer > eTime) {
+		eTimer = 0.0f;
 		eraseAlpha = 0;
 	}
-	_eraseTimer += 1.0f/60.0f;
-	eraseAlpha = 255 - 255 * _eraseTimer / _eraseTime;
+	eTimer += 1.0f/60.0f;
+	eraseAlpha = 255 - 255 * eTimer / eTime;
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
 	_str.size();
 	if (_str.size() > 0) {
