@@ -6,7 +6,6 @@ namespace {
 	const VECTOR IMAGESIZE{ 80,80 };
 	const VECTOR LUPOINT{ 10,10 };
 	const VECTOR HITBOXSIZE{ 60,70 };
-	const float DAMEGETIME{ 1.0f };
 	const int ATTACKRANGE{ 200 };
 }
 
@@ -18,7 +17,6 @@ Plant::Plant(GameObject* parent)
 	SetLUPOINT(LUPOINT);
 	SetHitBox(HITBOXSIZE);
 	Idoltimer_ = Eparam_.movetimer_;
-	damegetimer_ = DAMEGETIME;
 }
 
 Plant::~Plant()

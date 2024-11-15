@@ -6,7 +6,6 @@ namespace{
 	const VECTOR LUPOINT{10,10};
 	const VECTOR HITBOXSIZE{ 60,70 };
 	const float ATTACKRANGE{ 50.0f };
-	const float DAMEGETIME{ 1.0f };
 	 
 }
 

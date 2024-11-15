@@ -5,7 +5,6 @@ namespace {
 	const VECTOR IMAGESIZE{ 48,48 };
 	const VECTOR LUPOINT{ 0,15 };
 	const VECTOR HITBOXSIZE{ 48,33 };
-	const float DAMEGETIME{ 1.0f };
 	const float ATTACKTIME{ 0.5f };
 	const float ATTACKRANGE{ 50.0f };
 	const float SPEEDDOWN{ 30.0f };
@@ -167,6 +166,7 @@ void Slime::UpdateMove()
 			transform_.position_.x = originpos_.x - Eparam_.moverange_;
 		Eanim_.Rdir_ = true;
 		Eanim_.animtype_ = IDOL;
+		originpos_ = transform_.position_;
 		Idoltimer_ = Eparam_.movetimer_;
 		moveLmax_ = false;
 	}
@@ -177,6 +177,7 @@ void Slime::UpdateMove()
 			transform_.position_.x = originpos_.x + Eparam_.moverange_;
 		Eanim_.Rdir_ = false;
 		Eanim_.animtype_ = IDOL;
+		originpos_ = transform_.position_;
 		Idoltimer_ = Eparam_.movetimer_;
 		moveRmax_ = false;
 	}

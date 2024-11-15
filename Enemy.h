@@ -6,7 +6,7 @@
 //継承先全体で使うもののみ
 namespace {
 	const float GRAVITY{ 9.8f / 60.0f };
-
+	const float DAMEGETIME{ 1.0f };
 }
 
 class Enemy :public Object
@@ -104,6 +104,12 @@ protected:
 	/// <param name="_trans">当たり判定の左上の点</param>
 	/// <param name="_size">当たり判定のサイズ</param>
 	void SetCenterTransPos(XMFLOAT3 _trans, VECTOR _size);
+
+	/// <summary>
+	/// 当たり判定の中心を直接セットする
+	/// </summary>
+	/// <param name="_pos">当たり判定の中心のポジション</param>
+	void SetCenterTransPos(XMFLOAT3 _pos) { CenterTransPos_ = _pos; };
 
 	void PlayerDir();
 

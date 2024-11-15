@@ -107,8 +107,10 @@ void Enemy::HitDamege(int _damege)
 		if (Eparam_.hp_ <= 0) {
 			Eanim_.animtype_ = EAnimation::DEATH;
 		}
-		else
+		else {
 			Eanim_.animtype_ = EAnimation::DAMEGE;
+			damegetimer_=DAMEGETIME;
+		}
 		invincibleTimer_ = 0.5f;
 		invincible_ = true;
 		Eanim_.animframecount_ = 0;

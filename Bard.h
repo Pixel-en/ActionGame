@@ -15,7 +15,10 @@ class Bard :public Enemy
 	float Idoltimer_;
 	float sinangle_;
 	VECTOR targetvec_;
+	XMFLOAT3 targetpos_;
 	float speed;
+	XMFLOAT3 attackpos_;
+	bool dirchenge_;
 
 public:
 

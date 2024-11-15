@@ -6,7 +6,6 @@ namespace {
 	const VECTOR LUPOINT{ 10,10 };
 	const VECTOR HITBOXSIZE{ 60,60 };
 	const float IDOLTIME{ 3.0f };
-	const float DAMEGETIME{ 1.0f };
 	const float ATTACKRANGE{ 70.0f };
 }
 
@@ -67,13 +66,13 @@ void Bard::Update()
 		UpdateRun();
 		break;
 	case Enemy::DAMEGE:
-		AFmax_ = 2;
-		FCmax_ = 10;
+		Eanim_.AFmax_ = 2;
+		Eanim_.AFCmax_ = 10;
 		UpdateDamege();
 		break;
 	case Enemy::DEATH:
-		AFmax_ = 4;
-		FCmax_ = 20;
+		Eanim_.AFmax_ = 4;
+		Eanim_.AFCmax_ = 20;
 		UpdateDeath();
 		break;
 	}
@@ -92,7 +91,7 @@ void Bard::Draw()
 		ypos -= cam->GetValueY();
 	}
 
-	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true,Eanim_.Rdir_);
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
 	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
@@ -104,10 +103,10 @@ void Bard::Release()
 
 void Bard::UpdateIdol()
 {
-	sinangle_ += 1.0f;
+	sinangle_ += 3.0f;
 	float sinval = sinf(sinangle_ * DX_PI_F / 180.0f);
 	transform_.position_.y = transform_.position_.y + sinval;
-
+	dirchenge_ = false;
 	Eanim_.animSkip_ = false;
 	if (Idoltimer_ > 0) {
 		Idoltimer_ -= Time::DeltaTime();
@@ -123,17 +122,33 @@ void Bard::UpdateAttack()
 
 	transform_.position_.x -= targetvec_.x * speed * Time::DeltaTime();
 	transform_.position_.y -= targetvec_.y * speed * Time::DeltaTime();
+	if (GetCenterTransPos().x > targetpos_.x - 10 &&
+		GetCenterTransPos().x<targetpos_.x + 10 &&
+		GetCenterTransPos().y>targetpos_.y - 10 &&
+		GetCenterTransPos().y < targetpos_.y + 10&&!dirchenge_) {
+		targetvec_.x *= -1;
+		targetvec_.y *= -1;
+		dirchenge_ = true;
+		SetCenterTransPos(targetpos_);
+	}
+	
+	if (GetCenterTransPos().x > attackpos_.x - 10 &&
+		GetCenterTransPos().x<attackpos_.x + 10 &&
+		GetCenterTransPos().y>attackpos_.y - 10 &&
+		GetCenterTransPos().y < attackpos_.y + 10&&dirchenge_) {
+		Eanim_.animtype_ = IDOL;
+		Idoltimer_ = Eparam_.movetimer_;
+		SetCenterTransPos(attackpos_);
+		originpos_ = transform_.position_;
+	}
+
 
 }
 
 void Bard::UpdateMove()
 {
-	if (IsExistPlayer(HITBOXSIZE.x / 2.0f + ATTACKRANGE)) {
-		Eanim_.animtype_ = EAnimation::ATTACK;
-		Player* p = GetParent()->FindGameObject<Player>();
-		targetvec_ = VGet(GetCenterTransPos().x - p->GetHitBoxCenterPosition().x, GetCenterTransPos().y - p->GetHitBoxCenterPosition().y, 0);
-		targetvec_ = VNorm(targetvec_);
-		speed = Eparam_.runspeed_;
+	if (IsExistPlayer(Eparam_.range_)) {
+		Eanim_.animtype_ = Enemy::RUN;
 		return;
 	}
 
@@ -172,6 +187,13 @@ void Bard::UpdateRun()
 {
 	if (IsExistPlayer(HITBOXSIZE.x / 2.0f + ATTACKRANGE)) {
 		Eanim_.animtype_ = EAnimation::ATTACK;
+		Player* p = GetParent()->FindGameObject<Player>();
+		targetvec_ = VGet(GetCenterTransPos().x - p->GetHitBoxCenterPosition().x, GetCenterTransPos().y - p->GetHitBoxCenterPosition().y, 0);
+		targetvec_ = VNorm(targetvec_);
+		targetpos_ = p->GetHitBoxCenterPosition();
+		speed = Eparam_.runspeed_;
+		attackpos_ = GetCenterTransPos();
+		originpos_ = transform_.position_;
 		return;
 	}
 
