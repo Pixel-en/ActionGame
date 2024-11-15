@@ -2,7 +2,7 @@
 
 namespace ScoreAndTime {
 	
-	void Reset();
+	void Reset(float _time);
 	void AddScore(int _score);
 	void SubScore(int _score);
 	int GetScore();
@@ -11,4 +11,8 @@ namespace ScoreAndTime {
 	float GetTimer();
 
 
+	void AddTime(float _time);
+	void SubTime(float _time);
+	float GetTime();
+	void SetTime(int _time);
 }

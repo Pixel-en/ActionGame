@@ -18,12 +18,19 @@ char TitleText::CharNum(char c)
 
 void TitleText::DrawString(std::string _text, float _posx, float _posy)
 {
+	DrawString(_text, _posx, _posy, true);
+}
 
+void TitleText::DrawString(std::string _text, float _posx, float _posy, bool black)
+{
 	for (int i = 0; i < _text.size(); i++) {
 		char c = CharNum(_text[i]);
 		for (int j = 0; j < fontarr.size(); j++) {
 			if (fontarr[j] == c) {
-				DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + j * FONTSIZE.cy + 0.5f, FONTSIZE.cx, FONTSIZE.cy, hImage_, true);
+				if(black)
+					DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + j * FONTSIZE.cy + 0.5f, FONTSIZE.cx, FONTSIZE.cy, hImage_, true);
+				else
+					DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + j * FONTSIZE.cy + 0.5f, FONTSIZE.cx, FONTSIZE.cy, hImageW_, true);
 				break;
 			}
 		}
@@ -45,6 +52,8 @@ void TitleText::Initialize()
 {
 	hImage_ = LoadGraph("Assets\\Font\\Font_zou.png");
 	assert(hImage_ > 0);
+	hImageW_ = LoadGraph("Assets\\Font\\Font_zou_white.png");
+	assert(hImageW_ > 0);
 }
 
 void TitleText::Update()

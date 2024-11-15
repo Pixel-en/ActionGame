@@ -3,6 +3,7 @@
 #include "../TestScene.h"
 #include "../TitleScene.h"
 #include "../PlayScene.h"
+#include "../ResultScene.h"
 #include "../ClaerScene.h"
 #include "../PlayPreparationScene.h"
 #include "time.h"
@@ -18,9 +19,9 @@ void SceneManager::Initialize()
 {
 	Time::Init();
 	//ç≈èâÇÃÉVÅ[ÉìÇèÄîı
-	currentSceneID_ = SCENE_ID_TITLE;
+	currentSceneID_ = SCENE_ID_RESULT;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<TitleScene>(this);
+	Instantiate<ResultScene>(this);
 
 }
 
@@ -40,6 +41,7 @@ void SceneManager::Update()
 		case SCENE_ID_PREPARATION: Instantiate<PlayPreparationScene>(this); break;
 		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
 		case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
+		case SCENE_ID_RESULT: Instantiate<ResultScene>(this); break;
 		case SCENE_ID_CLEAR:Instantiate<ClearScene>(this); break;
 
 		}
