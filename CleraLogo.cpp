@@ -41,7 +41,7 @@ void ClearLogo::Draw()
 
 	if (output_) {
 		TitleText* tt = GetParent()->FindGameObject<TitleText>();
-		tt->DrawString("Write Down « Your Name", 320, 300);
+		tt->DrawString(L"Write Down « Your Name", 320, 300);
 	}
 }
 

@@ -36,8 +36,8 @@ void ResultScene::Update()
 
 void ResultScene::Draw()
 {
-	std::string scoreStr = "SCORE : ";
-	std::string score;
+	/*std::wstring scoreStr = L"SCORE : ";
+	std::wstring score;
 	score = std::to_string(ScoreAndTime::GetScore());
 	scoreStr += score;
 	scoreText->DrawString(scoreStr, 400, 300);
@@ -46,7 +46,7 @@ void ResultScene::Draw()
 	std::string time;
 	time = std::to_string(ScoreAndTime::GetTime());
 	timeStr += time;
-	timeText->DrawString(timeStr, 400, 400);
+	timeText->DrawString(timeStr, 400, 400);*/
 
 }
 
