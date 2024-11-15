@@ -54,5 +54,5 @@ public:
 
 	void DeadState();
 
-	float GetPlayTimer() { return Score::GetTime(); };
+	float GetPlayTimer() { return ScoreAndTime::GetTime(); };
 };

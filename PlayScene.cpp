@@ -68,7 +68,7 @@ void PlayScene::Reset()
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;
-	Score::Reset(PTIME);
+	ScoreAndTime::Reset(PTIME);
 	//playtimer_ = PTIME;
 	state = PlayScene::STAY;
 
@@ -131,10 +131,10 @@ void PlayScene::UpdatePlay()
 		}
 	}
 	else {
-		Score::SubTime(Time::DeltaTime());
+		ScoreAndTime::SubTime(Time::DeltaTime());
 		//playtimer_ -= Time::DeltaTime();
-		if (Score::GetTime() < 0) {
-			Score::SetTime(0.0);
+		if (ScoreAndTime::GetTime() < 0) {
+			ScoreAndTime::SetTime(0.0);
 			//playtimer_ = 0;
 			state = PlayScene::DEATH;
 		}
