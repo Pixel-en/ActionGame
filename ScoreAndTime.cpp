@@ -1,8 +1,9 @@
 #include "ScoreAndTime.h"
 namespace Score {
+namespace ScoreAndTime {
 
 	int Score_;
-	float Time_;
+	float Timer_;
 }
 
 
@@ -12,17 +13,17 @@ void Score::Reset(float _time)
 	 Time_ = _time;
 }
 
-void Score::AddScore(int _score)
+void ScoreAndTime::AddScore(int _score)
 {
 	Score_ += _score; 
 }
-void Score::SubScore(int _score)
+void ScoreAndTime::SubScore(int _score)
 {
 
 	Score_ -= _score;
 }
 
-int Score::GetScore()
+int ScoreAndTime::GetScore()
 {
 	return Score_;
 }

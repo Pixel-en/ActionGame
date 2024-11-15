@@ -9,6 +9,7 @@
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
 
+
 Clear::Clear(GameObject* parent)
 	:GameObject(parent,"Clear")
 {
