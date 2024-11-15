@@ -10,7 +10,7 @@ class TitleText :public GameObject
 
 	char CharNum(char c);
 
-	std::string fontarr;
+	std::wstring fontarr;
 
 public:
 	/// <summary>
@@ -19,7 +19,7 @@ public:
 	/// <param name="_text">表示したいテキスト</param>
 	/// <param name="_posx">表示する場所のx座標</param>
 	/// <param name="_posy">表示する場所のy座標</param>
-	void DrawString(std::string _text, float _posx, float _posy);
+	void DrawString(std::wstring _text, float _posx, float _posy);
 
 	/// <summary>
 	/// 文字表示
@@ -28,7 +28,7 @@ public:
 	/// <param name="_posx">表示する場所のx座標</param>
 	/// <param name="_posy">表示する場所のy座標</param>
 	/// <param name="black">文字の色が黒でいいか falseは白</param>
-	void DrawString(std::string _text, float _posx, float _posy,bool black);
+	void DrawString(std::wstring _text, float _posx, float _posy,bool black);
 
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）

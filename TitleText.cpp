@@ -16,15 +16,15 @@ char TitleText::CharNum(char c)
 
 }
 
-void TitleText::DrawString(std::string _text, float _posx, float _posy)
+void TitleText::DrawString(std::wstring _text, float _posx, float _posy)
 {
 	DrawString(_text, _posx, _posy, true);
 }
 
-void TitleText::DrawString(std::string _text, float _posx, float _posy, bool black)
+void TitleText::DrawString(std::wstring _text, float _posx, float _posy, bool black)
 {
 	for (int i = 0; i < _text.size(); i++) {
-		char c = _text[i];//CharNum(_text[i]);
+		wchar_t c = _text[i];//CharNum(_text[i]);
 		for (int j = 0; j < fontarr.size(); j++) {
 			if (fontarr[j] == c) {
 				if(black)
