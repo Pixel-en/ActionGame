@@ -18,17 +18,14 @@ char TitleText::CharNum(char c)
 
 void TitleText::DrawString(std::string _text, float _posx, float _posy)
 {
-	//for (int i = 0; i < _text.size(); i++) {
-	//	int num = CharNum(_text[i]);
-	//	DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + num * FONTSIZE.cy+0.5f, FONTSIZE.cx, FONTSIZE.cy, hImage_, true);
-	//}
-	//MessageBox(NULL, "test", NULL, MB_OK);
 
 	for (int i = 0; i < _text.size(); i++) {
 		char c = CharNum(_text[i]);
 		for (int j = 0; j < fontarr.size(); j++) {
-			if (fontarr[i] == c);
+			if (fontarr[j] == c) {
 				DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + j * FONTSIZE.cy + 0.5f, FONTSIZE.cx, FONTSIZE.cy, hImage_, true);
+				break;
+			}
 		}
 	}
 }
