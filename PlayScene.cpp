@@ -20,7 +20,7 @@ namespace {
 
 PlayScene::PlayScene(GameObject* parent)
 	:GameObject(parent, "PlayScene"), Filename_("Test.csv"), starttimer_(STIME), state(PlayState::STAY), counttimer_(CDTIME),
-	deathtimer_(DTIME), playtimer_(PTIME), listnum(0)
+	deathtimer_(DTIME), listnum(0)
 {
 }
 
@@ -68,7 +68,8 @@ void PlayScene::Reset()
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;
-	playtimer_ = PTIME;
+	Score::Reset(PTIME);
+	//playtimer_ = PTIME;
 	state = PlayScene::STAY;
 
 	Instantiate<PlayGUI>(this);
@@ -130,9 +131,11 @@ void PlayScene::UpdatePlay()
 		}
 	}
 	else {
-		playtimer_ -= Time::DeltaTime();
-		if (playtimer_ < 0) {
-			playtimer_ = 0;
+		Score::SubTime(Time::DeltaTime());
+		//playtimer_ -= Time::DeltaTime();
+		if (Score::GetTime() < 0) {
+			Score::SetTime(0.0);
+			//playtimer_ = 0;
 			state = PlayScene::DEATH;
 		}
 	}

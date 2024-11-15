@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "vector"
+#include "ScoreAndTime.h"
 
 //テストシーンを管理するクラス
 class PlayScene : public GameObject
@@ -8,7 +9,7 @@ class PlayScene : public GameObject
 private:
 	std::string Filename_;
 
-	float playtimer_;	//プレイ中の制限時間
+	//float playtimer_;	//プレイ中の制限時間
 
 	float starttimer_;	//スタートするまでの待機時間のタイマー
 	float counttimer_;	//クリアしてからの次に行くまでのタイマー
@@ -53,5 +54,5 @@ public:
 
 	void DeadState();
 
-	float GetPlayTimer() { return playtimer_; };
+	float GetPlayTimer() { return Score::GetTime(); };
 };
