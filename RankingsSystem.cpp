@@ -416,8 +416,6 @@ void RankingsSystem::DrawWriteUICn()
 	tText->DrawString(str, 450, 370);
 }
 
-
-
 void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float _x1, float _y1, float _x2, float _y2,float _eraseTimer,float _eraseTime)
 {
 	float eraseAlpha;
