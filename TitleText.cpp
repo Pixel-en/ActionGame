@@ -1,31 +1,40 @@
 #include "TitleText.h"
+#include "Engine/CsvReader.h"
 
 namespace {
-	const SIZE FONTSIZE{ 32 , 36 };
+	const SIZE FONTSIZE{ 37 , 22 };
 }
 
-int TitleText::CharNum(char c)
+char TitleText::CharNum(char c)
 {
 	if (std::toupper(c) >= 65 && std::toupper(c) <= 90)
-		return std::toupper(c) - 65;
+		return std::toupper(c);
 	else if (std::toupper(c) >= 48 && std::toupper(c) <= 57)
-		return std::toupper(c) - 48 + 26;
+		return std::toupper(c);
 
-	return 255;
+	return c;
+
 }
 
 void TitleText::DrawString(std::string _text, float _posx, float _posy)
 {
+
 	for (int i = 0; i < _text.size(); i++) {
-		int num = CharNum(_text[i]);
-		DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + num * FONTSIZE.cy+0.5f, FONTSIZE.cx, FONTSIZE.cy, hImage_, true);
+		char c = CharNum(_text[i]);
+		for (int j = 0; j < fontarr.size(); j++) {
+			if (fontarr[j] == c) {
+				DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + j * FONTSIZE.cy + 0.5f, FONTSIZE.cx, FONTSIZE.cy, hImage_, true);
+				break;
+			}
+		}
 	}
-	//MessageBox(NULL, "test", NULL, MB_OK);
 }
 
 TitleText::TitleText(GameObject* parent)
 	:GameObject(parent,"TitleText"),hImage_(0)
 {
+	fontarr =
+		"0123456789!?ABCDEFGHIJKLMNOPQRSTUVWXYZァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヲンヴヵヶー";
 }
 
 TitleText::~TitleText()
@@ -34,7 +43,7 @@ TitleText::~TitleText()
 
 void TitleText::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Font\\text1.png");
+	hImage_ = LoadGraph("Assets\\Font\\Font_zou.png");
 	assert(hImage_ > 0);
 }
 

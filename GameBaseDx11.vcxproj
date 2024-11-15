@@ -185,6 +185,7 @@
     <ClCompile Include="PlayPreparationScene.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="PlaySound.cpp" />
+    <ClCompile Include="ScoreAndTime.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="RankingsScene.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="RankingsScene.h" />
     <ClInclude Include="RankingsSystem.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ScoreAndTime.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Slime.h" />
     <ClInclude Include="TestObject.h" />
