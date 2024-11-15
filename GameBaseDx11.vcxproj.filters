@@ -23,6 +23,9 @@
     <Filter Include="PlayScene\Enemy">
       <UniqueIdentifier>{a2124d14-6fba-47b4-838e-be48ada8c790}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayPreparationScene">
+      <UniqueIdentifier>{f9ab5f28-78d7-4f11-b90c-befef118f3b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObject.cpp">
@@ -129,7 +132,6 @@
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Zombie.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
@@ -139,6 +141,11 @@
     <ClCompile Include="Plant.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="PlayPreparationScene.cpp">
+      <Filter>PlayPreparationScene</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayPreparationPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -256,7 +263,6 @@
       <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h" />
-    <ClInclude Include="Explosion.h" />
     <ClInclude Include="Zombie.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
@@ -266,6 +272,11 @@
     <ClInclude Include="Plant.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="PlayPreparationScene.h">
+      <Filter>PlayPreparationScene</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayPreparationPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">

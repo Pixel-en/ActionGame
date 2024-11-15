@@ -1,14 +1,15 @@
 #pragma once
 #include "Engine/GameObject.h"
 
-class ClearScene : public GameObject
+class PlayPreparationScene :public GameObject
 {
+
 	int hImage_;
 
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	ClearScene(GameObject* parent);
+	PlayPreparationScene(GameObject* parent);
 
 	//初期化
 	void Initialize() override;
@@ -22,3 +23,4 @@ public:
 	//開放
 	void Release() override;
 };
+
