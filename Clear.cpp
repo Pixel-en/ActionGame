@@ -8,7 +8,7 @@
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
-#include "Score.h"
+
 
 Clear::Clear(GameObject* parent)
 	:GameObject(parent,"Clear")
@@ -34,7 +34,6 @@ void Clear::Reset()
 	Mcount_ = 0;
 	Ecount_ = 0;
 	isFlag_ = false;
-	Score::Reset();
 	
 }
 
