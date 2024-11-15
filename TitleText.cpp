@@ -24,7 +24,7 @@ void TitleText::DrawString(std::string _text, float _posx, float _posy)
 void TitleText::DrawString(std::string _text, float _posx, float _posy, bool black)
 {
 	for (int i = 0; i < _text.size(); i++) {
-		char c = CharNum(_text[i]);
+		char c = _text[i];//CharNum(_text[i]);
 		for (int j = 0; j < fontarr.size(); j++) {
 			if (fontarr[j] == c) {
 				if(black)
@@ -41,7 +41,7 @@ TitleText::TitleText(GameObject* parent)
 	:GameObject(parent,"TitleText"),hImage_(0)
 {
 	fontarr =
-		"0123456789!?ABCDEFGHIJKLMNOPQRSTUVWXYZｧｱｨｲｩｳｪｴｫｵｶｶﾞｷｷﾞｸｸﾞｹｹﾞｺｺﾞｻｻﾞｼｼﾞｽｽﾞｾｾﾞｿｿﾞﾀﾀﾞﾁﾁﾞｯﾂﾂﾞﾃﾃﾞﾄﾄﾞﾅﾆﾇﾈﾉﾊﾊﾞﾊﾟﾋﾋﾞﾋﾟﾌﾌﾞﾌﾟﾍﾍﾞﾍﾟﾎﾎﾞﾎﾟﾏﾐﾑﾒﾓｬﾔｭﾕｮﾖﾗﾘﾙﾚﾛゎﾜｦﾝｳﾞヵヶｰ";
+		"0123456789!?ABCDEFGHIJKLMNOPQRSTUVWXYZァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヲンヴヵヶー";
 }
 
 TitleText::~TitleText()
