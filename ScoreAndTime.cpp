@@ -3,7 +3,7 @@
 namespace ScoreAndTime {
 
 	int Score_;
-	float Time_;
+	float Timer_;
 }
 
 

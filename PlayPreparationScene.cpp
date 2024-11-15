@@ -10,7 +10,7 @@ PlayPreparationScene::PlayPreparationScene(GameObject* parent)
 void PlayPreparationScene::Initialize()
 {
 	Instantiate<PlayPreparationPlayer>(this);
-	hImage_ = LoadGraph("Assets\\Image\\TestImage\\Test.png");
+	hImage_ = LoadGraph("Assets\\Image\\PlayPreparationState.png");
 }
 
 void PlayPreparationScene::Update()

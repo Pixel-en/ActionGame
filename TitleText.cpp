@@ -16,12 +16,12 @@ char TitleText::CharNum(char c)
 
 }
 
-void TitleText::DrawString(std::wstring _text, float _posx, float _posy)
+void TitleText::DrawString(std::string _text, float _posx, float _posy)
 {
 	DrawString(_text, _posx, _posy, true);
 }
 
-void TitleText::DrawString(std::wstring _text, float _posx, float _posy, bool black)
+void TitleText::DrawString(std::string _text, float _posx, float _posy, bool black)
 {
 	for (int i = 0; i < _text.size(); i++) {
 		wchar_t c = _text[i];//CharNum(_text[i]);
@@ -41,7 +41,7 @@ TitleText::TitleText(GameObject* parent)
 	:GameObject(parent,"TitleText"),hImage_(0)
 {
 	fontarr =
-		L"0123456789!?ABCDEFGHIJKLMNOPQRSTUVWXYZァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヲンヴヵヶー";
+		"0123456789!?ABCDEFGHIJKLMNOPQRSTUVWXYZァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヲンヴヵヶー";
 }
 
 TitleText::~TitleText()
