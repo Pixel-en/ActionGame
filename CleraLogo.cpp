@@ -1,5 +1,5 @@
 #include "CleraLogo.h"
-#include "TitleText.h"
+#include "OutText.h"
 
 ClearLogo::ClearLogo(GameObject* parent)
 	:GameObject(parent,"ClearLogo"),hImage_(0),output_(false)
@@ -35,12 +35,12 @@ void ClearLogo::Draw()
 	DrawGraph(transform_.position_.x, transform_.position_.y, hImage_, true);
 
 	/*if (output_) {
-		TitleText* tt = GetParent()->FindGameObject<TitleText>();
+		OutText* tt = GetParent()->FindGameObject<OutText>();
 		tt->DrawString("Return key to title", 350, 300);
 	}*/
 
 	if (output_) {
-		TitleText* tt = GetParent()->FindGameObject<TitleText>();
+		OutText* tt = GetParent()->FindGameObject<OutText>();
 		tt->DrawString("Write Down « Your Name", 320, 300);
 	}
 }

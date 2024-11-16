@@ -1,6 +1,6 @@
 #include "TitleScene.h"
 #include "Engine/SceneManager.h"
-#include "TitleText.h"
+#include "OutText.h"
 #include "Camera.h"
 
 namespace {
@@ -25,7 +25,7 @@ void TitleScene::Initialize()
 	hImage2_ = LoadGraph("Assets\\Image\\Arrow.png");
 	assert(hImage2_ > 0);
 
-	Instantiate<TitleText>(this);
+	Instantiate<OutText>(this);
 	transform_.position_.x = 0;
 	transform_.position_.y = 0;
 	x = 650;
@@ -90,7 +90,7 @@ void TitleScene::Draw()
 
 	DrawGraph(xpos+x, ypos+y, hImage2_, true);
 
-	TitleText* tt = FindGameObject<TitleText>();
+	OutText* tt = FindGameObject<OutText>();
 	tt->DrawStringJ("スタート", xpos + 700, ypos + 500);
 	tt->DrawString("clera", xpos + 700, ypos + 550,true);
 }

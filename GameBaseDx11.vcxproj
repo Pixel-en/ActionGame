@@ -183,6 +183,7 @@
     <ClCompile Include="PlayGUI.cpp" />
     <ClCompile Include="PlayPreparationPlayer.cpp" />
     <ClCompile Include="PlayPreparationScene.cpp" />
+    <ClCompile Include="PlayPreparationState.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="PlaySound.cpp" />
     <ClCompile Include="ResultScene.cpp" />
@@ -194,7 +195,7 @@
     <ClCompile Include="TestOpenObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
-    <ClCompile Include="TitleText.cpp" />
+    <ClCompile Include="OutText.cpp" />
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Zombie.cpp" />
   </ItemGroup>
@@ -238,6 +239,7 @@
     <ClInclude Include="PlayGUI.h" />
     <ClInclude Include="PlayPreparationPlayer.h" />
     <ClInclude Include="PlayPreparationScene.h" />
+    <ClInclude Include="PlayPreparationState.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="PlaySound.h" />
     <ClInclude Include="RankingsScene.h" />
@@ -251,7 +253,7 @@
     <ClInclude Include="TestOpenObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
-    <ClInclude Include="TitleText.h" />
+    <ClInclude Include="OutText.h" />
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Zombie.h" />
   </ItemGroup>

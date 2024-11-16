@@ -1,11 +1,11 @@
-#include "TitleText.h"
+#include "OutText.h"
 #include "Engine/CsvReader.h"
 
 namespace {
 	const SIZE FONTSIZE{ 37 , 22 };
 }
 
-char TitleText::CharNum(char c)
+char OutText::CharNum(char c)
 {
 	if (std::toupper(c) >= 65 && std::toupper(c) <= 90)
 		return std::toupper(c);
@@ -15,12 +15,12 @@ char TitleText::CharNum(char c)
 	return c;
 }
 
-void TitleText::DrawString(std::string _text, float _posx, float _posy)
+void OutText::DrawString(std::string _text, float _posx, float _posy)
 {
 	DrawString(_text, _posx, _posy, true);
 }
 
-void TitleText::DrawString(std::string _text, float _posx, float _posy, bool black)
+void OutText::DrawString(std::string _text, float _posx, float _posy, bool black)
 {
 	for (int i = 0; i < _text.size(); i++) {
 		char c = CharNum(_text[i]);
@@ -36,12 +36,12 @@ void TitleText::DrawString(std::string _text, float _posx, float _posy, bool bla
 	}
 }
 
-void TitleText::DrawStringJ(std::string _text, float _posx, float _posy)
+void OutText::DrawStringJ(std::string _text, float _posx, float _posy)
 {
 	DrawStringJ(_text, _posx, _posy, true);
 }
 
-void TitleText::DrawStringJ(std::string _text, float _posx, float _posy, bool black)
+void OutText::DrawStringJ(std::string _text, float _posx, float _posy, bool black)
 {
 	for (int i = 0; i < _text.size(); i += 2) {
 		for (int j = 0; j < fontarrJ.size(); j += 2) {
@@ -56,8 +56,8 @@ void TitleText::DrawStringJ(std::string _text, float _posx, float _posy, bool bl
 	}
 }
 
-TitleText::TitleText(GameObject* parent)
-	:GameObject(parent,"TitleText"),hImage_(0)
+OutText::OutText(GameObject* parent)
+	:GameObject(parent,"OutText"),hImage_(0)
 {
 	fontarr =
 		"0123456789!?ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -65,11 +65,11 @@ TitleText::TitleText(GameObject* parent)
 		"ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヲンヴヵヶー";
 }
 
-TitleText::~TitleText()
+OutText::~OutText()
 {
 }
 
-void TitleText::Initialize()
+void OutText::Initialize()
 {
 	hImage_ = LoadGraph("Assets\\Font\\Font_zou.png");
 	assert(hImage_ > 0);
@@ -77,14 +77,14 @@ void TitleText::Initialize()
 	assert(hImageW_ > 0);
 }
 
-void TitleText::Update()
+void OutText::Update()
 {
 }
 
-void TitleText::Draw()
+void OutText::Draw()
 {
 }
 
-void TitleText::Release()
+void OutText::Release()
 {
 }

@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "ClearPlayer.h"
 #include "CleraLogo.h"
-#include "TitleText.h"
+#include "OutText.h"
 #include"RankingsSystem.h"
 
 #if 0
@@ -36,7 +36,7 @@ void ClearScene::Initialize()
 	f->Reset();
 	Clearplayer* cp = Instantiate<Clearplayer>(this);
 	ClearLogo* logo = Instantiate<ClearLogo>(this);
-	TitleText* tt = Instantiate<TitleText>(this);
+	OutText* tt = Instantiate<OutText>(this);
 	RankingsSystem* pR = Instantiate<RankingsSystem>(this);
 }
 

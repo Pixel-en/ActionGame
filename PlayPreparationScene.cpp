@@ -1,5 +1,6 @@
 #include "PlayPreparationScene.h"
 #include "PlayPreparationPlayer.h"
+#include "PlayPreparationState.h"
 #include "Engine/SceneManager.h"
 
 PlayPreparationScene::PlayPreparationScene(GameObject* parent)
@@ -10,7 +11,8 @@ PlayPreparationScene::PlayPreparationScene(GameObject* parent)
 void PlayPreparationScene::Initialize()
 {
 	Instantiate<PlayPreparationPlayer>(this);
-	hImage_ = LoadGraph("Assets\\Image\\PlayPreparationState.png");
+	Instantiate<PlayPreparationState>(this);
+
 }
 
 void PlayPreparationScene::Update()
@@ -21,7 +23,7 @@ void PlayPreparationScene::Update()
 
 void PlayPreparationScene::Draw()
 {
-	DrawGraph(100, 100, hImage_, true);
+	
 }
 
 void PlayPreparationScene::Release()

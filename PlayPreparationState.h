@@ -1,13 +1,21 @@
 #pragma once
 #include "Engine/GameObject.h"
 
-class PlayPreparationScene :public GameObject
+class PlayPreparationState :public GameObject
 {
+
+	int hImage_;
+	int hImageState_;
+
+	void ParameterReader();
+	void ParameterWrite();
+
+	int param_[4];
 
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	PlayPreparationScene(GameObject* parent);
+	PlayPreparationState(GameObject* parent);
 
 	//初期化
 	void Initialize() override;

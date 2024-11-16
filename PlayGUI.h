@@ -9,8 +9,6 @@ class PlayGUI final :public GameObject
 
 	int hImagekey_;
 
-	int CharNum(char c);
-
 	std::string text;
 	float x, y;
 

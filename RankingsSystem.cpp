@@ -1,7 +1,7 @@
 #include "RankingsSystem.h"
 #include"Engine/CsvReader.h"
 #include"CleraLogo.h"
-#include"TitleText.h"
+#include"OutText.h"
 
 namespace
 {
@@ -71,7 +71,7 @@ void RankingsSystem::Initialize()
 	SetEnd = false;
 
 	cLogo = Instantiate<ClearLogo>(this);
-	tText = Instantiate<TitleText>(this);
+	tText = Instantiate<OutText>(this);
 
 	eraseTime = 1.2f;
 	eraseTimer = 0.0f;

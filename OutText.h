@@ -2,7 +2,7 @@
 #include "Engine/GameObject.h"
 
 //アルファベットと数字とカタカナと!?が使えるよ
-class TitleText :public GameObject
+class OutText :public GameObject
 {
 	int hImage_;
 	int hImageW_;
@@ -50,10 +50,10 @@ public:
 
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
-	TitleText(GameObject* parent);
+	OutText(GameObject* parent);
 
 	//デストラクタ
-	~TitleText();
+	~OutText();
 
 	//初期化
 	void Initialize() override;
