@@ -254,27 +254,25 @@ void RankingsSystem::DrawWriteUICn()
 {
 	char b;
 
-#if 0
 	//選択文字の表示
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			b = static_cast<char>(N[y][x].Ascii);
 			std::string str(1, b);
 			if (str == "0") {
-				tText->DrawString("ケス", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+				tText->DrawStringJ("ケス", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
 			}
 			else if (str == "1") {
-				tText->DrawString("クウハク", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+				tText->DrawStringJ("クウハク", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
 			}
 			else if (str == "2") {
-				tText->DrawString("ケッテイ", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+				tText->DrawStringJ("ケッテイ", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
 			}
 			else {
 				tText->DrawString(str, N[y][x].posX1 - 1, N[y][x].posY1 + 4);
 			}
 		}
 	}
-#endif
 
 	if (CheckHitKey(KEY_INPUT_UP)) {
 		if (prevKey == false) {
