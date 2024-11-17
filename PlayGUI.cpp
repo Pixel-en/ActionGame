@@ -116,7 +116,7 @@ void PlayGUI::Draw()
 
 	//Žc‚èŽžŠÔ•\Ž¦
 	for (int i = 0; i < chipnum_.size(); i++) {
-		DrawRectGraph(550 + i % 4 * UISIZE.cx, 20 + i / 4 * UISIZE.cy, (UISIZE.cx + UIBUFFER) * chipnum_[i].x, (UISIZE.cy + UIBUFFER) * chipnum_[i].y, UISIZE.cx, UISIZE.cy,
+		DrawRectGraph(550 + i % 4 * UISIZE.cx, 10 + i / 4 * UISIZE.cy, (UISIZE.cx + UIBUFFER) * chipnum_[i].x, (UISIZE.cy + UIBUFFER) * chipnum_[i].y, UISIZE.cx, UISIZE.cy,
 			hImageUI_, true);
 	}
 
