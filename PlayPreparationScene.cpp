@@ -17,7 +17,8 @@ void PlayPreparationScene::Initialize()
 
 void PlayPreparationScene::Update()
 {
-	if (CheckHitKey(KEY_INPUT_RETURN))
+	PlayPreparationState* s = FindGameObject<PlayPreparationState>();
+	if (s->GetStartFlag())
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
 }
 

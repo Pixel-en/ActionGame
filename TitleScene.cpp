@@ -36,16 +36,16 @@ void TitleScene::Update()
 {
 	if (!decision_) {
 		if (button_ == false) {
-			if (CheckHitKey(KEY_INPUT_W)) {
+			if (CheckHitKey(KEY_INPUT_UP)) {
 				updown = true;
 				button_ = true;
 			}
-			if (CheckHitKey(KEY_INPUT_S)) {
+			if (CheckHitKey(KEY_INPUT_DOWN)) {
 				updown = false;
 				button_ = true;
 			}
 		}
-		if (!CheckHitKey(KEY_INPUT_W) && !CheckHitKey(KEY_INPUT_S))
+		if (!CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN))
 			button_ = false;
 
 		if (updown)

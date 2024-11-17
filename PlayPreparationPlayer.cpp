@@ -34,7 +34,7 @@ void PlayPreparationPlayer::Update()
 
 void PlayPreparationPlayer::Draw()
 {
-	DrawRectGraph(50, 50, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
+	DrawRectGraph(250, 50, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
 }
 
 void PlayPreparationPlayer::Release()
