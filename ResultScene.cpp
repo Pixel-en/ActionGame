@@ -12,7 +12,7 @@ void ResultScene::Initialize()
 	timeText = Instantiate<TitleText>(this);
 	resultText = Instantiate<TitleText>(this);
 	ScoreAndTime::Reset(123.0);
-	time_ = ScoreAndTime::GetTimer() / (60 * 2);//2•b‚ÅƒXƒRƒA‰ÁŽZ‚ª‚¨‚í‚é
+	time_ = ScoreAndTime::GetTimer() / (60 * 5);//2•b‚ÅƒXƒRƒA‰ÁŽZ‚ª‚¨‚í‚é
 }
 
 void ResultScene::Update()
@@ -23,10 +23,11 @@ void ResultScene::Update()
 	}
 	else if (ScoreAndTime::GetTimer() > 0)
 	{
-		/*if (ScoreAndTime::GetTimer() - time_ < 0)
+		if (ScoreAndTime::GetTimer() < time_)
 		{
-			time_ = time_ - ScoreAndTime::GetTimer();
-		}*/
+			time_ = ScoreAndTime::GetTimer();
+			a_ = 1.0;
+		}
 		ScoreAndTime::SubTimer(time_);
 		a_ += time_;
 		while (a_ >= 1.0)
@@ -76,8 +77,8 @@ void ResultScene::Draw()
 	{
 		timeStr += " ";
 	}
-	//int timeInt = ScoreAndTime::GetTimer();
-	time = std::to_string(ScoreAndTime::GetTimer());
+	int timeInt = ScoreAndTime::GetTimer();
+	time = std::to_string(timeInt);
 	timeStr += time;
 	timeText->DrawString(timeStr, 400, 400, false);
 

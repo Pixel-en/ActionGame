@@ -27,16 +27,16 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "Test.csv";
+	Filename_ = "1-2.csv";
 
-	//おそらくマップリストの読み込み
-	CsvReader* csv = new CsvReader("Assets\\Map\\MapList.csv");
-	for (int i = 0; i < csv->GetLines(); i++) {
-		for (int j = 0; j < csv->GetColumns(0); j++) {
-			maplist.push_back(csv->GetString(i, j));
-		}
-	}
-	Filename_ = maplist[listnum];
+	////おそらくマップリストの読み込み
+	//CsvReader* csv = new CsvReader("Assets\\Map\\MapList.csv");
+	//for (int i = 0; i < csv->GetLines(); i++) {
+	//	for (int j = 0; j < csv->GetColumns(0); j++) {
+	//		maplist.push_back(csv->GetString(i, j));
+	//	}
+	//}
+	//Filename_ = maplist[listnum];
 
 	Reset();
 

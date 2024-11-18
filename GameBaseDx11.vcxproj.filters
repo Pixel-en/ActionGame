@@ -146,6 +146,8 @@
       <Filter>PlayPreparationScene</Filter>
     </ClCompile>
     <ClCompile Include="PlayPreparationPlayer.cpp" />
+    <ClCompile Include="ResultScene.cpp" />
+    <ClCompile Include="ScoreAndTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -277,6 +279,8 @@
       <Filter>PlayPreparationScene</Filter>
     </ClInclude>
     <ClInclude Include="PlayPreparationPlayer.h" />
+    <ClInclude Include="ResultScene.h" />
+    <ClInclude Include="ScoreAndTime.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">
