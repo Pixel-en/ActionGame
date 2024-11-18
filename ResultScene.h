@@ -1,14 +1,14 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "ScoreAndTime.h"
-#include "TitleText.h"
+#include "OutText.h"
 
 class ResultScene 
 	: public GameObject
 {
-	TitleText* scoreText;
-	TitleText* timeText;
-	TitleText* resultText;
+	OutText* scoreText;
+	OutText* timeText;
+	OutText* resultText;
 	
 	float TimeToScoreTimer{ 2.0 };
 	const int TimeToScoreValue{ 100 };

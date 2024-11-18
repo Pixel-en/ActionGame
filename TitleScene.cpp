@@ -1,6 +1,6 @@
 #include "TitleScene.h"
 #include "Engine/SceneManager.h"
-#include "TitleText.h"
+#include "OutText.h"
 #include "Camera.h"
 
 namespace {
@@ -25,7 +25,7 @@ void TitleScene::Initialize()
 	hImage2_ = LoadGraph("Assets\\Image\\Arrow.png");
 	assert(hImage2_ > 0);
 
-	Instantiate<TitleText>(this);
+	Instantiate<OutText>(this);
 	transform_.position_.x = 0;
 	transform_.position_.y = 0;
 	x = 650;
@@ -36,22 +36,22 @@ void TitleScene::Update()
 {
 	if (!decision_) {
 		if (button_ == false) {
-			if (CheckHitKey(KEY_INPUT_W)) {
+			if (CheckHitKey(KEY_INPUT_UP)) {
 				updown = true;
 				button_ = true;
 			}
-			if (CheckHitKey(KEY_INPUT_S)) {
+			if (CheckHitKey(KEY_INPUT_DOWN)) {
 				updown = false;
 				button_ = true;
 			}
 		}
-		if (!CheckHitKey(KEY_INPUT_W) && !CheckHitKey(KEY_INPUT_S))
+		if (!CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN))
 			button_ = false;
 
 		if (updown)
-			y = 500;
+			y = 490;
 		else
-			y = 550;
+			y = 540;
 	}
 
 	if (CheckHitKey(KEY_INPUT_RETURN) || decision_) {
@@ -90,7 +90,7 @@ void TitleScene::Draw()
 
 	DrawGraph(xpos+x, ypos+y, hImage2_, true);
 
-	TitleText* tt = FindGameObject<TitleText>();
-	tt->DrawString("あいうえお", xpos + 700, ypos + 500);
-	tt->DrawString("Clear", xpos + 700, ypos + 550,false);
+	OutText* tt = FindGameObject<OutText>();
+	tt->DrawStringJ("スタート", xpos + 700, ypos + 500);
+	tt->DrawString("clera", xpos + 700, ypos + 550,true);
 }

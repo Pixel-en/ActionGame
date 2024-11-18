@@ -202,7 +202,7 @@ void Slime::UpdateRun()
 	if (IsExistPlayer(HITBOXSIZE.x / 2.0f + ATTACKRANGE)) {
 		Eanim_.animtype_ = EAnimation::ATTACK;
 		Player* p = GetParent()->FindGameObject<Player>();
-		targetvec_ = VGet(GetCenterTransPos().x - p->GetHitBoxCenterPosition().x, GetCenterTransPos().y - p->GetHitBoxCenterPosition().y - 50, 0);
+		targetvec_ = VGet(GetCenterTransPos().x - p->GetHitBoxCenterPosition().x, GetCenterTransPos().y - (p->GetHitBoxCenterPosition().y-50), 0);
 		targetvec_ = VNorm(targetvec_);
 		speed = Eparam_.runspeed_ * 6.0f;
 		//speed = 170.0;

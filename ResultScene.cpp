@@ -8,9 +8,9 @@ ResultScene::ResultScene(GameObject* parent)
 
 void ResultScene::Initialize()
 {
-	scoreText = Instantiate<TitleText>(this);
-	timeText = Instantiate<TitleText>(this);
-	resultText = Instantiate<TitleText>(this);
+	scoreText = Instantiate<OutText>(this);
+	timeText = Instantiate<OutText>(this);
+	resultText = Instantiate<OutText>(this);
 	ScoreAndTime::Reset(123.0);
 	time_ = ScoreAndTime::GetTimer() / (60 * 5);//2•b‚ÅƒXƒRƒA‰ÁŽZ‚ª‚¨‚í‚é
 }

@@ -5,22 +5,14 @@
 #include "Player.h"
 #include "PlayScene.h"
 #include "Clear.h"
+#include "OutText.h"
+#include "ScoreAndTime.h"
 
 namespace {
 	const SIZE FONTSIZE{ 32,36 };
 	const SIZE UISIZE{ 32,32 };
 	const int UIBUFFER{ 4 };
 	const float COUNTTIMER{ 1.0f };
-}
-
-int PlayGUI::CharNum(char c)
-{
-	if (std::toupper(c) >= 65&&std::toupper(c) <= 90)
-		return std::toupper(c) - 65;
-	else if (std::toupper(c) >= 48 && std::toupper(c) <= 57)
-		return std::toupper(c) - 48 + 26;
-
-	return 255;
 }
 
 PlayGUI::PlayGUI(GameObject* parent)
@@ -37,8 +29,6 @@ PlayGUI::~PlayGUI()
 
 void PlayGUI::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Font\\text1.png");
-	assert(hImage_ > 0);
 	hImageUI_ = LoadGraph("Assets\\Image\\UI2.png");
 	assert(hImageUI_ > 0);
 	hImagekey_ = LoadGraph("Assets\\Image\\Key.png");
@@ -61,7 +51,7 @@ void PlayGUI::Initialize()
 
 	CDtimer_ = COUNTTIMER;
 	transform_.position_.x = -200;
-
+	Instantiate<OutText>(GetParent());
 
 }
 
@@ -127,7 +117,7 @@ void PlayGUI::Draw()
 
 	//Žc‚èŽžŠÔ•\Ž¦
 	for (int i = 0; i < chipnum_.size(); i++) {
-		DrawRectGraph(550 + i % 4 * UISIZE.cx, 20 + i / 4 * UISIZE.cy, (UISIZE.cx + UIBUFFER) * chipnum_[i].x, (UISIZE.cy + UIBUFFER) * chipnum_[i].y, UISIZE.cx, UISIZE.cy,
+		DrawRectGraph(550 + i % 4 * UISIZE.cx, 10 + i / 4 * UISIZE.cy, (UISIZE.cx + UIBUFFER) * chipnum_[i].x, (UISIZE.cy + UIBUFFER) * chipnum_[i].y, UISIZE.cx, UISIZE.cy,
 			hImageUI_, true);
 	}
 
@@ -137,6 +127,8 @@ void PlayGUI::Draw()
 	if (c->GetFlag()) {
 		DrawString("CLEAR", 550, 350);
 	}
+
+	DrawString("Score" + std::to_string(ScoreAndTime::GetScore()), 900, 30);
 }
 
 void PlayGUI::Release()
@@ -145,8 +137,6 @@ void PlayGUI::Release()
 
 void PlayGUI::DrawString(std::string _text, float _posx, float _posy)
 {
-	for (int i = 0; i < _text.size(); i++) {
-		int num = CharNum(_text[i]);
-		DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + num * FONTSIZE.cy + 0.5f, FONTSIZE.cx, FONTSIZE.cy, hImage_, true);
-	}
+	OutText* out = GetParent()->FindGameObject<OutText>();
+	out->DrawString(_text, _posx, _posy);
 }

@@ -2,7 +2,7 @@
 #include "Engine/GameObject.h"
 
 //アルファベットと数字とカタカナと!?が使えるよ
-class TitleText :public GameObject
+class OutText :public GameObject
 {
 	int hImage_;
 	int hImageW_;
@@ -11,6 +11,7 @@ class TitleText :public GameObject
 	char CharNum(char c);
 
 	std::string fontarr;
+	std::string fontarrJ;
 
 public:
 	/// <summary>
@@ -30,12 +31,29 @@ public:
 	/// <param name="black">文字の色が黒でいいか falseは白</param>
 	void DrawString(std::string _text, float _posx, float _posy,bool black);
 
+	/// <summary>
+	/// 文字表示日本語用
+	/// </summary>
+	/// <param name="_text">表示したいテキスト</param>
+	/// <param name="_posx">表示する場所のx座標</param>
+	/// <param name="_posy">表示する場所のy座標</param>
+	void DrawStringJ(std::string _text, float _posx, float _posy);
+
+	/// <summary>
+	/// 文字表示日本語用
+	/// </summary>
+	/// <param name="_text">表示したいテキスト</param>
+	/// <param name="_posx">表示する場所のx座標</param>
+	/// <param name="_posy">表示する場所のy座標</param>
+	/// <param name="black">文字の色が黒でいいか falseは白</param>
+	void DrawStringJ(std::string _text, float _posx, float _posy, bool black);
+
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）
-	TitleText(GameObject* parent);
+	OutText(GameObject* parent);
 
 	//デストラクタ
-	~TitleText();
+	~OutText();
 
 	//初期化
 	void Initialize() override;
