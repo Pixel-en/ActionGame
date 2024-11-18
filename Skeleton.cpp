@@ -16,7 +16,6 @@ Skeleton::Skeleton(GameObject* parent)
 	:Enemy(parent)
 {
 	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
-	Eanim_.animtype_ = IDOL;
 	SetLUPOINT(LUPOINT);
 	SetHitBox(HITBOXSIZE);
 }
@@ -45,8 +44,9 @@ void Skeleton::Update()
 	switch (Eanim_.animtype_)
 	{
 	case Enemy::NONE:
-		Eanim_.AFmax_ = 0;
-		Eanim_.AFCmax_ = 0;
+		Eanim_.AFmax_ = 4;
+		Eanim_.AFCmax_ = 25;
+		UpdateNone();
 		break;
 	case Enemy::IDOL:
 		Eanim_.AFmax_ = 4;
@@ -97,7 +97,9 @@ void Skeleton::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-
+	if (Eanim_.animtype_ < 0)
+		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, 0 * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+	else
 	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);

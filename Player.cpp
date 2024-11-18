@@ -4,6 +4,7 @@
 #include "ImGui/imgui.h"
 #include "Bullet.h"
 #include "Effect.h"
+#include "PlayScene.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -117,6 +118,8 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	if (GetJoypadXInputState(DX_INPUT_PAD1, &pad) != 0)
+		assert(false);
 
 	//重力
 	Gaccel_ += GRAVITY;
@@ -127,8 +130,9 @@ void Player::Update()
 		isjump_ = false;
 	}
 
+	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
 
-	if (anim_.animtype_ < Animation::DAMAGE) {
+	if (anim_.animtype_ < Animation::DAMAGE&&pc->isStart()) {
 		anim_.animtype_ = Animation::IDOL;
 		MoveControl();
 	}
@@ -136,7 +140,7 @@ void Player::Update()
 	AnimStatus();
 
 	CameraScroll();
-
+	
 }
 
 void Player::Draw()
@@ -223,17 +227,18 @@ void Player::CameraScroll()
 void Player::MoveControl()
 {
 
+
 	float Dash = 1.0f;
 	miningtime_ = -1.0f;
 
 	if (!ActionControl()) {
 		//左移動
-		if (CheckHitKey(KEY_INPUT_A)) {
+		if (CheckHitKey(KEY_INPUT_A) || pad.ThumbLX <= -10000) {
 
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT))||pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -244,12 +249,12 @@ void Player::MoveControl()
 		}
 
 		//右移動
-		if (CheckHitKey(KEY_INPUT_D)) {
+		if (CheckHitKey(KEY_INPUT_D) || pad.ThumbLX > 10000) {
 
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) || pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -263,7 +268,7 @@ void Player::MoveControl()
 		hitobject_->RightCollisionCheck();
 
 		//ジャンプ
-		if (CheckHitKey(KEY_INPUT_SPACE) && !isjump_) {
+		if ((CheckHitKey(KEY_INPUT_SPACE) || pad.Buttons[XINPUT_BUTTON_A]) && !isjump_) {
 			isjump_ = true;
 			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
 			Transform trans;
@@ -278,7 +283,7 @@ void Player::MoveControl()
 			//WaitKey();
 		}
 		////上移動
-		if (CheckHitKey(KEY_INPUT_W)) {
+		if (CheckHitKey(KEY_INPUT_W) || pad.ThumbLY <= 10000) {
 			Field* f = GetParent()->FindGameObject<Field>();
 			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
 				anim_.animtype_ = Animation::CLIMB;
@@ -299,16 +304,16 @@ bool Player::ActionControl()
 {
 
 	//採取
-	if (CheckHitKey(KEY_INPUT_I)) {
+	if (CheckHitKey(KEY_INPUT_I) || (pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER])) {
 		anim_.animtype_ = Animation::COLLECTION;
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if ((CheckHitKey(KEY_INPUT_M) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T || Atype_ == AttackType::MAGIC2T) {
+	if (((CheckHitKey(KEY_INPUT_M) || pad.RightTrigger >= 150) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T || Atype_ == AttackType::MAGIC2T) {
 		anim_.animtype_ = Animation::MAGIC;
 		XMFLOAT3 bpos = { transform_.position_.x + RUPOINT.x / 2.0f,transform_.position_.y + RUPOINT.y,transform_.position_.z };
 
-		if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
+		if (((CheckHitKey(KEY_INPUT_K) || pad.Buttons[XINPUT_BUTTON_X]) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
 			if (rechargetimer_[3] < 0.0) {
 				Atype_ = MAGIC1T;
 				if (!attackbuttondown) {
@@ -325,7 +330,7 @@ bool Player::ActionControl()
 			}
 		}
 
-		else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
+		else if (((CheckHitKey(KEY_INPUT_L) || pad.Buttons[XINPUT_BUTTON_Y]) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
 			if (rechargetimer_[4] < 0.0) {
 				Atype_ = MAGIC2T;
 				if (!attackbuttondown) {
@@ -343,7 +348,7 @@ bool Player::ActionControl()
 		}
 	}
 
-	else if ((CheckHitKey(KEY_INPUT_J) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
+	else if (((CheckHitKey(KEY_INPUT_J) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_X])) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
 		if (rechargetimer_[0] < 0.0) {
 			anim_.animtype_ = Animation::ATTACK;
 			Atype_ = ATTACKT;
@@ -351,7 +356,7 @@ bool Player::ActionControl()
 		}
 	}
 
-	else if ((CheckHitKey(KEY_INPUT_K) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
+	else if (((CheckHitKey(KEY_INPUT_K) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_Y])) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
 		if (rechargetimer_[1] < 0.0) {
 			anim_.animtype_ = Animation::ATTACK2;
 			Atype_ = ATTACK2T;
@@ -359,7 +364,7 @@ bool Player::ActionControl()
 		}
 	}
 
-	else if ((CheckHitKey(KEY_INPUT_L) && !attackbuttondown) || Atype_ == AttackType::ATTACK3T) {
+	else if (((CheckHitKey(KEY_INPUT_L) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_B])) && !attackbuttondown) || Atype_ == AttackType::ATTACK3T) {
 		if (rechargetimer_[2] < 0.0) {
 			anim_.animtype_ = Animation::ATTACK3;
 			Atype_ = ATTACK3T;
@@ -367,7 +372,8 @@ bool Player::ActionControl()
 		}
 	}
 
-	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M))
+	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M) &&
+		!pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_Y] && !pad.Buttons[XINPUT_BUTTON_X] && pad.RightTrigger < 150 && !pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER])
 		attackbuttondown = false;
 
 

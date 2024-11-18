@@ -2,6 +2,7 @@
 #include "Engine/CsvReader.h"
 #include "Player.h"
 #include "ScoreAndTimeAndMap.h"
+#include "PlayScene.h"
 
 namespace {
 	const VECTOR LUPOINT{ -1,-1 };
@@ -79,7 +80,7 @@ void Enemy::StatusReader(int _enemyNumber)
 			hImage_ = LoadGraph(Eparam_.filename_.c_str());
 			assert(hImage_ > 0);
 
-			Eanim_.animtype_ = IDOL;
+			Eanim_.animtype_ = NONE;
 			Eanim_.BEanimtype_ = NONE;
 			Eanim_.AFmax_ = 0;
 			Eanim_.animframe_ = 0;
@@ -109,7 +110,7 @@ void Enemy::HitDamege(int _damege)
 		Eparam_.hp_ -= _damege;
 		if (Eparam_.hp_ <= 0) {
 			Eanim_.animtype_ = EAnimation::DEATH;
-			ScoreAndTimeAndMap::AddScore(GetScore());
+			ScoreAndTimeAndMap::AddScore(Eparam_.score_);
 		}
 		else {
 			Eanim_.animtype_ = EAnimation::DAMEGE;
@@ -172,7 +173,7 @@ Enemy::Enemy(GameObject* parent)
 	:Object(parent, "Enemy")
 {
 	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
-	Eanim_.animtype_ = IDOL;
+	Eanim_.animtype_ = NONE;
 	Eanim_.BEanimtype_ = NONE;
 	Eanim_.AFmax_ = 0;
 	Eanim_.animframe_ = 0;
@@ -193,12 +194,14 @@ Enemy::~Enemy()
 
 void Enemy::Initialize()
 {
+	Eanim_.AFCmax_ = 25;
+	Eanim_.AFmax_ = 3;
 }
 
 void Enemy::Reset()
 {
 	originpos_ = transform_.position_;
-	Eanim_.animtype_ = IDOL;
+	Eanim_.animtype_ = NONE;
 	Eanim_.BEanimtype_ = NONE;
 	Eanim_.AFmax_ = 0;
 	Eanim_.animframe_ = 0;
@@ -225,7 +228,7 @@ void Enemy::Reset(XMFLOAT3 pos)
 	originpos_ = pos;
 	transform_.position_ = originpos_;
 
-	Eanim_.animtype_ = IDOL;
+	Eanim_.animtype_ = NONE;
 	Eanim_.BEanimtype_ = NONE;
 	Eanim_.AFmax_ = 0;
 	Eanim_.animframe_ = 0;
@@ -270,4 +273,14 @@ bool Enemy::IsExistPlayer(float _range)
 		return true;
 
 	return false;
+}
+
+
+void Enemy::UpdateNone()
+{
+
+	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
+	if (pc->isStart())
+		Eanim_.animtype_ = IDOL;
+
 }

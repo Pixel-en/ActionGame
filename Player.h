@@ -102,6 +102,8 @@ private:
 
 	float rechargetimer_[ATTACKTYPENUM];
 
+	XINPUT_STATE pad;
+
 	/*----------ä÷êî----------*/
 
 	/// <summary>

@@ -64,6 +64,7 @@ void PlayScene::Reset()
 	ScoreAndTimeAndMap::Reset(PTIME);
 	//playtimer_ = PTIME;
 	state = PlayScene::STAY;
+	isstart = false;
 
 	Instantiate<PlayGUI>(this);
 }
@@ -112,10 +113,12 @@ void PlayScene::UpdateStay()
 	if (starttimer_ < 0) {
 		state = PlayScene::PLAY;
 	}
+	isstart = false;
 }
 
 void PlayScene::UpdatePlay()
 {
+	isstart = true;
 	Clear* c = FindGameObject<Clear>();
 	if (c->GetFlag()) {
 		counttimer_ -= Time::DeltaTime();
@@ -140,13 +143,12 @@ void PlayScene::UpdatePlay()
 
 void PlayScene::UpdateClear()
 {
-	Reset();
 	if (ScoreAndTimeAndMap::IsLastMap()) {
-		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
 		return;
 	}
-	SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
-	return;
+	Reset();
+
 }
 
 void PlayScene::UpdateDeath()

@@ -29,6 +29,8 @@ private:
 	void UpdateDeath();
 	int listnum;
 
+	bool isstart;
+
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
@@ -53,4 +55,6 @@ public:
 	void DeadState();
 
 	float GetPlayTimer() { return ScoreAndTimeAndMap::GetTimer(); };
+
+	bool isStart() { return isstart; };
 };
