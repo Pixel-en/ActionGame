@@ -139,6 +139,8 @@ void RankingsSystem::Initialize()
 
 void RankingsSystem::Update()
 {
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
+
 	if (cLogo->GetOutput()) {
 		switch (nowDevice)
 		{
@@ -282,7 +284,7 @@ void RankingsSystem::DrawWriteUICn()
 		}
 	}
 
-	if (CheckHitKey(KEY_INPUT_UP)) {
+	if (CheckHitKey(KEY_INPUT_UP) || pad.ThumbLY >= 10000) {
 		if (prevKey == false) {
 			PrevKey = UP;
 			prevY1 = cy1;
@@ -291,7 +293,7 @@ void RankingsSystem::DrawWriteUICn()
 			cy2 -= mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
+	} else if (CheckHitKey(KEY_INPUT_RIGHT) || pad.ThumbLX >= 10000) {
 		if(prevKey == false) {
 			PrevKey = RIGHT;
 			prevX1 = cx1;
@@ -300,7 +302,7 @@ void RankingsSystem::DrawWriteUICn()
 			cx2 += mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
+	} else if (CheckHitKey(KEY_INPUT_DOWN) || pad.ThumbLY <= -10000) {
 		
 		if (prevKey == false) {
 			PrevKey = DOWN;
@@ -310,7 +312,7 @@ void RankingsSystem::DrawWriteUICn()
 			cy2 += mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
+	} else if (CheckHitKey(KEY_INPUT_LEFT) || pad.ThumbLX <= -10000) {
 		
 		if (prevKey == false) {
 			PrevKey = LEFT;
@@ -440,7 +442,7 @@ void RankingsSystem::DrawWriteUICn()
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2) {
-				if (CheckHitKey(KEY_INPUT_RETURN)) {
+				if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A]) {
 					if (InCnPrevKey == false) {
 						char cAscii = static_cast<char>(N[y][x].Ascii);
 						std::string cAscii_ToString(1, cAscii);

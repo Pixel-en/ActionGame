@@ -13,6 +13,7 @@ namespace {
 	const SIZE UISIZE{ 32,32 };
 	const int UIBUFFER{ 4 };
 	const float COUNTTIMER{ 1.0f };
+	const float STARTTIMER{ 1.0f };
 }
 
 PlayGUI::PlayGUI(GameObject* parent)
@@ -55,6 +56,7 @@ void PlayGUI::Initialize()
 	CDtimer_ = COUNTTIMER;
 	transform_.position_.x = -200;
 	Instantiate<OutText>(GetParent());
+	starttimer_ = STARTTIMER;
 
 }
 
@@ -63,6 +65,9 @@ void PlayGUI::Update()
 
 	PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
 	playtimer_ = pc->GetPlayTimer();
+	if (pc->isStart() && starttimer_ > 0.0) {
+		starttimer_ -= Time::DeltaTime();
+	}
 
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
@@ -127,6 +132,15 @@ void PlayGUI::Draw()
 	DrawString(std::to_string(playtimer_), 565, 30);
 
 	Clear* c = GetParent()->FindGameObject<Clear>();
+	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
+	if (!pc->isStart()) {
+		DrawString("ready", 550, 350);
+	}
+	else {
+		if (starttimer_ > 0.0) {
+			DrawString("Start", 550, 350);
+		}
+	}
 	if (c->GetFlag()) {
 		DrawString("CLEAR", 550, 350);
 	}

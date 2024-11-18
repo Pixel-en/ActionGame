@@ -13,6 +13,9 @@ class TitleScene : public GameObject
 	float x, y;
 	float wait_;
 
+
+	XINPUT_STATE pad;
+
 public:
 	TitleScene(GameObject* parent);
 	~TitleScene();

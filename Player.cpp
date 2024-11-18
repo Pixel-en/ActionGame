@@ -118,8 +118,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	if (GetJoypadXInputState(DX_INPUT_PAD1, &pad) != 0)
-		assert(false);
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
 
 	//èdóÕ
 	Gaccel_ += GRAVITY;
@@ -249,7 +248,7 @@ void Player::MoveControl()
 		}
 
 		//âEà⁄ìÆ
-		if (CheckHitKey(KEY_INPUT_D) || pad.ThumbLX > 10000) {
+		if (CheckHitKey(KEY_INPUT_D) || pad.ThumbLX >= 10000) {
 
 			anim_.animtype_ = Animation::WALK;
 
@@ -283,7 +282,7 @@ void Player::MoveControl()
 			//WaitKey();
 		}
 		////è„à⁄ìÆ
-		if (CheckHitKey(KEY_INPUT_W) || pad.ThumbLY <= 10000) {
+		if (CheckHitKey(KEY_INPUT_W) || pad.ThumbLY >= 10000) {
 			Field* f = GetParent()->FindGameObject<Field>();
 			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
 				anim_.animtype_ = Animation::CLIMB;
@@ -304,7 +303,7 @@ bool Player::ActionControl()
 {
 
 	//çÃéÊ
-	if (CheckHitKey(KEY_INPUT_I) || (pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER])) {
+	if (CheckHitKey(KEY_INPUT_I) || (pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER]&& pad.RightTrigger < 150)) {
 		anim_.animtype_ = Animation::COLLECTION;
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
@@ -373,7 +372,7 @@ bool Player::ActionControl()
 	}
 
 	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M) &&
-		!pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_Y] && !pad.Buttons[XINPUT_BUTTON_X] && pad.RightTrigger < 150 && !pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER])
+		!pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_Y] && !pad.Buttons[XINPUT_BUTTON_X] && pad.RightTrigger < 150)
 		attackbuttondown = false;
 
 

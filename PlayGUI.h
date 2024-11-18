@@ -29,6 +29,8 @@ class PlayGUI final :public GameObject
 	bool outset_;
 
 	int playtimer_;
+
+	float starttimer_;
 public:
 
 	//コンストラクタ
