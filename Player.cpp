@@ -288,6 +288,7 @@ void Player::MoveControl()
 			}
 		}
 	}
+	hitobject_->UpCollisionCheck();
 
 	//hitobject_->AllCollisionCheck();
 	//hitobject_->SelectCollisionCheck(1100);

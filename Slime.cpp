@@ -140,6 +140,7 @@ void Slime::UpdateAttack()
 	if (speed < 0) {
 		Eanim_.animtype_ = IDOL;
 		Idoltimer_ = Eparam_.movetimer_;
+		originpos_ = transform_.position_;
 	}
 }
 

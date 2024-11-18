@@ -2,6 +2,7 @@
 #include "Engine/SceneManager.h"
 #include "OutText.h"
 #include "Camera.h"
+#include "ScoreAndTimeAndMap.h"
 
 namespace {
 	const float WAITTIME{ 2.0f };
@@ -30,6 +31,8 @@ void TitleScene::Initialize()
 	transform_.position_.y = 0;
 	x = 650;
 	y = 500;
+
+	ScoreAndTimeAndMap::MapReset();
 }
 
 void TitleScene::Update()

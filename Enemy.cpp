@@ -1,7 +1,7 @@
 ﻿#include "Enemy.h"
 #include "Engine/CsvReader.h"
 #include "Player.h"
-#include "ScoreAndTime.h"
+#include "ScoreAndTimeAndMap.h"
 
 namespace {
 	const VECTOR LUPOINT{ -1,-1 };
@@ -109,7 +109,7 @@ void Enemy::HitDamege(int _damege)
 		Eparam_.hp_ -= _damege;
 		if (Eparam_.hp_ <= 0) {
 			Eanim_.animtype_ = EAnimation::DEATH;
-			ScoreAndTime::AddScore(GetScore());
+			ScoreAndTimeAndMap::AddScore(GetScore());
 		}
 		else {
 			Eanim_.animtype_ = EAnimation::DAMEGE;

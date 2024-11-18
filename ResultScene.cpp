@@ -11,8 +11,8 @@ void ResultScene::Initialize()
 	scoreText = Instantiate<OutText>(this);
 	timeText = Instantiate<OutText>(this);
 	resultText = Instantiate<OutText>(this);
-	ScoreAndTime::Reset(123.0);
-	time_ = ScoreAndTime::GetTimer() / (60 * 2);//2•b‚ÅƒXƒRƒA‰ÁŽZ‚ª‚¨‚í‚é
+	ScoreAndTimeAndMap::Reset(123.0);
+	time_ = ScoreAndTimeAndMap::GetTimer() / (60 * 2);//2•b‚ÅƒXƒRƒA‰ÁŽZ‚ª‚¨‚í‚é
 }
 
 void ResultScene::Update()
@@ -21,18 +21,18 @@ void ResultScene::Update()
 	{
 		TimeToScoreTimer -= Time::DeltaTime();
 	}
-	else if (ScoreAndTime::GetTimer() > 0)
+	else if (ScoreAndTimeAndMap::GetTimer() > 0)
 	{
-		/*if (ScoreAndTime::GetTimer() - time_ < 0)
+		/*if (ScoreAndTimeAndMap::GetTimer() - time_ < 0)
 		{
-			time_ = time_ - ScoreAndTime::GetTimer();
+			time_ = time_ - ScoreAndTimeAndMap::GetTimer();
 		}*/
-		ScoreAndTime::SubTimer(time_);
+		ScoreAndTimeAndMap::SubTimer(time_);
 		a_ += time_;
 		while (a_ >= 1.0)
 		{
 			a_ -= 1.0;
-			ScoreAndTime::AddScore(TimeToScoreValue);
+			ScoreAndTimeAndMap::AddScore(TimeToScoreValue);
 		}
 	}
 }
@@ -44,7 +44,7 @@ void ResultScene::Draw()
 	int spaceNum = 0;
 	for (int i = 10000; i >= 10; i /= 10)
 	{
-		if (i > ScoreAndTime::GetScore())
+		if (i > ScoreAndTimeAndMap::GetScore())
 		{
 			spaceNum++;
 		}
@@ -56,7 +56,7 @@ void ResultScene::Draw()
 	{
 		scoreStr += " ";
 	}
-	score = std::to_string(ScoreAndTime::GetScore());
+	score = std::to_string(ScoreAndTimeAndMap::GetScore());
 	scoreStr += score;
 	scoreText->DrawString(scoreStr, 400, 300, false);
 
@@ -64,7 +64,7 @@ void ResultScene::Draw()
 	spaceNum = 0;
 	for (int i = 10000; i >= 10; i /= 10)
 	{
-		if (i > ScoreAndTime::GetTimer())
+		if (i > ScoreAndTimeAndMap::GetTimer())
 		{
 			spaceNum++;
 		}
@@ -76,8 +76,8 @@ void ResultScene::Draw()
 	{
 		timeStr += " ";
 	}
-	//int timeInt = ScoreAndTime::GetTimer();
-	time = std::to_string(ScoreAndTime::GetTimer());
+	//int timeInt = ScoreAndTimeAndMap::GetTimer();
+	time = std::to_string(ScoreAndTimeAndMap::GetTimer());
 	timeStr += time;
 	timeText->DrawString(timeStr, 400, 400, false);
 
