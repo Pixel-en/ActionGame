@@ -1,8 +1,8 @@
-Number,MoveSpeed,RunSpeed,HP,MoveTimer,range,moverange,name
-201,85,170,10,1,150,200,slimeA
-202,100,210,20,1,150,300,slimeB
-203,115,250,30,1,150,300,slimeC
-204,50,250,30,1,150,200,bardA
-205,0,0,30,1.5,150,200,plantA
-206,20,150,500,1,150,200,zombieA
-207,0,150,10,1,150,200,skeletonA
+Number,MoveSpeed,RunSpeed,HP,MoveTimer,range,moverange,Score,name
+201,85,170,10,1,150,200,100,slimeA
+202,100,210,20,1,150,300,100,slimeB
+203,115,250,30,1,150,300,100,slimeC
+204,50,250,30,1,150,200,100,bardA
+205,0,0,30,1.5,150,200,100,plantA
+206,20,150,500,1,150,200,100,zombieA
+207,0,150,10,1,150,200,100,skeletonA

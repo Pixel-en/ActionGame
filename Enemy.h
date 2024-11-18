@@ -48,6 +48,7 @@ private:
 		std::string filename_;
 		float range_;
 		float moverange_;
+		int score_;
 	};
 
 	virtual void UpdateIdol() {};
@@ -150,5 +151,7 @@ public:
 	VECTOR GetHitBox() override;
 
 	virtual bool EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox) { return false; };
+
+	int GetScore() { return Eparam_.score_; };
 };
 

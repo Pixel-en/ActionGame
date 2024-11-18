@@ -6,6 +6,7 @@
 #include "PlayScene.h"
 #include "Clear.h"
 #include "OutText.h"
+#include "ScoreAndTimeAndMap.h"
 
 namespace {
 	const SIZE FONTSIZE{ 32,36 };
@@ -19,6 +20,9 @@ PlayGUI::PlayGUI(GameObject* parent)
 {
 	chipnum_ = { {6,18},{7,18},{7,18},{8,18},
 			   {6,20},{7,20},{7,20},{8,20}, };
+	scorechipnum_ = { {6,18},{7,18},{7,18},{7,18},{7,18},{8,18},
+					  {6,19},{7,19},{7,19},{7,19},{7,19},{8,19},
+					  {6,20},{7,20},{7,20},{7,20},{7,20},{8,20}, };
 	transform_.position_.x = 0;
 }
 
@@ -126,6 +130,14 @@ void PlayGUI::Draw()
 	if (c->GetFlag()) {
 		DrawString("CLEAR", 550, 350);
 	}
+
+	for (int i = 0; i < scorechipnum_.size(); i++) {
+		DrawRectGraph(900+i%6*UISIZE.cx,10+i/6*UISIZE.cy,(UISIZE.cx + UIBUFFER) * scorechipnum_[i].x, (UISIZE.cy + UIBUFFER) * scorechipnum_[i].y, UISIZE.cx, UISIZE.cy,
+			hImageUI_, true);
+	}
+
+	this->DrawString("Score", 905, 20);
+	this->DrawString(std::to_string(ScoreAndTimeAndMap::GetScore()), 905, 60);
 }
 
 void PlayGUI::Release()

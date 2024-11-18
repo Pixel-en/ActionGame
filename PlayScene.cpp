@@ -30,13 +30,8 @@ void PlayScene::Initialize()
 	Filename_ = "Test.csv";
 
 	//おそらくマップリストの読み込み
-	CsvReader* csv = new CsvReader("Assets\\Map\\MapList.csv");
-	for (int i = 0; i < csv->GetLines(); i++) {
-		for (int j = 0; j < csv->GetColumns(0); j++) {
-			maplist.push_back(csv->GetString(i, j));
-		}
-	}
-	Filename_ = maplist[listnum];
+
+	Filename_ = ScoreAndTimeAndMap::NextMap();;
 
 	Reset();
 
@@ -53,8 +48,6 @@ void PlayScene::Reset()
 
 	Instantiate<BackGround>(this);
 
-
-
 	Field* f = Instantiate<Field>(this);
 	f->SetFileName(Filename_);
 	Camera* cam = FindGameObject<Camera>();
@@ -68,7 +61,7 @@ void PlayScene::Reset()
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;
-	ScoreAndTime::Reset(PTIME);
+	ScoreAndTimeAndMap::Reset(PTIME);
 	//playtimer_ = PTIME;
 	state = PlayScene::STAY;
 
@@ -131,10 +124,10 @@ void PlayScene::UpdatePlay()
 		}
 	}
 	else {
-		ScoreAndTime::SubTimer(Time::DeltaTime());
+		ScoreAndTimeAndMap::SubTimer(Time::DeltaTime());
 		//playtimer_ -= Time::DeltaTime();
-		if (ScoreAndTime::GetTimer() < 0) {
-			ScoreAndTime::SetTimer(0.0);
+		if (ScoreAndTimeAndMap::GetTimer() < 0) {
+			ScoreAndTimeAndMap::SetTimer(0.0);
 			//playtimer_ = 0;
 			state = PlayScene::DEATH;
 		}
@@ -147,13 +140,13 @@ void PlayScene::UpdatePlay()
 
 void PlayScene::UpdateClear()
 {
-	listnum++;
-	if (listnum >= maplist.size()) {
+	Reset();
+	if (ScoreAndTimeAndMap::IsLastMap()) {
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
 		return;
 	}
-	Filename_ = maplist[listnum];
-	Reset();
+	SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
+	return;
 }
 
 void PlayScene::UpdateDeath()

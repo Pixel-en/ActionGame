@@ -1,6 +1,7 @@
 ﻿#include "Enemy.h"
 #include "Engine/CsvReader.h"
 #include "Player.h"
+#include "ScoreAndTimeAndMap.h"
 
 namespace {
 	const VECTOR LUPOINT{ -1,-1 };
@@ -56,6 +57,7 @@ void Enemy::StatusReader(int _enemyNumber)
 		MOVETIMER,
 		RANGE,
 		MOVERANGE,
+		SCORE,
 		FILENAME,
 	};
 
@@ -70,6 +72,7 @@ void Enemy::StatusReader(int _enemyNumber)
 			Eparam_.movetimer_ = csv->GetFloat(i, MOVETIMER);
 			Eparam_.range_ = csv->GetInt(i, RANGE);
 			Eparam_.moverange_ = csv->GetInt(i, MOVERANGE);
+			Eparam_.score_ = csv->GetInt(i, SCORE);
 			Eparam_.filename_ = csv->GetString(i, FILENAME);
 			objectName_ = Eparam_.filename_;
 			Eparam_.filename_ = "Assets\\Image\\Enemy\\" + Eparam_.filename_ + "_sprite.png";
@@ -106,6 +109,7 @@ void Enemy::HitDamege(int _damege)
 		Eparam_.hp_ -= _damege;
 		if (Eparam_.hp_ <= 0) {
 			Eanim_.animtype_ = EAnimation::DEATH;
+			ScoreAndTimeAndMap::AddScore(GetScore());
 		}
 		else {
 			Eanim_.animtype_ = EAnimation::DAMEGE;
