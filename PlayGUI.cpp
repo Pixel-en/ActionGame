@@ -6,6 +6,7 @@
 #include "PlayScene.h"
 #include "Clear.h"
 #include "OutText.h"
+#include "ScoreAndTime.h"
 
 namespace {
 	const SIZE FONTSIZE{ 32,36 };
@@ -126,6 +127,8 @@ void PlayGUI::Draw()
 	if (c->GetFlag()) {
 		DrawString("CLEAR", 550, 350);
 	}
+
+	DrawString("Score" + std::to_string(ScoreAndTime::GetScore()), 900, 30);
 }
 
 void PlayGUI::Release()

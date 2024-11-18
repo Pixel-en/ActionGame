@@ -49,9 +49,9 @@ void TitleScene::Update()
 			button_ = false;
 
 		if (updown)
-			y = 500;
+			y = 490;
 		else
-			y = 550;
+			y = 540;
 	}
 
 	if (CheckHitKey(KEY_INPUT_RETURN) || decision_) {
