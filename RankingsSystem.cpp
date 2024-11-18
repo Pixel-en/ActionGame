@@ -5,6 +5,14 @@
 
 namespace
 {
+	IPDATA IpAddr;
+	int NetUDPHandle;
+	const unsigned short SERVER_PORT = 8888;
+	int RecvSize, TotalRecvSize;
+
+	BYTE Data[500];
+	char Buff[256];
+
 	int mojiSize = 32;
 	int AsciiCodeEN = 65;
 	struct NData
@@ -462,7 +470,35 @@ void RankingsSystem::DrawWriteUICn()
 							}
 						}else if (cAscii == 50) {
 							const std::string strl(str);
-							SetRankings(strl, 2345);
+							
+							//UDP通信用ソケットハンドルを作成
+							NetUDPHandle = MakeUDPSocket(-1);
+							IpAddr.d1 = 192;
+							IpAddr.d2 = 168;
+							IpAddr.d3 = 56;
+							IpAddr.d4 = 1;
+
+							
+							//文字列送信
+							NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,strl.c_str(),strl.size());
+
+
+							NetUDPHandle = MakeUDPSocket(SERVER_PORT);
+
+							while (CheckNetWorkRecvUDP(NetUDPHandle) == FALSE) {
+								if (ProcessMessage() < 0) break;
+							}
+
+							//文字列の受信
+							NetWorkRecvUDP(NetUDPHandle, NULL, NULL, Buff, 256, FALSE);
+
+							
+
+							//UDPソケットハンドルの削除
+							DeleteUDPSocket(NetUDPHandle);
+
+							/*SetRankings(strl, 2345);*/
+
 						}
 						else {
 							if (nowMojiCount == MaxWord -1){
