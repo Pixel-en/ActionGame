@@ -7,7 +7,7 @@ namespace {
 	const VECTOR HITBOXSIZE{ 48,33 };
 	const float ATTACKTIME{ 0.5f };
 	const float ATTACKRANGE{ 50.0f };
-	const float SPEEDDOWN{ 30.0f };
+	const float SPEEDDOWN{ 10.0f };
 }
 
 Slime::Slime(GameObject* parent)
@@ -204,7 +204,7 @@ void Slime::UpdateRun()
 		Player* p = GetParent()->FindGameObject<Player>();
 		targetvec_ = VGet(GetCenterTransPos().x - p->GetHitBoxCenterPosition().x, GetCenterTransPos().y - (p->GetHitBoxCenterPosition().y-50), 0);
 		targetvec_ = VNorm(targetvec_);
-		speed = Eparam_.runspeed_ * 6.0f;
+		speed = Eparam_.runspeed_ * 3;
 		//speed = 170.0;
 		attacktimer_ = ATTACKTIME;
 		return;

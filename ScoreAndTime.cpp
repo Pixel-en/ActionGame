@@ -7,10 +7,10 @@ namespace ScoreAndTime {
 }
 
 
-void ScoreAndTime::Reset(float _score)
+void ScoreAndTime::Reset(float _time)
 {
 	 Score_ = 0;
-	 Timer_ = _score;
+	 Timer_ = _time;
 }
 
 void ScoreAndTime::AddScore(int _score)
@@ -26,6 +26,11 @@ void ScoreAndTime::SubScore(int _score)
 int ScoreAndTime::GetScore()
 {
 	return Score_;
+}
+
+void ScoreAndTime::SetScore(int _score)
+{
+	Score_ = _score;
 }
 
 void ScoreAndTime::AddTimer(float _timer)

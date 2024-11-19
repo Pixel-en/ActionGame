@@ -11,8 +11,8 @@ void ResultScene::Initialize()
 	scoreText = Instantiate<OutText>(this);
 	timeText = Instantiate<OutText>(this);
 	resultText = Instantiate<OutText>(this);
-	ScoreAndTime::Reset(123.0);
-	time_ = ScoreAndTime::GetTimer() / (60 * 5);//2秒でスコア加算がおわる
+	//ScoreAndTime::Reset(123.0);
+	time_ = ScoreAndTime::GetTimer() / (60 * 2);//2秒でスコア加算がおわる
 }
 
 void ResultScene::Update()

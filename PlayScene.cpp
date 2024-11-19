@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "MoveObject.h"
 #include "PlayGUI.h"
+#include "ScoreAndTime.h"
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
@@ -27,7 +28,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "1-2.csv";
+	Filename_ = "1-1.csv";
 
 	////おそらくマップリストの読み込み
 	//CsvReader* csv = new CsvReader("Assets\\Map\\MapList.csv");
@@ -148,8 +149,10 @@ void PlayScene::UpdatePlay()
 void PlayScene::UpdateClear()
 {
 	listnum++;
+	//ScoreAndTime::SetScore(50420);
 	if (listnum >= maplist.size()) {
-		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+		//SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
 		return;
 	}
 	Filename_ = maplist[listnum];
