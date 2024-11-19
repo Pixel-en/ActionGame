@@ -72,6 +72,8 @@ void Player::LoadParameter()
 	for (int i = 0; i < 5; i++)
 		rechargetimer_[i] = -1.0f;
 
+	HP_ = ParamCorre_[param_.hp_].hp_;
+
 }
 
 Player::Player(GameObject* parent)
@@ -237,7 +239,7 @@ void Player::MoveControl()
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT))||pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT))||pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]||pad.LeftTrigger>=150) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -253,7 +255,7 @@ void Player::MoveControl()
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) || pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) || pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER] || pad.LeftTrigger >= 150) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -670,14 +672,12 @@ XMFLOAT3 Player::GetHitBoxCenterPosition()
 
 void Player::HitDamage(VECTOR _dir)
 {
-
-	static int HP = ParamCorre_[param_.hp_].hp_;
 	//ダメージを受けていたり死んでいないとき
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
-		HP--;
-		if (HP < 0) {
+		HP_--;
+		if (HP_ < 0) {
 			anim_.animtype_ = Animation::DEATH;
-			HP = ParamCorre_[param_.hp_].hp_;
+			HP_ = ParamCorre_[param_.hp_].hp_;
 		}
 		else {
 			anim_.animtype_ = Animation::DAMAGE;

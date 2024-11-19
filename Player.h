@@ -104,6 +104,8 @@ private:
 
 	XINPUT_STATE pad;
 
+	int HP_;
+
 	/*----------ä÷êî----------*/
 
 	/// <summary>
@@ -207,5 +209,7 @@ public:
 	bool PlayerAttackHitCheck(XMFLOAT3 _trans,VECTOR _hitbox);
 
 	int GetDamege() { return Damege; };
+
+	int GetHp() { return HP_; };
 };
 
