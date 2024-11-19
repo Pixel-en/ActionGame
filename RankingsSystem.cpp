@@ -504,8 +504,27 @@ void RankingsSystem::DrawWriteUICn()
 
 							
 							//文字列送信
-							NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,strl.c_str(),strl.size());
+							///*NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,strl.c_str(),strl.size());*/
 
+							IPDATA IPAddress[1];
+							int IPNum;
+							GetMyIPAddress(IPAddress, 1, &IPNum);
+							std::string Ip;
+							unsigned char* ip[5];
+							ip[0] = &IPAddress[0].d1 ;
+							ip[1] = &IPAddress[0].d2 ;
+							ip[2] = &IPAddress[0].d3 ;
+							ip[3] = &IPAddress[0].d4 ;
+
+							std::ostringstream ipStr;
+							ipStr << static_cast<int>(ip[0][0]) << "."
+								<< static_cast<int>(ip[1][0]) << "."
+								<< static_cast<int>(ip[2][0]) << "."
+								<< static_cast<int>(ip[3][0]);
+
+							Ip = ipStr.str();
+
+							NetWorkSendUDP(NetUDPHandle,IpAddr, SERVER_PORT,Ip.c_str(),Ip.size());
 
 							NetUDPHandle = MakeUDPSocket(SERVER_PORT);
 
@@ -514,9 +533,9 @@ void RankingsSystem::DrawWriteUICn()
 							}
 
 							//文字列の受信
-							NetWorkRecvUDP(NetUDPHandle, NULL, NULL, Buff, 256, FALSE);
+							/*NetWorkRecvUDP(NetUDPHandle, NULL, NULL, Buff, 256, FALSE);*/
 
-							
+						
 
 							//UDPソケットハンドルの削除
 							DeleteUDPSocket(NetUDPHandle);
