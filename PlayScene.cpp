@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "MoveObject.h"
 #include "PlayGUI.h"
+#include "ScoreAndTime.h"
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
@@ -27,7 +28,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "Test.csv";
+	Filename_ = "1-1.csv";
 
 	//おそらくマップリストの読み込み
 
