@@ -1,6 +1,5 @@
 #include "RankingsSystem.h"
 #include"Engine/CsvReader.h"
-#include"CleraLogo.h"
 #include"OutText.h"
 
 namespace
@@ -59,7 +58,7 @@ namespace
 
 
 RankingsSystem::RankingsSystem(GameObject* parent)
-	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name(),
+	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), output_(false), tText(nullptr), InputHandle(0),SetEnd(false),Name(),
 	eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
 {
 }
@@ -77,9 +76,6 @@ void RankingsSystem::Initialize()
 	height = csv->GetLines();
 
 	SetEnd = false;
-
-	cLogo = Instantiate<ClearLogo>(this);
-	tText = Instantiate<OutText>(this);
 
 	eraseTime = 1.2f;
 	eraseTimer = 0.0f;
@@ -141,7 +137,7 @@ void RankingsSystem::Update()
 {
 	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
 
-	if (cLogo->GetOutput()) {
+	if (output_) {
 		switch (nowDevice)
 		{
 		case KEY_AND_MOUSE:
@@ -179,7 +175,7 @@ void RankingsSystem::Update()
 
 void RankingsSystem::Draw()
 {
-	if (cLogo->GetOutput()) {
+	if (output_) {
 		switch (nowDevice)
 		{
 		case KEY_AND_MOUSE:

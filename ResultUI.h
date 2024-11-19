@@ -1,20 +1,16 @@
 #pragma once
 #include "Engine/GameObject.h"
-#include "ScoreAndTimeAndMap.h"
 #include "OutText.h"
 
 class ResultUI :public GameObject
 {
-	OutText* scoreText;
-	OutText* timeText;
-	OutText* resultText;
+	OutText* text_;
 
 	float TimeToScoreTimer{ 2.0 };
-	const int TimeToScoreValue{ 100 };
 
 	float time_;
 
-	float a_{ 0 };
+	float oneSecond_;
 public:
 
 	ResultUI(GameObject* parent);

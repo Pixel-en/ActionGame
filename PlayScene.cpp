@@ -6,7 +6,7 @@
 #include "BackGround.h"
 #include "MoveObject.h"
 #include "PlayGUI.h"
-#include "ScoreAndTime.h"
+#include "ScoreAndTimeAndMap.h"
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
@@ -32,8 +32,6 @@ void PlayScene::Initialize()
 
 	//おそらくマップリストの読み込み
 
-	Filename_ = ScoreAndTimeAndMap::NextMap();;
-
 	Reset();
 
 	
@@ -43,6 +41,8 @@ void PlayScene::Reset()
 {
 
 	KillAllChildren();
+
+	Filename_ = ScoreAndTimeAndMap::NextMap();
 
 	Clear* c = Instantiate<Clear>(this);
 	Instantiate<Camera>(this);
@@ -145,10 +145,12 @@ void PlayScene::UpdatePlay()
 void PlayScene::UpdateClear()
 {
 	if (ScoreAndTimeAndMap::IsLastMap()) {
-		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
+		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
 		return;
 	}
-	Reset();
+
+	SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
+	return;
 
 }
 

@@ -42,6 +42,9 @@ void ClearScene::Initialize()
 
 void ClearScene::Update()
 {
+	RankingsSystem* pR = FindGameObject<RankingsSystem>();
+	ClearLogo* logo = FindGameObject<ClearLogo>();
+	pR->DrawOK(logo->GetOutput());
 }
 
 

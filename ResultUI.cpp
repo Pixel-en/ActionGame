@@ -1,7 +1,12 @@
 #include "ResultUI.h"
+#include "ScoreAndTimeAndMap.h"
+
+namespace {
+	const int TIMETOSCORE{ 10 };
+}
 
 ResultUI::ResultUI(GameObject* parent)
-	:GameObject(parent,"ResultUI"), scoreText(nullptr), timeText(nullptr), resultText(nullptr)
+	:GameObject(parent,"ResultUI"), text_(nullptr)
 {
 }
 
@@ -11,10 +16,7 @@ ResultUI::~ResultUI()
 
 void ResultUI::Initialize()
 {
-	scoreText = Instantiate<OutText>(this);
-	timeText = Instantiate<OutText>(this);
-	resultText = Instantiate<OutText>(this);
-	ScoreAndTimeAndMap::Reset(123.0);
+	text_ = Instantiate<OutText>(GetParent());
 	time_ = ScoreAndTimeAndMap::GetTimer() / (60 * 2);//2•b‚ÅƒXƒRƒA‰ÁŽZ‚ª‚¨‚í‚é
 }
 
@@ -24,25 +26,26 @@ void ResultUI::Update()
 	{
 		TimeToScoreTimer -= Time::DeltaTime();
 	}
-	else if (ScoreAndTimeAndMap::GetTimer() > 0)
+	else
 	{
-		/*if (ScoreAndTimeAndMap::GetTimer() - time_ < 0)
-		{
-			time_ = time_ - ScoreAndTimeAndMap::GetTimer();
-		}*/
-		ScoreAndTimeAndMap::SubTimer(time_);
-		a_ += time_;
-		while (a_ >= 1.0)
-		{
-			a_ -= 1.0;
-			ScoreAndTimeAndMap::AddScore(TimeToScoreValue);
+		if (ScoreAndTimeAndMap::GetTimer() > 0.0) {
+			ScoreAndTimeAndMap::SubTimer(time_);
+			oneSecond_ += time_;
+			//1•b•ª‚½‚Ü‚Á‚½‚ç
+			if (oneSecond_ >= 1.0)
+			{
+				oneSecond_ = 0.0f;
+				ScoreAndTimeAndMap::AddScore(TIMETOSCORE);
+			}
 		}
+		else
+			ScoreAndTimeAndMap::SetTimer(0.0f);
 	}
 }
 
 void ResultUI::Draw()
 {
-	resultText->DrawString("RESULT", 500, 200, false);
+	text_->DrawString("result", 500, 200, true);
 
 	int spaceNum = 0;
 	for (int i = 10000; i >= 10; i /= 10)
@@ -61,7 +64,7 @@ void ResultUI::Draw()
 	}
 	score = std::to_string(ScoreAndTimeAndMap::GetScore());
 	scoreStr += score;
-	scoreText->DrawString(scoreStr, 400, 300, false);
+	text_->DrawString(scoreStr, 400, 300, true);
 
 
 	spaceNum = 0;
@@ -82,7 +85,7 @@ void ResultUI::Draw()
 	//int timeInt = ScoreAndTimeAndMap::GetTimer();
 	time = std::to_string(ScoreAndTimeAndMap::GetTimer());
 	timeStr += time;
-	timeText->DrawString(timeStr, 400, 400, false);
+	text_->DrawString(timeStr, 400, 400, true);
 
 }
 

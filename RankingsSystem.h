@@ -9,7 +9,6 @@
 #include"Engine/GameObject.h"
 
 class CsvReader;
-class ClearLogo;
 class OutText;
 
 class RankingsSystem : public GameObject
@@ -37,7 +36,7 @@ public:
 	/// </summary>
 	void SortScore();
 
-	
+	void DrawOK(bool _output) { output_ = _output; };
 
 private:
 
@@ -61,7 +60,6 @@ private:
 	std::map <std::string, float> Rankings;
 	std::vector<std::pair<float, std::string>> r;
 
-	ClearLogo* cLogo;
 	OutText* tText;
 
 	bool SetEnd;
@@ -99,5 +97,8 @@ private:
 	int nowDevice;
 
 	XINPUT_STATE pad;
+
+	//•\Ž¦ŠJŽn‚µ‚Ä‚¢‚¢‚©
+	bool output_;
 };
 

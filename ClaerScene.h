@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+
 class ClearScene : public GameObject
 {
 	int hImage_;
