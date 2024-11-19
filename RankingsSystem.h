@@ -10,7 +10,7 @@
 
 class CsvReader;
 class ClearLogo;
-class TitleText;
+class OutText;
 
 class RankingsSystem : public GameObject
 {
@@ -62,7 +62,7 @@ private:
 	std::vector<std::pair<float, std::string>> r;
 
 	ClearLogo* cLogo;
-	TitleText* tText;
+	OutText* tText;
 
 	bool SetEnd;
 
@@ -97,5 +97,7 @@ private:
 	};
 
 	int nowDevice;
+
+	XINPUT_STATE pad;
 };
 

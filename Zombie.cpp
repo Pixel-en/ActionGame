@@ -1,21 +1,18 @@
 #include "Zombie.h"
 #include "ImGui/imgui.h"
 
-namespace{
+namespace {
 	const VECTOR IMAGESIZE{ 80,80 };
-	const VECTOR LUPOINT{10,10};
+	const VECTOR LUPOINT{ 10,10 };
 	const VECTOR HITBOXSIZE{ 60,70 };
-	const float MOVEXRANGE{ 200.0f };
 	const float ATTACKRANGE{ 50.0f };
-	const float DAMEGETIME{ 1.0f };
-	 
+
 }
 
 Zombie::Zombie(GameObject* parent)
 	:Enemy(parent)
 {
 	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
-	Eanim_.animtype_ = IDOL;
 	SetLUPOINT(LUPOINT);
 	SetHitBox(HITBOXSIZE);
 	Idoltimer_ = Eparam_.movetimer_;
@@ -38,11 +35,11 @@ void Zombie::Update()
 {
 
 	Eanim_.animloop_ = true;
-	
+
 	//èdóÕ
 	Gaccel += GRAVITY;
 	transform_.position_.y += Gaccel;
-	
+
 	if (hitobj_->DownCollisionCheck())
 		Gaccel = 0.0f;
 
@@ -52,8 +49,9 @@ void Zombie::Update()
 	switch (Eanim_.animtype_)
 	{
 	case Enemy::NONE:
-		Eanim_.AFmax_ = 0;
-		Eanim_.AFCmax_ = 0;
+		Eanim_.AFmax_ = 3;
+		Eanim_.AFCmax_ = 25;
+		UpdateNone();
 		break;
 	case Enemy::IDOL:
 		Eanim_.AFmax_ = 3;
@@ -101,16 +99,22 @@ void Zombie::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-
-	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+	if (Eanim_.animtype_ < 0)
+		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, 0 * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+	else
+		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
 	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
-	DrawCircle(originpos_.x-cam->GetValue(), originpos_.y-cam->GetValueY(), MOVEXRANGE, GetColor(255, 255, 255), false);
+	//à⁄ìÆîÕàÕ
+	DrawCircle(originpos_.x - cam->GetValue(), originpos_.y - cam->GetValueY(), Eparam_.moverange_, GetColor(255, 255, 255), false);
+	//çıìGîÕàÕ
 	DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, Eparam_.range_, GetColor(0, 255, 0), false);
-	DrawCircle(xpos+LUPOINT.x+HITBOXSIZE.x/2, ypos+LUPOINT.y+HITBOXSIZE.y/2, HITBOXSIZE.x / 2.0f + ATTACKRANGE, GetColor(255, 0, 0), false);
+	//çUåÇîÕàÕ
+	DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, HITBOXSIZE.x / 2.0f + ATTACKRANGE, GetColor(255, 0, 0), false);
+	//çUåÇîªíËîÕàÕ
 	DrawBox(xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x + ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
-	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x  - ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
+	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x - ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
 }
 
 void Zombie::Release()
@@ -182,19 +186,19 @@ void Zombie::UpdateMove()
 			moveLmax_ = true;
 	}
 	//ç∂êiçs
-	if (originpos_.x - transform_.position_.x > MOVEXRANGE||moveLmax_) {
+	if (originpos_.x - transform_.position_.x > Eparam_.moverange_ || moveLmax_) {
 		if (!moveLmax_)
-			transform_.position_.x = originpos_.x - MOVEXRANGE;
+			transform_.position_.x = originpos_.x - Eparam_.moverange_;
 		Eanim_.Rdir_ = true;
 		Eanim_.animtype_ = IDOL;
 		Idoltimer_ = Eparam_.movetimer_;
 		moveLmax_ = false;
 	}
-	
+
 	//âEêiçs
-	if (originpos_.x - transform_.position_.x < -MOVEXRANGE||moveRmax_) {
+	if (originpos_.x - transform_.position_.x < -Eparam_.moverange_ || moveRmax_) {
 		if (!moveRmax_)
-			transform_.position_.x = originpos_.x + MOVEXRANGE;
+			transform_.position_.x = originpos_.x + Eparam_.moverange_;
 		Eanim_.Rdir_ = false;
 		Eanim_.animtype_ = IDOL;
 		Idoltimer_ = Eparam_.movetimer_;

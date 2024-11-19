@@ -1,10 +1,19 @@
 #include "RankingsSystem.h"
 #include"Engine/CsvReader.h"
 #include"CleraLogo.h"
-#include"TitleText.h"
+#include"OutText.h"
 
 namespace
 {
+	IPDATA IpAddr;
+	int NetUDPHandle;
+	const unsigned short SERVER_PORT = 8888;
+	int RecvSize, TotalRecvSize;
+
+	BYTE Data[500];
+	char Buff[256];
+
+	int mojiSize = 32;
 	int AsciiCodeEN = 65;
 	struct NData
 	{
@@ -17,9 +26,10 @@ namespace
 
 	int dcx1 = 900;
 	int dcy1 = 400;
-	int dcx2 = dcx1 +35;
-	int dcy2 = dcy1 +35;
+	int dcx2 = dcx1 + mojiSize;
+	int dcy2 = dcy1 + mojiSize;
 
+	
 	int nowMojiCount = -1;
 	bool InCnPrevKey = false;
 
@@ -34,6 +44,16 @@ namespace
 	NData N[Y][X];
 
 	bool inPrev = false;
+
+	enum PrevKey {
+		UP,
+		RIGHT,
+		DOWN,
+		LEFT,
+		NONE
+	};
+
+	int PrevKey;
 }
 
 
@@ -59,7 +79,7 @@ void RankingsSystem::Initialize()
 	SetEnd = false;
 
 	cLogo = Instantiate<ClearLogo>(this);
-	tText = Instantiate<TitleText>(this);
+	tText = Instantiate<OutText>(this);
 
 	eraseTime = 1.2f;
 	eraseTimer = 0.0f;
@@ -78,7 +98,7 @@ void RankingsSystem::Initialize()
 	cy2 = dcy2;
 	prevKey = false;
 
-	space = 9;
+	space = 14;
 	word = 23;
 	count = 0;
 	MaxWord = 10;
@@ -95,22 +115,22 @@ void RankingsSystem::Initialize()
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (y == 0 && x == 6) {
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,del_space_enter };
 				del_space_enter++;
 			}
 			else if (y == 1 && x ==6) {
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,del_space_enter };
 				del_space_enter++;
 			}
 			else if (y == 2 && x == 6) {
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,del_space_enter };
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,del_space_enter };
 			}
-			else if(x < 5 && AsciiCodeEN < 91){
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,AsciiCodeEN };
+			else if(AsciiCodeEN < 91 && x < 5){
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,AsciiCodeEN };
 				AsciiCodeEN++;
 			}
 			else {
-				N[y][x] = { dcx1 + 35 * x,dcy1 + 35 * y,dcx2 + 35 * x,dcy2 + 35 * y,0};
+				N[y][x] = { dcx1 + mojiSize * x,dcy1 + mojiSize * y,dcx2 + mojiSize * x,dcy2 + mojiSize * y,0};
 			}
 		}
 	}
@@ -119,6 +139,8 @@ void RankingsSystem::Initialize()
 
 void RankingsSystem::Update()
 {
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
+
 	if (cLogo->GetOutput()) {
 		switch (nowDevice)
 		{
@@ -247,42 +269,57 @@ void RankingsSystem::DrawWriteUICn()
 		for (int x = 0; x < X; x++) {
 			b = static_cast<char>(N[y][x].Ascii);
 			std::string str(1, b);
-			tText->DrawString(str,N[y][x].posX1,N[y][x].posY1);
+			if (str == "0") {
+				tText->DrawStringJ("ケス", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+			}
+			else if (str == "1") {
+				tText->DrawStringJ("クウハク", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+			}
+			else if (str == "2") {
+				tText->DrawStringJ("ケッテイ", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+			}
+			else {
+				tText->DrawString(str, N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+			}
 		}
 	}
 
-	if (CheckHitKey(KEY_INPUT_UP)) {
+	if (CheckHitKey(KEY_INPUT_UP) || pad.ThumbLY >= 10000) {
 		if (prevKey == false) {
+			PrevKey = UP;
 			prevY1 = cy1;
 			prevY2 = cy2;
-			cy1 -= 35;
-			cy2 -= 35;
+			cy1 -= mojiSize;
+			cy2 -= mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
+	} else if (CheckHitKey(KEY_INPUT_RIGHT) || pad.ThumbLX >= 10000) {
 		if(prevKey == false) {
+			PrevKey = RIGHT;
 			prevX1 = cx1;
 			prevX2 = cx2;
-			cx1 += 35;
-			cx2 += 35;
+			cx1 += mojiSize;
+			cx2 += mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
+	} else if (CheckHitKey(KEY_INPUT_DOWN) || pad.ThumbLY <= -10000) {
 		
 		if (prevKey == false) {
+			PrevKey = DOWN;
 			prevY1 = cy1;
 			prevY2 = cy2;
-			cy1 += 35;
-			cy2 += 35;
+			cy1 += mojiSize;
+			cy2 += mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
+	} else if (CheckHitKey(KEY_INPUT_LEFT) || pad.ThumbLX <= -10000) {
 		
 		if (prevKey == false) {
+			PrevKey = LEFT;
 			prevX1 = cx1;
 			prevX2 = cx2;
-		    cx1 -= 35;
-			cx2 -= 35;
+		    cx1 -= mojiSize;
+			cx2 -= mojiSize;
 		}
 		prevKey = true;
 	}
@@ -332,6 +369,93 @@ void RankingsSystem::DrawWriteUICn()
 		cy2 = N[Y - 1][X - 1].posY2;
 		cy1 = N[Y - 1][X - 1].posY1;
 	}
+	
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 && N[y][x].Ascii == 0) {
+				
+				switch (PrevKey) {
+				case UP:
+				{
+
+				}
+				case RIGHT:
+				{
+					
+
+					if (cx2 > prevX2) {
+						bool find = false;
+						for (int y = 0; y < Y; y++) {
+							for (int x = 0; x < X; x++) {
+								if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2) {
+									for (int sarch = x; sarch < X; sarch++) {
+										if (!find) {
+											if (N[y][sarch].Ascii != 0) {
+												cx1 = N[y][sarch].posX1;
+												cx2 = N[y][sarch].posX2;
+												cy1 = N[y][sarch].posY1;
+												cy2 = N[y][sarch].posY2;
+												find = true;
+											}
+											else {
+												cx1 = prevX1;
+												cx2 = prevX2;
+											}
+										}
+
+									}
+
+								}
+							}
+						}
+						find = false;
+					}
+					break;
+				
+				}
+				case DOWN:
+				{
+					if (cy2 > prevY2) {
+						cy2 = prevY2;
+						cy1 = prevY1;
+					}
+					break;
+				}
+				case LEFT:
+				{
+					if (cx1 < prevX1) {
+						bool find = false;
+						for (int y = 0; y < Y; y++) {
+							for (int x = 0; x < X; x++) {
+								if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2) {
+									for (int sarch = x; sarch > 0; sarch--) {
+										if (!find) {
+											if (N[y][sarch].Ascii != 0) {
+												cx1 = N[y][sarch].posX1;
+												cx2 = N[y][sarch].posX2;
+												cy1 = N[y][sarch].posY1;
+												cy2 = N[y][sarch].posY2;
+												find = true;
+											}
+											else {
+												cx1 = prevX1;
+												cx2 = prevX2;
+											}
+										}
+
+									}
+
+								}
+							}
+						}
+					}
+					break;
+				}
+				default: break;
+				}
+			}
+		}
+	}
 
 	DrawBoxAA(cx1, cy1, cx2,cy2, GetColor(255, 255, 255), FALSE);
 
@@ -340,7 +464,7 @@ void RankingsSystem::DrawWriteUICn()
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2) {
-				if (CheckHitKey(KEY_INPUT_RETURN)) {
+				if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A]) {
 					if (InCnPrevKey == false) {
 						char cAscii = static_cast<char>(N[y][x].Ascii);
 						std::string cAscii_ToString(1, cAscii);
@@ -358,6 +482,7 @@ void RankingsSystem::DrawWriteUICn()
 							}
 						}else if (cAscii == 49) {
 							cAscii = 32;
+							cAscii_ToString = cAscii;
 							if (nowMojiCount == MaxWord -1 ) {
 								str.erase(nowMojiCount);
 								str.insert(nowMojiCount,cAscii_ToString);
@@ -369,7 +494,35 @@ void RankingsSystem::DrawWriteUICn()
 							}
 						}else if (cAscii == 50) {
 							const std::string strl(str);
-							SetRankings(strl, 2345);
+							
+							//UDP通信用ソケットハンドルを作成
+							NetUDPHandle = MakeUDPSocket(-1);
+							IpAddr.d1 = 192;
+							IpAddr.d2 = 168;
+							IpAddr.d3 = 56;
+							IpAddr.d4 = 1;
+
+							
+							//文字列送信
+							NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,strl.c_str(),strl.size());
+
+
+							NetUDPHandle = MakeUDPSocket(SERVER_PORT);
+
+							while (CheckNetWorkRecvUDP(NetUDPHandle) == FALSE) {
+								if (ProcessMessage() < 0) break;
+							}
+
+							//文字列の受信
+							NetWorkRecvUDP(NetUDPHandle, NULL, NULL, Buff, 256, FALSE);
+
+							
+
+							//UDPソケットハンドルの削除
+							DeleteUDPSocket(NetUDPHandle);
+
+							/*SetRankings(strl, 2345);*/
+
 						}
 						else {
 							if (nowMojiCount == MaxWord -1){
@@ -411,21 +564,23 @@ void RankingsSystem::DrawWriteUICn()
 	}
 
 	DrawBoxAA(430, 380, (x1 + 25) + MaxWord * word + (MaxWord - 1) * space, 450, GetColor(255, 255, 255), FALSE); //入力枠線
-	tText->DrawString(str, 450, 370);
+	tText->DrawString(str,450,400);
 }
 
 
 
-void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float _x1, float _y1, float _x2, float _y2,float _eraseTimer,float _eraseTime)
+void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime)
 {
 	float eraseAlpha;
+	static float eTimer = _eraseTimer;
+	static float eTime = _eraseTime;
 	//文字入力バー表示
-	if (_eraseTimer > _eraseTime) {
-		_eraseTimer = 0.0f;
+	if (eTimer > eTime) {
+		eTimer = 0.0f;
 		eraseAlpha = 0;
 	}
-	_eraseTimer += 1.0f/60.0f;
-	eraseAlpha = 255 - 255 * _eraseTimer / _eraseTime;
+	eTimer += 1.0f/60.0f;
+	eraseAlpha = 255 - 255 * eTimer / eTime;
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, eraseAlpha);
 	_str.size();
 	if (_str.size() > 0) {

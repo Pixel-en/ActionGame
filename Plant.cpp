@@ -6,7 +6,6 @@ namespace {
 	const VECTOR IMAGESIZE{ 80,80 };
 	const VECTOR LUPOINT{ 10,10 };
 	const VECTOR HITBOXSIZE{ 60,70 };
-	const float DAMEGETIME{ 1.0f };
 	const int ATTACKRANGE{ 200 };
 }
 
@@ -14,11 +13,9 @@ Plant::Plant(GameObject* parent)
 	:Enemy(parent)
 {
 	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
-	Eanim_.animtype_ = IDOL;
 	SetLUPOINT(LUPOINT);
 	SetHitBox(HITBOXSIZE);
 	Idoltimer_ = Eparam_.movetimer_;
-	damegetimer_ = DAMEGETIME;
 }
 
 Plant::~Plant()
@@ -43,8 +40,9 @@ void Plant::Update()
 	switch (Eanim_.animtype_)
 	{
 	case Enemy::NONE:
-		AFmax_ = 0;
-		FCmax_ = 0;
+		Eanim_.AFmax_ = 3;
+		Eanim_.AFCmax_ = 25;
+		UpdateNone();
 		break;
 	case Enemy::IDOL:
 		Eanim_.AFmax_ = 3;
@@ -81,7 +79,9 @@ void Plant::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-
+	if (Eanim_.animtype_ < 0)
+		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, 0 * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+	else
 	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true,Eanim_.Rdir_);
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);

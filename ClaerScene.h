@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
 
-//テストシーンを管理するクラス
 class ClearScene : public GameObject
 {
 	int hImage_;

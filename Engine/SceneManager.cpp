@@ -3,7 +3,9 @@
 #include "../TestScene.h"
 #include "../TitleScene.h"
 #include "../PlayScene.h"
+#include "../ResultScene.h"
 #include "../ClaerScene.h"
+#include "../PlayPreparationScene.h"
 #include "time.h"
 
 //コンストラクタ
@@ -17,7 +19,7 @@ void SceneManager::Initialize()
 {
 	Time::Init();
 	//最初のシーンを準備
-	currentSceneID_ = SCENE_ID_TITLE;
+	currentSceneID_ = SCENE_ID_RESULT;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<TitleScene>(this);
 
@@ -36,8 +38,10 @@ void SceneManager::Update()
 		switch (nextSceneID_)
 		{
 		case SCENE_ID_TEST: Instantiate<TestScene>(this); break;
+		case SCENE_ID_PREPARATION: Instantiate<PlayPreparationScene>(this); break;
 		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
 		case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
+		case SCENE_ID_RESULT: Instantiate<ResultScene>(this); break;
 		case SCENE_ID_CLEAR:Instantiate<ClearScene>(this); break;
 
 		}

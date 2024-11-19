@@ -6,7 +6,7 @@
 //継承先全体で使うもののみ
 namespace {
 	const float GRAVITY{ 9.8f / 60.0f };
-
+	const float DAMEGETIME{ 1.0f };
 }
 
 class Enemy :public Object
@@ -47,6 +47,8 @@ private:
 		float movetimer_;
 		std::string filename_;
 		float range_;
+		float moverange_;
+		int score_;
 	};
 
 	virtual void UpdateIdol() {};
@@ -69,6 +71,9 @@ private:
 	VECTOR Hitbox_;
 
 protected:
+
+
+	void UpdateNone();
 
 	EnemyAnimParts Eanim_;
 	EParameter Eparam_;
@@ -104,7 +109,11 @@ protected:
 	/// <param name="_size">当たり判定のサイズ</param>
 	void SetCenterTransPos(XMFLOAT3 _trans, VECTOR _size);
 
-	void SetHitTransPos(XMFLOAT3 _pos);
+	/// <summary>
+	/// 当たり判定の中心を直接セットする
+	/// </summary>
+	/// <param name="_pos">当たり判定の中心のポジション</param>
+	void SetCenterTransPos(XMFLOAT3 _pos) { CenterTransPos_ = _pos; };
 
 	void PlayerDir();
 
@@ -145,5 +154,7 @@ public:
 	VECTOR GetHitBox() override;
 
 	virtual bool EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox) { return false; };
+
+	
 };
 

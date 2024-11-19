@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "vector"
+#include "ScoreAndTimeAndMap.h"
 
 //テストシーンを管理するクラス
 class PlayScene : public GameObject
@@ -8,7 +9,7 @@ class PlayScene : public GameObject
 private:
 	std::string Filename_;
 
-	float playtimer_;	//プレイ中の制限時間
+	//float playtimer_;	//プレイ中の制限時間
 
 	float starttimer_;	//スタートするまでの待機時間のタイマー
 	float counttimer_;	//クリアしてからの次に行くまでのタイマー
@@ -26,9 +27,9 @@ private:
 	void UpdatePlay();
 	void UpdateClear();
 	void UpdateDeath();
-
-	std::vector<std::string> maplist;
 	int listnum;
+
+	bool isstart;
 
 public:
 	//コンストラクタ
@@ -53,5 +54,7 @@ public:
 
 	void DeadState();
 
-	float GetPlayTimer() { return playtimer_; };
+	float GetPlayTimer() { return ScoreAndTimeAndMap::GetTimer(); };
+
+	bool isStart() { return isstart; };
 };

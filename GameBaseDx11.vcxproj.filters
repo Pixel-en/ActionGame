@@ -23,6 +23,9 @@
     <Filter Include="PlayScene\Enemy">
       <UniqueIdentifier>{a2124d14-6fba-47b4-838e-be48ada8c790}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayPreparationScene">
+      <UniqueIdentifier>{f9ab5f28-78d7-4f11-b90c-befef118f3b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObject.cpp">
@@ -108,7 +111,6 @@
     <ClCompile Include="PlayScene.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="TitleText.cpp" />
     <ClCompile Include="ClaerScene.cpp" />
     <ClCompile Include="ClearPlayer.cpp" />
     <ClCompile Include="CleraLogo.cpp" />
@@ -129,7 +131,6 @@
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Zombie.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
@@ -138,6 +139,19 @@
     </ClCompile>
     <ClCompile Include="Plant.cpp">
       <Filter>PlayScene\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="PlayPreparationScene.cpp">
+      <Filter>PlayPreparationScene</Filter>
+    </ClCompile>
+    <ClCompile Include="ResultScene.cpp" />
+    <ClCompile Include="ScoreAndTime.cpp" />
+    <ClCompile Include="OutText.cpp" />
+    <ClCompile Include="PlayPreparationPlayer.cpp">
+      <Filter>PlayPreparationScene</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayPreparationState.cpp">
+      <Filter>PlayPreparationScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +248,6 @@
     <ClInclude Include="PlayGUI.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="TitleText.h" />
     <ClInclude Include="ClaerScene.h" />
     <ClInclude Include="ClearPlayer.h" />
     <ClInclude Include="CleraLogo.h" />
@@ -256,7 +269,6 @@
       <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h" />
-    <ClInclude Include="Explosion.h" />
     <ClInclude Include="Zombie.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
@@ -265,6 +277,19 @@
     </ClInclude>
     <ClInclude Include="Plant.h">
       <Filter>PlayScene\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="PlayPreparationScene.h">
+      <Filter>PlayPreparationScene</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultScene.h" />
+    <ClInclude Include="ScoreAndTime.h" />
+    <ClInclude Include="OutText.h" />
+    <ClInclude Include="PlayPreparationState.h">
+      <Filter>PlayPreparationScene</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayPreparationPlayer.h">
+      <Filter>PlayPreparationScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

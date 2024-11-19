@@ -1,6 +1,8 @@
 ﻿#include "Enemy.h"
 #include "Engine/CsvReader.h"
 #include "Player.h"
+#include "ScoreAndTimeAndMap.h"
+#include "PlayScene.h"
 
 namespace {
 	const VECTOR LUPOINT{ -1,-1 };
@@ -55,7 +57,9 @@ void Enemy::StatusReader(int _enemyNumber)
 		HP,
 		MOVETIMER,
 		RANGE,
-		FILENAME
+		MOVERANGE,
+		SCORE,
+		FILENAME,
 	};
 
 
@@ -68,13 +72,15 @@ void Enemy::StatusReader(int _enemyNumber)
 			Eparam_.hp_ = csv->GetInt(i, HP);
 			Eparam_.movetimer_ = csv->GetFloat(i, MOVETIMER);
 			Eparam_.range_ = csv->GetInt(i, RANGE);
+			Eparam_.moverange_ = csv->GetInt(i, MOVERANGE);
+			Eparam_.score_ = csv->GetInt(i, SCORE);
 			Eparam_.filename_ = csv->GetString(i, FILENAME);
 			objectName_ = Eparam_.filename_;
 			Eparam_.filename_ = "Assets\\Image\\Enemy\\" + Eparam_.filename_ + "_sprite.png";
 			hImage_ = LoadGraph(Eparam_.filename_.c_str());
 			assert(hImage_ > 0);
 
-			Eanim_.animtype_ = IDOL;
+			Eanim_.animtype_ = NONE;
 			Eanim_.BEanimtype_ = NONE;
 			Eanim_.AFmax_ = 0;
 			Eanim_.animframe_ = 0;
@@ -104,9 +110,12 @@ void Enemy::HitDamege(int _damege)
 		Eparam_.hp_ -= _damege;
 		if (Eparam_.hp_ <= 0) {
 			Eanim_.animtype_ = EAnimation::DEATH;
+			ScoreAndTimeAndMap::AddScore(Eparam_.score_);
 		}
-		else
+		else {
 			Eanim_.animtype_ = EAnimation::DAMEGE;
+			damegetimer_=DAMEGETIME;
+		}
 		invincibleTimer_ = 0.5f;
 		invincible_ = true;
 		Eanim_.animframecount_ = 0;
@@ -164,7 +173,7 @@ Enemy::Enemy(GameObject* parent)
 	:Object(parent, "Enemy")
 {
 	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
-	Eanim_.animtype_ = IDOL;
+	Eanim_.animtype_ = NONE;
 	Eanim_.BEanimtype_ = NONE;
 	Eanim_.AFmax_ = 0;
 	Eanim_.animframe_ = 0;
@@ -185,12 +194,14 @@ Enemy::~Enemy()
 
 void Enemy::Initialize()
 {
+	Eanim_.AFCmax_ = 25;
+	Eanim_.AFmax_ = 3;
 }
 
 void Enemy::Reset()
 {
 	originpos_ = transform_.position_;
-	Eanim_.animtype_ = IDOL;
+	Eanim_.animtype_ = NONE;
 	Eanim_.BEanimtype_ = NONE;
 	Eanim_.AFmax_ = 0;
 	Eanim_.animframe_ = 0;
@@ -217,7 +228,7 @@ void Enemy::Reset(XMFLOAT3 pos)
 	originpos_ = pos;
 	transform_.position_ = originpos_;
 
-	Eanim_.animtype_ = IDOL;
+	Eanim_.animtype_ = NONE;
 	Eanim_.BEanimtype_ = NONE;
 	Eanim_.AFmax_ = 0;
 	Eanim_.animframe_ = 0;
@@ -262,4 +273,14 @@ bool Enemy::IsExistPlayer(float _range)
 		return true;
 
 	return false;
+}
+
+
+void Enemy::UpdateNone()
+{
+
+	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
+	if (pc->isStart())
+		Eanim_.animtype_ = IDOL;
+
 }
