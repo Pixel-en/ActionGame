@@ -30,14 +30,9 @@ void PlayScene::Initialize()
 
 	Filename_ = "1-1.csv";
 
-	////おそらくマップリストの読み込み
-	//CsvReader* csv = new CsvReader("Assets\\Map\\MapList.csv");
-	//for (int i = 0; i < csv->GetLines(); i++) {
-	//	for (int j = 0; j < csv->GetColumns(0); j++) {
-	//		maplist.push_back(csv->GetString(i, j));
-	//	}
-	//}
-	//Filename_ = maplist[listnum];
+	//おそらくマップリストの読み込み
+
+	Filename_ = ScoreAndTimeAndMap::NextMap();;
 
 	Reset();
 
@@ -54,8 +49,6 @@ void PlayScene::Reset()
 
 	Instantiate<BackGround>(this);
 
-
-
 	Field* f = Instantiate<Field>(this);
 	f->SetFileName(Filename_);
 	Camera* cam = FindGameObject<Camera>();
@@ -69,9 +62,10 @@ void PlayScene::Reset()
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;
-	ScoreAndTime::Reset(PTIME);
+	ScoreAndTimeAndMap::Reset(PTIME);
 	//playtimer_ = PTIME;
 	state = PlayScene::STAY;
+	isstart = false;
 
 	Instantiate<PlayGUI>(this);
 }
@@ -120,10 +114,12 @@ void PlayScene::UpdateStay()
 	if (starttimer_ < 0) {
 		state = PlayScene::PLAY;
 	}
+	isstart = false;
 }
 
 void PlayScene::UpdatePlay()
 {
+	isstart = true;
 	Clear* c = FindGameObject<Clear>();
 	if (c->GetFlag()) {
 		counttimer_ -= Time::DeltaTime();
@@ -132,10 +128,10 @@ void PlayScene::UpdatePlay()
 		}
 	}
 	else {
-		ScoreAndTime::SubTimer(Time::DeltaTime());
+		ScoreAndTimeAndMap::SubTimer(Time::DeltaTime());
 		//playtimer_ -= Time::DeltaTime();
-		if (ScoreAndTime::GetTimer() < 0) {
-			ScoreAndTime::SetTimer(0.0);
+		if (ScoreAndTimeAndMap::GetTimer() < 0) {
+			ScoreAndTimeAndMap::SetTimer(0.0);
 			//playtimer_ = 0;
 			state = PlayScene::DEATH;
 		}
@@ -148,15 +144,12 @@ void PlayScene::UpdatePlay()
 
 void PlayScene::UpdateClear()
 {
-	listnum++;
-	//ScoreAndTime::SetScore(50420);
-	if (listnum >= maplist.size()) {
-		//SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+	if (ScoreAndTimeAndMap::IsLastMap()) {
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
 		return;
 	}
-	Filename_ = maplist[listnum];
 	Reset();
+
 }
 
 void PlayScene::UpdateDeath()

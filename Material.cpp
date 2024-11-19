@@ -3,12 +3,13 @@
 #include "ImGui/imgui.h"
 #include "Player.h"
 #include "Effect.h"
-
+#include "ScoreAndTimeAndMap.h"
 
 namespace {
 	const float GRAVITY{ 9.8f / 60.0f };
 	const float MAXDURABILITY{ 5.0f };
 	const XMFLOAT3 EFFECTMINEPOS{ 32,32,0 };
+	const int MATERIALSCORE{ 100 };
 }
 
 Material::Material(GameObject* parent)
@@ -123,6 +124,7 @@ void Material::Mining(float _mintime)
 			if (e != nullptr)
 				e->KillMe();
 			KillMe();
+			ScoreAndTimeAndMap::AddScore(MATERIALSCORE);
 		}
 	}
 	else {

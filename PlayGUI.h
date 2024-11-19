@@ -13,6 +13,7 @@ class PlayGUI final :public GameObject
 	float x, y;
 
 	std::vector<VECTOR> chipnum_;
+	std::vector<VECTOR> scorechipnum_;
 
 	int Enum;
 	int Mnum;
@@ -28,6 +29,8 @@ class PlayGUI final :public GameObject
 	bool outset_;
 
 	int playtimer_;
+
+	float starttimer_;
 public:
 
 	//コンストラクタ

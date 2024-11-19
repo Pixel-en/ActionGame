@@ -1,5 +1,6 @@
 #include "Bard.h"
 #include "Player.h"
+#include "PlayScene.h"
 
 namespace {
 	const VECTOR IMAGESIZE{ 80,80 };
@@ -15,7 +16,6 @@ Bard::Bard(GameObject* parent)
 	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
 	Idoltimer_ = 0.0;
 	sinangle_ = 0.0;
-	Eanim_.animtype_ = IDOL;
 	SetLUPOINT(LUPOINT);
 	SetHitBox(HITBOXSIZE);
 }
@@ -39,11 +39,13 @@ void Bard::Update()
 	XMFLOAT3 pos = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
 	SetCenterTransPos(pos, HITBOXSIZE);
 
+
 	switch (Eanim_.animtype_)
 	{
 	case Enemy::NONE:
-		AFmax_ = 0;
-		FCmax_ = 0;
+		Eanim_.AFmax_ = 4;
+		Eanim_.AFCmax_ = 25;
+		UpdateNone();
 		break;
 	case Enemy::IDOL:
 		Eanim_.AFmax_ = 4;
@@ -90,7 +92,9 @@ void Bard::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-
+	if (Eanim_.animtype_ < 0)
+		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, 0 * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+	else
 	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true,Eanim_.Rdir_);
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);

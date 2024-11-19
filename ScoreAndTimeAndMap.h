@@ -1,9 +1,10 @@
 #pragma once
+#include <string>
 
-namespace ScoreAndTime {
+namespace ScoreAndTimeAndMap {
 	
 	void Reset(float _time);
-
+	void MapReset();
 	void AddScore(int _score);
 	void SubScore(int _score);
 	int GetScore();
@@ -13,4 +14,8 @@ namespace ScoreAndTime {
 	void SubTimer(float _timer);
 	float GetTimer();
 	void SetTimer(float _timer);
+
+	std::string NextMap();
+	bool IsLastMap();
+
 }

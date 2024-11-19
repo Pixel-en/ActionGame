@@ -2,6 +2,8 @@
 #include "Engine/SceneManager.h"
 #include "OutText.h"
 #include "Camera.h"
+#include "ScoreAndTimeAndMap.h"
+#include "ImGui/imgui.h"
 
 namespace {
 	const float WAITTIME{ 2.0f };
@@ -30,22 +32,27 @@ void TitleScene::Initialize()
 	transform_.position_.y = 0;
 	x = 650;
 	y = 500;
+
+	ScoreAndTimeAndMap::MapReset();
 }
 
 void TitleScene::Update()
 {
+
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
+
 	if (!decision_) {
 		if (button_ == false) {
-			if (CheckHitKey(KEY_INPUT_UP)) {
+			if (CheckHitKey(KEY_INPUT_UP)||pad.ThumbLY>=10000) {
 				updown = true;
 				button_ = true;
 			}
-			if (CheckHitKey(KEY_INPUT_DOWN)) {
+			if (CheckHitKey(KEY_INPUT_DOWN) || pad.ThumbLY <= -10000) {
 				updown = false;
 				button_ = true;
 			}
 		}
-		if (!CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN))
+		if (!CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN) && pad.ThumbLY > -10000 && pad.ThumbLY < 10000)
 			button_ = false;
 
 		if (updown)
@@ -54,7 +61,7 @@ void TitleScene::Update()
 			y = 540;
 	}
 
-	if (CheckHitKey(KEY_INPUT_RETURN) || decision_) {
+	if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A] || decision_) {
 		decision_ = true;
 
 		if (wait_ < WAITTIME)

@@ -5,6 +5,14 @@
 
 namespace
 {
+	IPDATA IpAddr;
+	int NetUDPHandle;
+	const unsigned short SERVER_PORT = 8888;
+	int RecvSize, TotalRecvSize;
+
+	BYTE Data[500];
+	char Buff[256];
+
 	int mojiSize = 32;
 	int AsciiCodeEN = 65;
 	struct NData
@@ -131,6 +139,8 @@ void RankingsSystem::Initialize()
 
 void RankingsSystem::Update()
 {
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
+
 	if (cLogo->GetOutput()) {
 		switch (nowDevice)
 		{
@@ -274,7 +284,7 @@ void RankingsSystem::DrawWriteUICn()
 		}
 	}
 
-	if (CheckHitKey(KEY_INPUT_UP)) {
+	if (CheckHitKey(KEY_INPUT_UP) || pad.ThumbLY >= 10000) {
 		if (prevKey == false) {
 			PrevKey = UP;
 			prevY1 = cy1;
@@ -283,7 +293,7 @@ void RankingsSystem::DrawWriteUICn()
 			cy2 -= mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_RIGHT)) {
+	} else if (CheckHitKey(KEY_INPUT_RIGHT) || pad.ThumbLX >= 10000) {
 		if(prevKey == false) {
 			PrevKey = RIGHT;
 			prevX1 = cx1;
@@ -292,7 +302,7 @@ void RankingsSystem::DrawWriteUICn()
 			cx2 += mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_DOWN)) {
+	} else if (CheckHitKey(KEY_INPUT_DOWN) || pad.ThumbLY <= -10000) {
 		
 		if (prevKey == false) {
 			PrevKey = DOWN;
@@ -302,7 +312,7 @@ void RankingsSystem::DrawWriteUICn()
 			cy2 += mojiSize;
 		}
 		prevKey = true;
-	} else if (CheckHitKey(KEY_INPUT_LEFT)) {
+	} else if (CheckHitKey(KEY_INPUT_LEFT) || pad.ThumbLX <= -10000) {
 		
 		if (prevKey == false) {
 			PrevKey = LEFT;
@@ -315,6 +325,28 @@ void RankingsSystem::DrawWriteUICn()
 	}
 	else {
 		prevKey = false;
+	}
+	
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 && N[y][x].Ascii == 0) {
+				
+				if (cx2 > prevX2) {
+					cx2 = cx2 + 35;
+					cx1 = cx1 + 35;
+				}
+				else
+				if (cy2 > prevY2) {
+					cy2 = cy2 - 35;
+					cy1 = cy2 - 35;
+				}else
+				if (cx2 < prevX2) {
+					cx2 = cx2 - 35;
+					cx1 = cx2 - 35;
+				}
+				
+			}
+		}
 	}
 
 	//枠線外にはみ出さない用の処理
@@ -432,7 +464,7 @@ void RankingsSystem::DrawWriteUICn()
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2) {
-				if (CheckHitKey(KEY_INPUT_RETURN)) {
+				if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A]) {
 					if (InCnPrevKey == false) {
 						char cAscii = static_cast<char>(N[y][x].Ascii);
 						std::string cAscii_ToString(1, cAscii);
@@ -462,7 +494,54 @@ void RankingsSystem::DrawWriteUICn()
 							}
 						}else if (cAscii == 50) {
 							const std::string strl(str);
-							SetRankings(strl, 2345);
+							
+							//UDP通信用ソケットハンドルを作成
+							NetUDPHandle = MakeUDPSocket(-1);
+							IpAddr.d1 = 192;
+							IpAddr.d2 = 168;
+							IpAddr.d3 = 56;
+							IpAddr.d4 = 1;
+
+							
+							//文字列送信
+							///*NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,strl.c_str(),strl.size());*/
+
+							IPDATA IPAddress[1];
+							int IPNum;
+							GetMyIPAddress(IPAddress, 1, &IPNum);
+							std::string Ip;
+							unsigned char* ip[5];
+							ip[0] = &IPAddress[0].d1 ;
+							ip[1] = &IPAddress[0].d2 ;
+							ip[2] = &IPAddress[0].d3 ;
+							ip[3] = &IPAddress[0].d4 ;
+
+							std::ostringstream ipStr;
+							ipStr << static_cast<int>(ip[0][0]) << "."
+								<< static_cast<int>(ip[1][0]) << "."
+								<< static_cast<int>(ip[2][0]) << "."
+								<< static_cast<int>(ip[3][0]);
+
+							Ip = ipStr.str();
+
+							NetWorkSendUDP(NetUDPHandle,IpAddr, SERVER_PORT,Ip.c_str(),Ip.size());
+
+							NetUDPHandle = MakeUDPSocket(SERVER_PORT);
+
+							while (CheckNetWorkRecvUDP(NetUDPHandle) == FALSE) {
+								if (ProcessMessage() < 0) break;
+							}
+
+							//文字列の受信
+							/*NetWorkRecvUDP(NetUDPHandle, NULL, NULL, Buff, 256, FALSE);*/
+
+						
+
+							//UDPソケットハンドルの削除
+							DeleteUDPSocket(NetUDPHandle);
+
+							/*SetRankings(strl, 2345);*/
+
 						}
 						else {
 							if (nowMojiCount == MaxWord -1){

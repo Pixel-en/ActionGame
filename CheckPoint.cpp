@@ -1,8 +1,10 @@
 #include "CheckPoint.h"
 #include "Camera.h"
+#include "ScoreAndTimeAndMap.h"
 
 namespace {
 	const VECTOR IMAGESIZE{ 16,16 };
+	const int SCORE{ 10 };
 }
 
 CheckPoint::CheckPoint(GameObject* parent)
@@ -47,4 +49,9 @@ void CheckPoint::Draw()
 
 void CheckPoint::Release()
 {
+}
+
+void CheckPoint::AddScore()
+{
+	ScoreAndTimeAndMap::AddScore(SCORE);
 }

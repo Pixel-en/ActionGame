@@ -97,5 +97,7 @@ private:
 	};
 
 	int nowDevice;
+
+	XINPUT_STATE pad;
 };
 

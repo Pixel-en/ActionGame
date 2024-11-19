@@ -23,6 +23,7 @@ class PlayPreparationState :public GameObject
 	std::string message_[6];
 	bool cursorflag_;
 	int messagenum_;
+	XINPUT_STATE pad;
 
 public:
 	//コンストラクタ

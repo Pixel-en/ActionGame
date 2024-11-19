@@ -72,6 +72,9 @@ private:
 
 protected:
 
+
+	void UpdateNone();
+
 	EnemyAnimParts Eanim_;
 	EParameter Eparam_;
 
@@ -152,6 +155,6 @@ public:
 
 	virtual bool EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox) { return false; };
 
-	int GetScore() { return Eparam_.score_; };
+	
 };
 

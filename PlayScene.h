@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "vector"
-#include "ScoreAndTime.h"
+#include "ScoreAndTimeAndMap.h"
 
 //テストシーンを管理するクラス
 class PlayScene : public GameObject
@@ -27,9 +27,9 @@ private:
 	void UpdatePlay();
 	void UpdateClear();
 	void UpdateDeath();
-
-	std::vector<std::string> maplist;
 	int listnum;
+
+	bool isstart;
 
 public:
 	//コンストラクタ
@@ -54,5 +54,7 @@ public:
 
 	void DeadState();
 
-	float GetPlayTimer() { return ScoreAndTime::GetTimer(); };
+	float GetPlayTimer() { return ScoreAndTimeAndMap::GetTimer(); };
+
+	bool isStart() { return isstart; };
 };

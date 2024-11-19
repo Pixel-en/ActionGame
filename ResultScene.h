@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
-#include "ScoreAndTime.h"
+#include "ScoreAndTimeAndMap.h"
 #include "OutText.h"
 
 class ResultScene 

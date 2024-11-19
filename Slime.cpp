@@ -14,7 +14,6 @@ Slime::Slime(GameObject* parent)
 	:Enemy(parent)
 {
 	hitobj_ = new HitObject(LUPOINT, HITBOXSIZE, this);
-	Eanim_.animtype_ = IDOL;
 	SetLUPOINT(LUPOINT);
 	SetHitBox(HITBOXSIZE);
 }
@@ -48,8 +47,9 @@ void Slime::Update()
 	switch (Eanim_.animtype_)
 	{
 	case Enemy::NONE:
-		Eanim_.AFmax_ = 0;
-		Eanim_.AFCmax_ = 0;
+		Eanim_.AFmax_ = 4;
+		Eanim_.AFCmax_ = 25;
+		UpdateNone();
 		break;
 	case Enemy::IDOL:
 		Eanim_.AFmax_ = 4;
@@ -97,8 +97,10 @@ void Slime::Draw()
 		xpos -= cam->GetValue();
 		ypos -= cam->GetValueY();
 	}
-
-	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+	if (Eanim_.animtype_ < 0)
+		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, 0 * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+	else
+		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
 
 	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
 	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
@@ -151,6 +153,7 @@ void Slime::UpdateAttack()
 	if (speed < 0) {
 		Eanim_.animtype_ = IDOL;
 		Idoltimer_ = Eparam_.movetimer_;
+		originpos_ = transform_.position_;
 	}
 }
 
@@ -202,7 +205,7 @@ void Slime::UpdateRun()
 	if (IsExistPlayer(HITBOXSIZE.x / 2.0f + ATTACKRANGE)) {
 		Eanim_.animtype_ = EAnimation::ATTACK;
 		Player* p = GetParent()->FindGameObject<Player>();
-		targetvec_ = VGet(GetCenterTransPos().x - p->GetHitBoxCenterPosition().x, GetCenterTransPos().y - (p->GetHitBoxCenterPosition().y-50), 0);
+		targetvec_ = VGet(GetCenterTransPos().x - p->GetHitBoxCenterPosition().x, GetCenterTransPos().y - (p->GetHitBoxCenterPosition().y - 50), 0);
 		targetvec_ = VNorm(targetvec_);
 		speed = Eparam_.runspeed_ * 3;
 		//speed = 170.0;

@@ -121,29 +121,32 @@ void PlayPreparationState::Update()
 {
 	int paramvar = 0;
 
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
+
 	if (button_ == false) {
-		if (CheckHitKey(KEY_INPUT_UP)) {
+		if (CheckHitKey(KEY_INPUT_UP) || pad.ThumbLY >= 10000) {
 			poscount_--;
 			button_ = true;
 			cursorflag_ = true;
 		}
-		if (CheckHitKey(KEY_INPUT_DOWN)) {
+		if (CheckHitKey(KEY_INPUT_DOWN) || pad.ThumbLY <= -10000) {
 			poscount_++;
 			button_ = true;
 			cursorflag_ = true;
 		}
-		if (CheckHitKey(KEY_INPUT_LEFT)) {
+		if (CheckHitKey(KEY_INPUT_LEFT) || pad.ThumbLX <= -10000) {
 			paramvar--;
 			button_ = true;
 			cursorflag_ = true;
 		}
-		if (CheckHitKey(KEY_INPUT_RIGHT)) {
+		if (CheckHitKey(KEY_INPUT_RIGHT) || pad.ThumbLX >= 10000) {
 			paramvar++;
 			button_ = true;
 			cursorflag_ = true;
 		}
 	}
-	if (!CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN)&&!CheckHitKey(KEY_INPUT_LEFT) &&!CheckHitKey(KEY_INPUT_RIGHT))
+	if (!CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN) && !CheckHitKey(KEY_INPUT_LEFT) && !CheckHitKey(KEY_INPUT_RIGHT) &&
+		pad.ThumbLY < 10000 && pad.ThumbLY > -10000 && pad.ThumbLX < 10000 && pad.ThumbLX > -10000)
 		button_ = false;
 	if (poscount_ >= 5)
 		poscount_ = 0;
@@ -157,7 +160,7 @@ void PlayPreparationState::Update()
 
 
 	if (poscount_ == 4) {
-		if (CheckHitKey(KEY_INPUT_RETURN))
+		if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A])
 			startflag_ = true;
 	}
 

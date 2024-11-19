@@ -29,7 +29,6 @@ void Clear::Reset()
 	isgoal_ = false;
 	isGetM_ = false;
 	isKillE_ = false;
-	ischeck_ = false;
 	Mcount_ = 0;
 	Ecount_ = 0;
 	isFlag_ = false;
@@ -41,21 +40,17 @@ void Clear::Update()
 {
 	Player* p = GetParent()->FindGameObject<Player>();
 	Goal* g = GetParent()->FindGameObject<Goal>();
-	CheckPoint* ch = GetParent()->FindGameObject<CheckPoint>();
+	std::list<CheckPoint*> ch = GetParent()->FindGameObjects<CheckPoint>();
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
 	std::list<Explosion*> ex = GetParent()->FindGameObjects<Explosion>();
 
 	if (!isgoal_&&p!=nullptr) {
-		if (ch != nullptr) {
-			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), ch->GetPosition(), ch->GetHitBox()) || ischeck_) {
-				if (!ischeck_) {
-					Playsound* ps = GetParent()->FindGameObject<Playsound>();
-					ps->SoundON("Rune");
-				}
-				ischeck_ = true;
-				ch->SetPosition(-100, 100, 0);
+		for (CheckPoint* che : ch) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), che->GetPosition(), che->GetHitBox())) {
+				che->AddScore();
+				che->KillMe();
 			}
 		}
 
