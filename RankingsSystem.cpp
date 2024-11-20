@@ -607,11 +607,4 @@ void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
-void RankingsSystem::DrawWriteUICn()
-{
-	for (int i = 65; i < 91; i++) {
-		std::string a;
-		a = static_cast<char>(i);
-		tText->DrawString(a, 450 + (i - 65) * 30, 400);
-	}
-}
+

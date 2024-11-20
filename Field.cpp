@@ -76,7 +76,7 @@ void Field::Reset()
 					break;
 			case ITEM: {
 
-				c->AddMcount();
+				/*c->AddMcount();*/
 				Material* m = Instantiate<Material>(GetParent());
 				m->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				m->Reset();

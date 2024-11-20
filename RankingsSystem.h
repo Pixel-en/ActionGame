@@ -38,8 +38,6 @@ public:
 
 	void DrawOK(bool _output) { output_ = _output; };
 
-	void DrawWriteUICn();
-
 private:
 
 	/// <summary>
