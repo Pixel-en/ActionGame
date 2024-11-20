@@ -6,6 +6,7 @@
 #include "../ResultScene.h"
 #include "../ClaerScene.h"
 #include "../PlayPreparationScene.h"
+#include "../TutorialScene.h"
 #include "time.h"
 
 //コンストラクタ
@@ -38,8 +39,9 @@ void SceneManager::Update()
 		switch (nextSceneID_)
 		{
 		case SCENE_ID_TEST: Instantiate<TestScene>(this); break;
-		case SCENE_ID_PREPARATION: Instantiate<PlayPreparationScene>(this); break;
 		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
+		case SCENE_ID_TUTORIAL: Instantiate<TutorialScene>(this); break;
+		case SCENE_ID_PREPARATION: Instantiate<PlayPreparationScene>(this); break;
 		case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
 		case SCENE_ID_RESULT: Instantiate<ResultScene>(this); break;
 		case SCENE_ID_CLEAR:Instantiate<ClearScene>(this); break;

@@ -125,6 +125,9 @@ void Player::Update()
 	//d—Í
 	Gaccel_ += GRAVITY;
 	transform_.position_.y += Gaccel_;
+	if (transform_.position_.y > 1050)
+		anim_.animtype_ = RESET;
+
 	//’n–Ê‚Æ‚Ì“–‚½‚è”»’è
 	if (hitobject_->DownCollisionCheck()) {
 		Gaccel_ = 0;
@@ -132,10 +135,17 @@ void Player::Update()
 	}
 
 	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
-
-	if (anim_.animtype_ < Animation::DAMAGE&&pc->isStart()) {
-		anim_.animtype_ = Animation::IDOL;
-		MoveControl();
+	if (pc != nullptr) {
+		if (anim_.animtype_ < Animation::DAMAGE && pc->isStart()) {
+			anim_.animtype_ = Animation::IDOL;
+			MoveControl();
+		}
+	}
+	else {
+		if (anim_.animtype_ < Animation::DAMAGE ) {
+			anim_.animtype_ = Animation::IDOL;
+			MoveControl();
+		}
 	}
 
 	AnimStatus();
@@ -166,12 +176,13 @@ void Player::Draw()
 	else {
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
 	}
-	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
-	DrawCircle(xpos, ypos, 5, GetColor(255, 255, 255), true);
-	DrawCircle(xpos+RUPOINT.x/2.0f, ypos + RUPOINT.y, 5, GetColor(255, 0, 255), true);
 
-	PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
-	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
+	//hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
+	//DrawCircle(xpos, ypos, 5, GetColor(255, 255, 255), true);
+	//DrawCircle(xpos+RUPOINT.x/2.0f, ypos + RUPOINT.y, 5, GetColor(255, 0, 255), true);
+
+	//PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
+	//DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
 
 }
 
@@ -288,7 +299,7 @@ void Player::MoveControl()
 			Field* f = GetParent()->FindGameObject<Field>();
 			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
 				anim_.animtype_ = Animation::CLIMB;
-				transform_.position_.y = -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
+				transform_.position_.y += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
 				//isjamp_ = true;
 				Gaccel_ = 0;
 			}

@@ -100,22 +100,22 @@ void Skeleton::Draw()
 	if (Eanim_.animtype_ < 0)
 		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, 0 * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
 	else
-	DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
+		DrawRectGraph(xpos, ypos, Eanim_.animframe_ * IMAGESIZE.x, Eanim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, Eanim_.Rdir_);
 
-	DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
-	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
+	//DrawBox(xpos, ypos, xpos + IMAGESIZE.x, ypos + IMAGESIZE.y, GetColor(255, 255, 255), false);
+	//DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(255, 0, 0), false);
 
-	DrawCircle(originpos_.x - cam->GetValue(), originpos_.y - cam->GetValueY(), Eparam_.moverange_, GetColor(255, 255, 255), false);
-	//õ“G”ÍˆÍ
-	DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, Eparam_.range_, GetColor(0, 255, 0), false);
-	//UŒ‚”ÍˆÍ
-	DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, HITBOXSIZE.x / 2.0f + ATTACKRANGE, GetColor(255, 0, 0), false);
+	//DrawCircle(originpos_.x - cam->GetValue(), originpos_.y - cam->GetValueY(), Eparam_.moverange_, GetColor(255, 255, 255), false);
+	////õ“G”ÍˆÍ
+	//DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, Eparam_.range_, GetColor(0, 255, 0), false);
+	////UŒ‚”ÍˆÍ
+	//DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, HITBOXSIZE.x / 2.0f + ATTACKRANGE, GetColor(255, 0, 0), false);
 
 
-	XMFLOAT3 attacktrans_ = { GetCenterTransPos().x - DAMEGERANGE / 2.0f,GetCenterTransPos().y - DAMEGERANGE / 2.0f,0 };
-	VECTOR attackhitbox_ = VGet(DAMEGERANGE, DAMEGERANGE, 0);
+	//XMFLOAT3 attacktrans_ = { GetCenterTransPos().x - DAMEGERANGE / 2.0f,GetCenterTransPos().y - DAMEGERANGE / 2.0f,0 };
+	//VECTOR attackhitbox_ = VGet(DAMEGERANGE, DAMEGERANGE, 0);
 
-	DrawBox(attacktrans_.x - cam->GetValue(), attacktrans_.y - cam->GetValueY(), attacktrans_.x - cam->GetValue() + attackhitbox_.x, attacktrans_.y - cam->GetValueY() + attackhitbox_.y, GetColor(0, 255, 255), false);
+	//DrawBox(attacktrans_.x - cam->GetValue(), attacktrans_.y - cam->GetValueY(), attacktrans_.x - cam->GetValue() + attackhitbox_.x, attacktrans_.y - cam->GetValueY() + attackhitbox_.y, GetColor(0, 255, 255), false);
 
 }
 

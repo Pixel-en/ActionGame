@@ -75,6 +75,8 @@ void RankingsSystem::Initialize()
 	width = csv->GetColumns(0);
 	height = csv->GetLines();
 
+	tText = Instantiate<OutText>(GetParent());
+
 	SetEnd = false;
 
 	eraseTime = 1.2f;

@@ -19,6 +19,8 @@ void ResultScene::Update()
 {
 	//‚±‚ê‚É“®‚­‹@”\‚Í‚Â‚¢‚Ä‚¢‚È‚¢
 	RankingsSystem* rank = FindGameObject<RankingsSystem>();
+	ResultUI* ui = FindGameObject<ResultUI>();
+	rank->DrawOK(ui->DrawRankOK());
 }
 
 void ResultScene::Draw()

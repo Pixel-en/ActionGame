@@ -197,7 +197,8 @@
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="OutText.cpp" />
-    <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="TutorialScene.cpp" />
+    <ClCompile Include="TutorialUI.cpp" />
     <ClCompile Include="Zombie.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -256,7 +257,8 @@
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="OutText.h" />
-    <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="TutorialScene.h" />
+    <ClInclude Include="TutorialUI.h" />
     <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <ItemGroup>
