@@ -11,6 +11,13 @@ class ResultUI :public GameObject
 	float time_;
 
 	float oneSecond_;
+
+	bool moveflag_;
+	float movetimer_;
+
+	int DrawSpace(float max);
+
+	bool isrank_;
 public:
 
 	ResultUI(GameObject* parent);
@@ -24,5 +31,7 @@ public:
 	void Draw() override;
 
 	void Release() override;
+
+	bool DrawRankOK() { return isrank_; ; }
 };
 

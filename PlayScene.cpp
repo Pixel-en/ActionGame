@@ -45,20 +45,20 @@ void PlayScene::Reset()
 	Filename_ = ScoreAndTimeAndMap::NextMap();
 
 	Clear* c = Instantiate<Clear>(this);
-	Instantiate<Camera>(this);
+	Camera* cam = Instantiate<Camera>(this);
 
 	Instantiate<BackGround>(this);
 
 	Field* f = Instantiate<Field>(this);
 	f->SetFileName(Filename_);
-	Camera* cam = FindGameObject<Camera>();
+	
 	cam->SetValue(0);
 	Instantiate<MoveObject>(this);
 
 	Instantiate<Player>(this);
 
 	f->Reset();
-	//c->Reset();
+	c->Reset();
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;

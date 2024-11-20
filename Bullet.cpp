@@ -116,8 +116,9 @@ void Bullet::Draw()
 	}
 
 	DrawRectGraph(xpos , ypos , animframe_ * bulletSize_.x, 0, bulletSize_.x, bulletSize_.y, hImage_, true, (dir_ * -1) - 1);
-	DrawBox(xpos, ypos, xpos + bulletSize_.x, ypos + bulletSize_.y, GetColor(255, 255, 255), false);
-	DrawBox(xpos+LUPOINT.x, ypos+LUPOINT.x, xpos+LUPOINT.x + bulletHitBoxSize_.x, ypos+LUPOINT.y + bulletHitBoxSize_.y, GetColor(255, 0, 0), false);
+
+	//DrawBox(xpos, ypos, xpos + bulletSize_.x, ypos + bulletSize_.y, GetColor(255, 255, 255), false);
+	//DrawBox(xpos+LUPOINT.x, ypos+LUPOINT.x, xpos+LUPOINT.x + bulletHitBoxSize_.x, ypos+LUPOINT.y + bulletHitBoxSize_.y, GetColor(255, 0, 0), false);
 }
 
 void Bullet::Release()

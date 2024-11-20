@@ -77,6 +77,7 @@ void TitleScene::Update()
 				else
 					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
 			}
+
 		}
 	}
 
@@ -99,5 +100,5 @@ void TitleScene::Draw()
 
 	OutText* tt = FindGameObject<OutText>();
 	tt->DrawStringJ("スタート", xpos + 700, ypos + 500);
-	tt->DrawString("clera", xpos + 700, ypos + 550,true);
+	tt->DrawString("clear", xpos + 700, ypos + 550,true);
 }

@@ -3,10 +3,28 @@
 
 namespace {
 	const int TIMETOSCORE{ 10 };
+	const XMFLOAT3 ORIGINPOS{ 500,200,0 };
+	int spaceNum = 0;
+	const float MOVETIME{ 1.0f };
+}
+
+int ResultUI::DrawSpace(float max)
+{
+	int sum = 0;
+
+	for (int i = 10000; i >= 10; i /= 10)
+	{
+		if (i > max)
+		{
+			sum++;
+		}
+	}
+
+	return sum;
 }
 
 ResultUI::ResultUI(GameObject* parent)
-	:GameObject(parent,"ResultUI"), text_(nullptr)
+	:GameObject(parent,"ResultUI"), text_(nullptr),moveflag_(false),isrank_(false)
 {
 }
 
@@ -18,6 +36,7 @@ void ResultUI::Initialize()
 {
 	text_ = Instantiate<OutText>(GetParent());
 	time_ = ScoreAndTimeAndMap::GetTimer() / (60 * 2);//2秒でスコア加算がおわる
+	transform_.position_ = ORIGINPOS;
 }
 
 void ResultUI::Update()
@@ -38,55 +57,57 @@ void ResultUI::Update()
 				ScoreAndTimeAndMap::AddScore(TIMETOSCORE);
 			}
 		}
-		else
+		else {
 			ScoreAndTimeAndMap::SetTimer(0.0f);
+			if (!moveflag_) {
+				moveflag_ = true;
+				movetimer_ = MOVETIME;
+			}
+		}
+	}
+
+	if (moveflag_) {
+		if (movetimer_ > 0)
+			movetimer_ -= Time::DeltaTime();
+		else {
+			if (transform_.position_.x > -1000)
+				transform_.position_.x -= 400 * Time::DeltaTime();
+			else {
+				transform_.position_.x = -1000;
+				isrank_ = true;
+			}
+			movetimer_ = -1.0;
+		}
 	}
 }
 
 void ResultUI::Draw()
 {
-	text_->DrawString("result", 500, 200, true);
+	text_->DrawString("result", transform_.position_.x, transform_.position_.y, true);
 
-	int spaceNum = 0;
-	for (int i = 10000; i >= 10; i /= 10)
-	{
-		if (i > ScoreAndTimeAndMap::GetScore())
-		{
-			spaceNum++;
-		}
-	}
-
+	//合計スコア表示
 	std::string scoreStr = "SCORE   ";
 	std::string score;
-	for (int i = 0; i < spaceNum; i++)
+	for (int i = 0; i < DrawSpace(ScoreAndTimeAndMap::GetScore()); i++)
 	{
 		scoreStr += " ";
 	}
 	score = std::to_string(ScoreAndTimeAndMap::GetScore());
 	scoreStr += score;
-	text_->DrawString(scoreStr, 400, 300, true);
+	text_->DrawString(scoreStr, transform_.position_.x-100, transform_.position_.y + 100, true);
 
-
-	spaceNum = 0;
-	for (int i = 10000; i >= 10; i /= 10)
-	{
-		if (i > ScoreAndTimeAndMap::GetTimer())
-		{
-			spaceNum++;
-		}
-	}
-
+	//残り時間表示
 	std::string timeStr = "TIME    ";
 	std::string time;
-	for (int i = 0; i < spaceNum; i++)
+	for (int i = 0; i < DrawSpace(ScoreAndTimeAndMap::GetTimer()); i++)
 	{
 		timeStr += " ";
 	}
-	//int timeInt = ScoreAndTimeAndMap::GetTimer();
 	time = std::to_string(ScoreAndTimeAndMap::GetTimer());
 	timeStr += time;
-	text_->DrawString(timeStr, 400, 400, true);
+	text_->DrawString(timeStr, transform_.position_.x - 100, transform_.position_.y + 200, true);
 
+	text_->DrawString("ranking",transform_.position_.x+1500, transform_.position_.y, true);
 }
 
 void ResultUI::Release()
