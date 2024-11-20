@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "MoveObject.h"
 #include "PlayGUI.h"
+#include "ScoreAndTimeAndMap.h"
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
@@ -20,23 +21,16 @@ namespace {
 
 PlayScene::PlayScene(GameObject* parent)
 	:GameObject(parent, "PlayScene"), Filename_("Test.csv"), starttimer_(STIME), state(PlayState::STAY), counttimer_(CDTIME),
-	deathtimer_(DTIME), playtimer_(PTIME), listnum(0)
+	deathtimer_(DTIME), listnum(0)
 {
 }
 
 void PlayScene::Initialize()
 {
 
-	Filename_ = "Test.csv";
+	Filename_ = "1-1.csv";
 
 	//おそらくマップリストの読み込み
-	CsvReader* csv = new CsvReader("Assets\\Map\\MapList.csv");
-	for (int i = 0; i < csv->GetLines(); i++) {
-		for (int j = 0; j < csv->GetColumns(0); j++) {
-			maplist.push_back(csv->GetString(i, j));
-		}
-	}
-	Filename_ = maplist[listnum];
 
 	Reset();
 
@@ -48,12 +42,12 @@ void PlayScene::Reset()
 
 	KillAllChildren();
 
+	Filename_ = ScoreAndTimeAndMap::NextMap();
+
 	Clear* c = Instantiate<Clear>(this);
 	Instantiate<Camera>(this);
 
 	Instantiate<BackGround>(this);
-
-
 
 	Field* f = Instantiate<Field>(this);
 	f->SetFileName(Filename_);
@@ -68,8 +62,10 @@ void PlayScene::Reset()
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;
-	playtimer_ = PTIME;
+	ScoreAndTimeAndMap::Reset(PTIME);
+	//playtimer_ = PTIME;
 	state = PlayScene::STAY;
+	isstart = false;
 
 	Instantiate<PlayGUI>(this);
 }
@@ -118,10 +114,12 @@ void PlayScene::UpdateStay()
 	if (starttimer_ < 0) {
 		state = PlayScene::PLAY;
 	}
+	isstart = false;
 }
 
 void PlayScene::UpdatePlay()
 {
+	isstart = true;
 	Clear* c = FindGameObject<Clear>();
 	if (c->GetFlag()) {
 		counttimer_ -= Time::DeltaTime();
@@ -130,9 +128,11 @@ void PlayScene::UpdatePlay()
 		}
 	}
 	else {
-		playtimer_ -= Time::DeltaTime();
-		if (playtimer_ < 0) {
-			playtimer_ = 0;
+		ScoreAndTimeAndMap::SubTimer(Time::DeltaTime());
+		//playtimer_ -= Time::DeltaTime();
+		if (ScoreAndTimeAndMap::GetTimer() < 0) {
+			ScoreAndTimeAndMap::SetTimer(0.0);
+			//playtimer_ = 0;
 			state = PlayScene::DEATH;
 		}
 	}
@@ -144,13 +144,14 @@ void PlayScene::UpdatePlay()
 
 void PlayScene::UpdateClear()
 {
-	listnum++;
-	if (listnum >= maplist.size()) {
+	if (ScoreAndTimeAndMap::IsLastMap()) {
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
 		return;
 	}
-	Filename_ = maplist[listnum];
-	Reset();
+
+	SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
+	return;
+
 }
 
 void PlayScene::UpdateDeath()

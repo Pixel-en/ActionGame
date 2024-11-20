@@ -3,10 +3,11 @@
 #include "Camera.h"
 #include "Goal.h"
 #include "Material.h"
-#include "BlueSlime.h"
-#include "GreenSlime.h"
-#include "RedSlime.h"
-#include "BardA.h"
+#include "Slime.h"
+#include "Bard.h"
+#include "Plant.h"
+#include "Zombie.h"
+#include "Skeleton.h"
 #include "Player.h"
 #include "Clear.h"
 #include "CheckPoint.h"
@@ -43,7 +44,7 @@ void Field::Reset()
 	Map = new int[height * width];
 
 	Clear* c = GetParent()->FindGameObject<Clear>();
-	//c->Reset();
+	c->Reset();
 
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
@@ -99,38 +100,56 @@ void Field::Reset()
 				mo->SetRpos(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2);
 				break;
 			}
-			case SLIME_A + 201: {
+			case SLIMEA: {
 				c->AddEcount();
-				BlueSlime* e = Instantiate<BlueSlime>(GetParent());
-				e->StatusReader(SLIME_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
+				Slime* slime = Instantiate<Slime>(GetParent());
+				slime->StatusReader(SLIMEA);
+				slime->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
 			}
-					break;
-			case SLIME_B + 201: {
+			case SLIMEB: {
 				c->AddEcount();
-				GreenSlime* e = Instantiate<GreenSlime>(GetParent());
-				e->StatusReader(SLIME_B + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
+				Slime* slime = Instantiate<Slime>(GetParent());
+				slime->StatusReader(SLIMEB);
+				slime->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
 			}
-					break;
-			case SLIME_C + 201: {
+			case SLIMEC: {
 				c->AddEcount();
-				RedSlime* e = Instantiate<RedSlime>(GetParent());
-				e->StatusReader(SLIME_C + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
+				Slime* slime = Instantiate<Slime>(GetParent());
+				slime->StatusReader(SLIMEC);
+				slime->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
 			}
-					break;
-			case BARD_A + 201: {
+
+			case BARDA: {
 				c->AddEcount();
-				BardA* e = Instantiate<BardA>(GetParent());
-				e->StatusReader(BARD_A + 201);
-				e->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
-				e->Reset();
+				Bard* bard = Instantiate<Bard>(GetParent());
+				bard->StatusReader(BARDA);
+				bard->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
 			}
-						break;
+			case PLANTA: {
+				c->AddEcount();
+				Plant* plant = Instantiate<Plant>(GetParent());
+				plant->StatusReader(PLANTA);
+				plant->Reset({j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f});
+				break;
+			}
+			case ZOMBIEA: {
+				c->AddEcount();
+				Zombie* zombie = Instantiate<Zombie>(GetParent());
+				zombie->StatusReader(ZOMBIEA);
+				zombie->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
+			}
+			case SKELETONA: {
+				c->AddEcount();
+				Skeleton* skeleton = Instantiate<Skeleton>(GetParent());
+				skeleton->StatusReader(SKELETONA);
+				skeleton->Reset({ j * IMAGESIZE + IMAGESIZE / 2.0f, i * IMAGESIZE + IMAGESIZE / 2.0f, 0.0f });
+				break;
+			}
 			default:
 				break;
 			}
@@ -164,6 +183,8 @@ void Field::Draw()
 
 void Field::Release()
 {
+	if (Map != nullptr)
+		delete Map;
 }
 
 int Field::CollisionDownCheck(int x, int y)

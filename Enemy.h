@@ -1,101 +1,121 @@
 #pragma once
 #include "Object.h"
-#include "HitObject.h"
-#include "Player.h"
 #include "Camera.h"
-#include "Clear.h"
-#include <vector>
+#include "Effect.h"
 
-//プレイヤーが当たったらプレイヤーの負け
-//攻撃してくる
-//
+//継承先全体で使うもののみ
 namespace {
-
-	const float ENEMY_ATTACKRANGE{ 101.5f };
-	const float ENEMY_GRAVITY{ 9.8f / 60.0f };	//重力
-
-	const float ENEMY_ATTACKSPEED{ 1500 };
-	const float ENEMY_SPEEDDOWN{ 50 };
+	const float GRAVITY{ 9.8f / 60.0f };
+	const float DAMEGETIME{ 1.0f };
 }
 
-enum ENEMY_TYPE
-{
-	SLIME_A, SLIME_B, SLIME_C, BARD_A, ENEMY_TYPE_END
-};
-const int Status_Size{ 4 };
-
-//敵のクラス
-class Enemy:public Object
+class Enemy :public Object
 {
 protected:
-	const SIZE ENEMY_IMAGESIZE{ 48,48 };
-	const SIZE ENEMY_HITBOXSIZE{ 48 / 2,48 / 2 };
-	const float ENEMY_JUMPHEIGHT{ ENEMY_IMAGESIZE.cx * 1.5f };	//ジャンプの高さ
-	const float ENEMY_LOOKRANGE{ 150 };
-	//次に動くまでのタイマー
-	float movetimer_;
-	float baseMovetimer;
-	//動き始めたか
-	bool startmove_;
-	//重力加速度？
-	float Gaccel = 0;
 
-	bool charge;
-	//スピード
-	float speed_;
-	float baseSpeed;
-	float baseRunSpeed;
-	//検知距離
-	int range_;
-	//設置判定
-	bool onGround_;
-	//向き
-	int dir_;
-	//
-	XMFLOAT3 Ppos;
-	//体力
-	int hp_;
-	int baseHp;
-
-	int attackfrm_;
-
-	XMFLOAT3 SpawnPoint_;	//初期値
-	XMFLOAT3 TargetPoint_;
-
-	enum  EAnimation
+	enum EAnimation
 	{
-		MOVE,
-		ATTACK,
+		NONE=-1,
 		IDOL,
+		ATTACK,
+		MOVE,
 		RUN,
-		HURT,
-		DEATH
+		DAMEGE,
+		DEATH,
 	};
 
-	EAnimation state_;
-	EAnimation BEanimtype_;
+private:
 
-	void AnimationCheck();
+	struct EnemyAnimParts
+	{
+		EAnimation animtype_;
+		EAnimation BEanimtype_;
+		int AFmax_;				//アニメーションのフレーム数
+		int animframe_;			//現在アニメーションが何フレーム目か
+		int AFCmax_;			//アニメーションが変わるまでのフレーム数
+		int animframecount_;	//現在アニメーションが変わるまで何フレーム目か
+		bool animloop_;			//アニメーションをループするか
+		bool Rdir_;				//右を向いているかどうか
+		bool animSkip_;			//アニメーションをする場所をスキップするか
+	};
 
-	/// <summary>
-	/// 敵とプレイヤーの距離
-	/// </summary>
+	struct EParameter
+	{
+		float speed_;
+		float runspeed_;
+		int hp_;
+		float movetimer_;
+		std::string filename_;
+		float range_;
+		float moverange_;
+		int score_;
+	};
+
+	virtual void UpdateIdol() {};
+	virtual void UpdateAttack() {};
+	virtual void UpdateMove() {};
+	virtual void UpdateRun() {};
+	virtual void UpdateDamege() {};
+	virtual void UpdateDeath() {};
+
+	XMFLOAT3 CenterTransPos_;
+
+	//無敵かどうか
+	bool invincible_;
+	//時間計測
+	float invincibleTimer_;
+
+	//当たり判定の左上
+	VECTOR LU;
+	//当たり判定の大きさ
+	VECTOR Hitbox_;
+
+protected:
+
+
+	void UpdateNone();
+
+	EnemyAnimParts Eanim_;
+	EParameter Eparam_;
+
+	XMFLOAT3 originpos_;
+	float Gaccel = 0;
+
+	float Idoltimer_;
+	float damegetimer_;
+
+	//左右の壁に当たっている
+	bool moveLmax_;
+	bool moveRmax_;
+
+	void AnimationCalculation();
+
 	float EPDistance();
-	XMFLOAT3 EPVector();
-	XMFLOAT3 TargetPos();
 
-	virtual void UpdateIdol();
-	virtual void UpdateMove();
-	virtual void UpdateRun();
-	virtual void UpdateAttack();
-	virtual void UpdateDeath();
-
-	//プレイヤーが検知エリアに入ったかどうか
+	void SetLUPOINT(VECTOR _lu) { LU = _lu; };
+	void SetHitBox(VECTOR _box) { Hitbox_ = _box; };
+	
+	/// <summary>
+	/// プレイヤーが範囲内に存在しているかどうか
+	/// </summary>
+	/// <param name="_range">半径</param>
+	/// <returns>存在しているか</returns>
 	bool IsExistPlayer(float _range);
 
-	HitObject* hitobj_;
+	/// <summary>
+	/// 当たり判定の中心をセットする
+	/// </summary>
+	/// <param name="_trans">当たり判定の左上の点</param>
+	/// <param name="_size">当たり判定のサイズ</param>
+	void SetCenterTransPos(XMFLOAT3 _trans, VECTOR _size);
 
-	Transform hittransform_;
+	/// <summary>
+	/// 当たり判定の中心を直接セットする
+	/// </summary>
+	/// <param name="_pos">当たり判定の中心のポジション</param>
+	void SetCenterTransPos(XMFLOAT3 _pos) { CenterTransPos_ = _pos; };
+
+	void PlayerDir();
 
 public:
 
@@ -107,31 +127,34 @@ public:
 	~Enemy();
 
 	//初期化
-	void Initialize() override;
+	virtual void Initialize() override;
 
-	void Reset() override;
+	virtual void Reset() override;
+	virtual void Reset(XMFLOAT3 pos);
 
 	//更新
-	void Update() override;
+	virtual void Update() override;
 
 	//描画
-	void Draw() override;
+	virtual void Draw() override;
 
 	//開放
-	void Release() override;
+	virtual void Release() override;
 
-	SIZE GetImageSize();
-
-	void DeadState();
-
-	SIZE GetSize() override;
-
-	bool isdeath() { return (state_ == EAnimation::DEATH); }
-	
 	void StatusReader(int _enemyNumber);
 
-	VECTOR GetCenter() { return VECTOR{ transform_.position_.x + ENEMY_IMAGESIZE.cx / 2, transform_.position_.y + ENEMY_IMAGESIZE.cy / 2 }; };
+	void StatusDamege();
 
-	Transform GetHitTransform() { return hittransform_; };
+	void HitDamege(int _damege);
+
+	XMFLOAT3 GetCenterTransPos() { return CenterTransPos_; };
+
+	XMFLOAT3 GetHitTransPos();
+
+	VECTOR GetHitBox() override;
+
+	virtual bool EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox) { return false; };
+
+	
 };
 

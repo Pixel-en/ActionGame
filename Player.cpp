@@ -1,7 +1,10 @@
-#include"Player.h"
+#include "Player.h"
 #include "Camera.h"
 #include "Engine/CsvReader.h"
 #include "ImGui/imgui.h"
+#include "Bullet.h"
+#include "Effect.h"
+#include "PlayScene.h"
 
 namespace {
 	const float MOVESPEED{ 100 };			//動くスピード
@@ -16,7 +19,10 @@ namespace {
 	const float BUFFER{ 0.5f };		//攻撃後の硬直
 	const float JUMPHEIGHT{ (float)(IMAGESIZE.y * 4.0) };
 	const VECTOR PCENTER{ 26.0f * 1.5f,32.0f * 1.5f };
-
+	const XMFLOAT3 EFFECTATTACK{ 20,10,0 };
+	const XMFLOAT3 EFFECTJUMP{ 0,5,0 };
+	const XMFLOAT3 EFFECTMOVE{ 30,-5,0 };
+	
 }
 
 void Player::LoadParameter()
@@ -27,6 +33,10 @@ void Player::LoadParameter()
 		TECHNIC,
 		SPEED,
 		HP,
+		POWER = 1,
+		RANGE,
+		FRAME,
+		RECHARGE,
 	};
 
 	CsvReader* csv = new CsvReader("Assets\\Status\\PlayerParameter.csv");
@@ -35,7 +45,7 @@ void Player::LoadParameter()
 	param_.speed_ = csv->GetInt(1, CSVPARAM::SPEED) - 1;
 	param_.hp_ = csv->GetInt(1, CSVPARAM::HP) - 1;
 
-	for (int i = 4; i < csv->GetLines(); i++) {
+	for (int i = 4; i < 9; i++) {
 		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
 		ParamCorre_[i - 4].technic_ = csv->GetInt(i, CSVPARAM::TECHNIC);
 		ParamCorre_[i - 4].speed_ = csv->GetInt(i, CSVPARAM::SPEED);
@@ -47,10 +57,27 @@ void Player::LoadParameter()
 	param_.speed_ = Clamp(param_.speed_, 0, 4);
 	param_.hp_ = Clamp(param_.hp_, 0, 4);
 
+	attack_[0].power_ = 0;
+	attack_[0].range_ = 0;
+	attack_[0].attackframe_ = 0;
+	attack_[0].recharge_ = 0;
+
+	for (int i = 11; i < 16; i++) {
+		attack_[i - 10].power_ = csv->GetInt(i, CSVPARAM::POWER);
+		attack_[i - 10].range_ = csv->GetInt(i, CSVPARAM::RANGE);
+		attack_[i - 10].attackframe_ = csv->GetInt(i, CSVPARAM::FRAME);
+		attack_[i - 10].recharge_ = csv->GetInt(i, CSVPARAM::RECHARGE);
+	}
+	int a = 0;
+	for (int i = 0; i < 5; i++)
+		rechargetimer_[i] = -1.0f;
+
+	HP_ = ParamCorre_[param_.hp_].hp_;
+
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjamp_(true)
+	:GameObject(parent, "Player"), hImage_(0), Gaccel_(0), invincible_(false), isjump_(true)
 {
 	//アニメーションの初期化
 	anim_.animtype_ = Animation::IDOL;
@@ -61,6 +88,7 @@ Player::Player(GameObject* parent)
 	anim_.animframecount_ = 0;
 	anim_.animloop_ = false;
 	anim_.Rdir_ = true;
+	anim_.animSkip_ = false;
 
 	transform_.position_ = { 0,0,0 };
 	miningtime_ = 0.0f;
@@ -69,22 +97,30 @@ Player::Player(GameObject* parent)
 	hitobject_ = new HitObject(LUPOINT, RUPOINT, LDPOINT, RDPOINT, this);
 
 	LoadParameter();
+
+	Atype_ = AttackType::TNONE;
+
+	attackbuttondown = false;
+
 }
 
 Player::~Player()
 {
-	if (hitobject_ != nullptr)
+	if (hitobject_ != nullptr) {
 		delete hitobject_;
+		hitobject_ = nullptr;
+	}
 }
 
 void Player::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Image\\Player1.5.png");
+	hImage_ = LoadGraph("Assets\\Image\\new-Player1.5.png");
 	assert(hImage_ > 0);
 }
 
 void Player::Update()
 {
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
 
 	//重力
 	Gaccel_ += GRAVITY;
@@ -92,32 +128,20 @@ void Player::Update()
 	//地面との当たり判定
 	if (hitobject_->DownCollisionCheck()) {
 		Gaccel_ = 0;
-		isjamp_ = false;
+		isjump_ = false;
 	}
 
-	if (anim_.animtype_ < Animation::DAMAGE) {
+	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
+
+	if (anim_.animtype_ < Animation::DAMAGE&&pc->isStart()) {
 		anim_.animtype_ = Animation::IDOL;
 		MoveControl();
 	}
-	float time = Time::DeltaTime();
-	float temp;
-	ImGui::Begin("debug");
-	//ImGui::InputFloat("time", &time);
-	//temp = time*ParamCorre_[0].technic_;
-	//ImGui::InputFloat("0", &temp);
-	//temp = time*ParamCorre_[1].technic_;
-	//ImGui::InputFloat("1", &temp);
-	//temp = time*ParamCorre_[2].technic_;
-	//ImGui::InputFloat("2", &temp);
-	//temp = time*ParamCorre_[3].technic_;
-	//ImGui::InputFloat("3", &temp);
-	//temp = time*ParamCorre_[4].technic_;
-	//ImGui::InputFloat("4", &temp);
-	ImGui::End();
 
 	AnimStatus();
 
 	CameraScroll();
+	
 }
 
 void Player::Draw()
@@ -137,13 +161,18 @@ void Player::Draw()
 	//else
 	//	DrawRectGraph(xpos, ypos, animframe_ * IMAGESIZE, animtype_ * IMAGESIZE, IMAGESIZE, IMAGESIZE, hImage_, true, true);*/
 
-	if(anim_.Rdir_)
+	if (anim_.Rdir_)
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true);
 	else {
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
 	}
 	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
+	DrawCircle(xpos, ypos, 5, GetColor(255, 255, 255), true);
+	DrawCircle(xpos+RUPOINT.x/2.0f, ypos + RUPOINT.y, 5, GetColor(255, 0, 255), true);
+
+	PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
 	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
+
 }
 
 void Player::Release()
@@ -199,18 +228,18 @@ void Player::CameraScroll()
 void Player::MoveControl()
 {
 
+
 	float Dash = 1.0f;
-	miningtime_ = 0.0f;
+	miningtime_ = -1.0f;
 
-	if(!ActionControl()){
-
+	if (!ActionControl()) {
 		//左移動
-		if (CheckHitKey(KEY_INPUT_A)) {
+		if (CheckHitKey(KEY_INPUT_A) || pad.ThumbLX <= -10000) {
 
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT))||pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]||pad.LeftTrigger>=150) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -221,12 +250,12 @@ void Player::MoveControl()
 		}
 
 		//右移動
-		if (CheckHitKey(KEY_INPUT_D)) {
+		if (CheckHitKey(KEY_INPUT_D) || pad.ThumbLX >= 10000) {
 
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if (CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) || pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER] || pad.LeftTrigger >= 150) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -240,21 +269,32 @@ void Player::MoveControl()
 		hitobject_->RightCollisionCheck();
 
 		//ジャンプ
-		if (CheckHitKey(KEY_INPUT_SPACE) && !isjamp_) {
-			isjamp_ = true;
+		if ((CheckHitKey(KEY_INPUT_SPACE) || pad.Buttons[XINPUT_BUTTON_A]) && !isjump_) {
+			isjump_ = true;
 			Gaccel_ = -sqrtf(2 * GRAVITY * JUMPHEIGHT);
+			Transform trans;
+			trans.position_ = { transform_.position_.x + EFFECTJUMP.x,transform_.position_.y + EFFECTJUMP.y ,transform_.position_.z + EFFECTJUMP.z };
+			Effect* e = Instantiate<Effect>(GetParent());
+			e->Reset(trans, e->JUMP);
+
 		}
 
-		if (isjamp_) {
+		if (isjump_) {
 			anim_.animtype_ = Animation::JUMP;
 			//WaitKey();
 		}
 		////上移動
-		//if (CheckHitKey(KEY_INPUT_W)) {
-
-		//	transform_.position_.y = -MOVESPEED * Time::DeltaTime();
-		//}
+		if (CheckHitKey(KEY_INPUT_W) || pad.ThumbLY >= 10000) {
+			Field* f = GetParent()->FindGameObject<Field>();
+			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
+				anim_.animtype_ = Animation::CLIMB;
+				transform_.position_.y = -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
+				//isjamp_ = true;
+				Gaccel_ = 0;
+			}
+		}
 	}
+	hitobject_->UpCollisionCheck();
 
 	//hitobject_->AllCollisionCheck();
 	//hitobject_->SelectCollisionCheck(1100);
@@ -265,30 +305,85 @@ bool Player::ActionControl()
 {
 
 	//採取
-	if (CheckHitKey(KEY_INPUT_I)) {
+	if (CheckHitKey(KEY_INPUT_I) || (pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER]&& pad.RightTrigger < 150)) {
 		anim_.animtype_ = Animation::COLLECTION;
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
 
-	if (CheckHitKey(KEY_INPUT_J)) {
-		anim_.animtype_ = Animation::ATTACK;
-	}
-
-	if (CheckHitKey(KEY_INPUT_K)) {
-		anim_.animtype_ = Animation::ATTACK2;
-	}
-	
-	if (CheckHitKey(KEY_INPUT_L)) {
-		anim_.animtype_ = Animation::ATTACK3;
-	}
-	if (CheckHitKey(KEY_INPUT_M)) {
+	if (((CheckHitKey(KEY_INPUT_M) || pad.RightTrigger >= 150) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T || Atype_ == AttackType::MAGIC2T) {
 		anim_.animtype_ = Animation::MAGIC;
+		XMFLOAT3 bpos = { transform_.position_.x + RUPOINT.x / 2.0f,transform_.position_.y + RUPOINT.y,transform_.position_.z };
 
-		if (CheckHitKey(KEY_INPUT_K)) {
+		if (((CheckHitKey(KEY_INPUT_K) || pad.Buttons[XINPUT_BUTTON_X]) && !attackbuttondown) || Atype_ == AttackType::MAGIC1T) {
+			if (rechargetimer_[3] < 0.0) {
+				Atype_ = MAGIC1T;
+				if (!attackbuttondown) {
+					Bullet* b = Instantiate<Bullet>(GetParent());
+					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
+					anim_.animframecount_ = 0;
+					if (anim_.Rdir_)
+						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+					else
+						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+					Damege = -1;
+				}
+				attackbuttondown = true;
+			}
 		}
 
-		if (CheckHitKey(KEY_INPUT_L)) {
+		else if (((CheckHitKey(KEY_INPUT_L) || pad.Buttons[XINPUT_BUTTON_Y]) && !attackbuttondown) || Atype_ == AttackType::MAGIC2T) {
+			if (rechargetimer_[4] < 0.0) {
+				Atype_ = MAGIC2T;
+				if (!attackbuttondown) {
+					Bullet* b = Instantiate<Bullet>(GetParent());
+					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
+					anim_.animframecount_ = 0;
+					if (anim_.Rdir_)
+						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+					else
+						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+					Damege = -1;
+				}
+				attackbuttondown = true;
+			}
 		}
+	}
+
+	else if (((CheckHitKey(KEY_INPUT_J) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_X])) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
+		if (rechargetimer_[0] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK;
+			Atype_ = ATTACKT;
+			attackbuttondown = true;
+		}
+	}
+
+	else if (((CheckHitKey(KEY_INPUT_K) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_Y])) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
+		if (rechargetimer_[1] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK2;
+			Atype_ = ATTACK2T;
+			attackbuttondown = true;
+		}
+	}
+
+	else if (((CheckHitKey(KEY_INPUT_L) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_B])) && !attackbuttondown) || Atype_ == AttackType::ATTACK3T) {
+		if (rechargetimer_[2] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK3;
+			Atype_ = ATTACK3T;
+			attackbuttondown = true;
+		}
+	}
+
+	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M) &&
+		!pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_Y] && !pad.Buttons[XINPUT_BUTTON_X] && pad.RightTrigger < 150)
+		attackbuttondown = false;
+
+
+
+	for (int i = 0; i < 5; i++) {
+		if (rechargetimer_[i] < 0.0)
+			rechargetimer_[i] = -1.0;
+		else
+			rechargetimer_[i] -= Time::DeltaTime();
 	}
 
 	if (anim_.animtype_ == Animation::IDOL)
@@ -304,6 +399,14 @@ void Player::AnimStatus()
 
 	anim_.animloop_ = true;
 
+	anim_.animSkip_ = false;
+
+	Transform trans;
+	if (anim_.Rdir_)
+		trans.position_ = { transform_.position_.x + LDPOINT.x + HITBOXSIZE.x / 2.0f - EFFECTMOVE.x,transform_.position_.y + RDPOINT.y + EFFECTMOVE.y ,transform_.position_.z + EFFECTMOVE.z };
+	else
+		trans.position_ = { transform_.position_.x + LUPOINT.x + HITBOXSIZE.x / 2.0f + EFFECTMOVE.x,transform_.position_.y + RDPOINT.y + EFFECTMOVE.y ,transform_.position_.z + EFFECTMOVE.z };
+
 	switch (anim_.animtype_)
 	{
 	case Player::NONE:
@@ -318,12 +421,31 @@ void Player::AnimStatus()
 	case Player::WALK:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
+		{
+			Effect* e = GetParent()->FindGameObject<Effect>("PWalkEffect");
+			if (e == nullptr) {
+				e = Instantiate<Effect>(GetParent());
+				e->Reset(trans, e->RUN, anim_.Rdir_);
+				e->SetEffectObjectName("PWalkEffect");
+			}
+			e->SetBackEffectPos(trans.position_, anim_.Rdir_);
+		}
 		break;
 	case Player::RUN:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 11;
+		{
+			Effect* e = GetParent()->FindGameObject<Effect>("PRunEffect");
+			if (e == nullptr) {
+				e = Instantiate<Effect>(GetParent());
+				e->Reset(trans, e->RUN, anim_.Rdir_);
+				e->SetEffectObjectName("PRunEffect");
+			}
+			e->SetBackEffectPos(trans.position_, anim_.Rdir_);
+		}
 		break;
 	case Player::JUMP:
+		
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 120;
 		anim_.animloop_ = false;
@@ -344,25 +466,17 @@ void Player::AnimStatus()
 		}
 		anim_.animframecount_ = 0;
 		break;
-	case Player::ATTACK:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-		break;
+	case Player::ATTACK:	//AttackAnimに移植
 	case Player::ATTACK2:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
-		break;
 	case Player::ATTACK3:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 8;
+	case Player::MAGIC:
+		anim_.AFmax_ = 5;
+		anim_.AFCmax_ = 20;
+		AttackAnim();
 		break;
 	case Player::CLIMB:
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 17;
-		break;
-	case Player::MAGIC:
-		anim_.AFmax_ = 6;
-		anim_.AFCmax_ = 15;
 		break;
 	case Player::COLLECTION:
 		anim_.AFmax_ = 5;
@@ -396,6 +510,18 @@ void Player::AnimStatus()
 		break;
 	}
 
+	if (anim_.animtype_ != Player::WALK) {
+		Effect* e = GetParent()->FindGameObject<Effect>("PWalkEffect");
+		if (e != nullptr)
+			e->KillMe();
+	}
+	if (anim_.animtype_ != Player::RUN) {
+		Effect* e = GetParent()->FindGameObject<Effect>("PRunEffect");
+		if (e != nullptr)
+			e->KillMe();
+	}
+
+
 	//無敵時間
 	if (invincible_) {
 		timecnt += Time::DeltaTime();
@@ -409,23 +535,123 @@ void Player::AnimStatus()
 	/*----アニメーションの切り替えなど-----*/
 
 	//フレームのカウント
-	if (anim_.BEanimtype_ != anim_.animtype_) {
-		anim_.animframe_ = 0;
-		anim_.animframecount_ = 0;
-	}
+	if (!anim_.animSkip_) {
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
 
-	anim_.animframecount_++;
-	if (anim_.animframecount_ > anim_.AFCmax_) {
-		anim_.animframecount_ = 0;
-		if (anim_.animloop_)
-			anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
-		else {
-			anim_.animframe_ = anim_.animframe_ + 1;
-			if (anim_.animframe_ == anim_.AFmax_)
-				anim_.animtype_ = Animation::IDOL;
+
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animloop_)
+				anim_.animframe_ = (anim_.animframe_ + 1) % anim_.AFmax_;
+			else {
+				anim_.animframe_ = anim_.animframe_ + 1;
+				if (anim_.animframe_ == anim_.AFmax_)
+					anim_.animtype_ = Animation::IDOL;
+			}
 		}
 	}
 	anim_.BEanimtype_ = anim_.animtype_;
+}
+
+void Player::AttackAnim()
+{
+	Transform trans;
+	Damege = 0;
+	switch (Atype_)
+	{
+	case Player::TNONE:
+
+		break;
+
+	case Player::ATTACK3T:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+		if (anim_.animframe_ < 2) {
+			if (anim_.Rdir_)
+				transform_.position_.x += MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime() * 3.0;
+			else
+				transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime() * 3.0;
+		}
+
+
+	case Player::ATTACKT:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+	case Player::ATTACK2T:
+		anim_.AFmax_ = 6;
+		anim_.AFCmax_ = 12;
+
+		trans.position_ = { transform_.position_.x + RUPOINT.x / 2.0f,transform_.position_.y,transform_.position_.z };
+
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
+		anim_.animSkip_ = true;
+		
+		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4) {
+			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
+			if (anim_.animframe_ == 2 && anim_.animframecount_ == 1) {
+				if (anim_.Rdir_)
+					trans.position_ = { trans.position_.x + EFFECTATTACK.x,trans.position_.y + EFFECTATTACK.y ,trans.position_.z + EFFECTATTACK.z };
+				else
+					trans.position_ = { trans.position_.x - EFFECTATTACK.x,trans.position_.y + EFFECTATTACK.y ,trans.position_.z + EFFECTATTACK.z };
+
+				Effect* e = Instantiate<Effect>(GetParent());
+				e->Reset(trans, e->SLASH, anim_.Rdir_);
+			}
+		}
+
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframecount_ = 0;
+			if (anim_.animframe_ + 1 >= anim_.AFmax_) {
+				rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
+				Atype_ = AttackType::TNONE;
+				anim_.animtype_ = IDOL;
+				anim_.animframe_ = 0;
+				anim_.animframecount_ = 0;
+			}
+			else
+				anim_.animframe_ = anim_.animframe_ + 1;
+		}
+		break;
+	case Player::MAGIC1T:
+		anim_.AFmax_ = 6;
+		anim_.animframe_ = 5;
+		anim_.AFCmax_ = 30;
+		anim_.animSkip_ = true;
+	case Player::MAGIC2T:
+		anim_.AFmax_ = 6;
+		anim_.animframe_ = 5;
+		anim_.AFCmax_ = 30;
+		anim_.animSkip_ = true;
+		Damege = -1;
+
+		if (anim_.BEanimtype_ != anim_.animtype_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+		}
+
+		anim_.animframecount_++;
+		if (anim_.animframecount_ > anim_.AFCmax_) {
+			anim_.animframe_ = 0;
+			anim_.animframecount_ = 0;
+			rechargetimer_[Atype_ - 1] = attack_[Atype_].recharge_;
+			Atype_ = AttackType::TNONE;
+			anim_.animtype_ = IDOL;
+
+		}
+		break;
+	default:
+		break;
+	}
+
+
 }
 
 VECTOR Player::KnockBackDir(VECTOR _vec)
@@ -439,21 +665,19 @@ VECTOR Player::KnockBackDir(VECTOR _vec)
 	return dir;
 }
 
-XMFLOAT3 Player::GetHitBoxPosition()
+XMFLOAT3 Player::GetHitBoxCenterPosition()
 {
-	return { transform_.position_.x /*+ LUPOINT.x*/ + HITBOXSIZE.x / 2, transform_.position_.y /*+ LUPOINT.y*/ + HITBOXSIZE.y / 2, 0 };
+	return { transform_.position_.x + LUPOINT.x + HITBOXSIZE.x / 2, transform_.position_.y + LUPOINT.y + HITBOXSIZE.y / 2, 0 };
 }
 
 void Player::HitDamage(VECTOR _dir)
 {
-
-	static int HP = ParamCorre_[param_.hp_].hp_;
 	//ダメージを受けていたり死んでいないとき
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
-		HP--;
-		if (HP < 0) {
+		HP_--;
+		if (HP_ < 0) {
 			anim_.animtype_ = Animation::DEATH;
-			HP = ParamCorre_[param_.hp_].hp_;
+			HP_ = ParamCorre_[param_.hp_].hp_;
 		}
 		else {
 			anim_.animtype_ = Animation::DAMAGE;
@@ -488,3 +712,38 @@ void Player::DeadState()
 	anim_.animtype_ = Animation::DEATH;
 }
 
+bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
+{
+	if (Atype_ < 1 || Damege <= 0)
+		return false;
+
+	int xpos = transform_.position_.x;
+	int ypos = transform_.position_.y;
+
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+	if (cam != nullptr) {
+		xpos -= cam->GetValue();
+		ypos -= cam->GetValueY();
+	}
+	XMFLOAT3 attacktrans_;
+	VECTOR attackhitbox_;
+
+	if (anim_.Rdir_) {
+
+		attacktrans_ = { transform_.position_.x + RUPOINT.x,transform_.position_.y + RUPOINT.y,transform_.position_.z };
+		attackhitbox_ = VGet(attack_[Atype_].range_, HITBOXSIZE.y, 0);
+		//攻撃用当たり判定
+		DrawBox(xpos + RUPOINT.x, ypos + RUPOINT.y, xpos + RUPOINT.x + attack_[Atype_].range_, ypos + RDPOINT.y, GetColor(0, 0, 255), false);
+	}
+	else
+	{
+		attacktrans_ = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+		attackhitbox_ = VGet(-attack_[Atype_].range_, HITBOXSIZE.y, 0);
+		//攻撃用当たり判定
+		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + attackhitbox_.x, ypos + LUPOINT.y+attackhitbox_.y, GetColor(0, 0, 255), false);
+	}
+
+	bool set = hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
+
+	return set;
+}

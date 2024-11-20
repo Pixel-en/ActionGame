@@ -20,6 +20,7 @@ class Material :public Object
 
 	float SeeUiLength;
 	bool posNear;
+
 public:
 
 	//コンストラクタ

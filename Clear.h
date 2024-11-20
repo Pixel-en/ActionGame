@@ -12,6 +12,8 @@ class Clear :public GameObject
 	int Ecount_;		//敵の数
 
 	bool isFlag_;	//次のステージに移動していいか
+
+	
 public:
 
 	bool GetFlag() { return isFlag_; };

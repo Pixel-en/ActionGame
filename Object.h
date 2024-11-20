@@ -12,11 +12,13 @@ protected:
 	int animframe_;	//アニメーションのフレームカウント
 	int AFmax_;		//アニメーションのフレーム数
 
+
 	SIZE hitsize_;
 
-	HitObject* hitobj_;
 
 public:
+
+	HitObject* hitobj_;
 
 	Object(GameObject* parent);
 	Object(GameObject* parent, const std::string& name);
@@ -25,7 +27,7 @@ public:
 	virtual ~Object();
 
 	//初期化
- 	virtual void Initialize() override;
+	virtual void Initialize() override;
 
 	virtual void Reset();
 
@@ -39,6 +41,7 @@ public:
 	virtual void Release() override;
 
 	virtual int GetImageHandle() { return hImage_; }
+	virtual Transform GetHitTrans();
 	virtual SIZE GetSize();
 
 	virtual VECTOR GetHitBox();

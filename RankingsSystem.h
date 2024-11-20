@@ -9,8 +9,7 @@
 #include"Engine/GameObject.h"
 
 class CsvReader;
-class ClearLogo;
-class TitleText;
+class OutText;
 
 class RankingsSystem : public GameObject
 {
@@ -37,11 +36,24 @@ public:
 	/// </summary>
 	void SortScore();
 
-	void DrawWriteUI();
+	void DrawOK(bool _output) { output_ = _output; };
 
 	void DrawWriteUICn();
 
 private:
+
+	/// <summary>
+	/// 名前入力用UI表示(キーマウ用)
+	/// </summary>
+	void DrawWriteUI();
+
+	/// <summary>
+	/// 名前入力用UI表示(パッド用)
+	/// </summary>
+	void DrawWriteUICn();
+
+	void NameBar(std::string _str, float _fSize, float _space, float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime);
+
 	std::string output_csv_file_path_ScoreData;
 	std::string output_csv_file_path_SortData;
 	CsvReader* csv;
@@ -50,11 +62,7 @@ private:
 	std::map <std::string, float> Rankings;
 	std::vector<std::pair<float, std::string>> r;
 
-	ClearLogo* cLogo;
-	TitleText* tText;
-
-	int InputHandle;
-	char Name[256];
+	OutText* tText;
 
 	bool SetEnd;
 
@@ -63,7 +71,7 @@ private:
 	float flame;
 	float eraseAlpha;
 
-	int x1,y1,x2,y2;
+	int x1, y1, x2, y2;
 
 	int space;
 	int word;
@@ -71,5 +79,28 @@ private:
 	int a;
 	int count;
 	int MaxWord;
+
+	int cx1, cy1, cx2, cy2;
+	bool prevKey;
+
+	int InputHandle;
+	char Name[256];
+	char cName[256];
+	std::string str;
+
+	
+
+	enum DEVICE
+	{
+		KEY_AND_MOUSE = 0,
+		PAD
+	};
+
+	int nowDevice;
+
+	XINPUT_STATE pad;
+
+	//表示開始していいか
+	bool output_;
 };
 

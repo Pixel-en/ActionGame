@@ -5,29 +5,27 @@
 #include "Player.h"
 #include "PlayScene.h"
 #include "Clear.h"
+#include "OutText.h"
+#include "ScoreAndTimeAndMap.h"
 
 namespace {
 	const SIZE FONTSIZE{ 32,36 };
 	const SIZE UISIZE{ 32,32 };
 	const int UIBUFFER{ 4 };
-	const float COUNTTIMER{ 1.0f };
-}
-
-int PlayGUI::CharNum(char c)
-{
-	if (std::toupper(c) >= 65&&std::toupper(c) <= 90)
-		return std::toupper(c) - 65;
-	else if (std::toupper(c) >= 48 && std::toupper(c) <= 57)
-		return std::toupper(c) - 48 + 26;
-
-	return 255;
+	const float COUNTTIMER{ 0.5f };
+	const float STARTTIMER{ 1.0f };
+	const SIZE UIICON{ 32,32 };
+	const SIZE HEARTNUM{ 39,10 };
 }
 
 PlayGUI::PlayGUI(GameObject* parent)
-	:hImage_(0),hImageUI_(0),x(0),y(0),text(""),CDtimer_(0),outset_(false),playtimer_(0)
+	:hImage_(0),hImageUI_(0),x(0),y(0),text(""),CDtimer_(0),outset_(false),playtimer_(0),hImageHeart_(0)
 {
 	chipnum_ = { {6,18},{7,18},{7,18},{8,18},
 			   {6,20},{7,20},{7,20},{8,20}, };
+	scorechipnum_ = { {6,18},{7,18},{7,18},{7,18},{7,18},{8,18},
+					  {6,19},{7,19},{7,19},{7,19},{7,19},{8,19},
+					  {6,20},{7,20},{7,20},{7,20},{7,20},{8,20}, };
 	transform_.position_.x = 0;
 }
 
@@ -37,12 +35,12 @@ PlayGUI::~PlayGUI()
 
 void PlayGUI::Initialize()
 {
-	hImage_ = LoadGraph("Assets\\Font\\text1.png");
-	assert(hImage_ > 0);
 	hImageUI_ = LoadGraph("Assets\\Image\\UI2.png");
 	assert(hImageUI_ > 0);
 	hImagekey_ = LoadGraph("Assets\\Image\\Key.png");
 	assert(hImagekey_ > 0);
+	hImageHeart_ = LoadGraph("Assets\\Image\\UI_ICON.png");
+	assert(hImageHeart_ > 0);
 
 	int x, y;
 
@@ -61,7 +59,8 @@ void PlayGUI::Initialize()
 
 	CDtimer_ = COUNTTIMER;
 	transform_.position_.x = -200;
-
+	Instantiate<OutText>(GetParent());
+	starttimer_ = STARTTIMER;
 
 }
 
@@ -70,6 +69,9 @@ void PlayGUI::Update()
 
 	PlayScene* pc = dynamic_cast<PlayScene*>(GetParent());
 	playtimer_ = pc->GetPlayTimer();
+	if (pc->isStart() && starttimer_ > 0.0) {
+		starttimer_ -= Time::DeltaTime();
+	}
 
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
@@ -79,12 +81,12 @@ void PlayGUI::Update()
 	if (p == nullptr)
 		return;
 	
-	if (p->IsAnimState(p->IDOL)&&outset_) {
+	if (p->IsAnimState(p->IDOL) && outset_) {
 		if (CDtimer_ > 0)
 			CDtimer_ -= Time::DeltaTime();
 		else {
 			CDtimer_ = 0;
-			transform_.position_.x += 100 * Time::DeltaTime();
+			transform_.position_.x += 150 * Time::DeltaTime();
 			if (transform_.position_.x > 0)
 				transform_.position_.x = 0;
 		}
@@ -98,7 +100,7 @@ void PlayGUI::Update()
 			outset_ = true;
 		}
 	}
-
+	pHP_ = p->GetHp();
 
 }
 
@@ -123,20 +125,47 @@ void PlayGUI::Draw()
 	}
 	DrawRectGraph(xpos + 20, 90, 0, 0, Mdata.imagesize.cx, Mdata.imagesize.cy, Mdata.handle, true);
 	DrawString(std::to_string(Mnum), xpos + Mdata.imagesize.cx + 30, 90);
-	
+		
+	//体力表示
+	for (int i = 0; i < chipnum_.size(); i++) {
+		//DrawRectGraph(0 + i * UISIZM.cx, 0, 0 + (UISIZM.cx+8) * (i + 6), (UISIZM.cy+8)* 16, UISIZM.cx, UISIZM.cy, hImageUI_, true);
+		DrawRectGraph(xpos + 10 + i % 4 * UISIZE.cx, 150 + i / 4 * UISIZE.cy, (UISIZE.cx + UIBUFFER) * chipnum_[i].x, (UISIZE.cy + UIBUFFER) * chipnum_[i].y, UISIZE.cx, UISIZE.cy,
+			hImageUI_, true);
+	}
+	DrawRectGraph(xpos + 20, 165, (UIICON.cx+2) * HEARTNUM.cx, (UIICON.cy+2) * HEARTNUM.cy, UIICON.cx, UIICON.cy, hImageHeart_, true);
+	DrawString(std::to_string(pHP_), xpos + UIICON.cx + 30, 170);
 
 	//残り時間表示
 	for (int i = 0; i < chipnum_.size(); i++) {
-		DrawRectGraph(550 + i % 4 * UISIZE.cx, 20 + i / 4 * UISIZE.cy, (UISIZE.cx + UIBUFFER) * chipnum_[i].x, (UISIZE.cy + UIBUFFER) * chipnum_[i].y, UISIZE.cx, UISIZE.cy,
+		DrawRectGraph(550 + i % 4 * UISIZE.cx, 10 + i / 4 * UISIZE.cy, (UISIZE.cx + UIBUFFER) * chipnum_[i].x, (UISIZE.cy + UIBUFFER) * chipnum_[i].y, UISIZE.cx, UISIZE.cy,
 			hImageUI_, true);
 	}
 
 	DrawString(std::to_string(playtimer_), 565, 30);
 
+	//文字表示
 	Clear* c = GetParent()->FindGameObject<Clear>();
+	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
+	if (!pc->isStart()) {
+		DrawString("ready", 550, 350);
+	}
+	else {
+		if (starttimer_ > 0.0) {
+			DrawString("Start", 550, 350);
+		}
+	}
 	if (c->GetFlag()) {
 		DrawString("CLEAR", 550, 350);
 	}
+
+	//スコア表示
+	for (int i = 0; i < scorechipnum_.size(); i++) {
+		DrawRectGraph(900+i%6*UISIZE.cx,10+i/6*UISIZE.cy,(UISIZE.cx + UIBUFFER) * scorechipnum_[i].x, (UISIZE.cy + UIBUFFER) * scorechipnum_[i].y, UISIZE.cx, UISIZE.cy,
+			hImageUI_, true);
+	}
+
+	this->DrawString("Score", 905, 20);
+	this->DrawString(std::to_string(ScoreAndTimeAndMap::GetScore()), 905, 60);
 }
 
 void PlayGUI::Release()
@@ -145,8 +174,6 @@ void PlayGUI::Release()
 
 void PlayGUI::DrawString(std::string _text, float _posx, float _posy)
 {
-	for (int i = 0; i < _text.size(); i++) {
-		int num = CharNum(_text[i]);
-		DrawRectGraph(_posx + i * FONTSIZE.cx, _posy, 0, 0 + num * FONTSIZE.cy + 0.5f, FONTSIZE.cx, FONTSIZE.cy, hImage_, true);
-	}
+	OutText* out = GetParent()->FindGameObject<OutText>();
+	out->DrawString(_text, _posx, _posy);
 }

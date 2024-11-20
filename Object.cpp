@@ -34,13 +34,14 @@ Object::Object(GameObject* parent, const std::string& name)
 
 Object::~Object()
 {
-	if (hitobj_ != nullptr)
+	if (hitobj_ != nullptr) {
 		delete hitobj_;
+		hitobj_ = nullptr;
+	}
 }
 
 void Object::Initialize()
 {
-	hitobj_ = new HitObject(hitsize_, this);
 }
 
 void Object::Reset()
@@ -68,6 +69,11 @@ void Object::Draw()
 
 void Object::Release()
 {
+}
+
+Transform Object::GetHitTrans()
+{
+	return Transform();
 }
 
 SIZE Object::GetSize()
