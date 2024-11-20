@@ -39,6 +39,8 @@ public:
 
 	void DrawWriteUI();
 
+	void DrawWriteUICn();
+
 private:
 	std::string output_csv_file_path_ScoreData;
 	std::string output_csv_file_path_SortData;

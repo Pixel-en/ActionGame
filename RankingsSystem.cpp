@@ -78,7 +78,8 @@ void RankingsSystem::Update()
 void RankingsSystem::Draw()
 {
 	if (cLogo->GetOutput()) {
-		DrawWriteUI();
+		/*DrawWriteUI();*/
+		DrawWriteUICn();
 	}
 }
 
@@ -156,4 +157,13 @@ void RankingsSystem::DrawWriteUI()
 
 	DrawBoxAA(430, 380,(x1+25) + MaxWord*word +( MaxWord-1 )* space, 450, GetColor(255, 255, 255), FALSE); //“ü—Í˜gü
 	tText->DrawString(Name, 450, 400);
+}
+
+void RankingsSystem::DrawWriteUICn()
+{
+	for (int i = 65; i < 91; i++) {
+		std::string a;
+		a = static_cast<char>(i);
+		tText->DrawString(a, 450 + (i - 65) * 30, 400);
+	}
 }
