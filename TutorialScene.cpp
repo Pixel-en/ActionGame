@@ -5,6 +5,7 @@
 #include "BackGround.h";
 #include "Clear.h"
 #include "Engine/SceneManager.h"
+#include "TutorialUI.h"
 
 namespace {
 	const float CLEARTIME{ 1.0f };
@@ -28,6 +29,7 @@ void TutorialScene::Initialize()
 
 	Instantiate<Player>(this);
 	f->Reset();
+	Instantiate<TutorialUI>(this);
 }
 
 void TutorialScene::Update()
@@ -36,7 +38,7 @@ void TutorialScene::Update()
 	if (c->GetFlag()) {
 		cleartimer_ -= Time::DeltaTime();
 		if (cleartimer_ < 0) {
-			SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PREPARATION);
+			SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
 		}
 	}
 }

@@ -280,7 +280,8 @@ void Enemy::UpdateNone()
 {
 
 	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
-	if (pc->isStart())
-		Eanim_.animtype_ = IDOL;
-
+	if (pc != nullptr) {
+		if (pc->isStart())
+			Eanim_.animtype_ = IDOL;
+	}
 }

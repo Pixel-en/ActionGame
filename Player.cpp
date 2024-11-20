@@ -151,6 +151,7 @@ void Player::Update()
 	AnimStatus();
 
 	CameraScroll();
+
 	
 }
 
@@ -606,6 +607,9 @@ void Player::AttackAnim()
 		
 		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4) {
 			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
+			if (Damege <= 0)
+				Damege = 1;
+
 			if (anim_.animframe_ == 2 && anim_.animframecount_ == 1) {
 				if (anim_.Rdir_)
 					trans.position_ = { trans.position_.x + EFFECTATTACK.x,trans.position_.y + EFFECTATTACK.y ,trans.position_.z + EFFECTATTACK.z };
@@ -757,4 +761,9 @@ bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 	bool set = hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
 
 	return set;
+}
+
+XMFLOAT3 Player::GetObjectCheckPos()
+{
+	return { transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y,0 };
 }

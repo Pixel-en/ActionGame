@@ -55,7 +55,12 @@ public:
 
 	std::string GetTargetName() { return targetName_; };
 	Transform GetHitTrans() override;
-	void SetDamege(int _damege) { damege_ = _damege; };
+	void SetDamege(int _damege) {
+		if (_damege > 0)
+			damege_ = _damege;
+		else
+			damege_ = 1;
+	};
 	int GetDamege() { return damege_; };
 	VECTOR GetHitBox() override;
 

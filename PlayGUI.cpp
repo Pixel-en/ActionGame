@@ -37,8 +37,6 @@ void PlayGUI::Initialize()
 {
 	hImageUI_ = LoadGraph("Assets\\Image\\UI2.png");
 	assert(hImageUI_ > 0);
-	hImagekey_ = LoadGraph("Assets\\Image\\Key.png");
-	assert(hImagekey_ > 0);
 	hImageHeart_ = LoadGraph("Assets\\Image\\UI_ICON.png");
 	assert(hImageHeart_ > 0);
 

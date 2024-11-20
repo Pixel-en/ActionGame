@@ -3,6 +3,14 @@
 
 class TutorialUI :public GameObject
 {
+
+	int hImageGuide_;
+	int guidenum_;
+	VECTOR UIpos_;
+	VECTOR UIpos2_;
+	int hImageFrame_;
+	
+
 public:
 
 	//コンストラクタ

@@ -155,6 +155,7 @@ public:
 
 	virtual bool EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox) { return false; };
 
-	
+	void StateIDOL() { Eanim_.animtype_ = IDOL; };
+	void DebugHp() { Eparam_.hp_ = 1; };
 };
 
