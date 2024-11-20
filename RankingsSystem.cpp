@@ -497,12 +497,16 @@ void RankingsSystem::DrawWriteUICn()
 							NetUDPHandle = MakeUDPSocket(-1);
 							IpAddr.d1 = 192;
 							IpAddr.d2 = 168;
-							IpAddr.d3 = 56;
-							IpAddr.d4 = 1;
+							/*IpAddr.d3 = 56;
+							IpAddr.d4 = 1;*/
+							IpAddr.d3 = 1;
+							IpAddr.d4 = 4;
 
 							
 							//ï∂éöóÒëóêM
 							///*NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,strl.c_str(),strl.size());*/
+
+							//192.168.1.4
 
 							IPDATA IPAddress[1];
 							int IPNum;
