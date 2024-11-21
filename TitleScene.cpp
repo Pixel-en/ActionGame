@@ -75,7 +75,7 @@ void TitleScene::Update()
 					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PREPARATION);
 				}
 				else
-					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TUTORIAL);
+					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
 			}
 
 		}

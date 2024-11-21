@@ -17,6 +17,9 @@ Goal::Goal(GameObject* parent)
 
 Goal::~Goal()
 {
+	if (hitobj_ != nullptr)
+		delete hitobj_;
+	hitobj_ = nullptr;
 }
 
 void Goal::Initialize()

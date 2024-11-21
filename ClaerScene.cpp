@@ -8,15 +8,6 @@
 #include "OutText.h"
 #include"RankingsSystem.h"
 
-#if 0
-#include"RankingsSystem.h"
-
-int InputHandle;
-char Name[256];
-std::string PlayerName;
-#endif
-
-
 ClearScene::ClearScene(GameObject* parent)
 	:GameObject(parent,"ClearScene"),hImage_(0)
 {
@@ -37,14 +28,17 @@ void ClearScene::Initialize()
 	Clearplayer* cp = Instantiate<Clearplayer>(this);
 	ClearLogo* logo = Instantiate<ClearLogo>(this);
 	OutText* tt = Instantiate<OutText>(this);
-	RankingsSystem* pR = Instantiate<RankingsSystem>(this);
 }
 
 void ClearScene::Update()
 {
-	RankingsSystem* pR = FindGameObject<RankingsSystem>();
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
+
 	ClearLogo* logo = FindGameObject<ClearLogo>();
-	pR->DrawOK(logo->GetOutput());
+	if (logo->GetOutput()) {
+		if(pad.Buttons[XINPUT_BUTTON_START]||CheckHitKey(KEY_INPUT_RETURN))
+		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
+	}
 }
 
 

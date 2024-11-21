@@ -50,6 +50,9 @@ Material::Material(GameObject* parent)
 
 Material::~Material()
 {
+	if (hitobj_ != nullptr)
+		delete hitobj_;
+	hitobj_ = nullptr;
 }
 
 void Material::Initialize()

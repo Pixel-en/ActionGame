@@ -34,6 +34,7 @@ void SceneManager::Update()
 	{
 		//そのシーンのオブジェクトを全削除
 		KillAllChildren();
+		InitGraph();
 
 		//次のシーンを作成
 		switch (nextSceneID_)

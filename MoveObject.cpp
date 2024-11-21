@@ -26,6 +26,9 @@ MoveObject::MoveObject(GameObject* parent)
 
 MoveObject::~MoveObject()
 {
+	if (hitobj_ != nullptr)
+		delete hitobj_;
+	hitobj_ = nullptr;
 }
 
 void MoveObject::Initialize()

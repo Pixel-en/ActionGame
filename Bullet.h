@@ -25,6 +25,8 @@ class Bullet
 
 	int damege_;
 
+	VECTOR lupoint_;
+
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（ObjectManager）

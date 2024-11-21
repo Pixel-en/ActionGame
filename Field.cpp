@@ -19,7 +19,7 @@ namespace {
 
 
 Field::Field(GameObject* parent)
-	:GameObject(parent, "Field"), hImage_(-1), Map(nullptr), filename("alphamap.csv")
+	:GameObject(parent, "Field"), hImage_(-1), Map(nullptr), filename("text.csv")
 {
 }
 
@@ -184,6 +184,7 @@ void Field::Release()
 {
 	if (Map != nullptr)
 		delete Map;
+	Map = nullptr;
 }
 
 int Field::CollisionDownCheck(int x, int y)

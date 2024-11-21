@@ -92,7 +92,9 @@ void Enemy::StatusReader(int _enemyNumber)
 			break;
 		}
 	}
-
+	if(csv!=nullptr)
+		delete csv;
+	csv = nullptr;
 }
 
 void Enemy::StatusDamege()

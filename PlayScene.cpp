@@ -39,7 +39,7 @@ void PlayScene::Initialize()
 
 void PlayScene::Reset()
 {
-
+	InitGraph();
 	KillAllChildren();
 
 	Filename_ = ScoreAndTimeAndMap::NextMap();

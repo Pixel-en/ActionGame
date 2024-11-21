@@ -34,15 +34,11 @@ void ClearLogo::Draw()
 {
 	DrawGraph(transform_.position_.x, transform_.position_.y, hImage_, true);
 
-	/*if (output_) {
-		OutText* tt = GetParent()->FindGameObject<OutText>();
-		tt->DrawString("Return key to title", 350, 300);
-	}*/
-
 	if (output_) {
 		OutText* tt = GetParent()->FindGameObject<OutText>();
-		tt->DrawString("Write Down « Your Name", 320, 300);
+		tt->DrawString("Return StartKey to title", 200, 500);
 	}
+
 }
 
 void ClearLogo::Release()

@@ -5,6 +5,7 @@
 class ClearScene : public GameObject
 {
 	int hImage_;
+	XINPUT_STATE pad;
 
 public:
 	//コンストラクタ

@@ -2,7 +2,7 @@
 #include "ScoreAndTimeAndMap.h"
 
 namespace {
-	const int TIMETOSCORE{ 10 };
+	const int TIMETOSCORE{ 5 };
 	const XMFLOAT3 ORIGINPOS{ 500,200,0 };
 	int spaceNum = 0;
 	const float MOVETIME{ 1.0f };
@@ -108,6 +108,9 @@ void ResultUI::Draw()
 	text_->DrawString(timeStr, transform_.position_.x - 100, transform_.position_.y + 200, true);
 
 	text_->DrawString("ranking",transform_.position_.x+1500, transform_.position_.y, true);
+
+	if(isrank_)
+		text_->DrawString("Write Down « Your Name", 200, 300);
 }
 
 void ResultUI::Release()
