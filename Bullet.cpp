@@ -2,10 +2,6 @@
 #include "Player.h"
 #include "Camera.h"
 
-namespace {
-	const VECTOR LUPOINT{ 8,8 };
-}
-
 Bullet::Bullet(GameObject* parent)
 	:Object(parent, "Bullet")
 {
@@ -24,6 +20,9 @@ Bullet::Bullet(GameObject* parent)
 
 Bullet::~Bullet()
 {
+	if (hitobj_ != nullptr)
+		delete hitobj_;
+	hitobj_ = nullptr;
 }
 
 void Bullet::Initialize()
@@ -50,6 +49,7 @@ void Bullet::Set(int _dir, int _type, XMFLOAT3 pos,float range, std::string Name
 	{
 	case FIRE:
 		fileName_ = "fire";
+		lupoint_ = { 8,8 };
 		break;
 	default:
 		break;
@@ -57,7 +57,7 @@ void Bullet::Set(int _dir, int _type, XMFLOAT3 pos,float range, std::string Name
 	fileName_ = "Assets\\Image\\Enemy\\" + fileName_ + ".png";
 	hImage_ = LoadGraph(fileName_.c_str());
 	assert(hImage_ > 0);
-	hitobj_ = new HitObject(LUPOINT, bulletHitBoxSize_, this);
+	hitobj_ = new HitObject(lupoint_, bulletHitBoxSize_, this);
 }
 
 void Bullet::Reset()
@@ -116,8 +116,9 @@ void Bullet::Draw()
 	}
 
 	DrawRectGraph(xpos , ypos , animframe_ * bulletSize_.x, 0, bulletSize_.x, bulletSize_.y, hImage_, true, (dir_ * -1) - 1);
-	DrawBox(xpos, ypos, xpos + bulletSize_.x, ypos + bulletSize_.y, GetColor(255, 255, 255), false);
-	DrawBox(xpos+LUPOINT.x, ypos+LUPOINT.x, xpos+LUPOINT.x + bulletHitBoxSize_.x, ypos+LUPOINT.y + bulletHitBoxSize_.y, GetColor(255, 0, 0), false);
+
+	//DrawBox(xpos, ypos, xpos + bulletSize_.x, ypos + bulletSize_.y, GetColor(255, 255, 255), false);
+	//DrawBox(xpos+lupoint_.x, ypos+lupoint_.x, xpos+lupoint_.x + bulletHitBoxSize_.x, ypos+lupoint_.y + bulletHitBoxSize_.y, GetColor(255, 0, 0), false);
 }
 
 void Bullet::Release()
@@ -134,7 +135,7 @@ SIZE Bullet::GetSize()
 Transform Bullet::GetHitTrans()
 {
 	Transform trans;
-	trans.position_ = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
+	trans.position_ = { transform_.position_.x + lupoint_.x,transform_.position_.y + lupoint_.y,transform_.position_.z };
 	return trans;
 }
 

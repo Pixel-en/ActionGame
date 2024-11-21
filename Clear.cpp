@@ -44,7 +44,6 @@ void Clear::Update()
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
-	std::list<Explosion*> ex = GetParent()->FindGameObjects<Explosion>();
 
 	if (!isgoal_&&p!=nullptr) {
 		for (CheckPoint* che : ch) {

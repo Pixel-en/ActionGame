@@ -6,7 +6,7 @@ class PlayGUI final :public GameObject
 {
 	int hImage_;
 	int hImageUI_;
-
+	int hImageHeart_;
 	int hImagekey_;
 
 	std::string text;
@@ -31,6 +31,8 @@ class PlayGUI final :public GameObject
 	int playtimer_;
 
 	float starttimer_;
+
+	int pHP_;
 public:
 
 	//コンストラクタ

@@ -19,7 +19,7 @@ namespace {
 
 
 Field::Field(GameObject* parent)
-	:GameObject(parent, "Field"), hImage_(-1), Map(nullptr), filename("alphamap.csv")
+	:GameObject(parent, "Field"), hImage_(-1), Map(nullptr), filename("text.csv")
 {
 }
 
@@ -44,7 +44,6 @@ void Field::Reset()
 	Map = new int[height * width];
 
 	Clear* c = GetParent()->FindGameObject<Clear>();
-	//c->Reset();
 
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
@@ -76,7 +75,7 @@ void Field::Reset()
 					break;
 			case ITEM: {
 
-				c->AddMcount();
+				/*c->AddMcount();*/
 				Material* m = Instantiate<Material>(GetParent());
 				m->SetPosition(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2, 0);
 				m->Reset();
@@ -185,6 +184,7 @@ void Field::Release()
 {
 	if (Map != nullptr)
 		delete Map;
+	Map = nullptr;
 }
 
 int Field::CollisionDownCheck(int x, int y)
@@ -225,16 +225,22 @@ bool Field::CollisionObjectCheck(int x, int y)
 	return false;
 }
 
+int Field::CollisionObjectCheckNumber(int x, int y)
+{
+	if (WhatBlock(x, y) == "Tutorial")
+		return ChipNum(x, y);
+	return -1;
+}
+
 std::string Field::WhatBlock(int x, int y)
 {
-	int chipX = x / IMAGESIZE;	//キャラクターとマップのサイズを合わせるため
-	int chipY = y / IMAGESIZE;
+
 
 	if (Map != nullptr) {
 
 
 		//壁or床など
-		switch (Map[chipY * width + chipX])
+		switch (ChipNum(x,y))
 		{
 		case 0:
 		case 1:
@@ -305,10 +311,30 @@ std::string Field::WhatBlock(int x, int y)
 			break;
 		case 106:
 			return "Item";
+
+		case 300:
+		case 301:
+		case 302:
+		case 303:
+		case 304:
+		case 305:
+		case 306:
+		case 307:
+		case 308:
+		case 309:
+			return "Tutorial";
 		default:
 			break;
 		}
 	}
 
 	return "";
+}
+
+int Field::ChipNum(int x,int y)
+{
+	int chipX = x / IMAGESIZE;	//キャラクターとマップのサイズを合わせるため
+	int chipY = y / IMAGESIZE;
+
+	return Map[chipY * width + chipX];
 }

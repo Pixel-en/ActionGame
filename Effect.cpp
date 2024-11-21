@@ -137,7 +137,7 @@ void Effect::Draw()
 	}
 
 	DrawRectGraph(xpos, ypos, animframe_ * imagesize_.x, 0, imagesize_.x, imagesize_.y, hImage_, true, isRight_);
-	DrawBox(xpos, ypos, xpos + imagesize_.x, ypos + imagesize_.y, GetColor(0, 255, 255), false);
+	//DrawBox(xpos, ypos, xpos + imagesize_.x, ypos + imagesize_.y, GetColor(0, 255, 255), false);
 	//DrawCircle(xpos, ypos, 3, GetColor(255, 255, 255), true);
 }
 

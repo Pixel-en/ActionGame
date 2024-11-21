@@ -72,6 +72,8 @@ void Player::LoadParameter()
 	for (int i = 0; i < 5; i++)
 		rechargetimer_[i] = -1.0f;
 
+	HP_ = ParamCorre_[param_.hp_].hp_;
+
 }
 
 Player::Player(GameObject* parent)
@@ -123,6 +125,9 @@ void Player::Update()
 	//重力
 	Gaccel_ += GRAVITY;
 	transform_.position_.y += Gaccel_;
+	if (transform_.position_.y > 1050)
+		anim_.animtype_ = RESET;
+
 	//地面との当たり判定
 	if (hitobject_->DownCollisionCheck()) {
 		Gaccel_ = 0;
@@ -130,15 +135,23 @@ void Player::Update()
 	}
 
 	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
-
-	if (anim_.animtype_ < Animation::DAMAGE&&pc->isStart()) {
-		anim_.animtype_ = Animation::IDOL;
-		MoveControl();
+	if (pc != nullptr) {
+		if (anim_.animtype_ < Animation::DAMAGE && pc->isStart()) {
+			anim_.animtype_ = Animation::IDOL;
+			MoveControl();
+		}
+	}
+	else {
+		if (anim_.animtype_ < Animation::DAMAGE ) {
+			anim_.animtype_ = Animation::IDOL;
+			MoveControl();
+		}
 	}
 
 	AnimStatus();
 
 	CameraScroll();
+
 	
 }
 
@@ -164,12 +177,13 @@ void Player::Draw()
 	else {
 		DrawRectGraph(xpos, ypos, anim_.animframe_ * IMAGESIZE.x, anim_.animtype_ * IMAGESIZE.y, IMAGESIZE.x, IMAGESIZE.y, hImage_, true, true);
 	}
-	hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
-	DrawCircle(xpos, ypos, 5, GetColor(255, 255, 255), true);
-	DrawCircle(xpos+RUPOINT.x/2.0f, ypos + RUPOINT.y, 5, GetColor(255, 0, 255), true);
 
-	PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
-	DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
+	//hitobject_->DrawHitBox({ (float)xpos,(float)ypos, 0 });
+	//DrawCircle(xpos, ypos, 5, GetColor(255, 255, 255), true);
+	//DrawCircle(xpos+RUPOINT.x/2.0f, ypos + RUPOINT.y, 5, GetColor(255, 0, 255), true);
+
+	//PlayerAttackHitCheck(transform_.position_, HITBOXSIZE);
+	//DrawCircle(xpos + LDPOINT.x, ypos + LDPOINT.y, 5, GetColor(0, 255, 255), true);
 
 }
 
@@ -237,7 +251,7 @@ void Player::MoveControl()
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT))||pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT))||pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]||pad.LeftTrigger>=150) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -253,7 +267,7 @@ void Player::MoveControl()
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) || pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) || pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER] || pad.LeftTrigger >= 150) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -286,7 +300,7 @@ void Player::MoveControl()
 			Field* f = GetParent()->FindGameObject<Field>();
 			if (f->CollisionObjectCheck(transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y)) {
 				anim_.animtype_ = Animation::CLIMB;
-				transform_.position_.y = -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
+				transform_.position_.y += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
 				//isjamp_ = true;
 				Gaccel_ = 0;
 			}
@@ -593,6 +607,9 @@ void Player::AttackAnim()
 		
 		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4) {
 			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
+			if (Damege <= 0)
+				Damege = 1;
+
 			if (anim_.animframe_ == 2 && anim_.animframecount_ == 1) {
 				if (anim_.Rdir_)
 					trans.position_ = { trans.position_.x + EFFECTATTACK.x,trans.position_.y + EFFECTATTACK.y ,trans.position_.z + EFFECTATTACK.z };
@@ -670,14 +687,12 @@ XMFLOAT3 Player::GetHitBoxCenterPosition()
 
 void Player::HitDamage(VECTOR _dir)
 {
-
-	static int HP = ParamCorre_[param_.hp_].hp_;
 	//ダメージを受けていたり死んでいないとき
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
-		HP--;
-		if (HP < 0) {
+		HP_--;
+		if (HP_ < 0) {
 			anim_.animtype_ = Animation::DEATH;
-			HP = ParamCorre_[param_.hp_].hp_;
+			HP_ = ParamCorre_[param_.hp_].hp_;
 		}
 		else {
 			anim_.animtype_ = Animation::DAMAGE;
@@ -746,4 +761,9 @@ bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 	bool set = hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
 
 	return set;
+}
+
+XMFLOAT3 Player::GetObjectCheckPos()
+{
+	return { transform_.position_.x + PCENTER.x, transform_.position_.y + LDPOINT.y,0 };
 }

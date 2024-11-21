@@ -1,6 +1,5 @@
 #include "RankingsSystem.h"
 #include"Engine/CsvReader.h"
-#include"CleraLogo.h"
 #include"OutText.h"
 
 namespace
@@ -59,7 +58,7 @@ namespace
 
 
 RankingsSystem::RankingsSystem(GameObject* parent)
-	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), cLogo(nullptr), tText(nullptr), InputHandle(0),SetEnd(false),Name(),
+	: GameObject(parent, "RankingsSystem"), width(0), height(0), csv(nullptr), output_(false), tText(nullptr), InputHandle(0),SetEnd(false),Name(),
 	eraseAlpha(0),eraseTime(0),eraseTimer(0),flame(0),x1(0),y1(0),x2(0),y2(0),space(0),word(0),count(0),a(0),n(0),MaxWord(0)
 {
 }
@@ -76,10 +75,9 @@ void RankingsSystem::Initialize()
 	width = csv->GetColumns(0);
 	height = csv->GetLines();
 
-	SetEnd = false;
+	tText = Instantiate<OutText>(GetParent());
 
-	cLogo = Instantiate<ClearLogo>(this);
-	tText = Instantiate<OutText>(this);
+	SetEnd = false;
 
 	eraseTime = 1.2f;
 	eraseTimer = 0.0f;
@@ -141,7 +139,7 @@ void RankingsSystem::Update()
 {
 	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
 
-	if (cLogo->GetOutput()) {
+	if (output_) {
 		switch (nowDevice)
 		{
 		case KEY_AND_MOUSE:
@@ -179,7 +177,7 @@ void RankingsSystem::Update()
 
 void RankingsSystem::Draw()
 {
-	if (cLogo->GetOutput()) {
+	if (output_) {
 		switch (nowDevice)
 		{
 		case KEY_AND_MOUSE:
@@ -499,12 +497,16 @@ void RankingsSystem::DrawWriteUICn()
 							NetUDPHandle = MakeUDPSocket(-1);
 							IpAddr.d1 = 192;
 							IpAddr.d2 = 168;
-							IpAddr.d3 = 56;
-							IpAddr.d4 = 1;
+							/*IpAddr.d3 = 56;
+							IpAddr.d4 = 1;*/
+							IpAddr.d3 = 1;
+							IpAddr.d4 = 4;
 
 							
 							//ï∂éöóÒëóêM
 							///*NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,strl.c_str(),strl.size());*/
+
+							//192.168.1.4
 
 							IPDATA IPAddress[1];
 							int IPNum;
@@ -610,3 +612,5 @@ void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float 
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
+
+

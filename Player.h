@@ -104,6 +104,8 @@ private:
 
 	XINPUT_STATE pad;
 
+	int HP_;
+
 	/*----------関数----------*/
 
 	/// <summary>
@@ -207,5 +209,14 @@ public:
 	bool PlayerAttackHitCheck(XMFLOAT3 _trans,VECTOR _hitbox);
 
 	int GetDamege() { return Damege; };
+
+	int GetHp() { return HP_; };
+
+	XMFLOAT3 GetObjectCheckPos();
+
+	/// <summary>
+	/// デバッグなどで使う完全無敵
+	/// </summary>
+	void Invincible() { invincible_ = true; };
 };
 

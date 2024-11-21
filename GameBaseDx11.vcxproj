@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.2\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;$(IncludePath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(IncludePath);D:\230641\チーム製作\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用</IncludePath>
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.2\lib\vs2019\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\lib\vs2017\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\lib\vs2017\x64\debug;$(LibraryPath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(LibraryPath);D:\230641\チーム製作\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用</LibraryPath>
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.2\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;$(IncludePath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(IncludePath);D:\230641\チーム製作\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用;C:\プログラムファイル\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用</IncludePath>
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.2\lib\vs2019\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\lib\vs2017\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\lib\vs2017\x64\debug;$(LibraryPath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(LibraryPath);D:\230641\チーム製作\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用;C:\プログラムファイル\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.0\include;$(IncludePath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(IncludePath);D:\230641\チーム製作\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用</IncludePath>
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\lib\vs2017\x64\release;C:\Program Files\Autodesk\FBX\FBX SDK\2020.0\lib\vs2017\x64\release;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\lib\vs2017\x64\release;$(LibraryPath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(LibraryPath);D:\230641\チーム製作\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用</LibraryPath>
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.0\include;$(IncludePath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(IncludePath);D:\230641\チーム製作\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用;C:\プログラムファイル\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用</IncludePath>
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\lib\vs2017\x64\release;C:\Program Files\Autodesk\FBX\FBX SDK\2020.0\lib\vs2017\x64\release;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\lib\vs2017\x64\release;$(LibraryPath);D:\230641\DxLib_VC\プロジェクトに追加すべきファイル_VC用;$(LibraryPath);D:\230641\チーム製作\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用;C:\プログラムファイル\DxLib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(IncludePath)</IncludePath>
@@ -106,7 +106,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>D:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories);D:\230535\DxLib_VC\プロジェクトに追加すべきファイル_VC用;C:\Users\anber\Desktop\チーム制作\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>D:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalLibraryDirectories);D:\230535\DxLib_VC\プロジェクトに追加すべきファイル_VC用</AdditionalLibraryDirectories>
@@ -138,7 +138,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>;D:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;C:\Users\anber\Desktop\チーム制作\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp14</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -187,6 +187,7 @@
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="PlaySound.cpp" />
     <ClCompile Include="ResultScene.cpp" />
+    <ClCompile Include="ResultUI.cpp" />
     <ClCompile Include="ScoreAndTimeAndMap.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="Slime.cpp" />
@@ -196,7 +197,8 @@
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="OutText.cpp" />
-    <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="TutorialScene.cpp" />
+    <ClCompile Include="TutorialUI.cpp" />
     <ClCompile Include="Zombie.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +248,7 @@
     <ClInclude Include="RankingsSystem.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResultScene.h" />
+    <ClInclude Include="ResultUI.h" />
     <ClInclude Include="ScoreAndTimeAndMap.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Slime.h" />
@@ -254,7 +257,8 @@
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="OutText.h" />
-    <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="TutorialScene.h" />
+    <ClInclude Include="TutorialUI.h" />
     <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <ItemGroup>

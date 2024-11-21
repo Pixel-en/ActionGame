@@ -44,6 +44,8 @@ class Field :public GameObject
 	/// <returns>ブロックの名前</returns>
 	std::string WhatBlock(int x, int y);
 
+	int ChipNum(int x,int y);
+
 public:
 
 	//コンストラクタ
@@ -112,5 +114,13 @@ public:
 	/// <param name="y">y座標</param>
 	/// <returns></returns>
 	bool CollisionObjectCheck(int x, int y);
+
+	/// <summary>
+	/// 当たったオブジェトの番号を返す
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <returns></returns>
+	int CollisionObjectCheckNumber(int x, int y);
 };
 

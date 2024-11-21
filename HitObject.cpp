@@ -46,6 +46,7 @@ HitObject::HitObject(VECTOR _size, GameObject* _obj)
 
 HitObject::~HitObject()
 {
+
 }
 
 bool HitObject::RightCollisionCheck()

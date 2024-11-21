@@ -1,16 +1,15 @@
 #pragma once
 #include "Engine/GameObject.h"
 
-
-class ClearScene : public GameObject
+//テストシーンを管理するクラス
+class TutorialScene : public GameObject
 {
-	int hImage_;
-	XINPUT_STATE pad;
+	float cleartimer_;
 
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	ClearScene(GameObject* parent);
+	TutorialScene(GameObject* parent);
 
 	//初期化
 	void Initialize() override;

@@ -47,14 +47,17 @@ void PlayPreparationState::ParameterReader()
 		param_[HP - 1] = 2;
 		residue_ = 0;
 	}
-
-	delete csv;
+	if(csv!=nullptr)
+		delete csv;
 	csv = nullptr;
 
 	CsvReader* csvtext = new CsvReader("Assets\\Status\\PreparationMessage.csv");
 	for (int i = 0; i < 6; i++) {
 		message_[i] = csvtext->GetString(i, 1);
 	}
+	if(csvtext!=nullptr)
+		delete csvtext;
+	csvtext = nullptr;
 }
 
 void PlayPreparationState::ParameterWrite()
