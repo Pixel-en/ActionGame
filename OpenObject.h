@@ -12,6 +12,7 @@ class OpenObject :
 	int frame;
 	float timer;
 	bool isAnim;
+	bool isAlive;
 public:
 	OpenObject(GameObject* parent);
 

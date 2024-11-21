@@ -7,7 +7,7 @@ namespace Set {
 	const int FRAME_MAX(12);
 	const int SizeX(48);
 	const int SizeY(48);
-	const int Score(10);
+	const int Score(100);
 }
 
 OpenObject::OpenObject(GameObject* parent)
@@ -30,18 +30,22 @@ void OpenObject::Initialize()
 	weight = weight / Set::FRAME_MAX;
 	isAnim = true;
 	isAnim = false;
+	isAlive = true;
 	frame = 0;
 	timer = Set::ANIM_TIME;
 }
 
 void OpenObject::Update()
 {
+	if (!isAlive) {
+		return;
+	}
 	if (isAnim) {
 		if (timer < 0) {
 			frame = (frame + 1) % Set::FRAME_MAX;
 			if (frame == 0) {
 				ScoreAndTimeAndMap::AddScore(Set::Score);
-				KillMe();
+				isAlive = false;
 			}
 			timer = Set::ANIM_TIME;
 		}
@@ -53,6 +57,9 @@ void OpenObject::Update()
 
 void OpenObject::Draw()
 {
+	if (!isAlive) {
+		return;
+	}
 	Camera* cam = GetParent()->FindGameObject<Camera>();
 	int tX = transform_.position_.x - cam->GetValue();
 	int tY = transform_.position_.y - cam->GetValueY();
