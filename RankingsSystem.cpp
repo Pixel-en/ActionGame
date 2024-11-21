@@ -325,7 +325,7 @@ void RankingsSystem::DrawWriteUICn()
 		prevKey = false;
 	}
 	
-	for (int y = 0; y < Y; y++) {
+	/*for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 && N[y][x].Ascii == 0) {
 				
@@ -345,7 +345,7 @@ void RankingsSystem::DrawWriteUICn()
 				
 			}
 		}
-	}
+	}*/
 
 	//˜güŠO‚É‚Í‚Ýo‚³‚È‚¢—p‚Ìˆ—
 	if (cx1 < N[0][0].posX1) { //©
@@ -455,7 +455,7 @@ void RankingsSystem::DrawWriteUICn()
 		}
 	}
 
-	DrawBoxAA(cx1, cy1, cx2,cy2, GetColor(255, 255, 255), FALSE);
+	DrawLine(cx1, cy2, cx2,cy2, GetColor(255, 255, 255), FALSE);
 
 	
 

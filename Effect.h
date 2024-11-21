@@ -8,7 +8,7 @@ class Effect
 public:
 	enum EffectType
 	{
-		KILL, GRASS, JUMP, SLASH, MINE, WALK, RUN, EXPLOSION, END
+		KILL, GRASS, JUMP, SLASH, MINE, WALK, RUN, EXPLOSION, EXTINCTION,HIT, END
 	};
 private:
 

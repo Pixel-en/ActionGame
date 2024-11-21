@@ -4,16 +4,19 @@
 enum BULLET_TYPE
 {
 	FIRE,
+	CHARGE,
+	BOLT
 };
 
 class Bullet
 	: public Object
 {
-	const int BULLET_ANIMATION{ 4 };
+	int bulletAnimFrame_;
+	int animchengeFrame_;
 	//int framecnt_{ 0 };
 
-	VECTOR bulletSize_{ 48,48 };
-	VECTOR bulletHitBoxSize_{ 32,32 };
+	VECTOR bulletSize_;
+	VECTOR bulletHitBoxSize_;
 
 	int dir_;
 	float speed_;

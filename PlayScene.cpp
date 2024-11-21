@@ -32,6 +32,8 @@ void PlayScene::Initialize()
 
 	//おそらくマップリストの読み込み
 
+	Filename_ = ScoreAndTimeAndMap::NextMap();
+
 	Reset();
 
 	
@@ -42,9 +44,7 @@ void PlayScene::Reset()
 	InitGraph();
 	KillAllChildren();
 
-	Filename_ = ScoreAndTimeAndMap::NextMap();
 
-	Clear* c = Instantiate<Clear>(this);
 	Camera* cam = Instantiate<Camera>(this);
 
 	Instantiate<BackGround>(this);
@@ -56,6 +56,7 @@ void PlayScene::Reset()
 	Instantiate<MoveObject>(this);
 
 	Instantiate<Player>(this);
+	Clear* c = Instantiate<Clear>(this);
 
 	f->Reset();
 	c->Reset();
@@ -122,10 +123,7 @@ void PlayScene::UpdatePlay()
 	isstart = true;
 	Clear* c = FindGameObject<Clear>();
 	if (c->GetFlag()) {
-		counttimer_ -= Time::DeltaTime();
-		if (counttimer_ < 0) {
-			state = PlayScene::CLEAR;
-		}
+		state = PlayScene::CLEAR;
 	}
 	else {
 		ScoreAndTimeAndMap::SubTimer(Time::DeltaTime());
@@ -144,14 +142,11 @@ void PlayScene::UpdatePlay()
 
 void PlayScene::UpdateClear()
 {
-	if (ScoreAndTimeAndMap::IsLastMap()) {
-		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_CLEAR);
+	counttimer_ -= Time::DeltaTime();
+	if (counttimer_ < 0) {
+		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
 		return;
 	}
-
-	SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
-	return;
-
 }
 
 void PlayScene::UpdateDeath()

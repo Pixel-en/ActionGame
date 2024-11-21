@@ -57,4 +57,6 @@ public:
 	float GetPlayTimer() { return ScoreAndTimeAndMap::GetTimer(); };
 
 	bool isStart() { return isstart; };
+
+	bool isStateClear() { if (state == CLEAR) return true; return false; };
 };

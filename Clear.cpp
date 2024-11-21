@@ -10,7 +10,7 @@
 #include "PlaySound.h"
 
 Clear::Clear(GameObject* parent)
-	:GameObject(parent,"Clear")
+	:GameObject(parent, "Clear")
 {
 	Reset();
 }
@@ -32,8 +32,8 @@ void Clear::Reset()
 	Mcount_ = 0;
 	Ecount_ = 0;
 	isFlag_ = false;
-	
-	
+
+
 }
 
 void Clear::Update()
@@ -45,7 +45,7 @@ void Clear::Update()
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
 
-	if (!isgoal_&&p!=nullptr) {
+	if (!isgoal_ && p != nullptr) {
 		for (CheckPoint* che : ch) {
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), che->GetPosition(), che->GetHitBox())) {
 				che->AddScore();
@@ -64,18 +64,18 @@ void Clear::Update()
 			assert(false);
 
 		for (Material* M : m) {
-			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),M->GetPosition(),M->GetHitBox() )) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), M->GetPosition(), M->GetHitBox())) {
 				M->Mining(p->GetMiningTime());
 			}
 		}
 
 		for (Enemy* E : e) {
 			//“G‚ÌUŒ‚(ÚG)
-			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetHitTransPos(), E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), E->GetHitTransPos(), E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
 				p->HitDamage({ E->GetCenterTransPos().x,E->GetCenterTransPos().y });
 			}
 			//ƒvƒŒƒCƒ„[‚ÌUŒ‚
-			if (p->PlayerAttackHitCheck(E->GetHitTransPos(),E->GetHitBox())) {
+			if (p->PlayerAttackHitCheck(E->GetHitTransPos(), E->GetHitBox())) {
 				E->HitDamege(p->GetDamege());
 			}
 			if (E->EnemyAttackHitCheck(p->GetHitTrans().position_, p->GetHitBox())) {
@@ -96,6 +96,9 @@ void Clear::Update()
 				if (E->hitobj_->HitObjectANDObject(E->GetHitTransPos(), E->GetHitBox(), B->GetHitTrans().position_, B->GetHitBox())) {
 					if (B->GetTargetName() == "Enemy") {
 						E->HitDamege(B->GetDamege());
+						Effect* e = Instantiate<Effect>(GetParent());
+						e->Reset(B->GetHitTrans(), e->HIT);
+						e->SetEffectObjectName("BHitEffect");
 						B->KillMe();
 					}
 				}
