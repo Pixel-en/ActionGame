@@ -8,6 +8,7 @@ class PlayGUI final :public GameObject
 	int hImageUI_;
 	int hImageHeart_;
 	int hImagekey_;
+	int hImageBonus_;
 
 	std::string text;
 	float x, y;
@@ -33,6 +34,11 @@ class PlayGUI final :public GameObject
 	float starttimer_;
 
 	int pHP_;
+
+	int Bonusalpha_;
+	XMFLOAT3 bonuspos_;
+	bool bonusM;
+	bool bonusE;
 public:
 
 	//コンストラクタ

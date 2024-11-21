@@ -4,11 +4,29 @@
 #include "Material.h"
 #include "Enemy.h"
 #include "Bullet.h"
-#include "Explosion.h"
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
 #include "TestOpenObject.h"
+#include "OutText.h"
+#include "ScoreAndTimeAndMap.h"
+
+namespace {
+	const int MATERIALBONUS{ 100 };
+	const int ENEMYBONUS{ 100 };
+}
+
+void Clear::BonusScore()
+{
+	if (Mcount_ != 0 && isGetM_&&!isBonusMaterial_) {
+		ScoreAndTimeAndMap::AddScore(MATERIALBONUS);
+		isBonusMaterial_ = true;
+	}
+	if (Ecount_ != 0 && isKillE_&&!isBonusEnemy_) {
+		ScoreAndTimeAndMap::AddScore(ENEMYBONUS);
+		isBonusEnemy_ = true;
+	}
+}
 
 Clear::Clear(GameObject* parent)
 	:GameObject(parent, "Clear")
@@ -33,7 +51,8 @@ void Clear::Reset()
 	Mcount_ = 0;
 	Ecount_ = 0;
 	isFlag_ = false;
-
+	isBonusEnemy_ = false;
+	isBonusMaterial_ = false;
 
 }
 
@@ -115,6 +134,12 @@ void Clear::Update()
 	}
 
 	isFlag_ = isgoal_;
+
+	if (m.empty())
+		isGetM_ = true;
+	if (e.empty())
+		isKillE_ = true;
+	BonusScore();
 
 }
 

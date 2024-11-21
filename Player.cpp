@@ -46,9 +46,9 @@ void Player::LoadParameter()
 	param_.hp_ = csv->GetInt(1, CSVPARAM::HP) - 1;
 
 	for (int i = 4; i < 9; i++) {
-		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
-		ParamCorre_[i - 4].technic_ = csv->GetInt(i, CSVPARAM::TECHNIC);
-		ParamCorre_[i - 4].speed_ = csv->GetInt(i, CSVPARAM::SPEED);
+		ParamCorre_[i - 4].strength_ = csv->GetFloat(i, CSVPARAM::STRENGTH);
+		ParamCorre_[i - 4].technic_ = csv->GetFloat(i, CSVPARAM::TECHNIC);
+		ParamCorre_[i - 4].speed_ = csv->GetFloat(i, CSVPARAM::SPEED);
 		ParamCorre_[i - 4].hp_ = csv->GetInt(i, CSVPARAM::HP);
 	}
 

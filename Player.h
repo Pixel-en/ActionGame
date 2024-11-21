@@ -67,7 +67,7 @@ private:
 	struct ParameterCorrection
 	{
 		float strength_;
-		int speed_;		//スピード
+		float speed_;		//スピード
 		int hp_;		//体力
 		float technic_;	//採取
 	};

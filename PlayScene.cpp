@@ -58,8 +58,8 @@ void PlayScene::Reset()
 	Instantiate<Player>(this);
 	Clear* c = Instantiate<Clear>(this);
 
-	f->Reset();
 	c->Reset();
+	f->Reset();
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;
