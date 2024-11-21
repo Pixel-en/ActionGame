@@ -60,12 +60,12 @@ void OpenObject::Draw()
 	DrawRectGraph(tX, tY,
 		weight * frame, 0, weight, hight, hImage_, true);
 
-	DrawBox(tX, tY + height - Set::SizeY,
+	/*DrawBox(tX, tY + height - Set::SizeY,
 		tX + Set::SizeX, tY + height,
 		GetColor(255, 0, 0), false);
 	
 	DrawBox(tX, tY + Set::SizeY,
-		tX+GetHitBox().x, tY+ GetHitBox().y, GetColor(0, 255, 0), false);
+		tX+GetHitBox().x, tY+ GetHitBox().y, GetColor(0, 255, 0), false);*/
 }
 
 void OpenObject::Release()
