@@ -8,6 +8,7 @@
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
+#include "TestOpenObject.h"
 
 Clear::Clear(GameObject* parent)
 	:GameObject(parent,"Clear")
@@ -44,6 +45,7 @@ void Clear::Update()
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
+	std::list<TestOpenObject*> open = GetParent()->FindGameObjects<TestOpenObject>();
 
 	if (!isgoal_&&p!=nullptr) {
 		for (CheckPoint* che : ch) {
@@ -98,6 +100,12 @@ void Clear::Update()
 						E->HitDamege(B->GetDamege());
 						B->KillMe();
 					}
+				}
+			}
+
+			for (TestOpenObject* o : open) {
+				if (p->PlayerAttackHitCheck(o->GetHitTransPos(), o->GetHitBox())) {
+					o->Open();
 				}
 			}
 		}
