@@ -1,14 +1,14 @@
 #pragma once
 #include "Engine\GameObject.h"
-/// <summary>
-/// ù“‡Gr
-/// </summary>
+
+
 class TestOpenObject :
-    public GameObject
+	public GameObject
 {
 	int hImage_;
 	int weight;
 	int hight;
+	int height;
 	int frame;
 	float timer;
 	bool isAnim;
@@ -29,5 +29,7 @@ public:
 
 	//ŠJ•ú
 	void Release() override;
+	XMFLOAT3 GetHitTransPos();
+	VECTOR GetHitBox();
+	void Open();
 };
-
