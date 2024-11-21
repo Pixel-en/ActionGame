@@ -12,6 +12,7 @@
 #include "Clear.h"
 #include "CheckPoint.h"
 #include "MoveObject.h"
+#include "OpenObject.h"
 
 namespace {
 	const int IMAGESIZE{ 48 };	//32*1.5
@@ -97,6 +98,13 @@ void Field::Reset()
 				MoveObject* mo = GetParent()->FindGameObject<MoveObject>();
 				mo->InstantR();
 				mo->SetRpos(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2);
+				break;
+			}
+			case BOX:
+			{
+				OpenObject* open = Instantiate<OpenObject>(GetParent());
+				XMFLOAT3 pos;
+				open->SetPos(j * IMAGESIZE + IMAGESIZE / 2, i * IMAGESIZE + IMAGESIZE / 2);
 				break;
 			}
 			case SLIMEA: {

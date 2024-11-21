@@ -2,7 +2,7 @@
 #include "Engine\GameObject.h"
 
 
-class TestOpenObject :
+class OpenObject :
 	public GameObject
 {
 	int hImage_;
@@ -13,10 +13,10 @@ class TestOpenObject :
 	float timer;
 	bool isAnim;
 public:
-	TestOpenObject(GameObject* parent);
+	OpenObject(GameObject* parent);
 
 	//デストラクタ
-	~TestOpenObject();
+	~OpenObject();
 
 	//初期化
 	void Initialize() override;
@@ -32,4 +32,5 @@ public:
 	XMFLOAT3 GetHitTransPos();
 	VECTOR GetHitBox();
 	void Open();
+	void SetPos(int x,int y);
 };

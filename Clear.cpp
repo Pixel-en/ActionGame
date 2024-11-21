@@ -8,7 +8,7 @@
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
-#include "TestOpenObject.h"
+#include "OpenObject.h"
 
 Clear::Clear(GameObject* parent)
 	:GameObject(parent, "Clear")
@@ -45,8 +45,9 @@ void Clear::Update()
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
-	std::list<TestOpenObject*> open = GetParent()->FindGameObjects<TestOpenObject>();
-
+	std::list<OpenObject*> open = GetParent()->FindGameObjects<OpenObject>();
+	if (open.size() <= 0)
+		exit(0);
 	if (!isgoal_ && p != nullptr) {
 		for (CheckPoint* che : ch) {
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), che->GetPosition(), che->GetHitBox())) {
@@ -64,6 +65,12 @@ void Clear::Update()
 		}
 		else
 			assert(false);
+
+		for (OpenObject* o : open) {
+			if (p->PlayerAttackHitCheck(o->GetHitTransPos(), o->GetHitBox())) {
+				o->Open();
+			}
+		}
 
 		for (Material* M : m) {
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), M->GetPosition(), M->GetHitBox())) {
@@ -103,12 +110,6 @@ void Clear::Update()
 						e->SetEffectObjectName("BHitEffect");
 						B->KillMe();
 					}
-				}
-			}
-
-			for (TestOpenObject* o : open) {
-				if (p->PlayerAttackHitCheck(o->GetHitTransPos(), o->GetHitBox())) {
-					o->Open();
 				}
 			}
 		}
