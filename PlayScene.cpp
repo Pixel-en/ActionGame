@@ -6,7 +6,7 @@
 #include "BackGround.h"
 #include "MoveObject.h"
 #include "PlayGUI.h"
-#include "ScoreAndTime.h"
+#include "ScoreAndTimeAndMap.h"
 
 #include "ImGui/imgui.h"
 #include "Engine/SceneManager.h"
@@ -144,10 +144,10 @@ void PlayScene::UpdatePlay()
 
 void PlayScene::UpdateClear()
 {
-	if (ScoreAndTimeAndMap::IsLastMap()) {
+	//if (ScoreAndTimeAndMap::IsLastMap()) {
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
 		return;
-	}
+	//}
 	Reset();
 
 }
