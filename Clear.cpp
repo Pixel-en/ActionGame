@@ -4,13 +4,32 @@
 #include "Material.h"
 #include "Enemy.h"
 #include "Bullet.h"
-#include "Explosion.h"
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
+#include "TestOpenObject.h"
+#include "OutText.h"
+#include "ScoreAndTimeAndMap.h"
+
+namespace {
+	const int MATERIALBONUS{ 100 };
+	const int ENEMYBONUS{ 100 };
+}
+
+void Clear::BonusScore()
+{
+	if (Mcount_ != 0 && isGetM_&&!isBonusMaterial_) {
+		ScoreAndTimeAndMap::AddScore(MATERIALBONUS);
+		isBonusMaterial_ = true;
+	}
+	if (Ecount_ != 0 && isKillE_&&!isBonusEnemy_) {
+		ScoreAndTimeAndMap::AddScore(ENEMYBONUS);
+		isBonusEnemy_ = true;
+	}
+}
 
 Clear::Clear(GameObject* parent)
-	:GameObject(parent,"Clear")
+	:GameObject(parent, "Clear")
 {
 	Reset();
 }
@@ -32,8 +51,9 @@ void Clear::Reset()
 	Mcount_ = 0;
 	Ecount_ = 0;
 	isFlag_ = false;
-	
-	
+	isBonusEnemy_ = false;
+	isBonusMaterial_ = false;
+
 }
 
 void Clear::Update()
@@ -44,8 +64,10 @@ void Clear::Update()
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
-
-	if (!isgoal_&&p!=nullptr) {
+	std::list<OpenObject*> open = GetParent()->FindGameObjects<OpenObject>();
+	if (open.size() <= 0)
+		exit(0);
+	if (!isgoal_ && p != nullptr) {
 		for (CheckPoint* che : ch) {
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), che->GetPosition(), che->GetHitBox())) {
 				che->AddScore();
@@ -63,19 +85,25 @@ void Clear::Update()
 		else
 			assert(false);
 
+		for (OpenObject* o : open) {
+			if (p->PlayerAttackHitCheck(o->GetHitTransPos(), o->GetHitBox())) {
+				o->Open();
+			}
+		}
+
 		for (Material* M : m) {
-			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),M->GetPosition(),M->GetHitBox() )) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), M->GetPosition(), M->GetHitBox())) {
 				M->Mining(p->GetMiningTime());
 			}
 		}
 
 		for (Enemy* E : e) {
 			//“G‚ÌUŒ‚(ÚG)
-			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_,p->GetHitBox(),E->GetHitTransPos(), E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
+			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), E->GetHitTransPos(), E->GetHitBox()) && !p->IsAnimState(p->DEATH)) {
 				p->HitDamage({ E->GetCenterTransPos().x,E->GetCenterTransPos().y });
 			}
 			//ƒvƒŒƒCƒ„[‚ÌUŒ‚
-			if (p->PlayerAttackHitCheck(E->GetHitTransPos(),E->GetHitBox())) {
+			if (p->PlayerAttackHitCheck(E->GetHitTransPos(), E->GetHitBox())) {
 				E->HitDamege(p->GetDamege());
 			}
 			if (E->EnemyAttackHitCheck(p->GetHitTrans().position_, p->GetHitBox())) {
@@ -96,6 +124,9 @@ void Clear::Update()
 				if (E->hitobj_->HitObjectANDObject(E->GetHitTransPos(), E->GetHitBox(), B->GetHitTrans().position_, B->GetHitBox())) {
 					if (B->GetTargetName() == "Enemy") {
 						E->HitDamege(B->GetDamege());
+						Effect* e = Instantiate<Effect>(GetParent());
+						e->Reset(B->GetHitTrans(), e->HIT);
+						e->SetEffectObjectName("BHitEffect");
 						B->KillMe();
 					}
 				}
@@ -104,6 +135,12 @@ void Clear::Update()
 	}
 
 	isFlag_ = isgoal_;
+
+	if (m.empty())
+		isGetM_ = true;
+	if (e.empty())
+		isKillE_ = true;
+	BonusScore();
 
 }
 

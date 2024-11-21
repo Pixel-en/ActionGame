@@ -75,7 +75,7 @@ void TitleScene::Update()
 					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PREPARATION);
 				}
 				else
-					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
+					SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TUTORIAL);
 			}
 
 		}
@@ -100,5 +100,5 @@ void TitleScene::Draw()
 
 	OutText* tt = FindGameObject<OutText>();
 	tt->DrawStringJ("スタート", xpos + 700, ypos + 500);
-	tt->DrawString("TUTORIAL", xpos + 700, ypos + 550,true);
+	tt->DrawStringJ("チュートリアル", xpos + 700, ypos + 550,true);
 }

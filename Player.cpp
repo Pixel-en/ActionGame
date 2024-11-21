@@ -46,9 +46,9 @@ void Player::LoadParameter()
 	param_.hp_ = csv->GetInt(1, CSVPARAM::HP) - 1;
 
 	for (int i = 4; i < 9; i++) {
-		ParamCorre_[i - 4].strength_ = csv->GetInt(i, CSVPARAM::STRENGTH);
-		ParamCorre_[i - 4].technic_ = csv->GetInt(i, CSVPARAM::TECHNIC);
-		ParamCorre_[i - 4].speed_ = csv->GetInt(i, CSVPARAM::SPEED);
+		ParamCorre_[i - 4].strength_ = csv->GetFloat(i, CSVPARAM::STRENGTH);
+		ParamCorre_[i - 4].technic_ = csv->GetFloat(i, CSVPARAM::TECHNIC);
+		ParamCorre_[i - 4].speed_ = csv->GetFloat(i, CSVPARAM::SPEED);
 		ParamCorre_[i - 4].hp_ = csv->GetInt(i, CSVPARAM::HP);
 	}
 
@@ -122,11 +122,20 @@ void Player::Update()
 {
 	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
 
+
+	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
+
 	//d—Í
 	Gaccel_ += GRAVITY;
 	transform_.position_.y += Gaccel_;
-	if (transform_.position_.y > 1050)
-		anim_.animtype_ = RESET;
+	if (pc != nullptr) {
+		if (transform_.position_.y > 1050&&!pc->isStateClear())
+			anim_.animtype_ = RESET;
+	}
+	else {
+		if (transform_.position_.y > 1050)
+			anim_.animtype_ = RESET;
+	}
 
 	//’n–Ê‚Æ‚Ì“–‚½‚è”»’è
 	if (hitobject_->DownCollisionCheck()) {
@@ -134,7 +143,6 @@ void Player::Update()
 		isjump_ = false;
 	}
 
-	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
 	if (pc != nullptr) {
 		if (anim_.animtype_ < Animation::DAMAGE && pc->isStart()) {
 			anim_.animtype_ = Animation::IDOL;
@@ -334,9 +342,9 @@ bool Player::ActionControl()
 					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
 					anim_.animframecount_ = 0;
 					if (anim_.Rdir_)
-						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+						b->Set(1, BULLET_TYPE::BOLT, bpos, attack_[Atype_].range_, "Enemy");
 					else
-						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+						b->Set(-1, BULLET_TYPE::BOLT, bpos, attack_[Atype_].range_, "Enemy");
 					Damege = -1;
 				}
 				attackbuttondown = true;
@@ -351,9 +359,9 @@ bool Player::ActionControl()
 					b->SetDamege(attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_);
 					anim_.animframecount_ = 0;
 					if (anim_.Rdir_)
-						b->Set(1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+						b->Set(1, BULLET_TYPE::CHARGE, bpos, attack_[Atype_].range_, "Enemy");
 					else
-						b->Set(-1, BULLET_TYPE::FIRE, bpos, attack_[Atype_].range_, "Enemy");
+						b->Set(-1, BULLET_TYPE::CHARGE, bpos, attack_[Atype_].range_, "Enemy");
 					Damege = -1;
 				}
 				attackbuttondown = true;

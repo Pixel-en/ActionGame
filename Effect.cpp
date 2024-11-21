@@ -86,6 +86,23 @@ void Effect::Reset(Transform pos, EffectType _effecttype, bool _isRight)
 		AFmax_ = 4;
 		imagesize_ = { 160,160 };
 		objectName_ = "RunEffect";
+		break;
+	case EXTINCTION:	//–¶ŽU‚µ‚½‚Æ‚«
+		fileName_ = "Assets\\Image\\Effect\\Hit1.png";
+		canLoop_ = false;
+		FCmax_ = 10;
+		AFmax_ = 5;
+		imagesize_ = { 32,32 };
+		objectName_ = "ExtinctionEffect";
+		break;
+	case HIT:	//“–‚½‚Á‚½Žž
+		fileName_ = "Assets\\Image\\Effect\\Hit2.png";
+		canLoop_ = false;
+		FCmax_ = 10;
+		AFmax_ = 7;
+		imagesize_ = { 32,32 };
+		objectName_ = "HitEffect";
+		break;
 	default:
 		break;
 	}

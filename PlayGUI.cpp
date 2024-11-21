@@ -39,6 +39,8 @@ void PlayGUI::Initialize()
 	assert(hImageUI_ > 0);
 	hImageHeart_ = LoadGraph("Assets\\Image\\UI_ICON.png");
 	assert(hImageHeart_ > 0);
+	hImageBonus_ = LoadGraph("Assets\\Image\\Bonus.png");
+	assert(hImageBonus_ > 0);
 
 	int x, y;
 
@@ -60,6 +62,9 @@ void PlayGUI::Initialize()
 	Instantiate<OutText>(GetParent());
 	starttimer_ = STARTTIMER;
 
+	Bonusalpha_ = 0;
+	bonusE = true;
+	bonusM = true;
 }
 
 void PlayGUI::Update()
@@ -71,11 +76,30 @@ void PlayGUI::Update()
 		starttimer_ -= Time::DeltaTime();
 	}
 
+	if (Bonusalpha_ > -1) {
+		Bonusalpha_-=5;
+		bonuspos_.y -= 100 * Time::DeltaTime();
+	}
+
+	Player* p = GetParent()->FindGameObject<Player>();
+	Clear* c = GetParent()->FindGameObject<Clear>();
+	if (c->GetBonusEnemy()&&bonusE) {
+		Bonusalpha_ = 255;
+		c->DeleteEnemy();
+		bonuspos_ = p->GetPosition();
+		bonusE = false;
+	}
+	if (c->GetBonusMaterial() && bonusM){
+		Bonusalpha_ = 255;
+		c->DeleteMaterial();
+		bonuspos_ = p->GetPosition();
+		bonusM = false;
+	}
+
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	Enum = e.size();
 	Mnum = m.size();
-	Player* p = GetParent()->FindGameObject<Player>();
 	if (p == nullptr)
 		return;
 	
@@ -164,6 +188,14 @@ void PlayGUI::Draw()
 
 	this->DrawString("Score", 905, 20);
 	this->DrawString(std::to_string(ScoreAndTimeAndMap::GetScore()), 905, 60);
+
+	Camera* cam = GetParent()->FindGameObject<Camera>();
+
+	if (Bonusalpha_>0) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA,Bonusalpha_);
+		DrawGraph(bonuspos_.x-cam->GetValue(), bonuspos_.y-cam->GetValueY(), hImageBonus_, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, Bonusalpha_);
+	}
 }
 
 void PlayGUI::Release()

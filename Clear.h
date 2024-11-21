@@ -13,7 +13,10 @@ class Clear :public GameObject
 
 	bool isFlag_;	//次のステージに移動していいか
 
-	
+	bool isBonusEnemy_;
+	bool isBonusMaterial_;
+
+	void BonusScore();
 public:
 
 	bool GetFlag() { return isFlag_; };
@@ -41,5 +44,10 @@ public:
 
 	void AddMcount() { Mcount_ += 1; };
 	void AddEcount() { Ecount_ += 1; };
+
+	void DeleteMaterial() { Mcount_ = -1; }
+	void DeleteEnemy() { Ecount_ = -1; }
+	bool GetBonusEnemy() { return isBonusEnemy_; };
+	bool GetBonusMaterial() { return isBonusMaterial_; };
 };
 

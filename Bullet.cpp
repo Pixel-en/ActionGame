@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Effect.h"
 
 Bullet::Bullet(GameObject* parent)
 	:Object(parent, "Bullet")
@@ -50,6 +51,26 @@ void Bullet::Set(int _dir, int _type, XMFLOAT3 pos,float range, std::string Name
 	case FIRE:
 		fileName_ = "fire";
 		lupoint_ = { 8,8 };
+		bulletAnimFrame_ = 4;
+		bulletSize_ = { 48,48 };
+		bulletHitBoxSize_ = { 32,32 };
+		animchengeFrame_ = 15;
+		break;
+	case CHARGE:
+		fileName_ = "Charged";
+		bulletAnimFrame_ = 6;
+		lupoint_ = { 5,5 };
+		bulletSize_ = { 63,48 };
+		bulletHitBoxSize_ = {56,38};
+		animchengeFrame_ = 10;
+		break;
+	case BOLT:
+		fileName_ = "Pulse";
+		bulletAnimFrame_ = 4;
+		lupoint_ = { 5,5 };
+		bulletSize_ = { 63,32 };
+		bulletHitBoxSize_ = { 56,22 };
+		animchengeFrame_ = 10;
 		break;
 	default:
 		break;
@@ -79,23 +100,65 @@ void Bullet::Update()
 	//}
 
 	//transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
+	
 
-
-
+	Effect* e;
 	transform_.position_.x += speed_ * Time::DeltaTime() * dir_;
-	if (fabs(originpos_.x - transform_.position_.x) >= range_)
+	if (fabs(originpos_.x - transform_.position_.x) >= range_) {
+		e = Instantiate<Effect>(GetParent());
+		if (bulletType_ != FIRE) {
+			if (dir_ == -1) {
+				e->Reset(transform_, e->EXTINCTION);
+				e->SetEffectObjectName("BExplosionEffect");
+			}
+			else {
+				Transform trans;
+				trans.position_ = { transform_.position_.x + bulletSize_.x / 2,transform_.position_.y,transform_.position_.z };
+				e->Reset(trans, e->EXTINCTION);
+				e->SetEffectObjectName("BExplosionEffect");
+			}
+		}
 		KillMe();
+	}
 
-	if (hitobj_->LeftCollisionCheck())
-		KillMe();
-	if (hitobj_->RightCollisionCheck())
-		KillMe();
 
-	if (framecnt_ >= 20)
+	if (hitobj_->LeftCollisionCheck()) {
+		e = Instantiate<Effect>(GetParent());
+		if (bulletType_ != FIRE) {
+			if (dir_ == -1) {
+				e->Reset(transform_, e->EXTINCTION);
+				e->SetEffectObjectName("BExplosionEffect");
+			}
+			else {
+				Transform trans;
+				trans.position_ = { transform_.position_.x + bulletSize_.x / 2,transform_.position_.y,transform_.position_.z };
+				e->Reset(trans, e->EXTINCTION);
+				e->SetEffectObjectName("BExplosionEffect");
+			}
+		}
+		KillMe();
+	}
+	if (hitobj_->RightCollisionCheck()) {
+		e = Instantiate<Effect>(GetParent());
+		if (bulletType_ != FIRE) {
+			if (dir_ == -1) {
+				e->Reset(transform_, e->EXTINCTION);
+				e->SetEffectObjectName("BExplosionEffect");
+			}
+			else {
+				Transform trans;
+				trans.position_ = { transform_.position_.x + bulletSize_.x / 2,transform_.position_.y,transform_.position_.z };
+				e->Reset(trans, e->EXTINCTION);
+				e->SetEffectObjectName("BExplosionEffect");
+			}
+		}
+		KillMe();
+	}
+	if (framecnt_ >= animchengeFrame_)
 	{
 		framecnt_ = 0;
 		animframe_++;
-		if (animframe_ >= BULLET_ANIMATION)
+		if (animframe_ >= bulletAnimFrame_)
 		{
 			animframe_ = 0;
 		}

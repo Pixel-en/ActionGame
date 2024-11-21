@@ -13,6 +13,7 @@ class Field :public GameObject
 		RIFT_L = 107,//リフト右
 		RIFT_C = 108,//リフト中
 		RIFT_R = 109,//リフト左
+		BOX = 110,//箱のオブジェクト
 
 		SLIMEA = 201,
 		SLIMEB,

@@ -424,7 +424,7 @@ void RankingsSystem::DrawWriteUICn()
 		}
 	}
 
-	DrawBoxAA(cx1, cy1, cx2,cy2, GetColor(255, 255, 255), FALSE);
+	DrawLine(cx1, cy2, cx2,cy2, GetColor(255, 255, 255), FALSE);
 
 	
 
@@ -459,6 +459,7 @@ void RankingsSystem::DrawWriteUICn()
 								str.insert(nowMojiCount,cAscii_ToString);
 								
 							}
+							//Œˆ’è
 						}else if (cAscii == 50) {
 							/*std::string strl(str);*/
 							
@@ -582,8 +583,6 @@ void RankingsSystem::DrawWriteUICn()
 	DrawBoxAA(430, 380, (x1 + 25) + MaxWord * word + (MaxWord - 1) * space, 450, GetColor(255, 255, 255), FALSE); //“ü—Í˜gü
 	tText->DrawString(str,450,400);
 }
-
-
 
 void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime)
 {

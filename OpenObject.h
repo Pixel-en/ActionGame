@@ -1,22 +1,23 @@
 #pragma once
 #include "Engine\GameObject.h"
-/// <summary>
-/// 笹島秀俊
-/// </summary>
-class TestOpenObject :
-    public GameObject
+
+
+class OpenObject :
+	public GameObject
 {
 	int hImage_;
 	int weight;
 	int hight;
+	int height;
 	int frame;
 	float timer;
 	bool isAnim;
+	bool isAlive;
 public:
-	TestOpenObject(GameObject* parent);
+	OpenObject(GameObject* parent);
 
 	//デストラクタ
-	~TestOpenObject();
+	~OpenObject();
 
 	//初期化
 	void Initialize() override;
@@ -29,5 +30,8 @@ public:
 
 	//開放
 	void Release() override;
+	XMFLOAT3 GetHitTransPos();
+	VECTOR GetHitBox();
+	void Open();
+	void SetPos(int x,int y);
 };
-
