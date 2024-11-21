@@ -294,27 +294,6 @@ void RankingsSystem::DrawWriteUICn()
 		prevKey = false;
 	}
 	
-	/*for (int y = 0; y < Y; y++) {
-		for (int x = 0; x < X; x++) {
-			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 && N[y][x].Ascii == 0) {
-				
-				if (cx2 > prevX2) {
-					cx2 = cx2 + 35;
-					cx1 = cx1 + 35;
-				}
-				else
-				if (cy2 > prevY2) {
-					cy2 = cy2 - 35;
-					cy1 = cy2 - 35;
-				}else
-				if (cx2 < prevX2) {
-					cx2 = cx2 - 35;
-					cx1 = cx2 - 35;
-				}
-				
-			}
-		}
-	}*/
 
 	//˜güŠO‚É‚Í‚Ýo‚³‚È‚¢—p‚Ìˆ—
 	if (cx1 < N[0][0].posX1) { //©
@@ -540,6 +519,8 @@ void RankingsSystem::DrawWriteUICn()
 
 							/*SetRankings(strl, 2345);*/
 
+							//‚±‚Á‚©‚ç
+
 						}
 						else {
 							if (nowMojiCount == MaxWord -1){
@@ -634,6 +615,10 @@ void RankingsSystem::RecvDataInsert(std::vector<std::string> n,std::vector<float
 		ofs_csv_file << std::endl;
 	}*/
 	ofs_csv_file.close();
+}
+
+void RankingsSystem::DrawRanking()
+{
 }
 
 

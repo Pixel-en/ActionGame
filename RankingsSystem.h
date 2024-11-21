@@ -90,7 +90,12 @@ private:
 
 	XINPUT_STATE pad;
 
+
+
+
 	//•\Ž¦ŠJŽn‚µ‚Ä‚¢‚¢‚©
 	bool output_;
+
+	void DrawRanking();
 };
 

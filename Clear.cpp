@@ -7,7 +7,7 @@
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
-#include "TestOpenObject.h"
+#include "OpenObject.h"
 #include "OutText.h"
 #include "ScoreAndTimeAndMap.h"
 
