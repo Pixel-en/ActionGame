@@ -1,12 +1,16 @@
 #include "RankingsSystem.h"
 #include"Engine/CsvReader.h"
 #include"OutText.h"
+#include"ScoreAndTimeAndMap.h"
+#include <unordered_map>
 
 namespace
 {
 	IPDATA IpAddr;
 	int NetUDPHandle;
 	const unsigned short SERVER_PORT = 8888;
+	const unsigned short CLIENT_PORT = 8080;
+
 	int RecvSize, TotalRecvSize;
 
 	BYTE Data[500];
@@ -69,9 +73,8 @@ RankingsSystem::~RankingsSystem()
 
 void RankingsSystem::Initialize()
 {
-	output_csv_file_path_ScoreData = "Assets\\Rankings\\RankingsSystem.csv";
-	output_csv_file_path_SortData = "Assets\\Rankings\\RankingsSystemClearSort.csv";
-	csv = new CsvReader(output_csv_file_path_ScoreData);
+	output_csv_file_path_RecvRankingsSortData = "Assets\\Rankings\\RecvRankingsSortData.csv";
+	csv = new CsvReader(output_csv_file_path_RecvRankingsSortData);
 	width = csv->GetColumns(0);
 	height = csv->GetLines();
 
@@ -147,10 +150,10 @@ void RankingsSystem::Update()
 			// 入力が終了している場合は終了
 			if (CheckKeyInput(InputHandle) != 0) {
 				if (!SetEnd) {
-					SetRankings(Name, 500);
+					///*SetRankings(Name, 500);*/
 
 					SetEnd = true;
-					SortScore();
+					/*SortScore();*/
 				}
 			}
 			// 作成したキー入力ハンドルをアクティブにする
@@ -199,40 +202,6 @@ void RankingsSystem::Draw()
 
 void RankingsSystem::Release()
 {
-}
-
-void RankingsSystem::SetRankings(std::string _Pname, float _Pscore)
-{
-	std::ofstream ofs_csv_file(output_csv_file_path_ScoreData, std::ios::app);
-	ofs_csv_file << _Pname << "," << _Pscore;
-	ofs_csv_file << std::endl;
-	ofs_csv_file.close();
-}
-
-void RankingsSystem::SortScore()
-{
-	csv = new CsvReader(output_csv_file_path_ScoreData);
-	height = csv->GetLines();
-	if (height > 1) {
-		for (int h = 1; h < height; h++) {
-			Rankings.insert(std::pair<std::string, float>(csv->GetString(h, 0), csv->GetFloat(h, 1)));
-		}
-
-		for (std::map<std::string, float>::iterator it = Rankings.begin(); it != Rankings.end(); it++) {
-			r.push_back({ it->second, it->first });
-		}
-
-		sort(r.rbegin(), r.rend());
-	}
-
-	std::ofstream ofs_csv_file(output_csv_file_path_SortData);
-	ofs_csv_file << "PlayerName" << "," << "PlayerScore";
-	ofs_csv_file << std::endl;
-	for (auto itr = r.begin(); itr != r.end(); ++itr) {
-		ofs_csv_file << itr->second << "," << itr->first;
-		ofs_csv_file << std::endl;
-		ofs_csv_file.close();
-	}
 }
 
 void RankingsSystem::DrawWriteUI()
@@ -325,7 +294,7 @@ void RankingsSystem::DrawWriteUICn()
 		prevKey = false;
 	}
 	
-	for (int y = 0; y < Y; y++) {
+	/*for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (N[y][x].posX1 == cx1 && N[y][x].posY1 == cy1 && N[y][x].posX2 == cx2 && N[y][x].posY2 == cy2 && N[y][x].Ascii == 0) {
 				
@@ -345,7 +314,7 @@ void RankingsSystem::DrawWriteUICn()
 				
 			}
 		}
-	}
+	}*/
 
 	//枠線外にはみ出さない用の処理
 	if (cx1 < N[0][0].posX1) { //←
@@ -491,32 +460,26 @@ void RankingsSystem::DrawWriteUICn()
 								
 							}
 						}else if (cAscii == 50) {
-							const std::string strl(str);
+							/*std::string strl(str);*/
 							
 							//UDP通信用ソケットハンドルを作成
 							NetUDPHandle = MakeUDPSocket(-1);
 							IpAddr.d1 = 192;
 							IpAddr.d2 = 168;
-							/*IpAddr.d3 = 56;
-							IpAddr.d4 = 1;*/
-							IpAddr.d3 = 1;
-							IpAddr.d4 = 4;
-
-							
-							//文字列送信
-							///*NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,strl.c_str(),strl.size());*/
-
-							//192.168.1.4
+							IpAddr.d3 = 56;
+							IpAddr.d4 = 1;
+							/*IpAddr.d3 = 1;
+							IpAddr.d4 = 4;*/
 
 							IPDATA IPAddress[1];
 							int IPNum;
 							GetMyIPAddress(IPAddress, 1, &IPNum);
 							std::string Ip;
 							unsigned char* ip[5];
-							ip[0] = &IPAddress[0].d1 ;
-							ip[1] = &IPAddress[0].d2 ;
-							ip[2] = &IPAddress[0].d3 ;
-							ip[3] = &IPAddress[0].d4 ;
+							ip[0] = &IPAddress[0].d1;
+							ip[1] = &IPAddress[0].d2;
+							ip[2] = &IPAddress[0].d3;
+							ip[3] = &IPAddress[0].d4;
 
 							std::ostringstream ipStr;
 							ipStr << static_cast<int>(ip[0][0]) << "."
@@ -526,17 +489,49 @@ void RankingsSystem::DrawWriteUICn()
 
 							Ip = ipStr.str();
 
-							NetWorkSendUDP(NetUDPHandle,IpAddr, SERVER_PORT,Ip.c_str(),Ip.size());
+							std::string SendData = str +"." + std::to_string(ScoreAndTimeAndMap::GetScore()) + ":" + Ip;
 
-							NetUDPHandle = MakeUDPSocket(SERVER_PORT);
+							
+							//文字列送信
+							NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,SendData.c_str(), SendData.size());
+							DeleteUDPSocket(NetUDPHandle);
+
+
+
+							NetUDPHandle = MakeUDPSocket(CLIENT_PORT);
 
 							while (CheckNetWorkRecvUDP(NetUDPHandle) == FALSE) {
 								if (ProcessMessage() < 0) break;
 							}
 
 							//文字列の受信
-							/*NetWorkRecvUDP(NetUDPHandle, NULL, NULL, Buff, 256, FALSE);*/
+							NetWorkRecvUDP(NetUDPHandle, NULL, NULL, Buff, 256, FALSE);
 
+							std::string line = Buff;
+							std::stringstream line2(line);
+							std::string s;
+							
+							std::vector<std::string> splitData;
+
+							while (std::getline(line2, s, ':')) {
+								splitData.push_back(s);
+							}
+
+							std::stringstream split1(splitData[0]);
+							std::stringstream split2(splitData[1]);
+						
+							std::vector<std::string> nData;
+							std::vector<float> sData;
+
+							while (std::getline(split1, s, '.')) {
+								nData.push_back(s);
+							}
+
+							while (std::getline(split2, s, '.')) {
+								sData.push_back(atof(s.c_str()));
+							}
+
+							RecvDataInsert(nData, sData);
 						
 
 							//UDPソケットハンドルの削除
@@ -611,6 +606,35 @@ void RankingsSystem::NameBar(std::string _str, float _fSize, float _space,float 
 		DrawBoxAA(_x1, _y1, _x2, _y2, GetColor(255, 255, 255), TRUE);//入力バー
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+}
+
+void RankingsSystem::RecvDataInsert(std::vector<std::string> n,std::vector<float> s)
+{
+	std::ofstream ofs_csv_file(output_csv_file_path_RecvRankingsSortData);
+	ofs_csv_file << "PlayerName" << "," << "PlayerScore";
+	ofs_csv_file << std::endl;
+	std::map <float,std::string> Data;
+	/*std::vector<std::pair<float, std::string>> data;*/
+
+	for (int i = 0; i < n.size(); i++) {
+		Data.insert(std::pair<float, std::string>(s[i], n[i]));
+	}
+	for (auto it = Data.rbegin(); it != Data.rend(); it++) {
+		ofs_csv_file << it->second << "," << it->first;
+		ofs_csv_file << std::endl;
+	}
+	/*for (int i = 0; i < n.size();i++) {
+			Data.insert(std::pair<std::string, float>(n[i], s[i]));
+	}
+	for (std::unordered_map<std::string, float>::iterator it = Data.begin(); it != Data.end(); it++) {
+		data.push_back({ it->second, it->first });
+	}
+
+	for (std::unordered_map<std::string, float>::iterator it = Data.begin(); it != Data.end(); it++) {
+		ofs_csv_file << it->first << "," << it->second;
+		ofs_csv_file << std::endl;
+	}*/
+	ofs_csv_file.close();
 }
 
 
