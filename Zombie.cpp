@@ -5,7 +5,7 @@ namespace {
 	const VECTOR IMAGESIZE{ 80,80 };
 	const VECTOR LUPOINT{ 10,10 };
 	const VECTOR HITBOXSIZE{ 60,70 };
-	const float ATTACKRANGE{ 50.0f };
+	const float ATTACKRANGE{ 0.0f };
 
 }
 

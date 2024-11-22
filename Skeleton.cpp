@@ -8,7 +8,7 @@ namespace {
 	const float ATTACKRANGE{ 70.0f };
 	const float ATTACKTIME{ 1.0f };
 	const VECTOR EFFECTEXPLOSIONPOS{ 50,50 };
-	const float DAMEGERANGE{ 200.0f };
+	const float DAMEGERANGE{ 150.0f };
 }
 
 
