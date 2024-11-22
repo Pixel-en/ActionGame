@@ -485,18 +485,18 @@ void RankingsSystem::DrawWriteUICn()
 							NetUDPHandle = MakeUDPSocket(-1);
 							IpAddr.d1 = 192;
 							IpAddr.d2 = 168;
-							IpAddr.d3 = 56;
-							IpAddr.d4 = 1;
+							IpAddr.d3 = 42;
+							IpAddr.d4 = 16;
 
-							IPDATA IPAddress[1];
+							IPDATA IPAddress[2];
 							int IPNum;
-							GetMyIPAddress(IPAddress, 1, &IPNum);
+							GetMyIPAddress(IPAddress, 2, &IPNum);
 							std::string Ip;
 							unsigned char* ip[5];
-							ip[0] = &IPAddress[0].d1;
-							ip[1] = &IPAddress[0].d2;
-							ip[2] = &IPAddress[0].d3;
-							ip[3] = &IPAddress[0].d4;
+							ip[0] = &IPAddress[1].d1;
+							ip[1] = &IPAddress[1].d2;
+							ip[2] = &IPAddress[1].d3;
+							ip[3] = &IPAddress[1].d4;
 
 							std::ostringstream ipStr;
 							ipStr << static_cast<int>(ip[0][0]) << "."
@@ -510,7 +510,7 @@ void RankingsSystem::DrawWriteUICn()
 
 
 							//•¶Žš—ñ‘—M
-							NetWorkSendUDP(NetUDPHandle, IpAddr, SERVER_PORT, SendData.c_str(), SendData.size());
+							assert(NetWorkSendUDP(NetUDPHandle, IpAddr, SERVER_PORT, SendData.c_str(), SendData.size()) >= 0);
 							DeleteUDPSocket(NetUDPHandle);
 
 
