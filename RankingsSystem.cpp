@@ -237,13 +237,13 @@ void RankingsSystem::DrawWriteUICn()
 			b = static_cast<char>(N[y][x].Ascii);
 			std::string str(1, b);
 			if (str == "0") {
-				tText->DrawStringJ("ケス", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+				tText->DrawStringJ("ケス", N[y][x].posX1 - 4, N[y][x].posY1 + 4);
 			}
 			else if (str == "1") {
-				tText->DrawStringJ("クウハク", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+				tText->DrawStringJ("クウハク", N[y][x].posX1 - 4, N[y][x].posY1 + 4);
 			}
 			else if (str == "2") {
-				tText->DrawStringJ("ケッテイ", N[y][x].posX1 - 1, N[y][x].posY1 + 4);
+				tText->DrawStringJ("ケッテイ", N[y][x].posX1 - 4, N[y][x].posY1 + 4);
 			}
 			else {
 				tText->DrawString(str, N[y][x].posX1 - 1, N[y][x].posY1 + 4);
@@ -403,7 +403,29 @@ void RankingsSystem::DrawWriteUICn()
 		}
 	}
 
-	DrawLine(cx1, cy2, cx2,cy2, GetColor(255, 255, 255), FALSE);
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2 ) {
+				if (N[y][x].Ascii == 48) {
+					/*DrawBox(cx1, cy1, cx2 + mojiSize + 4, cy2, GetColor(255, 255, 255), FALSE);*/
+					DrawLine(cx1, cy2, cx2 + mojiSize + 4,cy2, GetColor(255, 255, 255), FALSE);
+				}
+				else if (N[y][x].Ascii == 49) {
+				/*	DrawBox(cx1, cy1, cx2 + (mojiSize + 4)*3 , cy2, GetColor(255, 255, 255), FALSE);*/
+					DrawLine(cx1, cy2, cx2 + (mojiSize + 4) * 3, cy2, GetColor(255, 255, 255), FALSE);
+				}
+				else if (N[y][x].Ascii == 50) {
+					/*DrawBox(cx1, cy1, cx2 + (mojiSize + 4) *3, cy2, GetColor(255, 255, 255), FALSE);*/
+					DrawLine(cx1, cy2, cx2 + (mojiSize + 4) * 3, cy2, GetColor(255, 255, 255), FALSE);
+				}
+				else {
+					/*DrawBox(cx1, cy1, cx2, cy2, GetColor(255, 255, 255), FALSE);*/
+					DrawLine(cx1, cy2, cx2 , cy2, GetColor(255, 255, 255), FALSE);
+				}
+			
+			}
+		}
+	}
 
 	
 
@@ -440,7 +462,6 @@ void RankingsSystem::DrawWriteUICn()
 							}
 							//決定
 						}else if (cAscii == 50) {
-							/*std::string strl(str);*/
 							
 							//UDP通信用ソケットハンドルを作成
 							NetUDPHandle = MakeUDPSocket(-1);
@@ -448,8 +469,6 @@ void RankingsSystem::DrawWriteUICn()
 							IpAddr.d2 = 168;
 							IpAddr.d3 = 56;
 							IpAddr.d4 = 1;
-							/*IpAddr.d3 = 1;
-							IpAddr.d4 = 4;*/
 
 							IPDATA IPAddress[1];
 							int IPNum;
@@ -471,6 +490,9 @@ void RankingsSystem::DrawWriteUICn()
 
 							std::string SendData = str +"." + std::to_string(ScoreAndTimeAndMap::GetScore()) + ":" + Ip;
 
+							/*if (GetNetWorkAcceptState(NetUDPHandle)) {
+								continue;
+							}*/
 							
 							//文字列送信
 							NetWorkSendUDP(NetUDPHandle, IpAddr,SERVER_PORT,SendData.c_str(), SendData.size());
