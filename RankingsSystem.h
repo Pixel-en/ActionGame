@@ -44,8 +44,7 @@ private:
 
 	void NameBar(std::string _str, float _fSize, float _space, float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime);
 
-	void RecvDataInsert(std::vector<std::string> n,std::vector<float> s);
-	
+	void RecvDataInsert(std::vector<std::string> n, std::vector<std::string> s, std::vector<std::string> r);
 
 	std::string output_csv_file_path_RecvRankingsSortData;
 	CsvReader* csv;
