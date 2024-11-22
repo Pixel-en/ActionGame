@@ -487,8 +487,8 @@ void RankingsSystem::DrawWriteUICn()
 							NetUDPHandle = MakeUDPSocket(-1);
 							IpAddr.d1 = 192;
 							IpAddr.d2 = 168;
-							IpAddr.d3 = 42;
-							IpAddr.d4 = 16;
+							IpAddr.d3 = 43;
+							IpAddr.d4 = 42;
 
 							IPDATA IPAddress[2];
 							int IPNum;
@@ -520,9 +520,6 @@ void RankingsSystem::DrawWriteUICn()
 							NetUDPHandle = MakeUDPSocket(CLIENT_PORT);
 
 							while (CheckNetWorkRecvUDP(NetUDPHandle) == FALSE) {
-								PrevTimer -= Time::DeltaTime();
-								if (PrevTimer < 0)
-									break;
 								if (ProcessMessage() < 0) break;
 							}
 

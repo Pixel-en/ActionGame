@@ -76,3 +76,8 @@ bool ScoreAndTimeAndMap::IsLastMap()
 	else
 		return false;
 }
+
+void ScoreAndTimeAndMap::RetryMap()
+{
+	number_--;
+}

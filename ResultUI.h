@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "OutText.h"
+#include "Engine/SceneManager.h"
 
 class ResultUI :public GameObject
 {

@@ -702,6 +702,7 @@ void Player::HitDamage(VECTOR _dir)
 	//ƒ_ƒ[ƒW‚ğó‚¯‚Ä‚¢‚½‚è€‚ñ‚Å‚¢‚È‚¢‚Æ‚«
 	if (anim_.animtype_ < Animation::DAMAGE && !invincible_) {
 		HP_--;
+		Atype_ = AttackType::TNONE;
 		if (HP_ < 0) {
 			anim_.animtype_ = Animation::DEATH;
 			HP_ = ParamCorre_[param_.hp_].hp_;
