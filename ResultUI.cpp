@@ -65,9 +65,9 @@ void ResultUI::Update()
 			ScoreAndTimeAndMap::SubTimer(time_);
 			oneSecond_ += time_;
 			//1•b•ª‚½‚Ü‚Á‚½‚ç
-			if (oneSecond_ >= 1.0)
+			while (oneSecond_ >= 1.0)
 			{
-				oneSecond_ = 0.0f;
+				oneSecond_ -= 1.0;
 				ScoreAndTimeAndMap::AddScore(TIMETOSCORE);
 			}
 		}
