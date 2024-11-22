@@ -24,6 +24,9 @@ class ResultUI :public GameObject
 	bool recvmove_;
 
 	void CSVReadRank();
+	void DrawRank();
+
+	int hImage_;
 
 public:
 

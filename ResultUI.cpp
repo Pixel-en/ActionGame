@@ -11,13 +11,44 @@ namespace {
 	Transform trans;
 	
 	//順位、名前スコア
-	std::pair<int, std::string> ranking;
-
+	std::pair<std::string, std::string> ranking[5];
+	bool outranking = false;
+	bool check = false;
 }
 
 void ResultUI::CSVReadRank() {
-	CsvReader* csv = new CsvReader("Assets\\Rankings\\RecvRankingsSortData.csv");
+	CsvReader* csv = new CsvReader("Assets\\Rankings\\RecvRankingsSortDat.csv");
+	ranking[0].first = csv->GetString(1, 0);
+	ranking[0].second = csv->GetString(1, 1) + " " + csv->GetString(1, 2);
+	if (ranking[0].first == "-1") {
+		return;
+	}
+	for (int i = 0; i < 5; i++) {
+		ranking[i].first = csv->GetString(i, 0);
+		ranking[i].second = csv->GetString(i, 1);
+		//for (int j = 0; j <10-ranking[i].second.size(); j++)
+		//	ranking[i].second += " ";
 
+		ranking[i].second += " ";
+		ranking[i].second += csv->GetString(i, 2);
+	}
+}
+
+void ResultUI::DrawRank()
+{
+
+	if (ranking[0].first == "-1") {
+		text_->DrawString(ranking[0].second, trans.position_.x + 2150, trans.position_.y + 350);
+		return;
+	}
+
+	for (int i = 0; i < 5; i++) {
+		std::string space;
+		int max = std::stoi(ranking[i].first);
+		for (int i = 0; i < DrawSpace(max); i++)
+			space += " ";
+		text_->DrawString(space + ranking[i].first + " " + ranking[i].second, trans.position_.x + 2050, trans.position_.y + 350 + (i * 40));
+	}
 }
 
 int ResultUI::DrawSpace(float max)
@@ -46,10 +77,11 @@ ResultUI::~ResultUI()
 
 void ResultUI::Initialize()
 {
-	text_ = Instantiate<OutText>(GetParent());
 	time_ = ScoreAndTimeAndMap::GetTimer() / (60 * 2);//2秒でスコア加算がおわる
 	transform_.position_ = ORIGINPOS;
 	trans.position_ = { 0,0,0 };
+	hImage_ = LoadGraph("Assets\\Image\\TestImage\\Test.png");
+	text_ = Instantiate<OutText>(GetParent());
 }
 
 void ResultUI::Update()
@@ -96,9 +128,13 @@ void ResultUI::Update()
 			movetimer_ = -1.0;
 		}
 	}
-	if (recvmove_) {
+	if (recvmove_&&!check) {
 		trans.position_.x -= 400 * Time::DeltaTime();
 		
+		if (trans.position_.x < -1800) {
+			CSVReadRank();
+			check = true;
+		}
 	}
 }
 
@@ -132,8 +168,12 @@ void ResultUI::Draw()
 
 	if (isrank_) {
 		text_->DrawString("Write Down ↓ Your Name", trans.position_.x + 200, +trans.position_.y + 300);
-
+		DrawGraph(trans.position_.x + 2050, trans.position_.y+300, hImage_, true);
+		if (check) {
+			DrawRank();
+		}
 	}
+	
 }
 
 void ResultUI::Release()

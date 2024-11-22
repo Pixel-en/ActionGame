@@ -56,6 +56,8 @@ namespace
 		NONE
 	};
 
+	float PrevTimer{ 3.0f };
+
 	int PrevKey;
 
 	const float MOVETIME{ 1.0f };
@@ -518,6 +520,9 @@ void RankingsSystem::DrawWriteUICn()
 							NetUDPHandle = MakeUDPSocket(CLIENT_PORT);
 
 							while (CheckNetWorkRecvUDP(NetUDPHandle) == FALSE) {
+								PrevTimer -= Time::DeltaTime();
+								if (PrevTimer < 0)
+									break;
 								if (ProcessMessage() < 0) break;
 							}
 
@@ -642,7 +647,7 @@ void RankingsSystem::RecvDataInsert(std::vector<std::string> n, std::vector<floa
 	std::map <float, std::string> Data;
 	/*std::vector<std::pair<float, std::string>> data;*/
 	if (n.empty()) {
-		ofs_csv_file << "データが受信できませんでした" << std::endl;
+		ofs_csv_file << "-1,Could not receive" << std::endl;
 	}
 	else {
 		for (int i = 0; i < n.size(); i++) {
