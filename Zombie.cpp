@@ -161,7 +161,14 @@ void Zombie::UpdateIdol()
 
 void Zombie::UpdateAttack()
 {
+	if (Eanim_.animframe_ == 2)
+	{
+		if(Eanim_.Rdir_)
+		transform_.position_.x += Eparam_.runspeed_ * Time::DeltaTime();
+		else
+			transform_.position_.x -= Eparam_.runspeed_ * Time::DeltaTime();
 
+	}
 	Eanim_.animloop_ = false;
 	isattack_ = true;
 	Idoltimer_ = Eparam_.movetimer_;
