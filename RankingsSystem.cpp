@@ -411,7 +411,29 @@ void RankingsSystem::DrawWriteUICn()
 		}
 	}
 
-	DrawLine(cx1 + transform_.position_.x, cy2 + transform_.position_.y, cx2 + transform_.position_.x, cy2 + transform_.position_.y, GetColor(255, 255, 255), FALSE);
+	for (int y = 0; y < Y; y++) {
+		for (int x = 0; x < X; x++) {
+			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2 ) {
+				if (N[y][x].Ascii == 48) {
+					/*DrawBox(cx1, cy1, cx2 + mojiSize + 4, cy2, GetColor(255, 255, 255), FALSE);*/
+					DrawLine(cx1, cy2, cx2 + mojiSize + 4,cy2, GetColor(255, 255, 255), FALSE);
+				}
+				else if (N[y][x].Ascii == 49) {
+				/*	DrawBox(cx1, cy1, cx2 + (mojiSize + 4)*3 , cy2, GetColor(255, 255, 255), FALSE);*/
+					DrawLine(cx1, cy2, cx2 + (mojiSize + 4) * 3, cy2, GetColor(255, 255, 255), FALSE);
+				}
+				else if (N[y][x].Ascii == 50) {
+					/*DrawBox(cx1, cy1, cx2 + (mojiSize + 4) *3, cy2, GetColor(255, 255, 255), FALSE);*/
+					DrawLine(cx1, cy2, cx2 + (mojiSize + 4) * 3, cy2, GetColor(255, 255, 255), FALSE);
+				}
+				else {
+					/*DrawBox(cx1, cy1, cx2, cy2, GetColor(255, 255, 255), FALSE);*/
+					DrawLine(cx1, cy2, cx2 , cy2, GetColor(255, 255, 255), FALSE);
+				}
+			
+			}
+		}
+	}
 
 
 
@@ -458,8 +480,6 @@ void RankingsSystem::DrawWriteUICn()
 							IpAddr.d2 = 168;
 							IpAddr.d3 = 56;
 							IpAddr.d4 = 1;
-							/*IpAddr.d3 = 1;
-							IpAddr.d4 = 4;*/
 
 							IPDATA IPAddress[1];
 							int IPNum;
