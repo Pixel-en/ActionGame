@@ -485,8 +485,10 @@ void RankingsSystem::DrawWriteUICn()
 							NetUDPHandle = MakeUDPSocket(-1);
 							IpAddr.d1 = 192;
 							IpAddr.d2 = 168;
-							IpAddr.d3 = 42;
-							IpAddr.d4 = 16;
+							/*IpAddr.d3 = 42;
+							IpAddr.d4 = 16;*/
+							IpAddr.d3 = 43;
+							IpAddr.d4 = 42;
 
 							IPDATA IPAddress[2];
 							int IPNum;
