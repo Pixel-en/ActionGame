@@ -22,6 +22,9 @@ class ResultUI :public GameObject
 	XINPUT_STATE pad;
 
 	bool recvmove_;
+
+	void CSVReadRank();
+
 public:
 
 	ResultUI(GameObject* parent);

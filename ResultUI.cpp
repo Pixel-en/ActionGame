@@ -1,5 +1,7 @@
 #include "ResultUI.h"
 #include "ScoreAndTimeAndMap.h"
+#include "Engine/CsvReader.h"
+
 
 namespace {
 	const int TIMETOSCORE{ 5 };
@@ -7,6 +9,14 @@ namespace {
 	int spaceNum = 0;
 	const float MOVETIME{ 1.0f };
 	Transform trans;
+	
+	//順位、名前スコア
+	std::pair<int, std::string> ranking;
+}
+
+void ResultUI::CSVReadRank() {
+	CsvReader* csv = new CsvReader("Assets\\Rankings\\RecvRankingsSortData.csv");
+
 }
 
 int ResultUI::DrawSpace(float max)
@@ -119,8 +129,9 @@ void ResultUI::Draw()
 
 	text_->DrawString("ranking",transform_.position_.x+1500, transform_.position_.y, true);
 
-	if(isrank_)
-		text_->DrawString("Write Down ↓ Your Name",trans.position_.x+200,+trans.position_.y+ 300);
+	if (isrank_) {
+		text_->DrawString("Write Down ↓ Your Name", trans.position_.x + 200, +trans.position_.y + 300);
+	}
 }
 
 void ResultUI::Release()
