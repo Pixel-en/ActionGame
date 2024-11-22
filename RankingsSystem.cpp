@@ -687,8 +687,8 @@ void RankingsSystem::Move()
 	if (movetiemr_ < 0) {
 		RecvOK_ = true;
 		transform_.position_.x -= 400 * Time::DeltaTime();
-		if (transform_.position_.x <= -1300)
-			KillMe();
+		//if (transform_.position_.x <= -1300)
+		//	KillMe();
 	}
 }
 
