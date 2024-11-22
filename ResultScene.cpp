@@ -20,7 +20,10 @@ void ResultScene::Update()
 	//‚±‚ê‚É“®‚­‹@”\‚Í‚Â‚¢‚Ä‚¢‚È‚¢
 	RankingsSystem* rank = FindGameObject<RankingsSystem>();
 	ResultUI* ui = FindGameObject<ResultUI>();
-	rank->DrawOK(ui->DrawRankOK());
+	if (rank != nullptr) {
+		rank->DrawOK(ui->DrawRankOK());
+		ui->isRecvok_(rank->RecvOK());
+	}
 }
 
 void ResultScene::Draw()

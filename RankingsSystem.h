@@ -28,6 +28,8 @@ public:
 
 	void DrawOK(bool _output) { output_ = _output; };
 
+	//受信したかどうか
+	bool RecvOK() { return RecvOK_; };
 private:
 
 	/// <summary>
@@ -95,7 +97,10 @@ private:
 
 	//表示開始していいか
 	bool output_;
+	//受信まで行った
+	bool RecvOK_;
 
-	void DrawRanking();
+	float movetiemr_;
+	void Move();
 };
 

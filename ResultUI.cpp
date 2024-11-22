@@ -85,11 +85,9 @@ void ResultUI::Update()
 			movetimer_ = -1.0;
 		}
 	}
-	if (isrank_) {
-		if (pad.ThumbRX >= 10000)
-			trans.position_.x += 100 * Time::DeltaTime();
-		if (pad.ThumbRX <= -10000)
-			trans.position_.x -= 100 * Time::DeltaTime();
+	if (recvmove_) {
+		trans.position_.x -= 400 * Time::DeltaTime();
+		
 	}
 }
 
