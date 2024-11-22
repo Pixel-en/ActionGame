@@ -123,7 +123,7 @@ void Zombie::Release()
 
 bool Zombie::EnemyAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 {
-	if (!isattack_) {
+	if (!isattack_||(Eanim_.animframe_>=2&&Eanim_.animframe_<=3)) {
 		return false;
 	}
 

@@ -79,10 +79,6 @@ void Skeleton::Update()
 		UpdateDeath();
 		break;
 	}
-	int a = Eanim_.animtype_;
-	ImGui::Begin("ske");
-	ImGui::InputInt("type", &a);
-	ImGui::End();
 
 	AnimationCalculation();
 }

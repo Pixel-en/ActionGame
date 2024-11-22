@@ -56,6 +56,8 @@ namespace
 		NONE
 	};
 
+	float PrevTimer{ 3.0f };
+
 	int PrevKey;
 
 	const float MOVETIME{ 1.0f };
@@ -518,11 +520,15 @@ void RankingsSystem::DrawWriteUICn()
 							NetUDPHandle = MakeUDPSocket(CLIENT_PORT);
 
 							while (CheckNetWorkRecvUDP(NetUDPHandle) == FALSE) {
+								PrevTimer -= Time::DeltaTime();
+								if (PrevTimer < 0)
+									break;
 								if (ProcessMessage() < 0) break;
 							}
 
 							std::vector<std::string> nData;
-							std::vector<float> sData;
+							std::vector<std::string> rData;
+							std::vector<std::string> sData;
 
 							//文字列の受信
 							if (NetWorkRecvUDP(NetUDPHandle, NULL, NULL, Buff, 256, FALSE) >= 0) {
@@ -539,21 +545,27 @@ void RankingsSystem::DrawWriteUICn()
 
 								std::stringstream split1(splitData[0]);
 								std::stringstream split2(splitData[1]);
+								std::stringstream split3(splitData[2]);
 
 								while (std::getline(split1, s, '.')) {
-									nData.push_back(s);
+									rData.push_back(s);
 								}
 
 								while (std::getline(split2, s, '.')) {
-									sData.push_back(atof(s.c_str()));
+									nData.push_back(s);
 								}
 
-								RecvDataInsert(nData, sData);
+								while (std::getline(split3, s, '.')) {
+									sData.push_back(s);
+								}
+
+								RecvDataInsert(nData,sData,rData);
 							}
 							else {
 								nData.clear();
 								sData.clear();
-								RecvDataInsert(nData, sData);
+								rData.clear();
+								RecvDataInsert(nData, sData,rData);
 							}
 							//UDPソケットハンドルの削除
 							DeleteUDPSocket(NetUDPHandle);
@@ -634,24 +646,29 @@ void RankingsSystem::NameBar(std::string _str, float _fSize, float _space, float
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
-void RankingsSystem::RecvDataInsert(std::vector<std::string> n, std::vector<float> s)
+void RankingsSystem::RecvDataInsert(std::vector<std::string> n, std::vector<std::string> s,std::vector<std::string> r)
 {
 	std::ofstream ofs_csv_file(output_csv_file_path_RecvRankingsSortData);
-	ofs_csv_file << "PlayerName" << "," << "PlayerScore";
+	ofs_csv_file << "Rank" << "," <<"PlayerName" << "," << "PlayerScore";
 	ofs_csv_file << std::endl;
-	std::map <float, std::string> Data;
+	std::vector<std::string> rnsData;
+	/*std::map <float, std::string,std::string> Data;*/
 	/*std::vector<std::pair<float, std::string>> data;*/
 	if (n.empty()) {
-		ofs_csv_file << "データが受信できませんでした" << std::endl;
+		ofs_csv_file << "-1,Could not receive" << std::endl;
 	}
 	else {
 		for (int i = 0; i < n.size(); i++) {
+			ofs_csv_file << r[i] << "," << n[i] << "," << s[i];
+			ofs_csv_file << std::endl;
+		}
+		/*for (int i = 0; i < n.size(); i++) {
 			Data.insert(std::pair<float, std::string>(s[i], n[i]));
 		}
 		for (auto it = Data.rbegin(); it != Data.rend(); it++) {
-			ofs_csv_file << it->second << "," << it->first;
+			ofs_csv_file << it->second << "," << it->first ;
 			ofs_csv_file << std::endl;
-		}
+		}*/
 	}
 	/*for (int i = 0; i < n.size();i++) {
 			Data.insert(std::pair<std::string, float>(n[i], s[i]));
