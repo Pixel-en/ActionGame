@@ -12,6 +12,7 @@ namespace {
 	
 	//順位、名前スコア
 	std::pair<int, std::string> ranking;
+
 }
 
 void ResultUI::CSVReadRank() {
@@ -131,6 +132,7 @@ void ResultUI::Draw()
 
 	if (isrank_) {
 		text_->DrawString("Write Down ↓ Your Name", trans.position_.x + 200, +trans.position_.y + 300);
+
 	}
 }
 
