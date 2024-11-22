@@ -5,7 +5,7 @@ namespace {
 	const VECTOR IMAGESIZE{ 80,80 };
 	const VECTOR LUPOINT{ 10,10 };
 	const VECTOR HITBOXSIZE{ 60,70 };
-	const float ATTACKRANGE{ 50.0f };
+	const float ATTACKRANGE{ 0.0f };
 
 }
 
@@ -113,8 +113,8 @@ void Zombie::Draw()
 	////çUåÇîÕàÕ
 	//DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, HITBOXSIZE.x / 2.0f + ATTACKRANGE, GetColor(255, 0, 0), false);
 	////çUåÇîªíËîÕàÕ
-	//DrawBox(xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x + ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
-	//DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x - ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
+	DrawBox(xpos + LUPOINT.x + HITBOXSIZE.x, ypos + LUPOINT.y, xpos + LUPOINT.x + HITBOXSIZE.x + ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
+	DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x - ATTACKRANGE, ypos + LUPOINT.y + HITBOXSIZE.y, GetColor(0, 0, 255), false);
 }
 
 void Zombie::Release()

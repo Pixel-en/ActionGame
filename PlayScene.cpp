@@ -28,11 +28,11 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "Test.csv";
+	Filename_ = "Stage\\Stage3.csv";
 
 	//おそらくマップリストの読み込み
 
-	Filename_ = ScoreAndTimeAndMap::NextMap();
+	//Filename_ = ScoreAndTimeAndMap::NextMap();
 
 	Reset();
 
