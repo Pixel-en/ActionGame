@@ -11,13 +11,51 @@ namespace {
 	Transform trans;
 	
 	//順位、名前スコア
-	std::pair<int, std::string> ranking;
+	std::pair<std::string, std::string> ranking[5];
+	bool outranking = false;
+	bool check = false;
+	int height;
 
+	VECTOR choice1;
+	VECTOR choice2;
+	bool a;
 }
 
 void ResultUI::CSVReadRank() {
 	CsvReader* csv = new CsvReader("Assets\\Rankings\\RecvRankingsSortData.csv");
+	ranking[0].first = csv->GetString(1, 0);
+	ranking[0].second = csv->GetString(1, 1) + " " + csv->GetString(1, 2);
+	if (ranking[0].first == "-1") {
+		return;
+	}
+	height = csv->GetLines() - 1;
+	for (int i = 0; i < height; i++) {
+		ranking[i].first = csv->GetString(i+1, 0);
+		ranking[i].second = csv->GetString(i+1, 1);
+		std::string temp = "";
+		for (int j = 0; j <10-ranking[i].second.size(); j++)
+			temp += " ";
+		ranking[i].second += temp;
+		ranking[i].second += " ";
+		ranking[i].second += csv->GetString(i+1, 2);
+	}
+}
 
+void ResultUI::DrawRank()
+{
+
+	if (ranking[0].first == "-1") {
+		text_->DrawString(ranking[0].second, trans.position_.x + 2150, trans.position_.y + 250);
+		return;
+	}
+	text_->DrawString(" rank  name   score", trans.position_.x + 2050, trans.position_.y + 220);
+	for (int i = 0; i < height; i++) {
+		std::string space;
+		int max = std::stoi(ranking[i].first);
+		for (int i = 0; i < DrawSpace(max); i++)
+			space += " ";
+		text_->DrawString(space + ranking[i].first + " " + ranking[i].second, trans.position_.x + 2050, trans.position_.y + 260 + (i * 50));
+	}
 }
 
 int ResultUI::DrawSpace(float max)
@@ -38,6 +76,9 @@ int ResultUI::DrawSpace(float max)
 ResultUI::ResultUI(GameObject* parent)
 	:GameObject(parent,"ResultUI"), text_(nullptr),moveflag_(false),isrank_(false)
 {
+	choice1 = { 2050,640 };
+	choice2 = { 2230,640 };
+	a = true;
 }
 
 ResultUI::~ResultUI()
@@ -46,10 +87,11 @@ ResultUI::~ResultUI()
 
 void ResultUI::Initialize()
 {
-	text_ = Instantiate<OutText>(GetParent());
 	time_ = ScoreAndTimeAndMap::GetTimer() / (60 * 2);//2秒でスコア加算がおわる
 	transform_.position_ = ORIGINPOS;
 	trans.position_ = { 0,0,0 };
+	hImage_ = LoadGraph("Assets\\Image\\TestImage\\Test.png");
+	text_ = Instantiate<OutText>(GetParent());
 }
 
 void ResultUI::Update()
@@ -96,10 +138,34 @@ void ResultUI::Update()
 			movetimer_ = -1.0;
 		}
 	}
-	if (recvmove_) {
+	if (recvmove_&&!check) {
 		trans.position_.x -= 400 * Time::DeltaTime();
 		
+		if (trans.position_.x < -1800) {
+			CSVReadRank();
+			check = true;
+		}
 	}
+
+	if (check) {
+		if (pad.ThumbLX <= -10000) {
+			choice1 = { 2050,640 };
+			choice2 = { 2230,640 };
+			a = true;
+		}
+		if (pad.ThumbLX >= 10000) {
+			choice1 = { 2550,640 };
+			choice2 = { 3000,640 };
+			a = false;
+		}
+
+		if (pad.Buttons[XINPUT_BUTTON_A]) {
+			if (a)
+				ScoreAndTimeAndMap::RetryMap();
+			SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
+		}
+	}
+
 }
 
 void ResultUI::Draw()
@@ -128,12 +194,21 @@ void ResultUI::Draw()
 	timeStr += time;
 	text_->DrawString(timeStr, transform_.position_.x - 100, transform_.position_.y + 200, true);
 
-	text_->DrawString("ranking",transform_.position_.x+1500, transform_.position_.y, true);
+	text_->DrawString("ranking",transform_.position_.x+1500, transform_.position_.y-100, true);
 
 	if (isrank_) {
 		text_->DrawString("Write Down ↓ Your Name", trans.position_.x + 200, +trans.position_.y + 300);
+		//DrawGraph(trans.position_.x + 2050, trans.position_.y + 200, hImage_, true);
+		if (check) {
+			DrawRank();
 
+			text_->DrawString("Re Try", trans.position_.x + 2050, +trans.position_.y + 600,false);
+			text_->DrawString("Next Stage", trans.position_.x + 500+2050, +trans.position_.y + 600,false);
+
+			DrawLine(choice1.x + trans.position_.x, choice1.y + trans.position_.y, choice2.x + trans.position_.x, choice2.y + trans.position_.y, GetColor(255, 255, 255), true);
+		}
 	}
+	
 }
 
 void ResultUI::Release()

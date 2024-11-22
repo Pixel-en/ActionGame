@@ -17,5 +17,6 @@ namespace ScoreAndTimeAndMap {
 
 	std::string NextMap();
 	bool IsLastMap();
+	void RetryMap();
 
 }

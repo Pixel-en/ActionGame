@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include "OutText.h"
+#include "Engine/SceneManager.h"
 
 class ResultUI :public GameObject
 {
@@ -24,6 +25,9 @@ class ResultUI :public GameObject
 	bool recvmove_;
 
 	void CSVReadRank();
+	void DrawRank();
+
+	int hImage_;
 
 public:
 

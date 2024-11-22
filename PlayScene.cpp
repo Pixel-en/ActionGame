@@ -32,7 +32,7 @@ void PlayScene::Initialize()
 
 	//おそらくマップリストの読み込み
 
-	//Filename_ = ScoreAndTimeAndMap::NextMap();
+	Filename_ = ScoreAndTimeAndMap::NextMap();
 
 	Reset();
 

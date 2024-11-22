@@ -8,7 +8,7 @@ namespace {
 	const float ATTACKRANGE{ 70.0f };
 	const float ATTACKTIME{ 1.0f };
 	const VECTOR EFFECTEXPLOSIONPOS{ 50,50 };
-	const float DAMEGERANGE{ 200.0f };
+	const float DAMEGERANGE{ 150.0f };
 }
 
 
@@ -79,10 +79,6 @@ void Skeleton::Update()
 		UpdateDeath();
 		break;
 	}
-	int a = Eanim_.animtype_;
-	ImGui::Begin("ske");
-	ImGui::InputInt("type", &a);
-	ImGui::End();
 
 	AnimationCalculation();
 }
@@ -112,10 +108,10 @@ void Skeleton::Draw()
 	//DrawCircle(xpos + LUPOINT.x + HITBOXSIZE.x / 2, ypos + LUPOINT.y + HITBOXSIZE.y / 2, HITBOXSIZE.x / 2.0f + ATTACKRANGE, GetColor(255, 0, 0), false);
 
 
-	//XMFLOAT3 attacktrans_ = { GetCenterTransPos().x - DAMEGERANGE / 2.0f,GetCenterTransPos().y - DAMEGERANGE / 2.0f,0 };
-	//VECTOR attackhitbox_ = VGet(DAMEGERANGE, DAMEGERANGE, 0);
+	XMFLOAT3 attacktrans_ = { GetCenterTransPos().x - DAMEGERANGE / 2.0f,GetCenterTransPos().y - DAMEGERANGE / 2.0f,0 };
+	VECTOR attackhitbox_ = VGet(DAMEGERANGE, DAMEGERANGE, 0);
 
-	//DrawBox(attacktrans_.x - cam->GetValue(), attacktrans_.y - cam->GetValueY(), attacktrans_.x - cam->GetValue() + attackhitbox_.x, attacktrans_.y - cam->GetValueY() + attackhitbox_.y, GetColor(0, 255, 255), false);
+	DrawBox(attacktrans_.x - cam->GetValue(), attacktrans_.y - cam->GetValueY(), attacktrans_.x - cam->GetValue() + attackhitbox_.x, attacktrans_.y - cam->GetValueY() + attackhitbox_.y, GetColor(0, 255, 255), false);
 
 }
 
