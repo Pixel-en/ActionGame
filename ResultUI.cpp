@@ -6,6 +6,7 @@ namespace {
 	const XMFLOAT3 ORIGINPOS{ 500,200,0 };
 	int spaceNum = 0;
 	const float MOVETIME{ 1.0f };
+	Transform trans;
 }
 
 int ResultUI::DrawSpace(float max)
@@ -37,10 +38,13 @@ void ResultUI::Initialize()
 	text_ = Instantiate<OutText>(GetParent());
 	time_ = ScoreAndTimeAndMap::GetTimer() / (60 * 2);//2ïbÇ≈ÉXÉRÉAâ¡éZÇ™Ç®ÇÌÇÈ
 	transform_.position_ = ORIGINPOS;
+	trans.position_ = { 0,0,0 };
 }
 
 void ResultUI::Update()
 {
+	GetJoypadXInputState(DX_INPUT_PAD1, &pad);
+
 	if (TimeToScoreTimer > 0)
 	{
 		TimeToScoreTimer -= Time::DeltaTime();
@@ -73,11 +77,19 @@ void ResultUI::Update()
 			if (transform_.position_.x > -1000)
 				transform_.position_.x -= 400 * Time::DeltaTime();
 			else {
-				transform_.position_.x = -1000;
-				isrank_ = true;
+				if (!isrank_) {
+					transform_.position_.x = -1000;
+					isrank_ = true;
+				}
 			}
 			movetimer_ = -1.0;
 		}
+	}
+	if (isrank_) {
+		if (pad.ThumbRX >= 10000)
+			trans.position_.x += 100 * Time::DeltaTime();
+		if (pad.ThumbRX <= -10000)
+			trans.position_.x -= 100 * Time::DeltaTime();
 	}
 }
 
@@ -110,7 +122,7 @@ void ResultUI::Draw()
 	text_->DrawString("ranking",transform_.position_.x+1500, transform_.position_.y, true);
 
 	if(isrank_)
-		text_->DrawString("Write Down Å´ Your Name", 200, 300);
+		text_->DrawString("Write Down Å´ Your Name",trans.position_.x+200,+trans.position_.y+ 300);
 }
 
 void ResultUI::Release()

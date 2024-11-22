@@ -18,6 +18,8 @@ class ResultUI :public GameObject
 	int DrawSpace(float max);
 
 	bool isrank_;
+
+	XINPUT_STATE pad;
 public:
 
 	ResultUI(GameObject* parent);

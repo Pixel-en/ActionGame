@@ -126,8 +126,10 @@ void Player::Update()
 	PlayScene* pc = GetRootJob()->FindGameObject<PlayScene>();
 
 	//èdóÕ
-	Gaccel_ += GRAVITY;
-	transform_.position_.y += Gaccel_;
+	if (!Ladderup_) {
+		Gaccel_ += GRAVITY;
+		transform_.position_.y += Gaccel_;
+	}
 	if (pc != nullptr) {
 		if (transform_.position_.y > 1050&&!pc->isStateClear())
 			anim_.animtype_ = RESET;
@@ -251,6 +253,7 @@ void Player::MoveControl()
 
 	float Dash = 1.0f;
 	miningtime_ = -1.0f;
+	Ladderup_ = false;
 
 	if (!ActionControl()) {
 		//ç∂à⁄ìÆ
@@ -311,6 +314,7 @@ void Player::MoveControl()
 				transform_.position_.y += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime();
 				//isjamp_ = true;
 				Gaccel_ = 0;
+				Ladderup_ = true;
 			}
 		}
 	}

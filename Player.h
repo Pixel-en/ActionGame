@@ -106,6 +106,8 @@ private:
 
 	int HP_;
 
+	bool Ladderup_;
+
 	/*----------ŠÖ”----------*/
 
 	/// <summary>
