@@ -4,11 +4,29 @@
 #include "Material.h"
 #include "Enemy.h"
 #include "Bullet.h"
-#include "Explosion.h"
 #include "CheckPoint.h"
 #include "ImGui/imgui.h"
 #include "PlaySound.h"
-#include "TestOpenObject.h"
+#include "OpenObject.h"
+#include "OutText.h"
+#include "ScoreAndTimeAndMap.h"
+
+namespace {
+	const int MATERIALBONUS{ 100 };
+	const int ENEMYBONUS{ 100 };
+}
+
+void Clear::BonusScore()
+{
+	if (Mcount_ != 0 && isGetM_&&!isBonusMaterial_) {
+		ScoreAndTimeAndMap::AddScore(MATERIALBONUS);
+		isBonusMaterial_ = true;
+	}
+	if (Ecount_ != 0 && isKillE_&&!isBonusEnemy_) {
+		ScoreAndTimeAndMap::AddScore(ENEMYBONUS);
+		isBonusEnemy_ = true;
+	}
+}
 
 Clear::Clear(GameObject* parent)
 	:GameObject(parent, "Clear")
@@ -33,7 +51,8 @@ void Clear::Reset()
 	Mcount_ = 0;
 	Ecount_ = 0;
 	isFlag_ = false;
-
+	isBonusEnemy_ = false;
+	isBonusMaterial_ = false;
 
 }
 
@@ -45,7 +64,7 @@ void Clear::Update()
 	std::list<Material*> m = GetParent()->FindGameObjects<Material>();
 	std::list<Enemy*> e = GetParent()->FindGameObjects<Enemy>();
 	std::list<Bullet*> b = GetParent()->FindGameObjects<Bullet>();
-	std::list<TestOpenObject*> open = GetParent()->FindGameObjects<TestOpenObject>();
+	std::list<OpenObject*> open = GetParent()->FindGameObjects<OpenObject>();
 
 	if (!isgoal_ && p != nullptr) {
 		for (CheckPoint* che : ch) {
@@ -64,6 +83,14 @@ void Clear::Update()
 		}
 		else
 			assert(false);
+
+		if (open.size() > 0) {
+			for (OpenObject* o : open) {
+				if (p->PlayerAttackHitCheck(o->GetHitTransPos(), o->GetHitBox())) {
+					o->Open();
+				}
+			}
+		}
 
 		for (Material* M : m) {
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), M->GetPosition(), M->GetHitBox())) {
@@ -105,16 +132,16 @@ void Clear::Update()
 					}
 				}
 			}
-
-			for (TestOpenObject* o : open) {
-				if (p->PlayerAttackHitCheck(o->GetHitTransPos(), o->GetHitBox())) {
-					o->Open();
-				}
-			}
 		}
 	}
 
 	isFlag_ = isgoal_;
+
+	if (m.empty())
+		isGetM_ = true;
+	if (e.empty())
+		isKillE_ = true;
+	BonusScore();
 
 }
 

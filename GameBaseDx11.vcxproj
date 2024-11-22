@@ -178,6 +178,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MoveObject.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="OpenObject.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayGUI.cpp" />
@@ -193,7 +194,6 @@
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="RankingsScene.cpp" />
     <ClCompile Include="RankingsSystem.cpp" />
-    <ClCompile Include="TestOpenObject.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="OutText.cpp" />
@@ -236,6 +236,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="MoveObject.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="OpenObject.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayGUI.h" />
@@ -253,7 +254,6 @@
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Slime.h" />
     <ClInclude Include="TestObject.h" />
-    <ClInclude Include="TestOpenObject.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="OutText.h" />

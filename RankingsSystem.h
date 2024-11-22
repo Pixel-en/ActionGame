@@ -26,18 +26,10 @@ public:
 
 	void Release();
 
-	/// <summary>
-	/// ランキングのに必要なデータをcsvに挿入
-	/// </summary>
-	void SetRankings(std::string _name, float _score);
-
-	/// <summary>
-	/// csvに保存されたデータをソート
-	/// </summary>
-	void SortScore();
-
 	void DrawOK(bool _output) { output_ = _output; };
 
+	//受信したかどうか
+	bool RecvOK() { return RecvOK_; };
 private:
 
 	/// <summary>
@@ -52,8 +44,10 @@ private:
 
 	void NameBar(std::string _str, float _fSize, float _space, float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime);
 
-	std::string output_csv_file_path_ScoreData;
-	std::string output_csv_file_path_SortData;
+	void RecvDataInsert(std::vector<std::string> n,std::vector<float> s);
+	
+
+	std::string output_csv_file_path_RecvRankingsSortData;
 	CsvReader* csv;
 	int width;
 	int height;
@@ -98,7 +92,15 @@ private:
 
 	XINPUT_STATE pad;
 
+
+
+
 	//表示開始していいか
 	bool output_;
+	//受信まで行った
+	bool RecvOK_;
+
+	float movetiemr_;
+	void Move();
 };
 

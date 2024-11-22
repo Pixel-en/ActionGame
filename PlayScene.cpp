@@ -16,7 +16,7 @@ namespace {
 	const float STIME{ 2.0f };
 	const float CDTIME{ 5.0f };
 	const float DTIME{ 1.0f };
-	const float PTIME{ 180.0f };
+	const float PTIME{ 120.0f };
 }
 
 PlayScene::PlayScene(GameObject* parent)
@@ -28,7 +28,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 
-	Filename_ = "1-1.csv";
+	Filename_ = "Test.csv";
 
 	//おそらくマップリストの読み込み
 
@@ -58,8 +58,8 @@ void PlayScene::Reset()
 	Instantiate<Player>(this);
 	Clear* c = Instantiate<Clear>(this);
 
-	f->Reset();
 	c->Reset();
+	f->Reset();
 	starttimer_ = STIME;
 	counttimer_ = CDTIME;
 	deathtimer_ = DTIME;

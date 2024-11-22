@@ -18,6 +18,13 @@ class ResultUI :public GameObject
 	int DrawSpace(float max);
 
 	bool isrank_;
+
+	XINPUT_STATE pad;
+
+	bool recvmove_;
+
+	void CSVReadRank();
+
 public:
 
 	ResultUI(GameObject* parent);
@@ -32,6 +39,8 @@ public:
 
 	void Release() override;
 
-	bool DrawRankOK() { return isrank_; ; }
+	bool DrawRankOK() { return isrank_; };
+
+	void isRecvok_(bool _recvok) { recvmove_ = _recvok; };
 };
 
