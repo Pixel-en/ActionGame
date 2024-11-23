@@ -56,7 +56,7 @@ namespace
 		NONE
 	};
 
-	float PrevTimer{ 3.0f };
+	const int PREVTIMEMM{ 3000 };
 
 	int PrevKey;
 
@@ -519,8 +519,14 @@ void RankingsSystem::DrawWriteUICn()
 
 							NetUDPHandle = MakeUDPSocket(CLIENT_PORT);
 
+							int Starttime = GetNowCount();
+
 							while (CheckNetWorkRecvUDP(NetUDPHandle) == FALSE) {
+								
 								if (ProcessMessage() < 0) break;
+								if (GetNowCount() - Starttime > PREVTIMEMM) {
+									break;
+								}
 							}
 
 							std::vector<std::string> nData;
