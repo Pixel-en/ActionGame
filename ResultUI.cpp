@@ -12,13 +12,7 @@ namespace {
 	
 	//順位、名前スコア
 	std::pair<std::string, std::string> ranking[5];
-	bool outranking = false;
-	bool check = false;
-	int height;
 
-	VECTOR choice1;
-	VECTOR choice2;
-	bool a;
 }
 
 void ResultUI::CSVReadRank() {
@@ -77,7 +71,7 @@ ResultUI::ResultUI(GameObject* parent)
 	:GameObject(parent,"ResultUI"), text_(nullptr),moveflag_(false),isrank_(false)
 {
 	choice1 = { 2050,640 };
-	choice2 = { 2230,640 };
+	choice2 = { 2300,640 };
 	a = true;
 }
 
@@ -90,7 +84,7 @@ void ResultUI::Initialize()
 	time_ = ScoreAndTimeAndMap::GetTimer() / (60 * 2);//2秒でスコア加算がおわる
 	transform_.position_ = ORIGINPOS;
 	trans.position_ = { 0,0,0 };
-	hImage_ = LoadGraph("Assets\\Image\\TestImage\\Test.png");
+	hImage_ = LoadGraph("Assets\\Image\\RankingFrame.png");
 	text_ = Instantiate<OutText>(GetParent());
 }
 
@@ -148,18 +142,18 @@ void ResultUI::Update()
 	}
 
 	if (check) {
-		if (pad.ThumbLX <= -10000) {
+		if (pad.ThumbLX <= -10000||CheckHitKey(KEY_INPUT_LEFT)) {
 			choice1 = { 2050,640 };
-			choice2 = { 2230,640 };
+			choice2 = { 2300,640 };
 			a = true;
 		}
-		if (pad.ThumbLX >= 10000) {
+		if (pad.ThumbLX >= 10000 || CheckHitKey(KEY_INPUT_RIGHT)) {
 			choice1 = { 2550,640 };
-			choice2 = { 3000,640 };
+			choice2 = { 2900,640 };
 			a = false;
 		}
 
-		if (pad.Buttons[XINPUT_BUTTON_A]) {
+		if (pad.Buttons[XINPUT_BUTTON_A]||CheckHitKey(KEY_INPUT_RETURN)) {
 			if (a)
 				ScoreAndTimeAndMap::RetryMap();
 			SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);
@@ -198,7 +192,7 @@ void ResultUI::Draw()
 
 	if (isrank_) {
 		text_->DrawString("Write Down ↓ Your Name", trans.position_.x + 200, +trans.position_.y + 300);
-		//DrawGraph(trans.position_.x + 2050, trans.position_.y + 200, hImage_, true);
+		DrawGraph(trans.position_.x + 2050, trans.position_.y + 200, hImage_, true);
 		if (check) {
 			DrawRank();
 

@@ -11,43 +11,6 @@ namespace
 	const unsigned short SERVER_PORT = 8888;
 	const unsigned short CLIENT_PORT = 8080;
 
-	int RecvSize, TotalRecvSize;
-
-	BYTE Data[500];
-	char Buff[256];
-
-	int mojiSize = 32;
-	int AsciiCodeEN = 65;
-	struct NData
-	{
-		int posX1;
-		int posY1;
-		int posX2;
-		int posY2;
-		int Ascii;
-	};
-
-	int dcx1 = 900;
-	int dcy1 = 400;
-	int dcx2 = dcx1 + mojiSize;
-	int dcy2 = dcy1 + mojiSize;
-
-
-	int nowMojiCount = -1;
-	bool InCnPrevKey = false;
-
-	int prevX1, prevY1, prevX2, prevY2;
-
-
-	char cName[256];
-
-	const int Y = 6;
-	const int X = 7;
-	int del_space_enter = 48;
-	NData N[Y][X];
-
-	bool inPrev = false;
-
 	enum PrevKey {
 		UP,
 		RIGHT,
@@ -58,11 +21,10 @@ namespace
 
 	const int PREVTIMEMM{ 3000 };
 
-	int PrevKey;
-
 	const float MOVETIME{ 1.0f };
 
-	bool sendrecv;
+
+	
 }
 
 
@@ -525,6 +487,7 @@ void RankingsSystem::DrawWriteUICn()
 								
 								if (ProcessMessage() < 0) break;
 								if (GetNowCount() - Starttime > PREVTIMEMM) {
+									Time::ReTime();
 									break;
 								}
 							}

@@ -29,6 +29,14 @@ class ResultUI :public GameObject
 
 	int hImage_;
 
+	bool outranking = false;
+	bool check = false;
+	int height;
+
+	VECTOR choice1;
+	VECTOR choice2;
+	bool a;
+
 public:
 
 	ResultUI(GameObject* parent);

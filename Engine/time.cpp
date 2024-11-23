@@ -23,3 +23,10 @@ float Time::DeltaTime()
 {
 	return deltaTime;
 }
+
+void Time::ReTime()
+{
+	freq.QuadPart = 10000000;
+	current.QuadPart = 0.0f;
+	deltaTime = 0.0f;
+}

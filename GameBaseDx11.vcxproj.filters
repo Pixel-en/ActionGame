@@ -26,6 +26,9 @@
     <Filter Include="PlayPreparationScene">
       <UniqueIdentifier>{f9ab5f28-78d7-4f11-b90c-befef118f3b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ResultScene">
+      <UniqueIdentifier>{6f58ae56-f88e-49ca-ac4a-645fa9762392}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\GameObject.cpp">
@@ -115,9 +118,6 @@
     <ClCompile Include="ClearPlayer.cpp" />
     <ClCompile Include="CleraLogo.cpp" />
     <ClCompile Include="PlaySound.cpp" />
-    <ClCompile Include="Tutorial.cpp" />
-    <ClCompile Include="RankingsScene.cpp" />
-    <ClCompile Include="RankingsSystem.cpp" />
     <ClCompile Include="Slime.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
@@ -126,9 +126,6 @@
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>PlayScene\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="TestOpenObject.cpp">
-      <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Zombie.cpp">
@@ -144,14 +141,25 @@
     <ClCompile Include="PlayPreparationScene.cpp">
       <Filter>PlayPreparationScene</Filter>
     </ClCompile>
-    <ClCompile Include="ResultScene.cpp" />
-    <ClCompile Include="ScoreAndTime.cpp" />
     <ClCompile Include="OutText.cpp" />
     <ClCompile Include="PlayPreparationPlayer.cpp">
       <Filter>PlayPreparationScene</Filter>
     </ClCompile>
     <ClCompile Include="PlayPreparationState.cpp">
       <Filter>PlayPreparationScene</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenObject.cpp" />
+    <ClCompile Include="ScoreAndTimeAndMap.cpp" />
+    <ClCompile Include="TutorialScene.cpp" />
+    <ClCompile Include="TutorialUI.cpp" />
+    <ClCompile Include="ResultScene.cpp">
+      <Filter>ResultScene</Filter>
+    </ClCompile>
+    <ClCompile Include="ResultUI.cpp">
+      <Filter>ResultScene</Filter>
+    </ClCompile>
+    <ClCompile Include="RankingsSystem.cpp">
+      <Filter>ResultScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -253,9 +261,6 @@
     <ClInclude Include="CleraLogo.h" />
     <ClInclude Include="PlaySound.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Tutorial.h" />
-    <ClInclude Include="RankingsScene.h" />
-    <ClInclude Include="RankingsSystem.h" />
     <ClInclude Include="Slime.h">
       <Filter>PlayScene\Enemy</Filter>
     </ClInclude>
@@ -264,9 +269,6 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>PlayScene\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="TestOpenObject.h">
-      <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Zombie.h">
@@ -282,14 +284,25 @@
     <ClInclude Include="PlayPreparationScene.h">
       <Filter>PlayPreparationScene</Filter>
     </ClInclude>
-    <ClInclude Include="ResultScene.h" />
-    <ClInclude Include="ScoreAndTime.h" />
     <ClInclude Include="OutText.h" />
     <ClInclude Include="PlayPreparationState.h">
       <Filter>PlayPreparationScene</Filter>
     </ClInclude>
     <ClInclude Include="PlayPreparationPlayer.h">
       <Filter>PlayPreparationScene</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenObject.h" />
+    <ClInclude Include="ScoreAndTimeAndMap.h" />
+    <ClInclude Include="TutorialScene.h" />
+    <ClInclude Include="TutorialUI.h" />
+    <ClInclude Include="ResultScene.h">
+      <Filter>ResultScene</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultUI.h">
+      <Filter>ResultScene</Filter>
+    </ClInclude>
+    <ClInclude Include="RankingsSystem.h">
+      <Filter>ResultScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

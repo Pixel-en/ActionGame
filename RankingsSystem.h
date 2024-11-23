@@ -11,6 +11,9 @@
 class CsvReader;
 class OutText;
 
+const int Y = 6;
+const int X = 7;
+
 class RankingsSystem : public GameObject
 {
 public:
@@ -45,6 +48,10 @@ private:
 	void NameBar(std::string _str, float _fSize, float _space, float _x1, float _y1, float _x2, float _y2, float _eraseTimer, float _eraseTime);
 
 	void RecvDataInsert(std::vector<std::string> n, std::vector<std::string> s, std::vector<std::string> r);
+
+
+	int AsciiCodeEN = 65;
+	int nowMojiCount = -1;
 
 	std::string output_csv_file_path_RecvRankingsSortData;
 	CsvReader* csv;
@@ -91,7 +98,41 @@ private:
 
 	XINPUT_STATE pad;
 
+	int RecvSize, TotalRecvSize;
 
+	BYTE Data[500];
+	char Buff[256];
+
+	int mojiSize = 32;
+	struct NData
+	{
+		int posX1;
+		int posY1;
+		int posX2;
+		int posY2;
+		int Ascii;
+	};
+
+	int dcx1 = 900;
+	int dcy1 = 400;
+	int dcx2 = dcx1 + mojiSize;
+	int dcy2 = dcy1 + mojiSize;
+
+
+	bool InCnPrevKey = false;
+
+	int prevX1, prevY1, prevX2, prevY2;
+
+
+	int del_space_enter = 48;
+	NData N[Y][X];
+
+	bool inPrev = false;
+
+	int PrevKey;
+
+
+	bool sendrecv;
 
 
 	//•\Ž¦ŠJŽn‚µ‚Ä‚¢‚¢‚©

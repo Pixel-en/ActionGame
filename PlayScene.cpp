@@ -31,7 +31,10 @@ void PlayScene::Initialize()
 	Filename_ = "Stage\\Stage3.csv";
 
 	//おそらくマップリストの読み込み
-
+	if (ScoreAndTimeAndMap::IsLastMap()) {
+		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID_CLEAR);
+		return;
+	}
 	Filename_ = ScoreAndTimeAndMap::NextMap();
 
 	Reset();

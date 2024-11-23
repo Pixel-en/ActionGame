@@ -4,4 +4,5 @@ namespace Time {
 	void Init();
 	void Refresh();
 	float DeltaTime();
+	void ReTime();
 };

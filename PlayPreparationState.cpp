@@ -166,7 +166,7 @@ void PlayPreparationState::Update()
 		if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A])
 			startflag_ = true;
 	}
-	if (poscount_ >= 0 && poscount_ < 3) {
+	if (poscount_ >= 0 && poscount_ < 4) {
 		if (residue_ > 0) {
 			if (param_[poscount_] < 4 && paramvar == 1) {
 				param_[poscount_] += paramvar;
