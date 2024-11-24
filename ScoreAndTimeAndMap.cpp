@@ -81,3 +81,8 @@ void ScoreAndTimeAndMap::RetryMap()
 {
 	number_--;
 }
+
+int ScoreAndTimeAndMap::GetMapNum()
+{
+	return number_;
+}

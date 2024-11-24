@@ -18,5 +18,10 @@ namespace ScoreAndTimeAndMap {
 	std::string NextMap();
 	bool IsLastMap();
 	void RetryMap();
+	/// <summary>
+	/// マップの番号を取得(ただし0オリジン)
+	/// </summary>
+	/// <returns>マップの番号</returns>
+	int GetMapNum();
 
 }
