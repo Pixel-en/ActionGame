@@ -22,7 +22,7 @@ namespace {
 	const XMFLOAT3 EFFECTATTACK{ 20,10,0 };
 	const XMFLOAT3 EFFECTJUMP{ 0,5,0 };
 	const XMFLOAT3 EFFECTMOVE{ 30,-5,0 };
-	
+
 }
 
 void Player::LoadParameter()
@@ -115,7 +115,9 @@ Player::~Player()
 void Player::Initialize()
 {
 	hImage_ = LoadGraph("Assets\\Image\\new-Player1.5.png");
-	assert(hImage_ > 0);
+	if (hImage_ < 0) {
+		MessageBox(NULL, "プレイヤーのテクスチャ", NULL, MB_OK);
+	}
 }
 
 void Player::Update()
@@ -131,7 +133,7 @@ void Player::Update()
 		transform_.position_.y += Gaccel_;
 	}
 	if (pc != nullptr) {
-		if (transform_.position_.y > 1050&&!pc->isStateClear())
+		if (transform_.position_.y > 1050 && !pc->isStateClear())
 			anim_.animtype_ = RESET;
 	}
 	else {
@@ -152,7 +154,7 @@ void Player::Update()
 		}
 	}
 	else {
-		if (anim_.animtype_ < Animation::DAMAGE ) {
+		if (anim_.animtype_ < Animation::DAMAGE) {
 			anim_.animtype_ = Animation::IDOL;
 			MoveControl();
 		}
@@ -162,7 +164,7 @@ void Player::Update()
 
 	CameraScroll();
 
-	
+
 }
 
 void Player::Draw()
@@ -262,7 +264,7 @@ void Player::MoveControl()
 			anim_.animtype_ = Animation::WALK;
 
 			//ダッシュ
-			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT))||pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER]||pad.LeftTrigger>=150) {
+			if ((CheckHitKey(KEY_INPUT_LSHIFT) || CheckHitKey(KEY_INPUT_RSHIFT)) || pad.Buttons[XINPUT_BUTTON_LEFT_SHOULDER] || pad.LeftTrigger >= 150) {
 				Dash = 2.0f;
 				anim_.animtype_ = Animation::RUN;
 			}
@@ -329,7 +331,7 @@ bool Player::ActionControl()
 {
 
 	//採取
-	if (CheckHitKey(KEY_INPUT_I) || (pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER]&& pad.RightTrigger < 150)) {
+	if (CheckHitKey(KEY_INPUT_I) || (pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.RightTrigger < 150)) {
 		anim_.animtype_ = Animation::COLLECTION;
 		miningtime_ = Time::DeltaTime() * ParamCorre_[param_.technic_].technic_;
 	}
@@ -351,7 +353,6 @@ bool Player::ActionControl()
 						b->Set(-1, BULLET_TYPE::BOLT, bpos, attack_[Atype_].range_, "Enemy");
 					Damege = -1;
 				}
-				attackbuttondown = true;
 			}
 		}
 
@@ -368,39 +369,57 @@ bool Player::ActionControl()
 						b->Set(-1, BULLET_TYPE::CHARGE, bpos, attack_[Atype_].range_, "Enemy");
 					Damege = -1;
 				}
-				attackbuttondown = true;
 			}
 		}
 	}
 
-	else if (((CheckHitKey(KEY_INPUT_J) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_X])) && !attackbuttondown) || Atype_ == AttackType::ATTACKT) {
+	else if (((CheckHitKey(KEY_INPUT_J) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_X])) && !attackbuttondown) ||
+		Atype_ == AttackType::ATTACKT || Atype_ == AttackType::ATTACK2T) {
 		if (rechargetimer_[0] < 0.0) {
-			anim_.animtype_ = Animation::ATTACK;
-			Atype_ = ATTACKT;
-			attackbuttondown = true;
+			if (((pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_X])) && !attackbuttondown && anim_.animframe_ >= 4 && Atype_ == ATTACKT) {
+				rechargetimer_[ATTACKT - 1] = attack_[Atype_].recharge_;
+				Atype_ = ATTACK2T;
+				anim_.animtype_ = Animation::ATTACK2;
+			}
+			else {
+				anim_.animtype_ = Animation::ATTACK;
+				Atype_ = ATTACKT;
+			}
 		}
+		if (Atype_ == AttackType::ATTACK2T) {
+			if (rechargetimer_[1] < 0.0) {
+				anim_.animtype_ = Animation::ATTACK2;
+				Atype_ = ATTACK2T;
+			}
+		}
+
 	}
 
-	else if (((CheckHitKey(KEY_INPUT_K) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_Y])) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
-		if (rechargetimer_[1] < 0.0) {
-			anim_.animtype_ = Animation::ATTACK2;
-			Atype_ = ATTACK2T;
-			attackbuttondown = true;
-		}
-	}
+	//else if (((CheckHitKey(KEY_INPUT_K) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_Y])) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
+	//	if (rechargetimer_[1] < 0.0) {
+	//		anim_.animtype_ = Animation::ATTACK2;
+	//		Atype_ = ATTACK2T;
+	//		attackbuttondown = true;
+	//	}
+	//}
 
 	else if (((CheckHitKey(KEY_INPUT_L) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_B])) && !attackbuttondown) || Atype_ == AttackType::ATTACK3T) {
 		if (rechargetimer_[2] < 0.0) {
 			anim_.animtype_ = Animation::ATTACK3;
 			Atype_ = ATTACK3T;
-			attackbuttondown = true;
 		}
 	}
 
-	else if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M) &&
+	if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M) &&
 		!pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_Y] && !pad.Buttons[XINPUT_BUTTON_X] && pad.RightTrigger < 150)
 		attackbuttondown = false;
+	else
+		attackbuttondown = true;
 
+
+	//if (CheckHitKey(KEY_INPUT_J) || CheckHitKey(KEY_INPUT_K) || CheckHitKey(KEY_INPUT_L) || CheckHitKey(KEY_INPUT_M) ||
+	//	pad.Buttons[XINPUT_BUTTON_B] || pad.Buttons[XINPUT_BUTTON_Y] || pad.Buttons[XINPUT_BUTTON_X] || pad.RightTrigger >= 150)
+	//	attackbuttondown = true;
 
 
 	for (int i = 0; i < 5; i++) {
@@ -469,7 +488,7 @@ void Player::AnimStatus()
 		}
 		break;
 	case Player::JUMP:
-		
+
 		anim_.AFmax_ = 6;
 		anim_.AFCmax_ = 120;
 		anim_.animloop_ = false;
@@ -617,7 +636,7 @@ void Player::AttackAnim()
 			anim_.animframecount_ = 0;
 		}
 		anim_.animSkip_ = true;
-		
+
 		if (anim_.animframe_ >= 2 && anim_.animframe_ <= 4) {
 			Damege = attack_[Atype_].power_ * ParamCorre_[param_.strength_].strength_;
 			if (Damege <= 0)
@@ -769,7 +788,7 @@ bool Player::PlayerAttackHitCheck(XMFLOAT3 _trans, VECTOR _hitbox)
 		attacktrans_ = { transform_.position_.x + LUPOINT.x,transform_.position_.y + LUPOINT.y,transform_.position_.z };
 		attackhitbox_ = VGet(-attack_[Atype_].range_, HITBOXSIZE.y, 0);
 		//攻撃用当たり判定
-		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + attackhitbox_.x, ypos + LUPOINT.y+attackhitbox_.y, GetColor(0, 0, 255), false);
+		DrawBox(xpos + LUPOINT.x, ypos + LUPOINT.y, xpos + LUPOINT.x + attackhitbox_.x, ypos + LUPOINT.y + attackhitbox_.y, GetColor(0, 0, 255), false);
 	}
 
 	bool set = hitobject_->HitObjectANDObject(attacktrans_, attackhitbox_, _trans, _hitbox);
