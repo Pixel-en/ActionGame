@@ -149,6 +149,9 @@ void Slime::UpdateAttack()
 	transform_.position_.x -= targetvec_.x * speed * Time::DeltaTime();
 	transform_.position_.y -= targetvec_.y * speed * Time::DeltaTime();
 
+	hitobj_->RightCollisionCheck();
+	hitobj_->LeftCollisionCheck();
+
 	speed -= SPEEDDOWN;
 	if (speed < 0) {
 		Eanim_.animtype_ = IDOL;

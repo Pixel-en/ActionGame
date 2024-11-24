@@ -600,7 +600,8 @@ void Player::AttackAnim()
 			else
 				transform_.position_.x += -MOVESPEED * ParamCorre_[param_.speed_].speed_ * Time::DeltaTime() * 3.0;
 		}
-
+		hitobject_->RightCollisionCheck();
+		hitobject_->LeftCollisionCheck();
 
 	case Player::ATTACKT:
 		anim_.AFmax_ = 6;
