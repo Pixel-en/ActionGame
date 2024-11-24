@@ -470,7 +470,8 @@ void RankingsSystem::DrawWriteUICn()
 
 							Ip = ipStr.str();
 
-							std::string SendData = str + "." + std::to_string(ScoreAndTimeAndMap::GetScore()) + ":" + Ip;
+							//マップ番号.名前.スコア:IPアドレス
+							std::string SendData =std::to_string(ScoreAndTimeAndMap::GetMapNum()) + "." + str + "." + std::to_string(ScoreAndTimeAndMap::GetScore()) + ":" + Ip;
 
 
 							//文字列送信
