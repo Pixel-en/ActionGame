@@ -374,17 +374,18 @@ bool Player::ActionControl()
 	}
 
 	else if (((CheckHitKey(KEY_INPUT_J) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_X])) && !attackbuttondown) ||
-		Atype_ == AttackType::ATTACKT || Atype_ == AttackType::ATTACK2T) {
+		Atype_ == AttackType::ATTACKT/*|| Atype_ == AttackType::ATTACK2T*/) {
 		if (rechargetimer_[0] < 0.0) {
+			/*
 			if (((pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_X])) && !attackbuttondown && anim_.animframe_ >= 4 && Atype_ == ATTACKT) {
 				rechargetimer_[ATTACKT - 1] = attack_[Atype_].recharge_;
 				Atype_ = ATTACK2T;
 				anim_.animtype_ = Animation::ATTACK2;
 			}
-			else {
+			else {*/
 				anim_.animtype_ = Animation::ATTACK;
 				Atype_ = ATTACKT;
-			}
+			//}
 		}
 		if (Atype_ == AttackType::ATTACK2T) {
 			if (rechargetimer_[1] < 0.0) {
@@ -395,13 +396,13 @@ bool Player::ActionControl()
 
 	}
 
-	//else if (((CheckHitKey(KEY_INPUT_K) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_Y])) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
-	//	if (rechargetimer_[1] < 0.0) {
-	//		anim_.animtype_ = Animation::ATTACK2;
-	//		Atype_ = ATTACK2T;
-	//		attackbuttondown = true;
-	//	}
-	//}
+	else if (((CheckHitKey(KEY_INPUT_K) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_Y])) && !attackbuttondown) || Atype_ == AttackType::ATTACK2T) {
+		if (rechargetimer_[1] < 0.0) {
+			anim_.animtype_ = Animation::ATTACK2;
+			Atype_ = ATTACK2T;
+			attackbuttondown = true;
+		}
+	}
 
 	else if (((CheckHitKey(KEY_INPUT_L) || (pad.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && pad.Buttons[XINPUT_BUTTON_B])) && !attackbuttondown) || Atype_ == AttackType::ATTACK3T) {
 		if (rechargetimer_[2] < 0.0) {
@@ -413,13 +414,13 @@ bool Player::ActionControl()
 	if (!CheckHitKey(KEY_INPUT_J) && !CheckHitKey(KEY_INPUT_K) && !CheckHitKey(KEY_INPUT_L) && !CheckHitKey(KEY_INPUT_M) &&
 		!pad.Buttons[XINPUT_BUTTON_B] && !pad.Buttons[XINPUT_BUTTON_Y] && !pad.Buttons[XINPUT_BUTTON_X] && pad.RightTrigger < 150)
 		attackbuttondown = false;
-	else
-		attackbuttondown = true;
-
-
-	//if (CheckHitKey(KEY_INPUT_J) || CheckHitKey(KEY_INPUT_K) || CheckHitKey(KEY_INPUT_L) || CheckHitKey(KEY_INPUT_M) ||
-	//	pad.Buttons[XINPUT_BUTTON_B] || pad.Buttons[XINPUT_BUTTON_Y] || pad.Buttons[XINPUT_BUTTON_X] || pad.RightTrigger >= 150)
+	//else
 	//	attackbuttondown = true;
+
+
+	if (CheckHitKey(KEY_INPUT_J) || CheckHitKey(KEY_INPUT_K) || CheckHitKey(KEY_INPUT_L) || CheckHitKey(KEY_INPUT_M) ||
+		pad.Buttons[XINPUT_BUTTON_B] || pad.Buttons[XINPUT_BUTTON_Y] || pad.Buttons[XINPUT_BUTTON_X] || pad.RightTrigger >= 150)
+		attackbuttondown = true;
 
 
 	for (int i = 0; i < 5; i++) {

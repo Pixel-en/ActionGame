@@ -47,6 +47,16 @@ void RankingsSystem::Initialize()
 	width = csv->GetColumns(0);
 	height = csv->GetLines();
 
+	CsvReader* ipcsv = new CsvReader("Assets\\Rankings\\IP.csv");
+	IpAddr.d1 = ipcsv->GetInt(1, 0);
+	IpAddr.d2 = ipcsv->GetInt(1, 1);
+	IpAddr.d3 = ipcsv->GetInt(1, 2);
+	IpAddr.d4 = ipcsv->GetInt(1, 3);
+	if (ipcsv != nullptr) {
+		delete ipcsv;
+		ipcsv = nullptr;
+	}
+
 	tText = Instantiate<OutText>(GetParent());
 
 	SetEnd = false;
@@ -447,10 +457,10 @@ void RankingsSystem::DrawWriteUICn()
 
 							//UDP通信用ソケットハンドルを作成
 							NetUDPHandle = MakeUDPSocket(-1);
-							IpAddr.d1 = 192;
-							IpAddr.d2 = 168;
-							IpAddr.d3 = 0;
-							IpAddr.d4 = 25;
+							//IpAddr.d1 = 192;
+							//IpAddr.d2 = 168;
+							//IpAddr.d3 = 0;
+							//IpAddr.d4 = 25;
 
 							IPDATA IPAddress[2];
 							int IPNum;
