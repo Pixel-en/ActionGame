@@ -61,7 +61,7 @@ void TitleScene::Update()
 			y = 540;
 	}
 
-	if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A] || decision_) {
+	if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A]||pad.Buttons[XINPUT_BUTTON_B] || pad.Buttons[XINPUT_BUTTON_START] || decision_) {
 		decision_ = true;
 
 		if (wait_ < WAITTIME)
