@@ -13,6 +13,9 @@ void ResultScene::Initialize()
 	Instantiate<BackGround>(this);
 	Instantiate<ResultUI>(this);
 	Instantiate<RankingsSystem>(this);
+
+	PlayMusic("Assets\\Sounds\\BGM\\Result.mp3",DX_PLAYTYPE_LOOP);
+	SetVolumeMusic(255);
 }
 
 void ResultScene::Update()
@@ -24,6 +27,7 @@ void ResultScene::Update()
 		rank->DrawOK(ui->DrawRankOK());
 		ui->isRecvok_(rank->RecvOK());
 	}
+	//シーン移動とBGMのストップはResultUIについてる
 }
 
 void ResultScene::Draw()

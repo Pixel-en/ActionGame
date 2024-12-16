@@ -34,6 +34,9 @@ void TitleScene::Initialize()
 	y = 500;
 
 	ScoreAndTimeAndMap::MapReset();
+
+	PlayMusic("Assets\\Sounds\\BGM\\Start.mp3", DX_PLAYTYPE_LOOP);
+	SetVolumeMusic(255);
 }
 
 void TitleScene::Update()
@@ -63,10 +66,15 @@ void TitleScene::Update()
 
 	if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A]||pad.Buttons[XINPUT_BUTTON_B] || pad.Buttons[XINPUT_BUTTON_START] || decision_) {
 		decision_ = true;
+		if (CheckMusic() == 1)
+			StopMusic();
 
+		SE::PlaySE(SE::SENAME::T_Choise);
+		
 		if (wait_ < WAITTIME)
 			wait_ += Time::DeltaTime();
 		else {
+			SE::StopSE(SE::SENAME::T_Choise);
 			wait_ = WAITTIME;
 			speed += 20;
 			transform_.position_.x -= speed * Time::DeltaTime();

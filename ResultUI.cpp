@@ -154,6 +154,7 @@ void ResultUI::Update()
 		}
 
 		if (pad.Buttons[XINPUT_BUTTON_A]||CheckHitKey(KEY_INPUT_RETURN)) {
+			StopMusic();
 			if (a)
 				ScoreAndTimeAndMap::RetryMap();
 			SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);

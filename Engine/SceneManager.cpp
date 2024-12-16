@@ -23,7 +23,7 @@ void SceneManager::Initialize()
 	currentSceneID_ = SCENE_ID_TEST;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<TestScene>(this);
-
+	SE::InitSE();
 }
 
 //çXêV
@@ -42,10 +42,7 @@ void SceneManager::Update()
 		switch (nextSceneID_)
 		{
 		case SCENE_ID_TEST: Instantiate<TestScene>(this); break;
-		case SCENE_ID_TITLE: Instantiate<TitleScene>(this);
-			PlayMusic("Assets\\Sounds\\BGM\\Start.mp3", DX_PLAYTYPE_LOOP);
-			SetVolumeMusic(255);
-			break;
+		case SCENE_ID_TITLE: Instantiate<TitleScene>(this);	break;
 		case SCENE_ID_TUTORIAL: Instantiate<TutorialScene>(this); break;
 		case SCENE_ID_PREPARATION: Instantiate<PlayPreparationScene>(this); break;
 		case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;

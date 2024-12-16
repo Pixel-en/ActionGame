@@ -39,7 +39,8 @@ void PlayScene::Initialize()
 
 	Reset();
 
-	
+	PlayMusic("Assets\\Sounds\\BGM\\Play.mp3", DX_PLAYTYPE_LOOP);
+	SetVolumeMusic(150);
 }
 
 void PlayScene::Reset()
@@ -95,8 +96,8 @@ void PlayScene::Update()
 		break;
 	}
 
-	if(CheckHitKey(KEY_INPUT_ESCAPE))
-		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
+	//if(CheckHitKey(KEY_INPUT_ESCAPE))
+	//	SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);
 }
 
 void PlayScene::Draw()
@@ -145,6 +146,9 @@ void PlayScene::UpdatePlay()
 
 void PlayScene::UpdateClear()
 {
+	if (CheckMusic() == 1)
+		StopMusic();
+
 	counttimer_ -= Time::DeltaTime();
 	if (counttimer_ < 0) {
 		SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_RESULT);
@@ -154,6 +158,9 @@ void PlayScene::UpdateClear()
 
 void PlayScene::UpdateDeath()
 {
+	if (CheckMusic() == 1)
+		StopMusic();
+
 	deathtimer_ -= Time::DeltaTime();
 	if (deathtimer_ < 0) {
 		Reset();

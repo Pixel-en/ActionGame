@@ -19,9 +19,7 @@ namespace SE
 			G_Clear,
 
 		};
-	}
-
-	using namespace SENAME;
+	};
 
 	/// <summary>
 	/// SE‚Ì‰Šú‰»
@@ -33,20 +31,20 @@ namespace SE
 	/// </summary>
 	/// <param name="_se">Ä¶‚µ‚½‚¢SE</param>
 	/// <returns>¬Œ÷‚µ‚½‚ç 1 Ž¸”s‚µ‚½‚ç 0</returns>
-	bool PlaySE(SEs _se);
+	int PlaySE(SENAME::SEs _se);
 
 	/// <summary>
 	/// SE‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚©
 	/// </summary>
 	/// <param name="_se">’²‚×‚½‚¢SE</param>
-	/// <returns>Ä¶‚³‚ê‚Ä‚¢‚½‚ç 1 Ž¸”s‚µ‚½‚ç 0</returns>
-	bool CheckSE(SEs _se);
+	/// <returns>Ä¶‚³‚ê‚Ä‚¢‚½‚ç 1 Ä¶‚³‚ê‚Ä‚¢‚È‚©‚Á‚½‚ç 0</returns>
+	int CheckSE(SENAME::SEs _se);
 
 	/// <summary>
 	/// SE‚ðŽ~‚ß‚é
 	/// </summary>
 	/// <param name="_se">Ž~‚ß‚½‚¢SE</param>
-	void StopSE(SEs _se);
+	void StopSE(SENAME::SEs _se);
 
 	/// <summary>
 	/// SE‚ðŽ~‚ß‚é
@@ -57,7 +55,7 @@ namespace SE
 	/// SE‚ðƒƒ‚ƒŠ‚©‚çíœ
 	/// </summary>
 	/// <param name="_se">íœ‚µ‚½‚¢SE</param>
-	void DeleteSE(SEs _se);
+	void DeleteSE(SENAME::SEs _se);
 
 	/// <summary>
 	/// SE‚ðƒƒ‚ƒŠ‚©‚çíœ
