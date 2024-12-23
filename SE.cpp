@@ -14,6 +14,8 @@ void SE::InitSE()
 	DeleteSE();
 
 	sHandol_ = { {SENAME::SEs::T_Choise,    LoadSoundMem("Assets\\Sounds\\SE\\Choise.mp3")},
+				 {SENAME::SEs::Pr_Choise,	LoadSoundMem("Assets\\Sounds\\SE\\Choise2.mp3")},
+				 {SENAME::SEs::Pr_Chenge,	LoadSoundMem("Assets\\Sounds\\SE\\Chenge.mp3")},
 				 {SENAME::SEs::G_P_Attack,  LoadSoundMem("Assets\\Sounds\\SE\\Attack.mp3")},
 				 {SENAME::SEs::G_P_Death,   LoadSoundMem("Assets\\Sounds\\SE\\death.mp3")},
 				 {SENAME::SEs::G_E_Attack,  LoadSoundMem("Assets\\Sounds\\SE\\EAttack.mp3")},
@@ -22,6 +24,7 @@ void SE::InitSE()
 				 {SENAME::SEs::G_Ladder,    LoadSoundMem("Assets\\Sounds\\SE\\ladder.mp3")},
 				 {SENAME::SEs::G_Mine,      LoadSoundMem("Assets\\Sounds\\SE\\mine.mp3")},
 				 {SENAME::SEs::G_Rune,      LoadSoundMem("Assets\\Sounds\\SE\\Rune.mp3")},
+				 {SENAME::SEs::R_Score,     LoadSoundMem("Assets\\Sounds\\SE\\Score.mp3")},
 	};
 	for (auto i : sHandol_)
 		assert(i.second >= 0);

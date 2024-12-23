@@ -47,10 +47,25 @@ void TitleScene::Update()
 	if (!decision_) {
 		if (button_ == false) {
 			if (CheckHitKey(KEY_INPUT_UP)||pad.ThumbLY>=10000) {
+				if (!updown) {
+					if (SE::CheckSE(SE::SENAME::Pr_Choise) == 1)
+						SE::StopSE(SE::SENAME::Pr_Choise);
+
+					SE::PlaySE(SE::SENAME::Pr_Choise);
+				}
+
 				updown = true;
 				button_ = true;
 			}
 			if (CheckHitKey(KEY_INPUT_DOWN) || pad.ThumbLY <= -10000) {
+
+				if (updown) {
+					if (SE::CheckSE(SE::SENAME::Pr_Choise) == 1)
+						SE::StopSE(SE::SENAME::Pr_Choise);
+
+					SE::PlaySE(SE::SENAME::Pr_Choise);
+				}
+
 				updown = false;
 				button_ = true;
 			}
@@ -58,19 +73,24 @@ void TitleScene::Update()
 		if (!CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN) && pad.ThumbLY > -10000 && pad.ThumbLY < 10000)
 			button_ = false;
 
-		if (updown)
+		if (updown) {
 			y = 490;
-		else
+		}
+		else {
 			y = 540;
+		}
 	}
 
-	if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A]||pad.Buttons[XINPUT_BUTTON_B] || pad.Buttons[XINPUT_BUTTON_START] || decision_) {
+	if ((CheckHitKey(KEY_INPUT_RETURN) || pad.Buttons[XINPUT_BUTTON_A] || pad.Buttons[XINPUT_BUTTON_B] || pad.Buttons[XINPUT_BUTTON_START]) && !decision_) {
 		decision_ = true;
+		SE::PlaySE(SE::SENAME::T_Choise);
+	}
+
+	if (decision_) {
+		//BGM‚ðŽ~‚ß‚é
 		if (CheckMusic() == 1)
 			StopMusic();
 
-		SE::PlaySE(SE::SENAME::T_Choise);
-		
 		if (wait_ < WAITTIME)
 			wait_ += Time::DeltaTime();
 		else {

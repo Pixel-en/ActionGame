@@ -101,6 +101,8 @@ void ResultUI::Update()
 		if (ScoreAndTimeAndMap::GetTimer() > 0.0) {
 			ScoreAndTimeAndMap::SubTimer(time_);
 			oneSecond_ += time_;
+			//‰¹o‚µ‚½‚¢
+
 			//1•b•ª‚½‚Ü‚Á‚½‚ç
 			while (oneSecond_ >= 1.0)
 			{

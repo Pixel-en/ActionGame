@@ -8,6 +8,8 @@ namespace SE
 		enum SEs
 		{
 			T_Choise,
+			Pr_Choise,
+			Pr_Chenge,
 			G_P_Attack,
 			G_P_Death,
 			G_E_Attack,
@@ -17,6 +19,7 @@ namespace SE
 			G_Mine,
 			G_Rune,
 			G_Clear,
+			R_Score,
 
 		};
 	};

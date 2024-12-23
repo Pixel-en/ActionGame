@@ -15,7 +15,7 @@ void ResultScene::Initialize()
 	Instantiate<RankingsSystem>(this);
 
 	PlayMusic("Assets\\Sounds\\BGM\\Result.mp3",DX_PLAYTYPE_LOOP);
-	SetVolumeMusic(255);
+	SetVolumeMusic(200);
 }
 
 void ResultScene::Update()

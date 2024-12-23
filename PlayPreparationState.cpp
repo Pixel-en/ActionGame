@@ -131,11 +131,19 @@ void PlayPreparationState::Update()
 			poscount_--;
 			button_ = true;
 			cursorflag_ = true;
+			if (SE::CheckSE(SE::SENAME::Pr_Choise) == 1)
+				SE::StopSE(SE::SENAME::Pr_Choise);
+
+			SE::PlaySE(SE::SENAME::Pr_Choise);
 		}
 		if (CheckHitKey(KEY_INPUT_DOWN) || pad.ThumbLY <= -10000) {
 			poscount_++;
 			button_ = true;
 			cursorflag_ = true;
+			if (SE::CheckSE(SE::SENAME::Pr_Choise) == 1)
+				SE::StopSE(SE::SENAME::Pr_Choise);
+
+			SE::PlaySE(SE::SENAME::Pr_Choise);
 		}
 		if (CheckHitKey(KEY_INPUT_LEFT) || pad.ThumbLX <= -10000) {
 			paramvar--;
@@ -151,10 +159,13 @@ void PlayPreparationState::Update()
 	if (!CheckHitKey(KEY_INPUT_UP) && !CheckHitKey(KEY_INPUT_DOWN) && !CheckHitKey(KEY_INPUT_LEFT) && !CheckHitKey(KEY_INPUT_RIGHT) &&
 		pad.ThumbLY < 10000 && pad.ThumbLY > -10000 && pad.ThumbLX < 10000 && pad.ThumbLX > -10000)
 		button_ = false;
-	if (poscount_ >= 5)
+
+	if (poscount_ >= 5) {
 		poscount_ = 0;
-	if (poscount_ < 0)
+	}
+	if (poscount_ < 0) {
 		poscount_ = 4;
+	}
 
 	if (cursorflag_)
 		messagenum_ = poscount_ + 1;
@@ -163,20 +174,30 @@ void PlayPreparationState::Update()
 
 
 	if (poscount_ == 4) {
-		if (CheckHitKey(KEY_INPUT_RETURN)||pad.Buttons[XINPUT_BUTTON_A]|| pad.Buttons[XINPUT_BUTTON_B]|| pad.Buttons[XINPUT_BUTTON_START])
+		if (CheckHitKey(KEY_INPUT_RETURN) || pad.Buttons[XINPUT_BUTTON_A] || pad.Buttons[XINPUT_BUTTON_B] || pad.Buttons[XINPUT_BUTTON_START]) {
 			startflag_ = true;
+			SE::PlaySE(SE::SENAME::T_Choise);
+		}
 	}
 	if (poscount_ >= 0 && poscount_ < 4) {
 		if (residue_ > 0) {
 			if (param_[poscount_] < 4 && paramvar == 1) {
 				param_[poscount_] += paramvar;
 				residue_--;
+				if (SE::CheckSE(SE::SENAME::Pr_Chenge) == 1)
+					SE::StopSE(SE::SENAME::Pr_Chenge);
+
+				SE::PlaySE(SE::SENAME::Pr_Chenge);
 			}
 		}
 		if (residue_ < STATUSMEMORYMAX) {
 			if (param_[poscount_] > 0 && paramvar == -1) {
 				param_[poscount_] += paramvar;
 				residue_++;
+				if (SE::CheckSE(SE::SENAME::Pr_Chenge) == 1)
+					SE::StopSE(SE::SENAME::Pr_Chenge);
+
+				SE::PlaySE(SE::SENAME::Pr_Chenge);
 			}
 		}
 	}
