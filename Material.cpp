@@ -128,6 +128,7 @@ void Material::Mining(float _mintime)
 				e->KillMe();
 			KillMe();
 			ScoreAndTimeAndMap::AddScore(MATERIALSCORE);
+			SE::PlaySE(SE::SENAME::G_Mine);
 		}
 	}
 	else {

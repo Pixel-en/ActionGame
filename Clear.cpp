@@ -70,6 +70,7 @@ void Clear::Update()
 			if (p->hitobject_->HitObjectANDObject(p->GetHitTrans().position_, p->GetHitBox(), che->GetPosition(), che->GetHitBox())) {
 				che->AddScore();
 				che->KillMe();
+				SE::PlaySE(SE::SENAME::G_Rune);
 			}
 		}
 
@@ -78,6 +79,7 @@ void Clear::Update()
 			{
 				isgoal_ = true;
 				g->KillMe();
+				SE::PlaySE(SE::SENAME::G_Flag);
 			}
 		}
 		else
