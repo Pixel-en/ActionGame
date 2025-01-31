@@ -48,10 +48,10 @@ void RankingsSystem::Initialize()
 	height = csv->GetLines();
 
 	CsvReader* ipcsv = new CsvReader("Assets\\Rankings\\IP.csv");
-	IpAddr.d1 = ipcsv->GetInt(1, 0);
-	IpAddr.d2 = ipcsv->GetInt(1, 1);
-	IpAddr.d3 = ipcsv->GetInt(1, 2);
-	IpAddr.d4 = ipcsv->GetInt(1, 3);
+	IpAddr.d1 = ipcsv->GetInt(0, 0);
+	IpAddr.d2 = ipcsv->GetInt(0, 1);
+	IpAddr.d3 = ipcsv->GetInt(0, 2);
+	IpAddr.d4 = ipcsv->GetInt(0, 3);
 	if (ipcsv != nullptr) {
 		delete ipcsv;
 		ipcsv = nullptr;
@@ -421,7 +421,7 @@ void RankingsSystem::DrawWriteUICn()
 	for (int y = 0; y < Y; y++) {
 		for (int x = 0; x < X; x++) {
 			if (cx1 == N[y][x].posX1 && cy1 == N[y][x].posY1 && cx2 == N[y][x].posX2 && cy2 == N[y][x].posY2) {
-				if (CheckHitKey(KEY_INPUT_RETURN) || pad.Buttons[XINPUT_BUTTON_A]) {
+				if (CheckHitKey(KEY_INPUT_RETURN) || pad.Buttons[XINPUT_BUTTON_A]||pad.Buttons[XINPUT_BUTTON_B]) {
 					if (InCnPrevKey == false) {
 						char cAscii = static_cast<char>(N[y][x].Ascii);
 						std::string cAscii_ToString(1, cAscii);
@@ -485,7 +485,7 @@ void RankingsSystem::DrawWriteUICn()
 
 
 							//•¶Žš—ñ‘—M
-							assert(NetWorkSendUDP(NetUDPHandle, IpAddr, SERVER_PORT, SendData.c_str(), SendData.size()) >= 0);
+							NetWorkSendUDP(NetUDPHandle, IpAddr, SERVER_PORT, SendData.c_str(), SendData.size());
 							DeleteUDPSocket(NetUDPHandle);
 
 

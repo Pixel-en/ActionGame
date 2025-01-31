@@ -378,6 +378,7 @@ bool Player::ActionControl()
 			anim_.animtype_ = Animation::ATTACK;
 			Atype_ = ATTACKT;
 			attackbuttondown = true;
+			SE::PlaySE(SE::SENAME::G_P_Attack);
 		}
 	}
 
@@ -386,6 +387,7 @@ bool Player::ActionControl()
 			anim_.animtype_ = Animation::ATTACK2;
 			Atype_ = ATTACK2T;
 			attackbuttondown = true;
+			SE::PlaySE(SE::SENAME::G_P_Attack);
 		}
 	}
 
@@ -393,7 +395,6 @@ bool Player::ActionControl()
 		if (rechargetimer_[2] < 0.0) {
 			anim_.animtype_ = Animation::ATTACK3;
 			Atype_ = ATTACK3T;
-			attackbuttondown = true;
 		}
 	}
 
@@ -706,6 +707,7 @@ void Player::HitDamage(VECTOR _dir)
 		Atype_ = AttackType::TNONE;
 		if (HP_ < 0) {
 			anim_.animtype_ = Animation::DEATH;
+			SE::PlaySE(SE::SENAME::G_P_Death);
 			HP_ = ParamCorre_[param_.hp_].hp_;
 		}
 		else {

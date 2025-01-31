@@ -113,6 +113,7 @@ void Enemy::HitDamege(int _damege)
 		if (Eparam_.hp_ <= 0) {
 			Eanim_.animtype_ = EAnimation::DEATH;
 			ScoreAndTimeAndMap::AddScore(Eparam_.score_);
+			SE::PlaySE(SE::SENAME::G_E_Death);
 		}
 		else {
 			Eanim_.animtype_ = EAnimation::DAMEGE;

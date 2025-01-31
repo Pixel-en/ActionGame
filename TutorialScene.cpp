@@ -30,12 +30,18 @@ void TutorialScene::Initialize()
 	Instantiate<Player>(this);
 	f->Reset();
 	Instantiate<TutorialUI>(this);
+
+	PlayMusic("Assets\\Sounds\\BGM\\Tutorial.mp3", DX_PLAYTYPE_LOOP);
+	SetVolumeMusic(200);
 }
 
 void TutorialScene::Update()
 {
 	Clear* c = FindGameObject<Clear>();
 	if (c->GetFlag()) {
+		if (CheckMusic() == 1)
+			StopMusic();
+
 		cleartimer_ -= Time::DeltaTime();
 		if (cleartimer_ < 0) {
 			SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_TITLE);

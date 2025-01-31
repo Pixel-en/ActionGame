@@ -90,7 +90,7 @@ private:
 		int power_;
 		int range_;
 		int attackframe_;
-		int recharge_;
+		float recharge_;
 	};
 
 	PlayerAttackParts attack_[6];
