@@ -20,10 +20,10 @@ void SceneManager::Initialize()
 {
 	Time::Init();
 	//最初のシーンを準備
-	currentSceneID_ = SCENE_ID_TITLE;
+	currentSceneID_ = SCENE_ID_TEST;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<TitleScene>(this);
-
+	Instantiate<TestScene>(this);
+	SE::InitSE();
 }
 
 //更新
@@ -36,11 +36,13 @@ void SceneManager::Update()
 		KillAllChildren();
 		InitGraph();
 
+		std::string filename = "";
+
 		//次のシーンを作成
 		switch (nextSceneID_)
 		{
 		case SCENE_ID_TEST: Instantiate<TestScene>(this); break;
-		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
+		case SCENE_ID_TITLE: Instantiate<TitleScene>(this);	break;
 		case SCENE_ID_TUTORIAL: Instantiate<TutorialScene>(this); break;
 		case SCENE_ID_PREPARATION: Instantiate<PlayPreparationScene>(this); break;
 		case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
@@ -67,4 +69,5 @@ void SceneManager::Release()
 void SceneManager::ChangeScene(SCENE_ID next)
 {
 	nextSceneID_ = next;
+	StopMusic();
 }

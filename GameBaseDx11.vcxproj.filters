@@ -117,7 +117,6 @@
     <ClCompile Include="ClaerScene.cpp" />
     <ClCompile Include="ClearPlayer.cpp" />
     <ClCompile Include="CleraLogo.cpp" />
-    <ClCompile Include="PlaySound.cpp" />
     <ClCompile Include="Slime.cpp">
       <Filter>PlayScene\Enemy</Filter>
     </ClCompile>
@@ -161,6 +160,7 @@
     <ClCompile Include="RankingsSystem.cpp">
       <Filter>ResultScene</Filter>
     </ClCompile>
+    <ClCompile Include="SE.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GameObject.h">
@@ -259,7 +259,6 @@
     <ClInclude Include="ClaerScene.h" />
     <ClInclude Include="ClearPlayer.h" />
     <ClInclude Include="CleraLogo.h" />
-    <ClInclude Include="PlaySound.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Slime.h">
       <Filter>PlayScene\Enemy</Filter>
@@ -304,6 +303,7 @@
     <ClInclude Include="RankingsSystem.h">
       <Filter>ResultScene</Filter>
     </ClInclude>
+    <ClInclude Include="SE.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ActionGame.rc">

@@ -111,7 +111,7 @@ void Skeleton::Draw()
 	XMFLOAT3 attacktrans_ = { GetCenterTransPos().x - DAMEGERANGE / 2.0f,GetCenterTransPos().y - DAMEGERANGE / 2.0f,0 };
 	VECTOR attackhitbox_ = VGet(DAMEGERANGE, DAMEGERANGE, 0);
 
-	DrawBox(attacktrans_.x - cam->GetValue(), attacktrans_.y - cam->GetValueY(), attacktrans_.x - cam->GetValue() + attackhitbox_.x, attacktrans_.y - cam->GetValueY() + attackhitbox_.y, GetColor(0, 255, 255), false);
+	//DrawBox(attacktrans_.x - cam->GetValue(), attacktrans_.y - cam->GetValueY(), attacktrans_.x - cam->GetValue() + attackhitbox_.x, attacktrans_.y - cam->GetValueY() + attackhitbox_.y, GetColor(0, 255, 255), false);
 
 }
 

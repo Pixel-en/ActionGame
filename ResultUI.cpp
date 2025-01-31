@@ -101,6 +101,8 @@ void ResultUI::Update()
 		if (ScoreAndTimeAndMap::GetTimer() > 0.0) {
 			ScoreAndTimeAndMap::SubTimer(time_);
 			oneSecond_ += time_;
+			//‰¹o‚µ‚½‚¢
+
 			//1•b•ª‚½‚Ü‚Á‚½‚ç
 			while (oneSecond_ >= 1.0)
 			{
@@ -154,6 +156,7 @@ void ResultUI::Update()
 		}
 
 		if (pad.Buttons[XINPUT_BUTTON_A]||CheckHitKey(KEY_INPUT_RETURN)) {
+			StopMusic();
 			if (a)
 				ScoreAndTimeAndMap::RetryMap();
 			SceneManager::Instance()->ChangeScene(SceneManager::SCENE_ID::SCENE_ID_PLAY);

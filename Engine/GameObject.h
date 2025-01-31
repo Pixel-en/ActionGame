@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include <DxLib.h>
 #include "time.h"
+#include "../SE.h"
 
 using namespace DirectX;
 

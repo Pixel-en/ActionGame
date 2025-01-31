@@ -186,10 +186,10 @@
     <ClCompile Include="PlayPreparationScene.cpp" />
     <ClCompile Include="PlayPreparationState.cpp" />
     <ClCompile Include="PlayScene.cpp" />
-    <ClCompile Include="PlaySound.cpp" />
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="ResultUI.cpp" />
     <ClCompile Include="ScoreAndTimeAndMap.cpp" />
+    <ClCompile Include="SE.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="RankingsSystem.cpp" />
@@ -243,12 +243,12 @@
     <ClInclude Include="PlayPreparationScene.h" />
     <ClInclude Include="PlayPreparationState.h" />
     <ClInclude Include="PlayScene.h" />
-    <ClInclude Include="PlaySound.h" />
     <ClInclude Include="RankingsSystem.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResultScene.h" />
     <ClInclude Include="ResultUI.h" />
     <ClInclude Include="ScoreAndTimeAndMap.h" />
+    <ClInclude Include="SE.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Slime.h" />
     <ClInclude Include="TestObject.h" />
