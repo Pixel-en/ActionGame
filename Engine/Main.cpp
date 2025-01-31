@@ -38,6 +38,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetUseZBuffer3D(TRUE);
 	SetWriteZBuffer3D(TRUE);
 
+#if DEBUG
+
 	// ユーザーの入力をImGuiも扱えるようにする
 	SetHookWinProc([](HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) -> LRESULT /*CALLBACK*/
 	{
@@ -54,6 +56,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	ImGui_ImplDXlib_Init();
 
+#endif
 
 	RootObject* pRootObject = new RootObject;
 	pRootObject->Initialize();
@@ -61,9 +64,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	while (true) {
 	//全オブジェクトの更新処理
 	//ルートオブジェクトのUpdateを呼んだあと、自動的に子、孫のUpdateが呼ばれる
+#if DEBUG
 		ImGui_ImplDXlib_NewFrame();
 		ImGui::NewFrame();
-
+#endif
 		pRootObject->UpdateSub();
 
 		if (DxLib::ProcessMessage() == -1 /*|| AppIsExit()*/)
@@ -74,6 +78,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//ルートオブジェクトのDrawを呼んだあと、自動的に子、孫のUpdateが呼ばれる
 		pRootObject->DrawSub();
 
+#if DEBUG
 		ImGui::EndFrame();
 		ImGui::Render();
 
@@ -85,6 +90,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 		}
+#endif
 
 		RefreshDxLibDirect3DSetting();
 
@@ -92,11 +98,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	pRootObject->ReleaseSub();
 	delete pRootObject;
-
+#if DEBUG
 	//Imguiの終了処理
 	ImGui_ImplDXlib_Shutdown();
 	ImGui::DestroyContext();
-
+#endif
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
 	return 0;
